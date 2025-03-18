@@ -73,7 +73,7 @@ const AddNewLead = () => {
                 Lead Details
               </h1>
 
-              <div className="relative w-64 text-2xl">
+              <div className="relative w-64">
                 {/* Dropdown Button */}
                 <button
                   className="w-full text-left border flex justify-between items-center border-gray-300 px-3 py-2 rounded-md bg-white focus:outline-none"
