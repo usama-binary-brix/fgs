@@ -1,8 +1,24 @@
 import React from "react";
 import { IoLogOutOutline } from "react-icons/io5";
 import { FiSettings } from "react-icons/fi";
+import { useLogoutMutation } from "@/store/services/api";
+import { useRouter } from "next/navigation";
 
 const Profile = () => {
+  const [logout, { isLoading }] = useLogoutMutation();
+const router = useRouter()
+  const handleLogout = async () => {
+    try {
+      console.log('Logout successful before api ');
+
+      await logout('').unwrap();
+      console.log('Logout successful');
+      router.push('/signin');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
   return (
     <div className="w-64 bg-gray-900 text-white p-4 rounded-lg shadow-lg">
       <div className="flex items-center gap-3">
@@ -17,10 +33,10 @@ const Profile = () => {
         </div>
         <FiSettings className="text-gray-400 cursor-pointer hover:text-gray-200" size={18} />
       </div>
-
-      <button className="w-full mt-4 flex items-center justify-center gap-2 bg-gray-700 text-gray-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-600 hover:text-white transition">
+    
+      <button onClick={handleLogout} disabled={isLoading} className="w-full mt-4 flex items-center justify-center gap-2 bg-gray-700 text-gray-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-600 hover:text-white transition">
         <IoLogOutOutline size={16} />
-        Logout
+        {isLoading ? 'Logging out...' : 'Logout'}
       </button>
     </div>
   );
