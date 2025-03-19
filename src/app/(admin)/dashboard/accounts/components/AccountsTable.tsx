@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { IoSearchOutline } from 'react-icons/io5';
 import AccountsModal from './AccountsModal';
-import { useDeleteUserMutation, useGetAllUsersQuery } from '@/store/services/api';
+import { useDeleteUserMutation } from '@/store/services/api';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 
 const usersData = [
