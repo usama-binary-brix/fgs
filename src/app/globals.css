@@ -137,6 +137,11 @@ layer(base);
   --color-warning-800: #93370d;
   --color-warning-900: #7a2e0e;
   --color-warning-950: #4e1d09;
+  --color-custom-gray: #818181;
+  --color-custom-darkGray: #666;
+  --color-custom-yellow: #D18428;
+  --color-custom-bgYellow:  rgba(209, 132, 40, 0.10);
+
 
   --color-theme-pink-500: #ee46bc;
 
@@ -597,4 +602,20 @@ layer(base);
     0px 1px 2px 0px rgba(16, 24, 40, 0.06);
   opacity: 0.8;
   cursor: grabbing; /* Changes the cursor to indicate dragging */
+}
+
+.text-customGray{
+  color: var(--color-custom-gray);
+}
+
+.text-darkGray{
+  color: var(--color-custom-darkGray);
+}
+
+.text-yellow{
+  color: var(--color-custom-yellow);
+}
+
+.bg-text{
+  background-color: var(--color-custom-bgYellow);
 }
