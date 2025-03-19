@@ -10,6 +10,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useRegisterMutation } from '@/store/services/api';
 import { RxCross2 } from "react-icons/rx";
+import { toast } from 'react-toastify';
 const modalStyle = {
   position: 'absolute' as const,
   top: '50%',
@@ -42,23 +43,23 @@ const selectStyle = {
 };
 
 const validationSchema = Yup.object().shape({
-  accountType: Yup.string().required('Required'),
-  firstName: Yup.string().required('Required'),
-  lastName: Yup.string().required('Required'),
+  account_type: Yup.string().required('Required'),
+  first_name: Yup.string().required('Required'),
+  last_name: Yup.string().required('Required'),
   email: Yup.string().email('Invalid email').required('Required'),
-  phone: Yup.string().required('Required'),
+  phone_number: Yup.string().required('Required'),
   password: Yup.string().required('Required'),
-  confirmPassword: Yup.string()
+  password_confirmation: Yup.string()
     .oneOf([Yup.ref('password')], 'Passwords must match')
     .required('Required'),
   country: Yup.string().required('Required'),
   address: Yup.string().required('Required'),
   state: Yup.string(),
   city: Yup.string().required('Required'),
-  zipCode: Yup.string().required('Required'),
+  zip_code: Yup.string().required('Required'),
   status: Yup.string().required('Required'),
   company: Yup.string().required('Required'),
-  communicationPreferences: Yup.string().required('Required'),
+  communication_preference: Yup.string().required('Required'),
   referredBy: Yup.string(),
   notes: Yup.string(),
 });
@@ -68,21 +69,21 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
 
   const formik = useFormik({
     initialValues: {
-      accountType: '',
-      firstName: '',
-      lastName: '',
+      account_type: '',
+      first_name: '',
+      last_name: '',
       email: '',
-      phone: '',
+      phone_number: '',
       password: '',
-      confirmPassword: '',
+      password_confirmation: '',
       country: '',
       address: '',
       state: '',
       city: '',
-      zipCode: '',
+      zip_code: '',
       status: '',
       company: '',
-      communicationPreferences: '',
+      communication_preference: '',
       referredBy: '',
       notes: '',
     },
@@ -90,11 +91,11 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
     onSubmit: async (values, { resetForm }) => {
       try {
         const response = await register(values).unwrap();
-        console.log('Registration successful:', response);
+                toast.success(response.message);
         resetForm();
         onClose();
       } catch (error) {
-        console.error('Registration failed:', error);
+        toast.error('Registration failed:');
       }
     },
   });
@@ -115,19 +116,20 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             <label className='text-sm'>
             Account Type <span className='text-red-600'>*</span>
                 <select
-                  name="accountType"
+                  name="account_type"
                   style={selectStyle}
-                  value={formik.values.accountType}
+                  value={formik.values.account_type}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 >
                   <option value="">Select</option>
+                  <option value="admin">admin</option>
                   <option value="Investor">Investor</option>
                   <option value="Salesperson">Salesperson</option>
                 </select>
               </label>
-              {formik.touched.accountType && formik.errors.accountType && (
-                <div style={{ color: 'red' }}>{formik.errors.accountType}</div>
+              {formik.touched.account_type && formik.errors.account_type && (
+                <div style={{ color: 'red' }}>{formik.errors.account_type}</div>
               )}
             </Grid>
             <Grid item xs={12} md={4}>
@@ -135,15 +137,15 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             First Name <span className='text-red-600'>*</span>
                 <input
                   type="text"
-                  name="firstName"
+                  name="first_name"
                   style={inputStyle}
-                  value={formik.values.firstName}
+                  value={formik.values.first_name}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
               </label>
-              {formik.touched.firstName && formik.errors.firstName && (
-                <div style={{ color: 'red' }}>{formik.errors.firstName}</div>
+              {formik.touched.first_name && formik.errors.first_name && (
+                <div style={{ color: 'red' }}>{formik.errors.first_name}</div>
               )}
             </Grid>
             <Grid item xs={12} md={4}>
@@ -151,15 +153,15 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             Last Name <span className='text-red-600'>*</span>
                 <input
                   type="text"
-                  name="lastName"
+                  name="last_name"
                   style={inputStyle}
-                  value={formik.values.lastName}
+                  value={formik.values.last_name}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
               </label>
-              {formik.touched.lastName && formik.errors.lastName && (
-                <div style={{ color: 'red' }}>{formik.errors.lastName}</div>
+              {formik.touched.last_name && formik.errors.last_name && (
+                <div style={{ color: 'red' }}>{formik.errors.last_name}</div>
               )}
             </Grid>
 
@@ -184,15 +186,15 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             Phone <span className='text-red-600'>*</span>
                 <input
                   type="text"
-                  name="phone"
+                  name="phone_number"
                   style={inputStyle}
-                  value={formik.values.phone}
+                  value={formik.values.phone_number}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
               </label>
-              {formik.touched.phone && formik.errors.phone && (
-                <div style={{ color: 'red' }}>{formik.errors.phone}</div>
+              {formik.touched.phone_number && formik.errors.phone_number && (
+                <div style={{ color: 'red' }}>{formik.errors.phone_number}</div>
               )}
             </Grid>
             <Grid item xs={12} md={3}>
@@ -217,17 +219,17 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             Confirm Password <span className='text-red-600'>*</span>
                 <input
                   type="password"
-                  name="confirmPassword"
+                  name="password_confirmation"
                   style={inputStyle}
-                  value={formik.values.confirmPassword}
+                  value={formik.values.password_confirmation}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
               </label>
-              {formik.touched.confirmPassword &&
-                formik.errors.confirmPassword && (
+              {formik.touched.password_confirmation &&
+                formik.errors.password_confirmation && (
                   <div style={{ color: 'red' }}>
-                    {formik.errors.confirmPassword}
+                    {formik.errors.password_confirmation}
                   </div>
                 )}
             </Grid>
@@ -304,15 +306,15 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             Zip/Postal Code <span className='text-red-600'>*</span>
                 <input
                   type="text"
-                  name="zipCode"
+                  name="zip_code"
                   style={inputStyle}
-                  value={formik.values.zipCode}
+                  value={formik.values.zip_code}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
               </label>
-              {formik.touched.zipCode && formik.errors.zipCode && (
-                <div style={{ color: 'red' }}>{formik.errors.zipCode}</div>
+              {formik.touched.zip_code && formik.errors.zip_code && (
+                <div style={{ color: 'red' }}>{formik.errors.zip_code}</div>
               )}
             </Grid>
 
@@ -355,9 +357,9 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             <label className='text-sm'>
             Communication Preferences <span className='text-red-600'>*</span>
                 <select
-                  name="communicationPreferences"
+                  name="communication_preference"
                   style={selectStyle}
-                  value={formik.values.communicationPreferences}
+                  value={formik.values.communication_preference}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 >
@@ -366,10 +368,10 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
                   <option value="Phone">Phone</option>
                 </select>
               </label>
-              {formik.touched.communicationPreferences &&
-                formik.errors.communicationPreferences && (
+              {formik.touched.communication_preference &&
+                formik.errors.communication_preference && (
                   <div style={{ color: 'red' }}>
-                    {formik.errors.communicationPreferences}
+                    {formik.errors.communication_preference}
                   </div>
                 )}
             </Grid>
@@ -405,13 +407,13 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
 
             {/* Buttons */}
             <Grid item xs={12} display="flex" justifyContent="flex-end" mt={2}>
-              <Button onClick={onClose} variant="outlined" sx={{ mr: 2 }}>
+              <Button onClick={onClose} variant="outlined" sx={{ mr: 2, textTransform:'none' }}>
                 Cancel
               </Button>
               <Button
                 type="submit"
                 variant="contained"
-                sx={{ backgroundColor: '#C28024', '&:hover': { backgroundColor: '#a56a1d' } }}
+                sx={{ backgroundColor: '#C28024', '&:hover': { backgroundColor: '#a56a1d' }, textTransform:'none' }}
               >
             Add User
               </Button>

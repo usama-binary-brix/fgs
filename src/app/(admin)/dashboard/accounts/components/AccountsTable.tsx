@@ -10,47 +10,27 @@ import { IoSearchOutline } from 'react-icons/io5';
 import AccountsModal from './AccountsModal';
 import { useDeleteUserMutation, useGetAllUsersQuery } from '@/store/services/api';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
-
-const usersData = [
-  {
-    id: 1,
-    name: 'John',
-    email: 'johndoe@example.com',
-    accountType: 'Sales Person',
-    phoneNumber: '(202) 555-0198',
-    dateCreated: '12-05-23',
-    status: 'Active',
-    image: '/path/to/image.jpg'
-  },
-  {
-    id: 2,
-    name: 'Alex',
-    email: 'alexsmith@example.com',
-    accountType: 'Investor',
-    phoneNumber: '(305) 555-0147',
-    dateCreated: '07-11-21',
-    status: 'Inactive',
-    image: '/path/to/image.jpg'
-  },
-];
-
+import { toast } from 'react-toastify';
+import { format } from "date-fns";
+import { FaUserCircle } from "react-icons/fa";
+import ViewAccountDetailsModal from './ViewAcoountDetailsModal';
+import EditAccount from './EditAccount';
 
 const AccountsTable = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { data, isLoading, error } = useGetAllUsersQuery('');
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
-
-  console.log(data, 'data')
-  console.log(isOpen, 'is open')
-console.log('first', isLoading)
-console.log('first', error)
-console.log('first', isDeleting)
-
-
-
   const [openDropdownId, setOpenDropdownId] = useState<string | number | null>();
-  const [selectedUserId, setSelectedUserId] = useState<string | number>();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isViewMoreOpen, setIsViewMoreOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | number | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+const [selectedUserData, setSelectedUserData] = useState(null);
+
+const handleEditUser = (user: any) => {
+  setSelectedUserData(user);
+  setIsEditModalOpen(true);
+};
 
     const toggleDropdown = (id:string | number | null) => {
   if (openDropdownId === id) {
@@ -59,6 +39,11 @@ console.log('first', isDeleting)
     setOpenDropdownId(id); 
   }
 };
+const handleViewMore = (userId: string | number) => {
+  setSelectedUserId(userId);
+  setIsViewMoreOpen(true);
+};
+
 
   
     function closeDropdown() {
@@ -75,14 +60,12 @@ console.log('first', isDeleting)
       setIsModalOpen(false);
     };
 
-    const handleDeleteUser = async (userId:string | number | undefined) => {
+    const handleDeleteUser = async (userId:string | number | null) => {
       try {
         await deleteUser(userId).unwrap();
-        console.log('user deleted') 
-        // toast.success('User deleted successfully!');
+        toast.success('User deleted successfully!');
       } catch (error) {
-        // toast.error('Failed to delete user!');
-        console.log(error)
+        toast.error('Failed to delete user!');
       } finally {
         setIsDeleteModalOpen(false); 
       }
@@ -127,17 +110,33 @@ console.log('first', isDeleting)
     </TableRow>
   </TableHeader>
   <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-    {usersData.map((user, index) => (
+    {data?.users.map((user:any, index:any) => (
       <TableRow key={index}>
         <TableCell className="px-5 py-4 text-xs flex items-center gap-3">
-          <Image width={32} height={32} src={user.image} alt={user.name} className="rounded-full" />
-          <span className="font-medium">{user.name}</span>
+  {user.image ? (
+    <Image
+      width={32}
+      height={32}
+      src={user.image}
+      alt={user.first_name}
+      className="rounded-full"
+    />
+  ) : (
+<span>
+<FaUserCircle className="w-6 h-6 text-gray-500" />
+
+</span>
+)}
+
+          <span className="font-medium">{user.first_name} {user.last_name}</span>
         </TableCell>
 
         <TableCell className="px-5 py-4 text-xs">{user.email}</TableCell>
-        <TableCell className="px-5 py-4 text-xs">{user.accountType}</TableCell>
-        <TableCell className="px-5 py-4 text-xs">{user.phoneNumber}</TableCell>
-        <TableCell className="px-5 py-4 text-xs">{user.dateCreated}</TableCell>
+        <TableCell className="px-5 py-4 text-xs">{user.account_type}</TableCell>
+        <TableCell className="px-5 py-4 text-xs">{user.phone_number}</TableCell>
+        <TableCell className="px-5 py-4 text-xs">
+  {format(new Date(user.created_at), "dd-MM-yy")}
+</TableCell>
         <TableCell className="px-5 py-4 text-xs">
           <span
             className={`px-2 py-1 rounded-sm text-sm font-medium ${
@@ -157,17 +156,24 @@ console.log('first', isDeleting)
 </button>
 
 <Dropdown isOpen={openDropdownId === user.id} onClose={() => setOpenDropdownId(null)} className="w-40 p-2">
-              <DropdownItem
-                onItemClick={closeDropdown}
-                className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-              >
-                View More
-              </DropdownItem>
+<DropdownItem
+  onItemClick={() => handleViewMore(user.id)}
+  className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+>
+  View
+</DropdownItem>
+<DropdownItem
+  onItemClick={() => handleEditUser(user)} // Call function with user data
+  className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+>
+  Edit
+</DropdownItem>
+
               <DropdownItem
   onItemClick={() => {
-    setOpenDropdownId(null); // Close dropdown
-    setSelectedUserId(user.id); // Store selected user ID
-    setIsDeleteModalOpen(true); // Open confirmation modal
+    setOpenDropdownId(null);
+    setSelectedUserId(user.id);
+    setIsDeleteModalOpen(true); 
   }}
   className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
 >
@@ -195,19 +201,26 @@ console.log('first', isDeleting)
     <Typography>Are you sure you want to remove account for user name </Typography>
   </DialogContent>
   <DialogActions>
-    <Button onClick={() => setIsDeleteModalOpen(false)} color="primary">
+    <Button onClick={() => setIsDeleteModalOpen(false)} color="primary" sx={{ textTransform:'none'}}>
       Cancel
     </Button>
     <Button
     className='bg-primary hover:bg-primary'
       onClick={() => handleDeleteUser(selectedUserId)}
-      color="error"
+      // color="error"
+      sx={{backgroundColor:'primary',  '&:hover': { backgroundColor: 'primary' }, textTransform:'none'}}
       variant="contained"
     >
-      Delete
+      Remove
     </Button>
   </DialogActions>
 </Dialog>
+<ViewAccountDetailsModal open={isViewMoreOpen} onClose={() => setIsViewMoreOpen(false)} userId={selectedUserId} />
+<EditAccount   open={isEditModalOpen}
+  onClose={() => setIsEditModalOpen(false)}
+  userData={selectedUserData} />
+
+
    </>
   );
 };

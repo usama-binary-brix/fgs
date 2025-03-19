@@ -12,6 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
+  tagTypes: ["Users"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -23,12 +24,14 @@ export const api = createApi({
     }),
 
     // ----------- REGISTER API ------------
+  
     register: builder.mutation({
       query: (formData) => ({
-        url: 'user/register',
-        method: 'POST',
+        url: "user/register",
+        method: "POST",
         body: formData,
       }),
+      invalidatesTags: ["Users"],
     }),
 
      // ----------- GET ALL USERS ------------
@@ -37,16 +40,25 @@ export const api = createApi({
         url: 'users',
         method: 'GET',
       }),
-    
+      providesTags: ["Users"], 
+
     }),
     
-    // ----------------- DELETE USER -----------
     // ----------- DELETE USER API ------------
 deleteUser: builder.mutation({
   query: (id) => ({
     url: `user/${id}`,
     method: 'DELETE',
   }),
+  invalidatesTags: ["Users"],
+}),
+    // ----------- SINGLE USER API ------------
+    singleUser: builder.query({
+      query: (id) => ({
+        url: `user/${id}`,
+        method: 'GET',
+      }),
+      providesTags: ["Users"], 
 }),
 
 
@@ -68,4 +80,4 @@ deleteUser: builder.mutation({
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useGetAllUsersQuery, useLogoutMutation, useDeleteUserMutation} = api;
+export const { useLoginMutation, useRegisterMutation, useGetAllUsersQuery, useLogoutMutation, useDeleteUserMutation, useSingleUserQuery } = api;

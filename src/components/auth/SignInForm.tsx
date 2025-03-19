@@ -28,7 +28,7 @@ export default function SignInForm() {
       const res = await login({ email, password }).unwrap();
 
       dispatch(setUser({ user: res.user, token: res.token }));
-console.log(res, 'res')
+
       if (res.user.role === "admin") {
         router.push("/dashboard");
       } else if (res.user.role === "investor") {
