@@ -37,13 +37,13 @@ const usersData = [
 
 const AccountsTable = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { data, isLoading, error } = useGetAllUsersQuery('');
+  // const { data, isLoading, error } = useGetAllUsersQuery('');
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
-  console.log(data, 'data')
+  // console.log(data, 'data')
   console.log(isOpen, 'is open')
-console.log('first', isLoading)
-console.log('first', error)
+// console.log('first', isLoading)
+// console.log('first', error)
 console.log('first', isDeleting)
 
 
