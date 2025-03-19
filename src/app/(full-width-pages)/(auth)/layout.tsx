@@ -28,9 +28,9 @@ export default function AuthLayout({
                     alt="Logo"
                   />
                 </Link>
-                <p className="text-center text-gray-400 dark:text-white/60">
+                {/* <p className="text-center text-4xl text-primary dark:text-white/60">
                FGS
-                </p>
+                </p> */}
               </div>
             </div>
           </div>
