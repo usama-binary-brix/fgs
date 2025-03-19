@@ -3,6 +3,7 @@ import { IoLogOutOutline } from "react-icons/io5";
 import { FiSettings } from "react-icons/fi";
 import { useLogoutMutation } from "@/store/services/api";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const Profile = () => {
   const [logout, { isLoading }] = useLogoutMutation();
@@ -22,7 +23,7 @@ const router = useRouter()
   return (
     <div className="w-64 bg-gray-900 text-white p-4 rounded-lg shadow-lg">
       <div className="flex items-center gap-3">
-        <img
+        <Image
           src="/profile.jpg" 
           alt="User Avatar"
           className="w-12 h-12 rounded-full object-cover"

@@ -41,16 +41,22 @@ const AccountsTable = () => {
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
   console.log(data, 'data')
+  console.log(isOpen, 'is open')
+console.log('first', isLoading)
+console.log('first', error)
+console.log('first', isDeleting)
 
-  const [openDropdownId, setOpenDropdownId] = useState(null);
-  const [selectedUserId, setSelectedUserId] = useState<string | number>(); // For Delete confirmation
+
+
+  const [openDropdownId, setOpenDropdownId] = useState<string | number | null>();
+  const [selectedUserId, setSelectedUserId] = useState<string | number>();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    const toggleDropdown = (id:any) => {
+    const toggleDropdown = (id:string | number | null) => {
   if (openDropdownId === id) {
-    setOpenDropdownId(null); // close if same clicked again
+    setOpenDropdownId(null); 
   } else {
-    setOpenDropdownId(id); // open this row's dropdown
+    setOpenDropdownId(id); 
   }
 };
 
@@ -69,13 +75,14 @@ const AccountsTable = () => {
       setIsModalOpen(false);
     };
 
-    const handleDeleteUser = async (userId:any) => {
+    const handleDeleteUser = async (userId:string | number | undefined) => {
       try {
         await deleteUser(userId).unwrap();
         console.log('user deleted') 
         // toast.success('User deleted successfully!');
       } catch (error) {
         // toast.error('Failed to delete user!');
+        console.log(error)
       } finally {
         setIsDeleteModalOpen(false); 
       }
@@ -120,8 +127,8 @@ const AccountsTable = () => {
     </TableRow>
   </TableHeader>
   <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-    {usersData.map((user, undex) => (
-      <TableRow key={user.id}>
+    {usersData.map((user, index) => (
+      <TableRow key={index}>
         <TableCell className="px-5 py-4 text-xs flex items-center gap-3">
           <Image width={32} height={32} src={user.image} alt={user.name} className="rounded-full" />
           <span className="font-medium">{user.name}</span>

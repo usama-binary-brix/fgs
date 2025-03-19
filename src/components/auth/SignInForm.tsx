@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Checkbox from "@/components/form/input/Checkbox";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
-import Button from "@/components/ui/button/Button";
+// import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import { useLoginMutation } from "@/store/services/api";
@@ -53,7 +53,7 @@ export default function SignInForm() {
               Enter your email and password to sign in!
             </p>
           </div>
-          <form onSubmit={handleLogin}>
+          <form>
             <div className="space-y-6">
               <div>
                 <Label>Email <span className="text-error-500">*</span></Label>
@@ -94,9 +94,12 @@ export default function SignInForm() {
               </div>
               {error && <p className="text-error-500">Invalid credentials</p>}
               <div>
-                <Button type="submit" className="w-full bg-primary hover:bg-primary" size="sm" disabled={isLoading}>
+              <button onClick={handleLogin} className="w-full bg-primary hover:bg-primary" disabled={isLoading}>
                   {isLoading ? "Signing in..." : "Sign in"}
-                </Button>
+                </button>
+                {/* <TopButtons type="submit" className="w-full bg-primary hover:bg-primary" size="sm" disabled={isLoading}>
+                  {isLoading ? "Signing in..." : "Sign in"}
+                </TopButtons> */}
               </div>
             </div>
           </form>
