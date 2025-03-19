@@ -33,35 +33,39 @@
 
 // export type RootState = ReturnType<typeof store.getState>;
 // export type AppDispatch = typeof store.dispatch;
+"use client";
 
-'use client';
-
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import storage from 'redux-persist/lib/storage'; 
-import { persistReducer, persistStore,} from 'redux-persist';
-import { api } from './services/api';
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import storage from "redux-persist/lib/storage";
+import { persistReducer, persistStore } from "redux-persist";
+import { api } from "./services/api";
+import {
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist/es/constants";
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage,
-  whitelist: ['user'],  // Ensure only 'user' is persisted, NOT api.reducerPath
+  whitelist: [],
 };
 
 const rootReducer = combineReducers({
-  
-  [api.reducerPath]: api.reducer,  // <-- This should NOT be persisted
+  [api.reducerPath]: api.reducer, 
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
-  // middleware: (getDefaultMiddleware) =>
-  //   getDefaultMiddleware({
-  //     serializableCheck: {
-  //       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-  //     },
-  //   }).concat(api.middleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat(api.middleware),
 });
 
 export const persistor = persistStore(store);

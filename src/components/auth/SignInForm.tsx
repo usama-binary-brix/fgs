@@ -95,7 +95,7 @@ export default function SignInForm() {
               {error && <p className="text-error-500">Invalid credentials</p>}
               <div>
               <button onClick={handleLogin} className="w-full bg-primary hover:bg-primary py-2 text-white rounded-lg" disabled={isLoading}>
-                  {isLoading ? "Signing in..." : "Sign innn"}
+                  {isLoading ? "Signing in..." : "Sign in"}
                 </button>
                 {/* <TopButtons type="submit" className="w-full bg-primary hover:bg-primary" size="sm" disabled={isLoading}>
                   {isLoading ? "Signing in..." : "Sign in"}
