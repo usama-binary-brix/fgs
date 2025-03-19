@@ -24,6 +24,8 @@ const router = useRouter()
     <div className="w-64 bg-gray-900 text-white p-4 rounded-lg shadow-lg">
       <div className="flex items-center gap-3">
         <Image
+        width={12}
+        height={12}
           src="/profile.jpg" 
           alt="User Avatar"
           className="w-12 h-12 rounded-full object-cover"
