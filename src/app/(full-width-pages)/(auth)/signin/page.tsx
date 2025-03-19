@@ -2,8 +2,8 @@ import SignInForm from "@/components/auth/SignInForm";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sign In",
-  description: "Sign in page",
+  title: "FGS Dashboard",
+  description: "FGS Dashboard",
 };
 
 export default function SignIn() {
