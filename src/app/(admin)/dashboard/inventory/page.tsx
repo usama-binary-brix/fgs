@@ -71,7 +71,7 @@ const InventoryTable = () => {
         <div className="flex items-center gap-3">
           <TopButtons label="Edit Columns" variant="outlined" />
           <TopButtons label="Filters" variant="outlined" />
-          <TopButtons label="Add New Account" variant="primary" />
+          <TopButtons label="Add New Inventory" variant="primary" />
         </div>
       </div>
 
