@@ -171,7 +171,7 @@ const AddNewLead = () => {
                 Lead Details
               </h1>
 
-              <div className="relative w-64 mb-2">
+              <div className="relative w-full mb-2">
                 <label className="text-xs text-gray-500  font-medium" htmlFor="">Number of Calls</label>
 
                 <button
@@ -201,7 +201,7 @@ const AddNewLead = () => {
               </div>
 
               {/* lead source dropdown */}
-              <div className="relative w-64 mb-2">
+              <div className="relative w-full mb-2">
                 <label className="text-xs text-gray-500  font-medium" htmlFor="">Lead Source</label>
 
                 <button
@@ -341,7 +341,7 @@ const AddNewLead = () => {
                   />
                 </div>
                 <div className="mb-2">
-                  <div className="relative w-64 mb-2">
+                  <div className="relative w-full mb-2">
                     <label className="text-xs text-gray-500  font-medium" htmlFor="">Engine Type</label>
 
                     <button
@@ -485,7 +485,7 @@ const AddNewLead = () => {
                   Additional Information
                 </h1>
                 <div className="mb-2">
-                  <div className="relative w-64 mb-2">
+                  <div className="relative w-full mb-2">
                     <label className="text-xs text-gray-500  font-medium" htmlFor="">Lead Source</label>
 
                     <button
