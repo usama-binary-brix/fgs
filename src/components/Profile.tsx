@@ -20,6 +20,10 @@ const router = useRouter()
     }
   };
 
+  const handleNavigate = () => {
+    router.push("/dashboard/leads/settings")
+  }
+
   return (
     <div className="w-64 bg-gray-900 text-white p-4 rounded-lg shadow-lg">
       <div className="flex items-center gap-3">
@@ -34,7 +38,7 @@ const router = useRouter()
           <p className="text-sm font-semibold">Jenny Wilson</p>
           <p className="text-xs text-gray-400">jen.wilson@fgs.com</p>
         </div>
-        <FiSettings className="text-gray-400 cursor-pointer hover:text-gray-200" size={18} />
+        <FiSettings onClick={handleNavigate}  className="text-gray-400 cursor-pointer hover:text-gray-200" size={18} />
       </div>
     
       <button onClick={handleLogout} disabled={isLoading} className="w-full mt-4 flex items-center justify-center gap-2 bg-gray-700 text-gray-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-600 hover:text-white transition">
