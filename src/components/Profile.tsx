@@ -21,7 +21,7 @@ const router = useRouter()
   };
 
   const handleNavigate = () => {
-    router.push("/dashboard/leads/settings")
+    router.push("/dashboard/settings")
   }
 
   return (
