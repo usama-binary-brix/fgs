@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Box, Grid, Button } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -24,7 +24,7 @@ const modalStyle = {
 interface Props {
   open: boolean;
   onClose: () => void;
-  userData: any; // userData is required now (no add functionality)
+  userData: any; 
 }
 
 const inputStyle = {
@@ -41,61 +41,80 @@ const inputStyle = {
 
 const EditAccount: React.FC<Props> = ({ open, onClose, userData }) => {
   const [register] = useRegisterMutation();
-console.log(userData, 'user data')
-  const formik = useFormik({
-    initialValues: {
-      account_type: userData?.account_type || '',
-      first_name: userData?.first_name || '',
-      last_name: userData?.last_name || '',
-      email: userData?.email || '',
-      phone_number: userData?.phone_number || '',
-      password:userData?.password || '',
-      password_confirmation:userData?.password_confirmation || '',
-      country: userData?.country || '',
-      address: userData?.address || '',
-      state: userData?.state || '',
-      city: userData?.city || '',
-      zip_code: userData?.zip_code || '',
-      status: userData?.status || '',
-      company: userData?.company || '',
-      communication_preference: userData?.communication_preference || '',
-      referredBy: userData?.referredBy || '',
-      notes: userData?.notes || '',
-    },
-    validationSchema: Yup.object().shape({
-      account_type: Yup.string().required('Required'),
-      first_name: Yup.string().required('Required'),
-      last_name: Yup.string().required('Required'),
-      email: Yup.string().email('Invalid email').required('Required'),
-      phone_number: Yup.string().required('Required'),
-      country: Yup.string().required('Required'),
-      address: Yup.string().required('Required'),
-      city: Yup.string().required('Required'),
-      zip_code: Yup.string().required('Required'),
-      status: Yup.string().required('Required'),
-      company: Yup.string().required('Required'),
-      communication_preference: Yup.string().required('Required'),
-    }),
-    onSubmit: async (values, { resetForm }) => {
-      try {
-        if (!userData?.id) {
-          toast.error('Invalid user data. Cannot update.');
-          return;
-        }
+  const [loading, setLoading] = useState(false)
 
-        const payload = { id: userData.id, ...values }; // Always send ID for update
-        const response = await register(payload).unwrap();
+const getInitialValues = (userData:any) => ({
+  account_type: userData?.account_type || '',
+  first_name: userData?.first_name || '',
+  last_name: userData?.last_name || '',
+  email: userData?.email || '',
+  phone_number: userData?.phone_number || '',
+  password: '',
+  password_confirmation: '',
+  country: userData?.country || '',
+  address: userData?.address || '',
+  state: userData?.region || '',
+  city: userData?.city || '',
+  zip_code: userData?.zip_code || '',
+  status:
+    userData?.status?.toLowerCase() === 'active'
+      ? '1'
+      : userData?.status?.toLowerCase() === 'inactive'
+      ? '0'
+      : '', 
+  company_name: userData?.company_name || '',
+  communication_preference: userData?.communication_preference?.toLowerCase() || '',
+  referredBy: userData?.referred_by || '',
+  note: userData?.note || '',
+});
 
-        toast.success(response.message || 'Account updated successfully');
 
-        resetForm();
-        onClose();
-      } catch (error) {
-        toast.error('Operation failed. Please try again.');
+const formik = useFormik({
+  initialValues: getInitialValues(userData),
+  validationSchema: Yup.object().shape({
+    account_type: Yup.string().required('Required'),
+    first_name: Yup.string().required('Required'),
+    last_name: Yup.string(),
+    email: Yup.string().email('Invalid email').required('Required'),
+    phone_number: Yup.string().required('Required'),
+    country: Yup.string().required('Required'),
+    address: Yup.string().required('Required'),
+    city: Yup.string().required('Required'),
+    zip_code: Yup.string().required('Required'),
+    status: Yup.string().required('Required'),
+    company_name: Yup.string().required('Required'),
+    communication_preference: Yup.string().required('Required'),
+  }),
+  onSubmit: async (values, { resetForm }) => {
+    setLoading(true)
+    try {
+      if (!userData?.id) {
+        setLoading(false)
+        toast.error('Invalid user data. Cannot update.');
+        return;
       }
-    },
-    enableReinitialize: true,
-  });
+
+      const payload = { id: userData.id, ...values };
+      const response = await register(payload).unwrap();
+
+      toast.success(response.message || 'Account updated successfully');
+setLoading(false)
+      resetForm();
+      onClose();
+    } catch (error) {
+      toast.error('Please try again.');
+setLoading(false)
+
+    }
+  },
+  enableReinitialize: false,
+});
+
+useEffect(() => {
+  if (userData) {
+    formik.setValues(getInitialValues(userData));
+  }
+}, [userData]);
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -150,7 +169,7 @@ console.log(userData, 'user data')
             {/* Last Name */}
             <Grid item xs={12} md={4}>
               <label className="text-sm">
-                Last Name <span className="text-red-600">*</span>
+                Last Name 
                 <input
                   type="text"
                   name="last_name"
@@ -201,7 +220,7 @@ console.log(userData, 'user data')
                        </Grid>
                        <Grid item xs={12} md={3}>
                        <label className='text-sm'>
-                       Password <span className='text-red-600'>*</span>
+                       Password 
                            <input
                              type="password"
                              name="password"
@@ -219,7 +238,7 @@ console.log(userData, 'user data')
            
                        <Grid item xs={12} md={3}>
                        <label className='text-sm'>
-                       Confirm Password <span className='text-red-600'>*</span>
+                       Confirm Password 
                            <input
                              type="password"
                              name="password_confirmation"
@@ -276,7 +295,7 @@ console.log(userData, 'user data')
            
                        <Grid item xs={12} md={4}>
                        <label className='text-sm'>
-                       State/Region <span className='text-red-600'>*</span>
+                       State/Region 
                            <select
                              name="state"
                              style={selectStyle}
@@ -285,8 +304,8 @@ console.log(userData, 'user data')
                              onBlur={formik.handleBlur}
                            >
                              <option value="">Select</option>
-                             <option value="Region1">Region 1</option>
-                             <option value="Region2">Region 2</option>
+                             <option value="NY">New York</option>
+                             <option value="AL">Alabama</option>
                            </select>
                          </label>
                        </Grid>
@@ -350,10 +369,10 @@ console.log(userData, 'user data')
                        Company <span className='text-red-600'>*</span>
                            <input
                              type="text"
-                             name="company"
+                             name="company_name"
                              style={inputStyle}
                              
-                             value={formik.values.company}
+                             value={formik.values.company_name}
                              onChange={formik.handleChange}
                              onBlur={formik.handleBlur}
                            />
@@ -374,8 +393,8 @@ console.log(userData, 'user data')
                              onBlur={formik.handleBlur}
                            >
                              <option value="">Select</option>
-                             <option value="Email">Email</option>
-                             <option value="Phone">Phone</option>
+                             <option value="email">Email</option>
+                             <option value="phone">Phone</option>
                            </select>
                          </label>
                          {/* {formik.touched.communication_preference &&
@@ -388,7 +407,7 @@ console.log(userData, 'user data')
            
                        <Grid item xs={12} md={4}>
                        <label className='text-sm'>
-                       Referred By <span className='text-red-600'>*</span>
+                       Referred By 
                            <input
                              type="text"
                              name="referredBy"
@@ -404,14 +423,16 @@ console.log(userData, 'user data')
                        {/* Notes */}
                        <Grid item xs={12}>
                        <label className='text-sm'>
-                       Notes <span className='text-red-600'>*</span>
+                       Notes 
+
+                     
                            <textarea
-                             name="notes"
+                             name="note"
                             //  style={{ resize: 'vertical' }}
                              rows={3}
                              style={inputStyle}
 
-                             value={formik.values.notes}
+                             value={formik.values.note}
                              onChange={formik.handleChange}
                              onBlur={formik.handleBlur}
                            ></textarea>
@@ -429,7 +450,7 @@ console.log(userData, 'user data')
                variant="contained"
                sx={{ backgroundColor: '#C28024', '&:hover': { backgroundColor: '#a56a1d' }, textTransform:'none' }}
               >
-                Update Account
+              {loading ? 'Loading...' : 'Update Account'}
               </Button>
             </Grid>
           </Grid>

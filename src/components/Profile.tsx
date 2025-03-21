@@ -1,22 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import { IoLogOutOutline } from "react-icons/io5";
 import { FiSettings } from "react-icons/fi";
 import { useLogoutMutation } from "@/store/services/api";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
   const [logout, { isLoading }] = useLogoutMutation();
 const router = useRouter()
-  const handleLogout = async () => {
-    try {
-      console.log('Logout successful before api ');
+const user = useSelector((state:any)=>state?.user?.user)
+const [loading, setLoading] = useState(false)
 
+  const handleLogout = async () => {
+    setLoading(true)
+    try {
+     
       await logout('').unwrap();
       console.log('Logout successful');
       router.push('/signin');
+    setLoading(false)
+
     } catch (error) {
       console.error('Logout error:', error);
+      setLoading(false)
+
     }
   };
 
@@ -35,8 +43,8 @@ const router = useRouter()
           className="w-12 h-12 rounded-full object-cover"
         />
         <div>
-          <p className="text-sm font-semibold">Jenny Wilson</p>
-          <p className="text-xs text-gray-400">jen.wilson@fgs.com</p>
+          <p className="text-sm font-semibold">{user?.first_name} {user?.last_name}</p>
+          <p className="text-xs text-gray-400">{user?.email}</p>
         </div>
         <FiSettings onClick={handleNavigate}  className="text-gray-400 cursor-pointer hover:text-gray-200" size={18} />
       </div>

@@ -13,6 +13,7 @@ import {
 } from "../icons/index";
 // import SidebarWidget from "./SidebarWidget";
 import Profile from "@/components/Profile";
+import { useSelector } from "react-redux";
 
 type NavItem = {
   name: string;
@@ -108,7 +109,6 @@ const othersItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
-
   const renderMenuItems = (
     navItems: NavItem[],
     menuType: "main" | "others"
@@ -301,7 +301,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 left-0 bg-black dark:bg-gray-900 dark:border-gray-400 text-white h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+      className={`fixed mt-16  flex flex-col lg:mt-0 top-0 left-0 bg-black dark:bg-gray-900 dark:border-gray-400 text-white h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"
@@ -347,7 +347,7 @@ const AppSidebar: React.FC = () => {
           )}
         </Link>
       </div>
-      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
+      <div className="flex pt-6 lg:pt-0 flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">
             <div>
@@ -365,7 +365,7 @@ const AppSidebar: React.FC = () => {
                 )}
               </h2>
               {renderMenuItems(navItems, "main")}
-              <div className="border-t absolute bottom-0">
+              <div className="border-t absolute bottom-22 lg:bottom-0">
 <Profile/>
 
 </div>

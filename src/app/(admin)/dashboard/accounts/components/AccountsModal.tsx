@@ -44,10 +44,18 @@ const selectStyle = {
 
 const validationSchema = Yup.object().shape({
   account_type: Yup.string().required('Required'),
-  first_name: Yup.string().required('Required'),
+  first_name: Yup.string()
+  .max(15, 'Must be 15 characters or less')
+  .required('Required'),
+
+last_name: Yup.string()
+  .max(15, 'Must be 15 characters or less'),
   // last_name: Yup.string().required('Required'),
   email: Yup.string().email('Invalid email').required('Required'),
-  phone_number: Yup.string().required('Required'),
+  phone_number: Yup.string()
+  .matches(/^[0-9]+$/, 'Only numbers are allowed')
+  .required('Required'),
+  // phone_number: Yup.string().required('Required'),
   // password: Yup.string().required('Required'),
   // password_confirmation: Yup.string()
   //   .oneOf([Yup.ref('password')], 'Passwords must match')
@@ -95,7 +103,8 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
         resetForm();
         onClose();
       } catch (error) {
-        toast.error('Registration failed:');
+        toast.error('Registration failed');
+        console.log(error, 'error registration ')
       }
     },
   });
@@ -144,6 +153,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
                   value={formik.values.first_name}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  maxLength={15}
                 />
               </label>
               {formik.touched.first_name && formik.errors.first_name && (
@@ -160,6 +170,8 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
                   value={formik.values.last_name}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  maxLength={15}
+
                 />
               </label>
               {formik.touched.last_name && formik.errors.last_name && (
@@ -249,8 +261,8 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
                   onBlur={formik.handleBlur}
                 >
                   <option value="">Select</option>
-                  <option value="Pakistan">Pakistan</option>
                   <option value="USA">USA</option>
+                  {/* <option value="canada">Canada</option> */}
                 </select>
               </label>
               {formik.touched.country && formik.errors.country && (
@@ -285,8 +297,8 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
                   onBlur={formik.handleBlur}
                 >
                   <option value="">Select</option>
-                  <option value="Region1">Region 1</option>
-                  <option value="Region2">Region 2</option>
+                             <option value="NY">New York</option>
+                             <option value="AL">Alabama</option>
                 </select>
               </label>
             </Grid>

@@ -102,7 +102,7 @@ const handleViewMore = (userId: string | number) => {
       <Table>
   <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
     <TableRow>
-      {['Name', 'Email', 'Account Type', 'Phone Number', 'Date Created', 'Status', 'Action'].map((heading) => (
+      {['Name', 'Email', 'Account Type', 'Phone Number', 'Created Date', 'Status', 'Action'].map((heading) => (
         <TableCell key={heading} isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
           {heading}
         </TableCell>
@@ -127,8 +127,11 @@ const handleViewMore = (userId: string | number) => {
 
 </span>
 )}
+<span className="font-medium break-words max-w-[150px] overflow-hidden text-ellipsis">
+  {user.first_name} {user.last_name}
+</span>
 
-          <span className="font-medium">{user.first_name} {user.last_name}</span>
+          {/* <span className="font-medium break-words ">{user.first_name} {user.last_name}</span> */}
         </TableCell>
 
         <TableCell className="px-5 py-4 text-xs">{user.email}</TableCell>
