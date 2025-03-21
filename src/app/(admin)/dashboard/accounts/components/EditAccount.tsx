@@ -12,8 +12,8 @@ const modalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '60%',
-  maxHeight: '80vh',
+  width: '80%',
+  maxHeight: '90vh',
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
@@ -128,7 +128,7 @@ useEffect(() => {
           <Grid container spacing={2}>
             {/* Account Type */}
             <Grid item xs={12} md={4}>
-              <label className="text-sm">
+              <label className="text-sm text-gray-500">
                 Account Type <span className="text-red-600">*</span>
                 <select
                   name="account_type"
@@ -150,7 +150,7 @@ useEffect(() => {
 
             {/* First Name */}
             <Grid item xs={12} md={4}>
-              <label className="text-sm">
+              <label className="text-sm text-gray-500">
                 First Name <span className="text-red-600">*</span>
                 <input
                   type="text"
@@ -168,7 +168,7 @@ useEffect(() => {
 
             {/* Last Name */}
             <Grid item xs={12} md={4}>
-              <label className="text-sm">
+              <label className="text-sm text-gray-500">
                 Last Name 
                 <input
                   type="text"
@@ -186,7 +186,7 @@ useEffect(() => {
 
            
                        <Grid item xs={12} md={3}>
-                         <label className='text-sm'>
+                         <label className='text-sm text-gray-500'>
                            Email <span className='text-red-600'>*</span>
                            <input
                              type="email"
@@ -202,7 +202,7 @@ useEffect(() => {
                          )} */}
                        </Grid>
                        <Grid item xs={12} md={3}>
-                       <label className='text-sm'>
+                       <label className='text-sm text-gray-500'>
                        Phone <span className='text-red-600'>*</span>
                            <input
                              type="text"
@@ -219,7 +219,7 @@ useEffect(() => {
                          )} */}
                        </Grid>
                        <Grid item xs={12} md={3}>
-                       <label className='text-sm'>
+                       <label className='text-sm text-gray-500'>
                        Password 
                            <input
                              type="password"
@@ -237,7 +237,7 @@ useEffect(() => {
                        </Grid>
            
                        <Grid item xs={12} md={3}>
-                       <label className='text-sm'>
+                       <label className='text-sm text-gray-500'>
                        Confirm Password 
                            <input
                              type="password"
@@ -257,7 +257,7 @@ useEffect(() => {
                            )} */}
                        </Grid>
                        <Grid item xs={12} md={4}>
-                       <label className='text-sm'>
+                       <label className='text-sm text-gray-500'>
                        Country<span className='text-red-600'>*</span>
                            <select
                              name="country"
@@ -276,7 +276,7 @@ useEffect(() => {
                          )} */}
                        </Grid>
                        <Grid item xs={12} md={4}>
-                       <label className='text-sm'>
+                       <label className='text-sm text-gray-500'>
                        Address <span className='text-red-600'>*</span>
                            <input
                              type="text"
@@ -294,7 +294,7 @@ useEffect(() => {
                        </Grid>
            
                        <Grid item xs={12} md={4}>
-                       <label className='text-sm'>
+                       <label className='text-sm text-gray-500'>
                        State/Region 
                            <select
                              name="state"
@@ -310,7 +310,7 @@ useEffect(() => {
                          </label>
                        </Grid>
                        <Grid item xs={12} md={4}>
-                       <label className='text-sm'>
+                       <label className='text-sm text-gray-500'>
                        City <span className='text-red-600'>*</span>
                            <input
                              type="text"
@@ -327,7 +327,7 @@ useEffect(() => {
                          )} */}
                        </Grid>
                        <Grid item xs={12} md={4}>
-                       <label className='text-sm'>
+                       <label className='text-sm text-gray-500'>
                        Zip/Postal Code <span className='text-red-600'>*</span>
                            <input
                              type="text"
@@ -345,7 +345,7 @@ useEffect(() => {
                        </Grid>
            
                        <Grid item xs={12} md={4}>
-                       <label className='text-sm'>
+                       <label className='text-sm text-gray-500'>
                        Status <span className='text-red-600'>*</span>
                            <select
                              name="status"
@@ -365,7 +365,7 @@ useEffect(() => {
                          )} */}
                        </Grid>
                        <Grid item xs={12} md={4}>
-                       <label className='text-sm'>
+                       <label className='text-sm text-gray-500'>
                        Company <span className='text-red-600'>*</span>
                            <input
                              type="text"
@@ -382,7 +382,7 @@ useEffect(() => {
                          )} */}
                        </Grid>
                        <Grid item xs={12} md={4}>
-                       <label className='text-sm'>
+                       <label className='text-sm text-gray-500'>
                        Communication Preferences <span className='text-red-600'>*</span>
                            <select
                              name="communication_preference"
@@ -406,7 +406,7 @@ useEffect(() => {
                        </Grid>
            
                        <Grid item xs={12} md={4}>
-                       <label className='text-sm'>
+                       <label className='text-sm text-gray-500'>
                        Referred By 
                            <input
                              type="text"
@@ -422,7 +422,7 @@ useEffect(() => {
            
                        {/* Notes */}
                        <Grid item xs={12}>
-                       <label className='text-sm'>
+                       <label className='text-sm text-gray-500'>
                        Notes 
 
                      

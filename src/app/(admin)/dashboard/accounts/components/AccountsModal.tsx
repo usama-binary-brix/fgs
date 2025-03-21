@@ -16,8 +16,8 @@ const modalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '60%',
-  maxHeight: '80vh',
+  width: '80%',
+  maxHeight: '90vh',
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
@@ -122,7 +122,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
         <form onSubmit={formik.handleSubmit} autoComplete='off'>
           <Grid container spacing={2}>
             <Grid item xs={12} md={4}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             Account Type <span className='text-red-600'>*</span>
                 <select
                   name="account_type"
@@ -144,7 +144,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
               )}
             </Grid>
             <Grid item xs={12} md={4}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             First Name <span className='text-red-600'>*</span>
                 <input
                   type="text"
@@ -161,7 +161,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
               )}
             </Grid>
             <Grid item xs={12} md={4}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             Last Name
                 <input
                   type="text"
@@ -180,7 +180,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             </Grid>
 
             <Grid item xs={12} md={3}>
-              <label className='text-sm'>
+              <label className='text-sm text-gray-500'>
                 Email <span className='text-red-600'>*</span>
                 <input
                   type="email"
@@ -197,7 +197,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
               )}
             </Grid>
             <Grid item xs={12} md={3}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             Phone <span className='text-red-600'>*</span>
                 <input
                   type="text"
@@ -213,7 +213,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
               )}
             </Grid>
             <Grid item xs={12} md={3}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             Password
                 <input
                   type="password"
@@ -232,7 +232,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             </Grid>
 
             <Grid item xs={12} md={3}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             Confirm Password 
                 <input
                   type="password"
@@ -251,7 +251,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
                 )}
             </Grid>
             <Grid item xs={12} md={4}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             Country<span className='text-red-600'>*</span>
                 <select
                   name="country"
@@ -270,7 +270,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
               )}
             </Grid>
             <Grid item xs={12} md={4}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             Address <span className='text-red-600'>*</span>
                 <input
                   type="text"
@@ -287,7 +287,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             </Grid>
 
             <Grid item xs={12} md={4}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             State/Region
                 <select
                   name="state"
@@ -303,7 +303,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
               </label>
             </Grid>
             <Grid item xs={12} md={4}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             City <span className='text-red-600'>*</span>
                 <input
                   type="text"
@@ -319,7 +319,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
               )}
             </Grid>
             <Grid item xs={12} md={4}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             Zip/Postal Code <span className='text-red-600'>*</span>
                 <input
                   type="text"
@@ -336,7 +336,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             </Grid>
 
             <Grid item xs={12} md={4}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             Status <span className='text-red-600'>*</span>
                 <select
                   name="status"
@@ -355,7 +355,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
               )}
             </Grid>
             <Grid item xs={12} md={4}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             Company <span className='text-red-600'>*</span>
                 <input
                   type="text"
@@ -371,7 +371,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
               )}
             </Grid>
             <Grid item xs={12} md={4}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             Communication Preferences <span className='text-red-600'>*</span>
                 <select
                   name="communication_preference"
@@ -394,7 +394,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             </Grid>
 
             <Grid item xs={12} md={4}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             Referred By 
                 <input
                   type="text"
@@ -409,7 +409,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
 
             {/* Notes */}
             <Grid item xs={12}>
-            <label className='text-sm'>
+            <label className='text-sm text-gray-500'>
             Notes 
                 <textarea
                   name="notes"

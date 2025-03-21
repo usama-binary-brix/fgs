@@ -33,7 +33,7 @@ const [loading, setLoading] = useState(false)
   }
 
   return (
-    <div className="w-64 bg-gray-900 text-white p-4 rounded-lg shadow-lg">
+    <div className="w-64 bg-[#222222] text-white p-4 rounded-lg shadow-lg">
       <div className="flex items-center gap-3">
         <Image
         width={12}
