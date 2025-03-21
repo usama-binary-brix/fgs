@@ -40,7 +40,7 @@ const navItems: NavItem[] = [
     icon: <GridIcon />,
     name: "Inventory",
     // path: "/dashboard/inventory",
-    subItems: [{ name: "All Inventory", path: "inventory", pro: false }],
+    subItems: [{ name: "All Inventory", path: "/dashboard/inventory", pro: false }],
 
   },
   // {
@@ -352,7 +352,7 @@ const AppSidebar: React.FC = () => {
           <div className="flex flex-col gap-4">
             <div>
               <h2
-                className={`mb-4 text-xs hidden uppercase lg:flex leading-[20px] text-gray-400 ${
+                className={`mb-4 text-xs pl-4 hidden uppercase lg:flex leading-[20px] text-gray-400 ${
                   !isExpanded && !isHovered
                     ? "lg:justify-center"
                     : "justify-start"

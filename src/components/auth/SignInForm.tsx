@@ -2,31 +2,45 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-// import Checkbox from "@/components/form/input/Checkbox";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
-// import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
-// import Link from "next/link";
 import { useLoginMutation } from "@/store/services/api";
 import { setUser } from "@/store/services/userSlice";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  // const [isChecked, setIsChecked] = useState(false);
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
 
   const dispatch = useDispatch();
   const router = useRouter();
-
   const [login, { isLoading, error }] = useLoginMutation();
 
+  // Email Validation - Show error only after typing "@"
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email.includes("@") && !emailRegex.test(email)) {
+      return "Please enter a valid email.";
+    }
+    return "";
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    setEmailError(validateEmail(newEmail));
+  };
+
+  // Handle Login
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (emailError) return;
+
     try {
       const res = await login({ email, password }).unwrap();
-
       dispatch(setUser({ user: res.user, token: res.token }));
 
       if (res.user.role === "admin") {
@@ -37,7 +51,7 @@ export default function SignInForm() {
         router.push("/dashboard");
       }
     } catch (err) {
-      console.error("Login failed:", err);
+      console.log("Login failed:");
     }
   };
 
@@ -55,15 +69,19 @@ export default function SignInForm() {
           </div>
           <form>
             <div className="space-y-6">
+              {/* Email Input */}
               <div>
                 <Label>Email <span className="text-error-500">*</span></Label>
                 <Input
                   placeholder="info@gmail.com"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={handleEmailChange}
                 />
+                {emailError && <p className="text-error-500 text-sm">{emailError}</p>}
               </div>
+
+              {/* Password Input */}
               <div>
                 <Label>Password <span className="text-error-500">*</span></Label>
                 <div className="relative">
@@ -81,25 +99,26 @@ export default function SignInForm() {
                   </span>
                 </div>
               </div>
-              {/* <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Checkbox checked={isChecked} onChange={setIsChecked} />
-                  <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
-                    Keep me logged in
-                  </span>
-                </div>
-                <Link href="/reset-password" className="text-sm text-primary hover:text-primary dark:text-whie">
-                  Forgot password?
-                </Link>
-              </div> */}
-              {error && <p className="text-error-500">Invalid credentials</p>}
+
+              {/* API Error Message */}
+              {error && (
+                <p className="text-error-500">
+                  {"status" in error && error.data && typeof error.data === "object" && "error" in error.data
+                    ? String(error.data.error)
+                    : "Something went wrong. Please try again."
+                  }
+                </p>
+              )}
+
+              {/* Submit Button */}
               <div>
-              <button onClick={handleLogin} className="w-full bg-primary hover:bg-primary py-2 text-white rounded-lg" disabled={isLoading}>
+                <button
+                  onClick={handleLogin}
+                  className="w-full bg-primary hover:bg-primary py-2 text-white rounded-lg"
+                  disabled={isLoading}
+                >
                   {isLoading ? "Signing in..." : "Sign in"}
                 </button>
-                {/* <TopButtons type="submit" className="w-full bg-primary hover:bg-primary" size="sm" disabled={isLoading}>
-                  {isLoading ? "Signing in..." : "Sign in"}
-                </TopButtons> */}
               </div>
             </div>
           </form>

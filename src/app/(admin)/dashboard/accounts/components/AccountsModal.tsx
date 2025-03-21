@@ -45,13 +45,13 @@ const selectStyle = {
 const validationSchema = Yup.object().shape({
   account_type: Yup.string().required('Required'),
   first_name: Yup.string().required('Required'),
-  last_name: Yup.string().required('Required'),
+  // last_name: Yup.string().required('Required'),
   email: Yup.string().email('Invalid email').required('Required'),
   phone_number: Yup.string().required('Required'),
-  password: Yup.string().required('Required'),
-  password_confirmation: Yup.string()
-    .oneOf([Yup.ref('password')], 'Passwords must match')
-    .required('Required'),
+  // password: Yup.string().required('Required'),
+  // password_confirmation: Yup.string()
+  //   .oneOf([Yup.ref('password')], 'Passwords must match')
+  //   .required('Required'),
   country: Yup.string().required('Required'),
   address: Yup.string().required('Required'),
   state: Yup.string(),
@@ -110,7 +110,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
 <RxCross2 onClick={onClose} className='cursor-pointer text-3xl'/>
 
 </div>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={formik.handleSubmit} autoComplete='off'>
           <Grid container spacing={2}>
             <Grid item xs={12} md={4}>
             <label className='text-sm'>
@@ -123,9 +123,11 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
                   onBlur={formik.handleBlur}
                 >
                   <option value="">Select</option>
-                  <option value="admin">admin</option>
+                  <option value="admin">Admin</option>
                   <option value="Investor">Investor</option>
                   <option value="Salesperson">Salesperson</option>
+                  <option value="Employee">Employee</option>
+                  <option value="Broker">Broker</option>
                 </select>
               </label>
               {formik.touched.account_type && formik.errors.account_type && (
@@ -150,7 +152,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             </Grid>
             <Grid item xs={12} md={4}>
             <label className='text-sm'>
-            Last Name <span className='text-red-600'>*</span>
+            Last Name
                 <input
                   type="text"
                   name="last_name"
@@ -171,6 +173,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
                 <input
                   type="email"
                   name="email"
+                  autoComplete='off'
                   style={inputStyle}
                   value={formik.values.email}
                   onChange={formik.handleChange}
@@ -199,10 +202,12 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             </Grid>
             <Grid item xs={12} md={3}>
             <label className='text-sm'>
-            Password <span className='text-red-600'>*</span>
+            Password
                 <input
                   type="password"
                   name="password"
+                  autoComplete='off'
+              
                   style={inputStyle}
                   value={formik.values.password}
                   onChange={formik.handleChange}
@@ -216,7 +221,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
 
             <Grid item xs={12} md={3}>
             <label className='text-sm'>
-            Confirm Password <span className='text-red-600'>*</span>
+            Confirm Password 
                 <input
                   type="password"
                   name="password_confirmation"
@@ -271,7 +276,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
 
             <Grid item xs={12} md={4}>
             <label className='text-sm'>
-            State/Region <span className='text-red-600'>*</span>
+            State/Region
                 <select
                   name="state"
                   style={selectStyle}
@@ -378,7 +383,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
 
             <Grid item xs={12} md={4}>
             <label className='text-sm'>
-            Referred By <span className='text-red-600'>*</span>
+            Referred By 
                 <input
                   type="text"
                   name="referredBy"
@@ -393,7 +398,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             {/* Notes */}
             <Grid item xs={12}>
             <label className='text-sm'>
-            Notes <span className='text-red-600'>*</span>
+            Notes 
                 <textarea
                   name="notes"
                   style={{ ...inputStyle, resize: 'vertical' }}
