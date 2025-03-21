@@ -141,6 +141,7 @@ layer(base);
   --color-custom-darkGray: #666;
   --color-custom-yellow: #D18428;
   --color-custom-bgYellow:  rgba(209, 132, 40, 0.10);
+  --color-custom-lightGray: #616161;
 
 
   --color-theme-pink-500: #ee46bc;
@@ -618,4 +619,8 @@ layer(base);
 
 .bg-text{
   background-color: var(--color-custom-bgYellow);
+}
+
+.header{
+  background-color: --color-custom-lightGray;
 }
