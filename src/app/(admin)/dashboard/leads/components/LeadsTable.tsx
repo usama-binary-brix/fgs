@@ -57,7 +57,7 @@ const LeadsTable = () => {
               <div className="relative">
                 <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
-                  className="text-xs border rounded-lg pl-9 pr-2 h-9 w-64 border-gray-300 focus:border-gray-400 focus:outline-none"
+                  className="text-xs border rounded-lg font-family pl-9 pr-2 h-9 w-64 border-gray-300 focus:border-gray-400 focus:outline-none"
                   placeholder="Search"
                 />
               </div>
@@ -65,7 +65,7 @@ const LeadsTable = () => {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <TopButtons label="Edit Columns" variant="outlined" />
+          <TopButtons label="Edit Columns" variant="outlined"  />
           <TopButtons label="Filters" variant="outlined" />
           <TopButtons onClick={handleNavigate} label="Add New Account" variant="primary" />
         </div>
@@ -77,8 +77,9 @@ const LeadsTable = () => {
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
                 {['ID', 'Name', 'Email', 'Company', 'Source', 'Reminder Date', 'Budget', 'Condition', 'Assigned To', 'Action'].map((heading) => (
-                  <TableCell key={heading} isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {heading}
+                  <TableCell key={heading} isHeader className="px-5 py-3 font-family font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {heading} 
+                    
                   </TableCell>
                 ))}
               </TableRow>
@@ -86,22 +87,22 @@ const LeadsTable = () => {
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {leadsData.map((lead) => (
                 <TableRow key={lead.id}>
-                  <TableCell className="px-5 py-4 text-xs">{lead.id}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs flex items-center gap-3">
+                  <TableCell className="px-5 py-4 text-[#616161] font-normal text-xs font-family">{lead.id}</TableCell>
+                  <TableCell className="px-5 py-4 text-xs flex items-center gap-3 font-family text-[#616161] font-normal">
                     <Image width={40} height={40} src={lead.image} alt={lead.name} className="rounded-full" />
                     <span>{lead.name}</span>
                   </TableCell>
-                  <TableCell className="px-5 py-4 text-xs">{lead.email}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs">{lead.company}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs">{lead.source}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs">{lead.reminderDate}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs">{lead.budget}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs">{lead.condition}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs">{lead.assignedTo}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs">
+                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">{lead.email}</TableCell>
+                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">{lead.company}</TableCell>
+                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">{lead.source}</TableCell>
+                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">{lead.reminderDate}</TableCell>
+                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">{lead.budget}</TableCell>
+                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">{lead.condition}</TableCell>
+                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">{lead.assignedTo}</TableCell>
+                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">
                     <div className="relative inline-block">
                       <button onClick={() => toggleDropdown(lead.id)} className="dropdown-toggle">
-                        <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
+                        <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />
                       </button>
                       <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="w-40 p-2">
                         <DropdownItem onItemClick={closeDropdown} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">

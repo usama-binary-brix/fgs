@@ -19,7 +19,7 @@ const TopButtons: React.FC<ButtonProps> = ({ label, onClick, variant = "primary"
   };
 
   return (
-    <button onClick={onClick} className={`${baseClass} ${variantClass[variant]}`}>
+    <button onClick={onClick} className={`${baseClass} font-family ${variantClass[variant]}`}>
       {label}
     </button>
   );
