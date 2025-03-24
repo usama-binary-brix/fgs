@@ -48,7 +48,7 @@ interface Lead {
     
   ];
 
-const InvRequestModal:  React.FC<Props> = ({open, onClose}) => {
+const InvestorRequestModal:  React.FC<Props> = ({open, onClose}) => {
     const [activeTab, setActiveTab] = useState<'all' | 'accepted' | 'rejected'>('all');
     const filteredLeads = activeTab === 'all' ? leadsData : leadsData.filter(lead => lead.status === activeTab);
 
@@ -118,4 +118,4 @@ const InvRequestModal:  React.FC<Props> = ({open, onClose}) => {
   )
 }
 
-export default InvRequestModal;
+export default InvestorRequestModal;
