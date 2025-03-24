@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users"],
+  tagTypes: ["Users","Inventory"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -77,7 +77,61 @@ deleteUser: builder.mutation({
       //   }
       // },
     }),
+
+
+    // ---------------------------------- Inventory APIs ---------------------------------
+    getAllInventory: builder.query({
+      query: () => ({
+        url: 'get/inventories',
+        method: 'GET',
+      }),
+      providesTags: ["Inventory"], 
+
+      // providesTags: ["Inventory"], 
+
+    }), 
+    getAllCategories: builder.query({
+      query: () => ({
+        url: 'get/category',
+        method: 'GET',
+      }),
+      // providesTags: ["Inventory"], 
+
+    }), 
+  
+    getSubCategories: builder.mutation({
+      query: (id) => ({
+        url: `categories/${id}`,
+        method: 'GET',
+      }),
+    }),
+    addInventory: builder.mutation({
+      query: (inventoryData) => ({
+        url: 'add/inventory', 
+        method: 'POST',
+        body: inventoryData,
+      }),
+    }),
+    deleteInventory: builder.mutation({
+      query: (id) => ({
+        url: `delete/inventory/${id}`,
+        method: 'DELETE',
+      }),
+  invalidatesTags: ["Inventory"],
+
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useGetAllUsersQuery, useLogoutMutation, useDeleteUserMutation, useSingleUserQuery } = api;
+export const { useLoginMutation, 
+  useRegisterMutation, 
+  useGetAllUsersQuery, 
+  useLogoutMutation, 
+  useDeleteUserMutation, 
+  useSingleUserQuery, 
+  useGetAllInventoryQuery,
+useGetAllCategoriesQuery,
+useGetSubCategoriesMutation,
+useAddInventoryMutation,
+useDeleteInventoryMutation
+} = api;

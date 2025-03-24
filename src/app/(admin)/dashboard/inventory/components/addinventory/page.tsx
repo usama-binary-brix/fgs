@@ -1,24 +1,23 @@
 'use client';
-import React, { useState } from 'react';
-import {
-    Modal,
-    Box,
-    Grid,
-    Button,
-} from '@mui/material';
-import { FiX } from "react-icons/fi";
+import React, { useEffect, useState } from 'react';
+import { Modal, Box, Grid, Button, CircularProgress } from '@mui/material';
+import { RxCross2 } from "react-icons/rx";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-// import { useRegisterMutation } from '@/store/services/api';
-import { RxCross2 } from "react-icons/rx";
 import { toast } from 'react-toastify';
+import {
+    useGetAllCategoriesQuery,
+    useGetSubCategoriesMutation,
+    useAddInventoryMutation
+} from '@/store/services/api';
+
 const modalStyle = {
     position: 'absolute' as const,
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '60%',
-    maxHeight: '80vh',
+    width: '80%',
+    maxHeight: '90vh',
     bgcolor: 'background.paper',
     boxShadow: 24,
     p: 4,
@@ -43,380 +42,221 @@ const selectStyle = {
     ...inputStyle,
 };
 
-// const validationSchema = Yup.object().shape({
-//   account_type: Yup.string().required('Required'),
-//   first_name: Yup.string().required('Required'),
-//   last_name: Yup.string().required('Required'),
-//   email: Yup.string().email('Invalid email').required('Required'),
-//   phone_number: Yup.string().required('Required'),
-//   password: Yup.string().required('Required'),
-//   password_confirmation: Yup.string()
-//     .oneOf([Yup.ref('password')], 'Passwords must match')
-//     .required('Required'),
-//   country: Yup.string().required('Required'),
-//   address: Yup.string().required('Required'),
-//   state: Yup.string(),
-//   city: Yup.string().required('Required'),
-//   zip_code: Yup.string().required('Required'),
-//   status: Yup.string().required('Required'),
-//   company: Yup.string().required('Required'),
-//   communication_preference: Yup.string().required('Required'),
-//   referredBy: Yup.string(),
-//   notes: Yup.string(),
-// });
-
 const InventoryModal: React.FC<Props> = ({ open, onClose }) => {
+    const [images, setImages] = useState<File[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [subCategories, setSubCategories] = useState<any>([]);
 
-    const [images, setImages] = useState([]);
+    const { data: categories, isLoading: loadingCategories } = useGetAllCategoriesQuery(null, { skip: !open });
+    const [fetchSubCategories] = useGetSubCategoriesMutation();
+    const [addInventory] = useAddInventoryMutation();
 
-    const handleImageUpload = (event) => {
-        const files = Array.from(event.target.files);
-        const newImages = files.map((file) => ({
-            url: URL.createObjectURL(file),
-            file,
-        }));
-        setImages([...images, ...newImages]);
+    useEffect(() => {
+        if (!open) {
+            setSelectedCategory('');
+            setSubCategories([]);
+            setImages([]);
+            formik.resetForm();
+        }
+    }, [open]);
+
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const files = event.target.files;
+        if (files) {
+            setImages([...images, ...Array.from(files)]);
+        }
     };
 
-    const removeImage = (index) => {
-        const updatedImages = images.filter((_, i) => i !== index);
-        setImages(updatedImages);
+    const removeImage = (index: number) => {
+        setImages(images.filter((_, i) => i !== index));
     };
-    //   const [register] = useRegisterMutation();
 
-    //   const formik = useFormik({
-    //     initialValues: {
-    //       account_type: '',
-    //       first_name: '',
-    //       last_name: '',
-    //       email: '',
-    //       phone_number: '',
-    //       password: '',
-    //       password_confirmation: '',
-    //       country: '',
-    //       address: '',
-    //       state: '',
-    //       city: '',
-    //       zip_code: '',
-    //       status: '',
-    //       company: '',
-    //       communication_preference: '',
-    //       referredBy: '',
-    //       notes: '',
-    //     },
-    //     validationSchema,
-    //     onSubmit: async (values, { resetForm }) => {
-    //       try {
-    //         const response = await register(values).unwrap();
-    //                 toast.success(response.message);
-    //         resetForm();
-    //         onClose();
-    //       } catch (error) {
-    //         toast.error('Registration failed:');
-    //       }
-    //     },
-    //   });
+    const handleCategoryChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const categoryId = e.target.value;
+        formik.setFieldValue("category_id", categoryId);
+
+        if (categoryId) {
+            try {
+                const response = await fetchSubCategories(categoryId).unwrap();
+                setSubCategories(response);
+            } catch (error) {
+                console.error("Failed to fetch subcategories", error);
+            }
+        } else {
+            setSubCategories([]);
+        }
+    };
+    const validationSchema = Yup.object().shape({
+        category_id: Yup.string().required('Category is required'),
+        subcategory_id: Yup.string().required('Subcategory is required'),
+        year: Yup.string().required('Year is required'),
+        make: Yup.string().required('Make is required'),
+        model: Yup.string().required('Model is required'),
+        serial_no: Yup.string().required('Serial No is required'),
+        length: Yup.string().required('Length is required'),
+        height: Yup.string().required('Height is required'),
+        width: Yup.string().required('Width is required'),
+        weight: Yup.string().required('Weight is required'),
+        hours: Yup.string().required('Hours are required'),
+        price_paid: Yup.string().required('Price paid is required'),
+        date_purchased: Yup.date().required('Purchase date is required').typeError('Invalid date format'),
+        condition: Yup.string().required('Condition is required'),
+        description: Yup.string().required('Description is required'),
+        location: Yup.string().required('Location is required'),
+    });
+    console.log('first', categories?.categories)
+    const formik = useFormik({
+        initialValues: {
+            category_id: '',
+            subcategory_id: '',
+            year: '',
+            make: '',
+            model: '',
+            serial_no: '',
+            length: '',
+            height: '',
+            width: '',
+            weight: '',
+            hours: '',
+            price_paid: '',
+            date_purchased: '',
+            condition: '',
+            description: '',
+            location: '',
+        },
+        validationSchema,
+        onSubmit: async (values) => {
+            const formData = new FormData();
+            Object.entries(values).forEach(([key, value]) => {
+                formData.append(key, value as string);
+            });
+
+            images.forEach((image) => {
+                formData.append('files', image);
+            });
+
+            try {
+                await addInventory(formData).unwrap();
+                toast.success('Inventory added successfully!');
+                onClose();
+            } catch (error) {
+                toast.error('Failed to add inventory');
+                console.error("Error submitting form:", error);
+            }
+        },
+    });
 
     return (
         <Modal open={open} onClose={onClose}>
             <Box sx={modalStyle}>
-
                 <div className='flex justify-between items-center mb-3 border-b border-gray-400 pb-3'>
                     <p className='text-xl font-semibold'>Add New Inventory</p>
-
                     <RxCross2 onClick={onClose} className='cursor-pointer text-3xl' />
-
                 </div>
-                <form autoComplete='off'>
+
+                <form onSubmit={formik.handleSubmit} autoComplete='off'>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} md={4}>
-                            <label className='text-sm text-custom-lightGray'>
-                                Category <span className='text-red-600'>*</span>
-                                <select
-                                    name="category"
-                                    style={selectStyle}
-                                //   value={formik.values.account_type}
-                                //   onChange={formik.handleChange}
-                                //   onBlur={formik.handleBlur}
-                                >
-                                    <option value="">Select</option>
-                                    <option value="admin">Admin</option>
-                                    <option value="Investor">Investor</option>
-                                    <option value="Salesperson">Salesperson</option>
-                                    <option value="Employee">Employee</option>
-                                    <option value="Broker">Broker</option>
-                                </select>
+                        <Grid item xs={6} md={4}>
+                            <label>Category 
+
+            <span className='text-red-500'> *</span>
+
                             </label>
-                            {/* {formik.touched.account_type && formik.errors.account_type && (
-                <div style={{ color: 'red' }}>{formik.errors.account_type}</div>
-              )} */}
+                            <select name="category_id" style={selectStyle} value={formik.values.category_id} onChange={handleCategoryChange}>
+                                <option value="">Select</option>
+                                {categories?.categories?.map((category: any) => (
+                                    <option key={category.id} value={category.id}>{category.name}</option>
+                                ))}
+                            </select>
                         </Grid>
-                        <Grid item xs={12} md={4}>
-                            <label className='text-sm text-custom-lightGray'>
-                                SubCategory<span className='text-red-600'>*</span>
-                                <select
-                                    name="country"
-                                    style={selectStyle}
-                                //   value={formik.values.country}
-                                //   onChange={formik.handleChange}
-                                //   onBlur={formik.handleBlur}
-                                >
-                                    <option value="">Select</option>
-                                    <option value="Pakistan">Pakistan</option>
-                                    <option value="USA">USA</option>
-                                </select>
+
+                        <Grid item xs={6} md={4}>
+                            <label>SubCategory 
+                            <span className='text-red-500'> *</span>
+
+
                             </label>
-                            {/* {formik.touched.country && formik.errors.country && (
-                <div style={{ color: 'red' }}>{formik.errors.country}</div>
-              )} */}
+                            <select name="subcategory_id" style={inputStyle} value={formik.values.subcategory_id} onChange={formik.handleChange}>
+                                <option value="">Select</option>
+                                {subCategories?.categories?.map((sub: any) => (
+                                    <option key={sub.id} value={sub.id}>{sub.name}</option>
+                                ))}
+                            </select>
                         </Grid>
-                        <Grid item xs={12} md={4}>
-                            <label className='text-sm text-custom-lightGray'>
-                                Year<span className='text-red-600'>*</span>
-                                <input
+
+                        {["year", "make", "model", "serial_no", "length", "height", "width", "weight", "hours", "price_paid", "condition", "description", "location"].map((field) => (
+                            <Grid item xs={6} md={4} key={field}>
+ <label className='capitalize'>
+            {field.replace("_", " ")} 
+            <span className='text-red-500'> *</span>
+        </label>                                <input
                                     type="text"
-                                    name="last_name"
+                                    name={field}
                                     style={inputStyle}
-                                //   value={formik.values.last_name}
-                                //   onChange={formik.handleChange}
-                                //   onBlur={formik.handleBlur}
+                                    value={formik.values[field as keyof typeof formik.values]} // ✅ Fix
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
                                 />
-                            </label>
-                            {/* {formik.touched.last_name && formik.errors.last_name && (
-                <div style={{ color: 'red' }}>{formik.errors.last_name}</div>
-              )} */}
+                                {formik.touched[field as keyof typeof formik.values] && formik.errors[field as keyof typeof formik.errors] && (
+                                    <p className="text-red-500">{formik.errors[field as keyof typeof formik.errors]}</p>
+                                )}
+                            </Grid>
+                        ))}
+
+                        <Grid item xs={6} md={4}>
+                            <label>Purchase Date *</label>
+                            <input
+                                type="date"
+                                name="date_purchased"
+                                style={inputStyle}
+                                value={formik.values.date_purchased}
+                                onChange={formik.handleChange}
+                            />
+                            {formik.errors.date_purchased && <p className="text-red-500">{formik.errors.date_purchased}</p>}
                         </Grid>
 
-                        <Grid item xs={12} md={4}>
-                            <label className='text-sm text-custom-lightGray'>
-                                Make<span className='text-red-600'>*</span>
-                                <input
-                                    type="text"
-                                    name="make"
-                                    style={inputStyle}
-                                //   value={formik.values.last_name}
-                                //   onChange={formik.handleChange}
-                                //   onBlur={formik.handleBlur}
-                                />
-                            </label>
-
-                            {/* {formik.touched.email && formik.errors.email && (
-                <div style={{ color: 'red' }}>{formik.errors.email}</div>
-              )} */}
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <label className='text-sm text-custom-lightGray'>
-                                Model <span className='text-red-600'>*</span>
-                                <input
-                                    type="text"
-                                    name="model"
-                                    style={inputStyle}
-                                //   value={formik.values.phone_number}
-                                //   onChange={formik.handleChange}
-                                //   onBlur={formik.handleBlur}
-                                />
-                            </label>
-                            {/* {formik.touched.phone_number && formik.errors.phone_number && (
-                <div style={{ color: 'red' }}>{formik.errors.phone_number}</div>
-              )} */}
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <label className='text-sm text-custom-lightGray'>
-                                Serial No. <span className='text-red-600'>*</span>
-                                <input
-                                    type="number"
-                                    name="serial no"
-
-
-                                    style={inputStyle}
-                                //   value={formik.values.password}
-                                //   onChange={formik.handleChange}
-                                //   onBlur={formik.handleBlur}
-                                />
-                            </label>
-                            {/* {formik.touched.password && formik.errors.password && (
-                <div style={{ color: 'red' }}>{formik.errors.password}</div>
-              )} */}
-                        </Grid>
-
-                        <Grid item xs={12} md={4}>
-                            <label className='text-sm text-custom-lightGray'>
-                                Length<span className='text-red-600'>*</span>
-                                <input
-                                    type="number"
-                                    name="length"
-                                    style={inputStyle}
-                                //   value={formik.values.password_confirmation}
-                                //   onChange={formik.handleChange}
-                                //   onBlur={formik.handleBlur}
-                                />
-                            </label>
-                            {/* {formik.touched.password_confirmation &&
-                formik.errors.password_confirmation && (
-                  <div style={{ color: 'red' }}>
-                    {formik.errors.password_confirmation}
-                  </div>
-                )} */}
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <label className='text-sm text-custom-lightGray'>
-                                Height<span className='text-red-600'>*</span>
-                                <input
-                                    type="number"
-                                    name="height"
-                                    style={inputStyle}
-                                //   value={formik.values.password_confirmation}
-                                //   onChange={formik.handleChange}
-                                //   onBlur={formik.handleBlur}
-                                />
-                            </label>
-                            {/* {formik.touched.password_confirmation &&
-                formik.errors.password_confirmation && (
-                  <div style={{ color: 'red' }}>
-                    {formik.errors.password_confirmation}
-                  </div>
-                )} */}
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <label className='text-sm text-custom-lightGray'>
-                                Width <span className='text-red-600'>*</span>
-                                <input
-                                    type="number"
-                                    name="width"
-                                    style={inputStyle}
-                                //   value={formik.values.address}
-                                //   onChange={formik.handleChange}
-                                //   onBlur={formik.handleBlur}
-                                />
-                            </label>
-                            {/* {formik.touched.address && formik.errors.address && (
-                <div style={{ color: 'red' }}>{formik.errors.address}</div>
-              )} */}
-                        </Grid>
-
-                        <Grid item xs={12} md={4}>
-                            <label className='text-sm text-custom-lightGray'>
-                                Width<span className='text-red-600 '>*</span>
-                                <input
-                                    type="number"
-                                    name="width"
-                                    style={inputStyle}
-                                //   value={formik.values.password_confirmation}
-                                //   onChange={formik.handleChange}
-                                //   onBlur={formik.handleBlur}
-                                />
-                            </label>
-                            {/* {formik.touched.password_confirmation &&
-                formik.errors.password_confirmation && (
-                  <div style={{ color: 'red' }}>
-                    {formik.errors.password_confirmation}
-                  </div>
-                )} */}
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <label className='text-sm text-custom-lightGray'>
-                                Hours <span className='text-red-600'>*</span>
-                                <input
-                                    type="number"
-                                    name="hours"
-                                    style={inputStyle}
-                                //   value={formik.values.city}
-                                //   onChange={formik.handleChange}
-                                //   onBlur={formik.handleBlur}
-                                />
-                            </label>
-                            {/* {formik.touched.city && formik.errors.city && (
-                <div style={{ color: 'red' }}>{formik.errors.city}</div>
-              )} */}
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <label className='text-sm text-custom-lightGray'>
-                                Data Purchased <span className='text-red-600'>*</span>
-                                <input
-                                    type="text"
-                                    name="data purchased"
-                                    style={inputStyle}
-                                //   value={formik.values.zip_code}
-                                //   onChange={formik.handleChange}
-                                //   onBlur={formik.handleBlur}
-                                />
-                            </label>
-                            {/* {formik.touched.zip_code && formik.errors.zip_code && (
-                <div style={{ color: 'red' }}>{formik.errors.zip_code}</div>
-              )} */}
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <label className='text-sm text-custom-lightGray'>
-                                Price Paid<span className='text-red-600'>*</span>
-                                <input
-                                    type="number"
-                                    name="price paid"
-                                    style={inputStyle}
-                                //   value={formik.values.password_confirmation}
-                                //   onChange={formik.handleChange}
-                                //   onBlur={formik.handleBlur}
-                                />
-                            </label>
-                            {/* {formik.touched.password_confirmation &&
-                formik.errors.password_confirmation && (
-                  <div style={{ color: 'red' }}>
-                    {formik.errors.password_confirmation}
-                  </div>
-                )} */}
-                        </Grid>
 
                         <Grid xs={12} md={12} mt={2} ml={2}>
                             <div>
-                                <h1 className='text-sm text-black'>Attach Files</h1>
-                                <p className='text-custom-lightGray text-sm'>Only PDF, JPG & PNG formats are allowed</p>
+                                <h1 className="text-sm text-black">Attach Files</h1>
+                                <p className="text-custom-lightGray text-sm">Only PDF, JPG & PNG formats are allowed</p>
                             </div>
-                          <div className='flex items-center gap-2 mt-3'>
-                          <label
-                                className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-lg cursor-pointer h-[103px] px-2 hover:bg-gray-100"
-                            >
-                                <input
-                                    type="file"
-                                    accept="image/png, image/jpeg, application/pdf"
-                                    multiple
-                                    className="hidden"
-                                    onChange={handleImageUpload}
-                                />
-                                <div className="text-center">
-                                    <p className="text-gray-700 font-semibold text-xs">Drop your image here,</p>
-                                    <p className="text-blue-600 underline text-xs">or browse</p>
-                                </div>
-                            </label>
+                            <div className="flex items-center gap-2 mt-3">
+                                <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-lg cursor-pointer h-[103px] px-2 hover:bg-gray-100">
+                                    <input
+                                        type="file"
+                                        accept="image/png, image/jpeg, application/pdf"
+                                        multiple
+                                        className="hidden"
+                                        onChange={handleImageUpload}
+                                    />
+                                    <div className="text-center">
+                                        <p className="text-gray-700 font-semibold text-xs">Drop your image here,</p>
+                                        <p className="text-blue-600 underline text-xs">or browse</p>
+                                    </div>
+                                </label>
 
-                            {images.length > 0 && (
-                                <div className="flex gap-4 mt-0 flex-wrap">
-                                    {images.map((img, index) => (
-                                        <div key={index} className="relative w-30 h-26">
-                                            <img
-                                                src={img.url}
-                                                alt={`Uploaded preview ${index}`}
-                                                className="w-full h-full object-cover rounded-md"
-                                            />
-                                            <button
-                                                className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
-                                                onClick={() => removeImage(index)}
-                                            >
-                                                <FiX size={14} />
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                          </div>
+                                {images.length > 0 && (
+                                    <div className="flex gap-4 mt-0 flex-wrap">
+                                        {images.map((img, index) => (
+                                            <div key={index} className="relative">
+                                                <img
+                                                    src={URL.createObjectURL(img)}
+                                                    alt={`Uploaded preview ${index}`}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                                <button
+                                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-lg p-1"
+                                                    onClick={() => removeImage(index)}
+                                                >
+                                                    <RxCross2/>
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         </Grid>
-
-
-
-
-
-                        {/* Notes */}
-
-
-                        {/* Buttons */}
                         <Grid item xs={12} display="flex" justifyContent="flex-end" mt={2}>
                             <Button onClick={onClose} variant="outlined" sx={{ mr: 2, textTransform: 'none' }}>
                                 Cancel
@@ -426,7 +266,8 @@ const InventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                 variant="contained"
                                 sx={{ backgroundColor: '#C28024', '&:hover': { backgroundColor: '#a56a1d' }, textTransform: 'none' }}
                             >
-                                Add User
+                                add Inventory
+
                             </Button>
                         </Grid>
                     </Grid>
