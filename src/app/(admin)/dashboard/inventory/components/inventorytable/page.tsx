@@ -7,12 +7,13 @@ import { DropdownItem } from '@/components/ui/dropdown/DropdownItem';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { MoreDotIcon } from '@/icons';
 import { IoSearchOutline } from 'react-icons/io5'
-import InventoryModal from '../addinventory/page';
-import InvRequestModal from '../invrequestsmodal/page';
-import TotalInvModal from '../totalinvestorsmodal/page';
+
 import { useDeleteInventoryMutation, useGetAllInventoryQuery } from '@/store/services/api';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
+import AddInventoryModal from '../AddInventoryModal';
+import InvestorRequestModal from '../InvestorRequestModal';
+import TotalInvestorsModal from '../TotalInvestorsModal';
 
 
 
@@ -132,7 +133,8 @@ const InventoryTable = () => {
           <TopButtons label="Filters" variant="outlined" />
           <TopButtons onClick={handleOpenModal} label="Add New Inventory" variant="primary" />
         </div>
-        <InventoryModal open={isModalOpen} onClose={handleCloseModal} />
+        <AddInventoryModal open={isModalOpen} onClose={handleCloseModal} />
+
       </div>
 
 
@@ -234,8 +236,8 @@ const InventoryTable = () => {
         </div>
       </div>
       </div>
-      <InvRequestModal open={isInvReqModalOpen} onClose={handleCloseInvReqModal} />
-      <TotalInvModal open={isTotalInvModalOpen} onClose={handleCloseTotalInvModal} />
+      <InvestorRequestModal open={isInvReqModalOpen} onClose={handleCloseInvReqModal}/>
+      <TotalInvestorsModal open={isTotalInvModalOpen} onClose={handleCloseTotalInvModal}/>
       <Dialog
   open={isDeleteModalOpen}
   onClose={() => setIsDeleteModalOpen(false)}

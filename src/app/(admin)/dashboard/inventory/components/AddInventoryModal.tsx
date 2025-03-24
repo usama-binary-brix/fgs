@@ -42,7 +42,7 @@ const selectStyle = {
     ...inputStyle,
 };
 
-const InventoryModal: React.FC<Props> = ({ open, onClose }) => {
+const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
     const [images, setImages] = useState<File[]>([]);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [subCategories, setSubCategories] = useState<any>([]);
@@ -277,4 +277,4 @@ const InventoryModal: React.FC<Props> = ({ open, onClose }) => {
     );
 };
 
-export default InventoryModal;
+export default AddInventoryModal;

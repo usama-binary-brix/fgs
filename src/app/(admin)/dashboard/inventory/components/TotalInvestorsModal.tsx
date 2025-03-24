@@ -49,7 +49,7 @@ interface Lead {
     
   ];
 
-const TotalInvModal:  React.FC<Props> = ({open, onClose}) => {
+const TotalInvestorsModal:  React.FC<Props> = ({open, onClose}) => {
   
   return (
     <>
@@ -93,4 +93,4 @@ const TotalInvModal:  React.FC<Props> = ({open, onClose}) => {
   )
 }
 
-export default TotalInvModal;
+export default TotalInvestorsModal;
