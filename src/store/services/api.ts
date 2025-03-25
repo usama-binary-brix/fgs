@@ -119,14 +119,15 @@ deleteUser: builder.mutation({
         body: inventoryData,
       }),
     }),
-    getInventoryById: builder.mutation({
+    getInventoryById: builder.query({
       query: (id) => ({
         url: `get/inventory/${id}`,
         method: 'GET',
       }),
-  invalidatesTags: ["Inventory"],
+      // providesTags: ["Inventory"], 
 
-    }),
+    }), 
+ 
     deleteInventory: builder.mutation({
       query: (id) => ({
         url: `delete/inventory/${id}`,
@@ -149,5 +150,5 @@ useGetAllCategoriesQuery,
 useGetSubCategoriesMutation,
 useAddInventoryMutation,
 useDeleteInventoryMutation,
-
+useGetInventoryByIdQuery
 } = api;
