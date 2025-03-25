@@ -16,7 +16,7 @@ const InventoryPage = () => {
 
   return (
     <>
-     <h1 className="text-xl font-bold text-black mb-5">
+     <h1 className="text-xl  font-extrabold font-family text-black mb-5">
      <PageTitle  title="All Inventry" />
      </h1>
       <InventoryTable />

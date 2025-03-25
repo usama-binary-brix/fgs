@@ -150,14 +150,14 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
         <Modal open={open} onClose={onClose}>
             <Box sx={modalStyle}>
                 <div className='flex justify-between items-center mb-3 border-b border-gray-400 pb-3'>
-                    <p className='text-xl font-semibold'>Add New Inventory</p>
-                    <RxCross2 onClick={onClose} className='cursor-pointer text-3xl' />
+                    <p className='text-[18px] text-black font-semibold font-family'>Add New Inventory</p>
+                    <RxCross2 onClick={onClose} className='cursor-pointer text-[#616161] text-3xl' />
                 </div>
 
                 <form onSubmit={formik.handleSubmit} autoComplete='off'>
                     <Grid container spacing={2}>
                         <Grid item xs={6} md={4}>
-                            <label>Category 
+                            <label className='text-[12.5px] text-[#818181] font-normal font-family'>Category 
 
             <span className='text-red-500'> *</span>
 
@@ -171,7 +171,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                         </Grid>
 
                         <Grid item xs={6} md={4}>
-                            <label>SubCategory 
+                            <label className='text-[12.5px] text-[#818181] font-normal font-family'>SubCategory 
                             <span className='text-red-500'> *</span>
 
 
@@ -186,7 +186,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
 
                         {["year", "make", "model", "serial_no", "length", "height", "width", "weight", "hours", "price_paid", "condition", "description", "location"].map((field) => (
                             <Grid item xs={6} md={4} key={field}>
- <label className='capitalize'>
+ <label className='capitalize text-[12.5px] text-[#818181] font-normal font-family'>
             {field.replace("_", " ")} 
             <span className='text-red-500'> *</span>
         </label>                                <input
@@ -196,6 +196,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                     value={formik.values[field as keyof typeof formik.values]} // ✅ Fix
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
+                                    className='border-1 border-[#E8E8E8]'
                                 />
                                 {formik.touched[field as keyof typeof formik.values] && formik.errors[field as keyof typeof formik.errors] && (
                                     <p className="text-red-500">{formik.errors[field as keyof typeof formik.errors]}</p>
@@ -204,7 +205,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                         ))}
 
                         <Grid item xs={6} md={4}>
-                            <label>Purchase Date *</label>
+                            <label className='text-[12.5px] text-[#818181] font-normal font-family'>Purchase Date *</label>
                             <input
                                 type="date"
                                 name="date_purchased"
@@ -218,8 +219,8 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
 
                         <Grid xs={12} md={12} mt={2} ml={2}>
                             <div>
-                                <h1 className="text-sm text-black">Attach Files</h1>
-                                <p className="text-custom-lightGray text-sm">Only PDF, JPG & PNG formats are allowed</p>
+                                <h1 className="text-sm text-black font-normal text-[12.5px] font-family">Attach Files</h1>
+                                <p className="text-custom-lightGray text-[10px] font-family font-normal">Only PDF, JPG & PNG formats are allowed</p>
                             </div>
                             <div className="flex items-center gap-2 mt-3">
                                 <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-lg cursor-pointer h-[103px] px-2 hover:bg-gray-100">
@@ -258,7 +259,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                             </div>
                         </Grid>
                         <Grid item xs={12} display="flex" justifyContent="flex-end" mt={2}>
-                            <Button onClick={onClose} variant="outlined" sx={{ mr: 2, textTransform: 'none' }}>
+                            <Button className='!bg-[#8080801A] !font-family !border-1 !border-[#8080801A] !text-[#808080] !rounded' onClick={onClose} variant="outlined" sx={{ mr: 2, textTransform: 'none' }}>
                                 Cancel
                             </Button>
                             <Button
@@ -266,7 +267,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                 variant="contained"
                                 sx={{ backgroundColor: '#C28024', '&:hover': { backgroundColor: '#a56a1d' }, textTransform: 'none' }}
                             >
-                                add Inventory
+                                Add Inventory
 
                             </Button>
                         </Grid>
