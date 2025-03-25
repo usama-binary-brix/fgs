@@ -112,6 +112,21 @@ deleteUser: builder.mutation({
         body: inventoryData,
       }),
     }),
+    editInventory: builder.mutation({
+      query: (inventoryData) => ({
+        url: 'add/inventory', 
+        method: 'POST',
+        body: inventoryData,
+      }),
+    }),
+    getInventoryById: builder.mutation({
+      query: (id) => ({
+        url: `get/inventory/${id}`,
+        method: 'GET',
+      }),
+  invalidatesTags: ["Inventory"],
+
+    }),
     deleteInventory: builder.mutation({
       query: (id) => ({
         url: `delete/inventory/${id}`,
@@ -133,5 +148,6 @@ export const { useLoginMutation,
 useGetAllCategoriesQuery,
 useGetSubCategoriesMutation,
 useAddInventoryMutation,
-useDeleteInventoryMutation
+useDeleteInventoryMutation,
+
 } = api;

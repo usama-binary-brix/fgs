@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import AddInventoryModal from '../AddInventoryModal';
 import InvestorRequestModal from '../InvestorRequestModal';
 import TotalInvestorsModal from '../TotalInvestorsModal';
+import { useRouter } from 'next/navigation';
 
 
 
@@ -44,7 +45,7 @@ const inventoryData: Lead[] = [
 const InventoryTable = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const { data, isLoading, error } = useGetAllInventoryQuery('');
-
+const router = useRouter()
 
   const toggleDropdown = (id: string) => {
     setOpenDropdown(openDropdown === id ? null : id);
@@ -224,6 +225,14 @@ const InventoryTable = () => {
                         <DropdownItem onItemClick={closeDropdown} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                           View More
                         </DropdownItem>
+                        <DropdownItem
+  onItemClick={() => {
+    router.push(`/dashboard/edit-inventory/${lead.id}`); // Replace with your actual route
+  }}
+  className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+>
+  Edit
+</DropdownItem>
                         <DropdownItem   onItemClick={() => {
     setOpenDropdownId(null);
     setSelectedId(lead.id);
