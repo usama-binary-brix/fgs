@@ -20,60 +20,84 @@ type NavItem = {
   icon: React.ReactNode;
   path?: string;
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+  roles?:string[]
 };
+
+// const navItems: NavItem[] = [
+//   {
+//     icon: <GridIcon />,
+//     name: "Dashboard",
+//     path: "/dashboard",
+//   },
+//   {
+//     icon: <GridIcon />,
+//     name: "All Leads",
+//     path: "/dashboard/leads",
+//   },
+//   {
+//     icon: <GridIcon />,
+//     name: "Accounts",
+//     path: "/dashboard/accounts",
+//   }, {
+//     icon: <GridIcon />,
+//     name: "Inventory",
+//     // path: "/dashboard/inventory",
+//     subItems: [{ name: "All Inventory", path: "/dashboard/inventory", pro: false }],
+
+//   },
+// ];
 
 const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
     path: "/dashboard",
+    roles: ["admin"], 
   },
   {
     icon: <GridIcon />,
     name: "All Leads",
     path: "/dashboard/leads",
+    roles: ["admin"], 
   },
   {
     icon: <GridIcon />,
     name: "Accounts",
     path: "/dashboard/accounts",
-  }, {
+    roles: ["admin"], 
+  },
+  {
     icon: <GridIcon />,
     name: "Inventory",
-    // path: "/dashboard/inventory",
-    subItems: [{ name: "All Inventory", path: "/dashboard/inventory", pro: false }],
-
+    subItems: [
+      { name: "All Inventory", path: "/dashboard/inventory", pro: false },
+    ],
+    roles: ["admin"], 
   },
-  // {
-  //   icon: <CalenderIcon />,
-  //   name: "Calendar",
-  //   path: "/calendar",
-  // },
-  // {
-  //   icon: <UserCircleIcon />,
-  //   name: "User Profile",
-  //   path: "/profile",
-  // },
 
-  // {
-  //   name: "Forms",
-  //   icon: <ListIcon />,
-  //   subItems: [{ name: "Form Elements", path: "form-elements", pro: false }],
-  // },
-  // {
-  //   name: "Tables",
-  //   icon: <TableIcon />,
-  //   subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  // },
-  // {
-  //   name: "Pages",
-  //   icon: <PageIcon />,
-  //   subItems: [
-  //     { name: "Blank Page", path: "/blank", pro: false },
-  //     { name: "404 Error", path: "/error-404", pro: false },
-  //   ],
-  // },
+  {
+    icon: <GridIcon />,
+    name: "Dashboard",
+    path: "/investor-dashboard",
+    roles: ["investor"], 
+  },
+  {
+    icon: <GridIcon />,
+    name: "Investment Opportunities",
+    path: "/investor-dashboard/investment-opportunities",
+    roles: ["investor"], 
+  },
+ 
+  {
+    icon: <GridIcon />,
+    name: "All Investment",
+    path: "/investor-dashboard/all-investment",
+    roles: ["investor"], 
+  },
+ 
+
 ];
+
 
 const othersItems: NavItem[] = [
   // {
@@ -108,13 +132,18 @@ const othersItems: NavItem[] = [
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const userRole = useSelector((state:any) => state?.user?.user?.account_type);
+// const userRole= 'investor'
+
+const filteredNavItems = navItems.filter((item) => item.roles && item.roles.includes(userRole));
+
   const pathname = usePathname();
   const renderMenuItems = (
     navItems: NavItem[],
     menuType: "main" | "others"
   ) => (
     <ul className="flex flex-col">
-      {navItems.map((nav, index) => (
+      {filteredNavItems.map((nav, index) => (
         <li className="font-family font-semibold" key={nav.name} >
           {nav.subItems ? (
             <button
