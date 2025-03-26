@@ -144,7 +144,7 @@ const filteredNavItems = navItems.filter((item) => item.roles && item.roles.incl
   ) => (
     <ul className="flex flex-col">
       {filteredNavItems.map((nav, index) => (
-        <li className="font-family font-semibold" key={nav.name} >
+        <li className="font-family pl-[15px]  font-semibold" key={nav.name} >
           {nav.subItems ? (
             <button
               onClick={() => handleSubmenuToggle(index, menuType)}
@@ -394,7 +394,7 @@ const filteredNavItems = navItems.filter((item) => item.roles && item.roles.incl
                 )}
               </h2>
               {renderMenuItems(navItems, "main")}
-              <div className="border-t absolute bottom-22 lg:bottom-0">
+              <div className=" absolute bottom-22 lg:bottom-0">
 <Profile/>
 
 </div>

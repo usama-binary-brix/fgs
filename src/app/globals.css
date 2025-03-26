@@ -633,3 +633,11 @@ layer(base);
 .font-family{
   font-family: var(--font-inter);
 }
+
+.css-13bmru3{
+  padding: 0 !important;
+}
+
+.css-4nmryk-MuiBackdrop-root-MuiModal-backdrop{
+  opacity: 30% !important;
+}

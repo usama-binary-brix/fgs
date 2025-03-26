@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users","Inventory"],
+  tagTypes: ["Users", "Inventory"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -24,7 +24,7 @@ export const api = createApi({
     }),
 
     // ----------- REGISTER API ------------
-  
+
     register: builder.mutation({
       query: (formData) => ({
         url: "user/register",
@@ -34,32 +34,32 @@ export const api = createApi({
       invalidatesTags: ["Users"],
     }),
 
-     // ----------- GET ALL USERS ------------
-     getAllUsers: builder.query({
+    // ----------- GET ALL USERS ------------
+    getAllUsers: builder.query({
       query: () => ({
         url: 'users',
         method: 'GET',
       }),
-      providesTags: ["Users"], 
+      providesTags: ["Users"],
 
     }),
-    
+
     // ----------- DELETE USER API ------------
-deleteUser: builder.mutation({
-  query: (id) => ({
-    url: `user/${id}`,
-    method: 'DELETE',
-  }),
-  invalidatesTags: ["Users"],
-}),
+    deleteUser: builder.mutation({
+      query: (id) => ({
+        url: `user/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ["Users"],
+    }),
     // ----------- SINGLE USER API ------------
     singleUser: builder.query({
       query: (id) => ({
         url: `user/${id}`,
         method: 'GET',
       }),
-      providesTags: ["Users"], 
-}),
+      providesTags: ["Users"],
+    }),
 
 
     // ----------- LOGOUT API ------------
@@ -85,11 +85,11 @@ deleteUser: builder.mutation({
         url: 'get/inventories',
         method: 'GET',
       }),
-      providesTags: ["Inventory"], 
+      providesTags: ["Inventory"],
 
       // providesTags: ["Inventory"], 
 
-    }), 
+    }),
     getAllCategories: builder.query({
       query: () => ({
         url: 'get/category',
@@ -97,8 +97,8 @@ deleteUser: builder.mutation({
       }),
       // providesTags: ["Inventory"], 
 
-    }), 
-  
+    }),
+
     getSubCategories: builder.mutation({
       query: (id) => ({
         url: `categories/${id}`,
@@ -107,31 +107,53 @@ deleteUser: builder.mutation({
     }),
     addInventory: builder.mutation({
       query: (inventoryData) => ({
-        url: 'add/inventory', 
+        url: 'add/inventory',
         method: 'POST',
         body: inventoryData,
       }),
     }),
+
+
     deleteInventory: builder.mutation({
       query: (id) => ({
         url: `delete/inventory/${id}`,
         method: 'DELETE',
       }),
-  invalidatesTags: ["Inventory"],
+      invalidatesTags: ["Inventory"],
 
     }),
+    // add lead endpoint
+    addLead: builder.mutation({
+      query: (leadData) => ({
+        url: 'add/lead',
+        method: 'POST',
+        body: leadData,
+      }),
+    }),
+    getAllLeads: builder.query({
+      query: () => ({
+        url: 'get/leads',
+        method: 'GET',
+      }),
+     
+    }),
   }),
+
 });
 
-export const { useLoginMutation, 
-  useRegisterMutation, 
-  useGetAllUsersQuery, 
-  useLogoutMutation, 
-  useDeleteUserMutation, 
-  useSingleUserQuery, 
+
+
+export const { useLoginMutation,
+  useRegisterMutation,
+  useGetAllUsersQuery,
+  useLogoutMutation,
+  useDeleteUserMutation,
+  useSingleUserQuery,
   useGetAllInventoryQuery,
-useGetAllCategoriesQuery,
-useGetSubCategoriesMutation,
-useAddInventoryMutation,
-useDeleteInventoryMutation
+  useGetAllCategoriesQuery,
+  useGetSubCategoriesMutation,
+  useAddInventoryMutation,
+  useDeleteInventoryMutation,
+  useAddLeadMutation,
+  useGetAllLeadsQuery,
 } = api;

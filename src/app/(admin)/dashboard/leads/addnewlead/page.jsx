@@ -7,6 +7,7 @@ import { FiChevronDown, FiCalendar } from "react-icons/fi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import RadioButton from '../components/radiobutton/RadioButton'
+import { useAddLeadMutation } from "@/store/services/api";
 
 
 
@@ -25,6 +26,7 @@ const AddNewLead = () => {
   const [selectedCondition, setSelectedCondition] = useState(null);
   const [purchaseSelected, setPurchaseSelected] = useState(null);
   const [selectName, setSelectName] = useState(null);
+  const [addLead] = useAddLeadMutation();
 
   const [RadioButtonValue, setRadioButtonValue] = useState({
     Lead: null,
@@ -138,7 +140,7 @@ const AddNewLead = () => {
                 Contact Information
               </h1>
               <div className="mb-2">
-                <AddLeadInput label="Name" isRequired={true} />
+                <AddLeadInput label="Name"  isRequired={true} />
               </div>
               <div className="mb-2">
                 <AddLeadInput label="Title" />

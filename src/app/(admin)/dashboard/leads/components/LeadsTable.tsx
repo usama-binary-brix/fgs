@@ -9,6 +9,7 @@ import { MoreDotIcon } from '@/icons';
 import Image from 'next/image';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
+import { useGetAllLeadsQuery } from '@/store/services/api';
 
 interface Lead {
   id: string;
@@ -32,6 +33,8 @@ const leadsData: Lead[] = [
 const LeadsTable = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const router = useRouter();
+  const { data , isLoading, error } = useGetAllLeadsQuery("");
+  console.log("Lead Data", data);
 
   const toggleDropdown = (id: string) => {
     setOpenDropdown(openDropdown === id ? null : id);
