@@ -139,17 +139,17 @@ const router = useRouter()
       </div>
 
 
-      <div className="rounded-xl border  border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+      <div className="rounded-xl border  border-[#DDD] bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className=" overflow-auto">
           <Table className='table-auto'>
-            <TableHeader className="border-b bg-[#F5F5F5] text-[#616161] font-family font-medium text-[12.5px] border-gray-100 dark:border-white/[0.05]">
+            <TableHeader className="border-b bg-[#F7F7F7] text-[#616161] font-family font-medium text-[12.5px] border-gray-100 dark:border-white/[0.05]">
               <TableRow>
                 {[
                   'ID', 'ELEVATOR MANUFACTURER', 'ELEVATOR MODEL', 'ELEVATOR SERIAL', 'PURCHASE DATE',
                   'PURCHASE PRICE', 'RECONDITIONING %', 'COMPLETION DATE', 'INV. REQUESTS', 'TOTAL INVESTORS',
                   'INVESTMENT AMOUNT', 'SALE PRICE', 'PROFIT AMT', 'PROFIT %', 'STATUS', 'ACTION'
                 ].map((heading) => (
-                  <TableCell key={heading} isHeader className="px-5 py-3 whitespace-nowrap whitespace-nowrap overflow-hidden font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                  <TableCell key={heading} isHeader className="px-5 py-3 whitespace-nowrap overflow-hidden font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
                   <div className=' w-full flex justify-between items-center '>
                   {heading}
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">

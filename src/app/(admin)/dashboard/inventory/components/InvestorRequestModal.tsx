@@ -61,12 +61,12 @@ const InvestorRequestModal:  React.FC<Props> = ({open, onClose}) => {
      <Modal open={open} onClose={onClose}>
             <Box sx={modalStyle}>
       
-      <div className='flex  justify-between items-center mb-6 border-b border-gray-400 pb-3'>
+      <div className=' w-full flex p-[15px] justify-between items-center mb-6 border-b border-gray-400 pb-3'>
       <p className='text-[18px] font-family text-black font-semibold'>Investment Requests for I-73921</p>
       
       <RxCross2 onClick={onClose} className='cursor-pointer text-[#818181] text-3xl'/>
       </div>
-      <div className="flex items-center gap-3 mb-3">
+      <div className="flex items-center gap-3 p-[15px]">
           {['all', 'accepted', 'rejected'].map((tab) => (
             <button
               key={tab}
@@ -79,7 +79,7 @@ const InvestorRequestModal:  React.FC<Props> = ({open, onClose}) => {
           ))}
         </div>
 
-              <div className="max-w-full overflow-x-auto border border-gray-400 rounded-lg">
+              <div className="max-w-full mx-[15px] overflow-x-auto border border-gray-400 rounded-lg">
           <Table>
             <TableHeader className="bg-[#F5F5F5] font-medium font-family text-[12px]">
               <TableRow>
