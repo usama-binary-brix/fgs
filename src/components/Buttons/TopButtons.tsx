@@ -6,7 +6,7 @@ interface ButtonProps {
   variant?: "primary" | "outlined" | "secondary" | "success" | "danger";
 }
 
-const TopButtons: React.FC<ButtonProps> = ({ label, onClick, variant = "primary" }) => {
+const TopButtons: React.FC<ButtonProps> = ({ label, onClick,  variant = "primary" }) => {
   const baseClass =
     "inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-xs font-semibold transition-all duration-200 shadow-sm";
 
@@ -19,7 +19,7 @@ const TopButtons: React.FC<ButtonProps> = ({ label, onClick, variant = "primary"
   };
 
   return (
-    <button onClick={onClick} className={`${baseClass} font-family ${variantClass[variant]}`}>
+    <button onClick={onClick}  className={`${baseClass}  font-family ${variantClass[variant]}`}>
       {label}
     </button>
   );
