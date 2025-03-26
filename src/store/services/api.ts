@@ -160,6 +160,33 @@ export const api = createApi({
       invalidatesTags: ["leads"],
 
     }),
+    promoteToInvestor: builder.mutation({
+      query: (promoteData) => ({
+        url: 'promote/investor', 
+        method: 'POST',
+        body: promoteData,
+      }),
+      invalidatesTags: ["leads"],
+
+    }),
+    getLeadById: builder.query({
+      query: (id) => ({
+        url: `get/lead/${id}`,
+        method: 'GET',
+      }),
+      providesTags: ["leads"], 
+
+    }),
+
+    editLead: builder.mutation({
+      query: (leadData) => ({
+        url: 'add/lead', 
+        method: 'POST',
+        body: leadData,
+      }),
+      invalidatesTags: ["leads"],
+
+    }),
   }),
 
 });
@@ -181,5 +208,8 @@ export const { useLoginMutation,
   useAddLeadMutation,
   useGetAllLeadsQuery,
   useDeleteLeadMutation,
-  useEditInventoryMutation
+  useEditInventoryMutation,
+  usePromoteToInvestorMutation,
+  useGetLeadByIdQuery,
+  useEditLeadMutation,
 } = api;

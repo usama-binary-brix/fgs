@@ -10,7 +10,8 @@ import RadioButton from '../components/radiobutton/RadioButton'
 import { useAddLeadMutation } from "@/store/services/api";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
-
+import { toast } from 'react-toastify';
+import { Button } from "@mui/material";
 const AddNewLead = () => {
   const [dropdownStates, setDropdownStates] = useState({
     calls: false,
@@ -112,24 +113,33 @@ const AddNewLead = () => {
     }),
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       try {
-        // Combine date and time if both are present
-        if (values.reminder_date_time && values.reminder_time) {
-          values.reminder = new Date(
-            values.reminder_date_time.setHours(
-              values.reminder_time.getHours(),
-              values.reminder_time.getMinutes()
-            )
-          );
-        }
-        
+    
+          // Convert "Yes" / "No" to true / false
+          values.sourcing = values.sourcing === "yes" ? true : false;
+          values.hot_lead = values.hot_lead === "yes" ? true : false;
+          values.in_finance = values.in_finance === "yes" ? true : false;
+    
+          // Convert zip_code to string
+          values.zip_code = String(values.zip_code);
+          values.max_capacity = Number(values.max_capacity);
+
+    
+          if (values.reminder_date_time && values.reminder_time) {
+            const reminderDate = new Date(values.reminder_date_time);
+            reminderDate.setHours(
+              new Date(values.reminder_time).getHours(),
+              new Date(values.reminder_time).getMinutes()
+            );
+          
+            // Format reminder_date_time as "YYYY-MM-DD HH:mm:ss"
+            values.reminder_date_time = reminderDate.toISOString().slice(0, 19).replace("T", " ");
+          }
         const response = await addLead(values).unwrap();
-        console.log("Lead added:", response);
-        alert("Lead added successfully!");
+        toast.success(response.message);
         resetForm();
         setSelectedTime(null);
       } catch (error) {
-        console.error("Error adding lead:", error);
-        alert("Failed to add lead.");
+        toast.error("Failed to add lead.");
       }
     },
   });
@@ -137,17 +147,23 @@ const AddNewLead = () => {
   return (
     <>
       <div className="container-fluid">
+      <form onSubmit={formik.handleSubmit}>
         <div className="row mb-10">
           <div className="grid grid-cols-1">
             <div className="flex justify-between items-center">
               <h1 className="text-2xl font-extrabold font-family text-goldenBlack">Add New Lead</h1>
-            
+               <Button
+                             type="submit"
+                             variant="contained"
+                             sx={{ backgroundColor: '#C28024', '&:hover': { backgroundColor: '#a56a1d' }, textTransform:'none' }}
+                            >
+Add Lead
+                            </Button>     
             </div>
           </div>
         </div>
         
-        <form onSubmit={formik.handleSubmit}>
-        <button type="submit"   >Add lead</button>
+     
           <div className="row">
             <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 gap-4">
               {/* Contact Information */}
@@ -262,7 +278,7 @@ const AddNewLead = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     label="Zip Code"
-                    type="number"
+                    type="text"
                   />
                      {formik.touched.zip_code && formik.errors.zip_code && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.zip_code}</p>
@@ -523,6 +539,7 @@ const AddNewLead = () => {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       label="Max Capacity"
+                      type="number"
                     />
                        {formik.touched.max_capacity && formik.errors.max_capacity && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.max_capacity}</p>

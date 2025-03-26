@@ -5,8 +5,7 @@ const AddLeadInput = ({ label, type = "text", isRequired = false, placeholder = 
     <div className="w-full">
       <label className="text-xs text-customGray font-family" htmlFor={label}>
         {label}{isRequired && <span className="text-red-500">*</span>}
-      {console.log(label)}
-      {console.log("onChange Function:", onChange)}
+
       
       </label>
       <input

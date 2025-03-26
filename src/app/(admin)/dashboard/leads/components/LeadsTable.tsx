@@ -9,7 +9,7 @@ import { MoreDotIcon } from '@/icons';
 import Image from 'next/image';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
-import { useDeleteLeadMutation, useGetAllLeadsQuery } from '@/store/services/api';
+import { useDeleteLeadMutation, useGetAllLeadsQuery, usePromoteToInvestorMutation } from '@/store/services/api';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 
@@ -26,17 +26,10 @@ interface Lead {
   image: string;
 }
 
-const leadsData: Lead[] = [
-  { id: 'L0001', name: 'John', email: 'johndoe@example.com', company: 'PDSN LLC', source: 'Referral', reminderDate: '01-01-23 at 12:00 AM', budget: '$500.00', condition: 'New', assignedTo: 'Arcangelo', image: '/images/user/user-1.jpg' },
-  { id: 'L0004', name: 'Alex', email: 'alexsmith@example.com', company: 'Three Sticks Marketing', source: 'Website', reminderDate: '15-03-24 at 3:30 AM', budget: '$300.00', condition: 'Old', assignedTo: 'Myron', image: '/images/user/user-2.jpg' },
-  { id: 'L0006', name: 'Jane', email: 'janedoe@example.com', company: 'Credible Holdings', source: 'Referral', reminderDate: '22-07-25 at 6:45 PM', budget: '$700.00', condition: 'New/Old', assignedTo: 'Myron', image: '/images/user/user-3.jpg' },
-];
-
 const LeadsTable = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const router = useRouter();
   const { data, isLoading, error } = useGetAllLeadsQuery("");
-  console.log("Lead Data", data);
 
   const toggleDropdown = (id: string) => {
     setOpenDropdown(openDropdown === id ? null : id);
@@ -49,6 +42,10 @@ const LeadsTable = () => {
 
   const handleNavigate = () => {
     router.push("/dashboard/leads/addnewlead")
+  }
+
+  const hanldeViewDetails = (id:any) => {
+    router.push(`/dashboard/leads/view-lead/${id}`)
   }
 
   
@@ -94,7 +91,24 @@ const LeadsTable = () => {
       const [isViewMoreOpen, setIsViewMoreOpen] = useState(false);
       const [selectedId, setSelectedId] = useState<string | number | null>(null);
       const [deleteLead, { isLoading: isDeleting }] = useDeleteLeadMutation();
+      const [promoteInvestor, { isLoading: isPromoteLoading }] = usePromoteToInvestorMutation();
     
+      const handlePromoteClick = async (leadId:any) => {
+        setSelectedId(leadId); // Clicked item ka ID store karo
+      
+        try {
+          const response = await promoteInvestor({
+            lead_id: leadId,
+            type: "promote_to_investor",
+          }).unwrap();
+      
+          console.log("Promotion Successful:", response);
+          toast.success("Investor promoted successfully!");
+        } catch (error) {
+          console.error("Error promoting investor:", error);
+          toast.error("Failed to promote investor.");
+        }
+      };
         const handleDeleteLead = async (leadId:string | number | null) => {
           try {
             await deleteLead(leadId).unwrap();
@@ -105,6 +119,8 @@ const LeadsTable = () => {
             setIsDeleteModalOpen(false); 
           }
         };
+
+
 
   return (
     <>
@@ -125,7 +141,7 @@ const LeadsTable = () => {
         <div className="flex items-center gap-3">
           <TopButtons label="Edit Columns" variant="outlined" />
           <TopButtons label="Filters" variant="outlined" />
-          <TopButtons onClick={handleNavigate} label="Add New Account" variant="primary" />
+          <TopButtons onClick={handleNavigate} label="Add New Lead" variant="primary" />
         </div>
       </div>
 
@@ -170,8 +186,16 @@ const LeadsTable = () => {
                         <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />
                       </button>
                       <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="w-40 p-2">
+                        <DropdownItem onItemClick={()=>hanldeViewDetails(lead.id)} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                          View Details
+                        </DropdownItem>
                         <DropdownItem onItemClick={closeDropdown} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                          View More
+                         Edit
+                        </DropdownItem> <DropdownItem onItemClick={() => handlePromoteClick(lead.id)} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                         {isPromoteLoading && selectedId === lead.id ? "Promoting..." : "Promote to investor"}
+                        </DropdownItem>
+                        <DropdownItem onItemClick={closeDropdown} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                          Send Email
                         </DropdownItem>
                         <DropdownItem onItemClick={() => {
                           setOpenDropdownId(null);
