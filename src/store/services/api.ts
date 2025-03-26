@@ -168,6 +168,7 @@ export const { useLoginMutation,
   useGetSubCategoriesMutation,
   useAddInventoryMutation,
   useDeleteInventoryMutation,
+  useGetInventoryByIdQuery,
   useAddLeadMutation,
   useGetAllLeadsQuery,
 } = api;
