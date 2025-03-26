@@ -104,7 +104,6 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
         description: Yup.string().required('Description is required'),
         location: Yup.string().required('Location is required'),
     });
-    console.log('first', categories?.categories)
     const formik = useFormik({
         initialValues: {
             category_id: '',
@@ -130,11 +129,9 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
             Object.entries(values).forEach(([key, value]) => {
                 formData.append(key, value as string);
             });
-
             images.forEach((image) => {
-                formData.append('files', image);
+                formData.append("files[]", image);
             });
-
             try {
                 await addInventory(formData).unwrap();
                 toast.success('Inventory added successfully!');
@@ -157,9 +154,9 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                 <form onSubmit={formik.handleSubmit} autoComplete='off'>
                     <Grid container spacing={2}>
                         <Grid item xs={6} md={4}>
-                            <label className='text-[12.5px] text-[#818181] font-normal font-family'>Category 
+                            <label className='text-[12.5px] text-[#818181] font-normal font-family'>Category
 
-            <span className='text-red-500'> *</span>
+                                <span className='text-red-500'> *</span>
 
                             </label>
                             <select name="category_id" style={selectStyle} value={formik.values.category_id} onChange={handleCategoryChange}>
@@ -171,8 +168,8 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                         </Grid>
 
                         <Grid item xs={6} md={4}>
-                            <label className='text-[12.5px] text-[#818181] font-normal font-family'>SubCategory 
-                            <span className='text-red-500'> *</span>
+                            <label className='text-[12.5px] text-[#818181] font-normal font-family'>SubCategory
+                                <span className='text-red-500'> *</span>
 
 
                             </label>
@@ -186,10 +183,10 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
 
                         {["year", "make", "model", "serial_no", "length", "height", "width", "weight", "hours", "price_paid", "condition", "description", "location"].map((field) => (
                             <Grid item xs={6} md={4} key={field}>
- <label className='capitalize text-[12.5px] text-[#818181] font-normal font-family'>
-            {field.replace("_", " ")} 
-            <span className='text-red-500'> *</span>
-        </label>                                <input
+                                <label className='capitalize text-[12.5px] text-[#818181] font-normal font-family'>
+                                    {field.replace("_", " ")}
+                                    <span className='text-red-500'> *</span>
+                                </label>                                <input
                                     type="text"
                                     name={field}
                                     style={inputStyle}
@@ -223,7 +220,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                 <p className="text-custom-lightGray text-[10px] font-family font-normal">Only PDF, JPG & PNG formats are allowed</p>
                             </div>
                             <div className="flex items-center gap-2 mt-3">
-                                <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-lg cursor-pointer h-[103px] px-2 hover:bg-gray-100">
+                                <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-lg cursor-pointer h-30 px-2 hover:bg-gray-100">
                                     <input
                                         type="file"
                                         accept="image/png, image/jpeg, application/pdf"
@@ -240,17 +237,17 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                 {images.length > 0 && (
                                     <div className="flex gap-4 mt-0 flex-wrap">
                                         {images.map((img, index) => (
-                                            <div key={index} className="relative">
+                                            <div key={index} className="relative h-30 w-40 rounded-lg">
                                                 <img
                                                     src={URL.createObjectURL(img)}
                                                     alt={`Uploaded preview ${index}`}
-                                                    className="w-full h-full object-cover"
+                                                    className="w-full h-full object-cover rounded-lg"
                                                 />
                                                 <button
                                                     className="absolute top-1 right-1 bg-red-500 text-white rounded-lg p-1"
                                                     onClick={() => removeImage(index)}
                                                 >
-                                                    <RxCross2/>
+                                                    <RxCross2 />
                                                 </button>
                                             </div>
                                         ))}

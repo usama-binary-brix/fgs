@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory"],
+  tagTypes: ["Users", "Inventory", "leads"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -86,9 +86,6 @@ export const api = createApi({
         method: 'GET',
       }),
       providesTags: ["Inventory"],
-
-      // providesTags: ["Inventory"], 
-
     }),
     getAllCategories: builder.query({
       query: () => ({
@@ -111,6 +108,7 @@ export const api = createApi({
         method: 'POST',
         body: inventoryData,
       }),
+      invalidatesTags: ["Inventory"],
     }),
     editInventory: builder.mutation({
       query: (inventoryData) => ({
@@ -118,13 +116,15 @@ export const api = createApi({
         method: 'POST',
         body: inventoryData,
       }),
+      invalidatesTags: ["Inventory"],
+
     }),
     getInventoryById: builder.query({
       query: (id) => ({
         url: `get/inventory/${id}`,
         method: 'GET',
       }),
-      // providesTags: ["Inventory"], 
+      providesTags: ["Inventory"], 
 
     }), 
  
@@ -149,7 +149,16 @@ export const api = createApi({
         url: 'get/leads',
         method: 'GET',
       }),
+      providesTags: ["leads"],
      
+    }),
+    deleteLead: builder.mutation({
+      query: (id) => ({
+        url: `delete/lead/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ["leads"],
+
     }),
   }),
 
@@ -171,4 +180,6 @@ export const { useLoginMutation,
   useGetInventoryByIdQuery,
   useAddLeadMutation,
   useGetAllLeadsQuery,
+  useDeleteLeadMutation,
+  useEditInventoryMutation
 } = api;
