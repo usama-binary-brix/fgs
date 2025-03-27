@@ -220,7 +220,7 @@ layer(base);
 }
 
 @utility menu-item-inactive {
-  @apply text-gray-400 hover:bg-primary/30 group-hover:text-black dark:text-black dark:hover:bg-white/5 dark:hover:text-gray-300;
+  @apply text-gray-400 hover:text-primary group-hover:text-black dark:text-black dark:hover:bg-white/5 dark:hover:text-gray-300;
 }
 
 @utility menu-item-icon {
@@ -228,7 +228,7 @@ layer(base);
 }
 
 @utility menu-item-icon-active {
-  @apply text-primary dark:text-brand-400;
+  @apply text-primary dark:text-brand-400 bg-white;
 }
 
 @utility menu-item-icon-inactive {
@@ -260,7 +260,7 @@ layer(base);
 }
 
 @utility menu-dropdown-badge {
-  @apply block rounded-full px-2.5 py-0.5 text-xs font-medium uppercase text-brand-500 dark:text-brand-400;
+  @apply block rounded-full px-2.5 py-0.5 text-xs font-medium uppercase text-primary dark:text-brand-400;
 }
 
 @utility menu-dropdown-badge-active {

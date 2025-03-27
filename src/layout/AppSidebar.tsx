@@ -144,7 +144,7 @@ const filteredNavItems = navItems.filter((item) => item.roles && item.roles.incl
   ) => (
     <ul className="flex flex-col">
       {filteredNavItems.map((nav, index) => (
-        <li className="font-family pl-[15px]  font-semibold" key={nav.name} >
+        <li className="font-family  font-semibold" key={nav.name} >
           {nav.subItems ? (
             <button
               onClick={() => handleSubmenuToggle(index, menuType)}
@@ -168,14 +168,14 @@ const filteredNavItems = navItems.filter((item) => item.roles && item.roles.incl
                 {nav.icon}
               </span> */}
               {(isExpanded || isHovered || isMobileOpen) && (
-                <span className={`menu-item-text`}>{nav.name}</span>
+                <span className={`menu-item-text pl-[5px]`}>{nav.name}</span>
               )}
               {(isExpanded || isHovered || isMobileOpen) && (
                 <ChevronDownIcon
                   className={`ml-auto w-5 h-5 transition-transform duration-200  ${
                     openSubmenu?.type === menuType &&
                     openSubmenu?.index === index
-                      ? "rotate-180 text-brand-500"
+                      ? "rotate-180 white"
                       : ""
                   }`}
                 />
@@ -185,7 +185,7 @@ const filteredNavItems = navItems.filter((item) => item.roles && item.roles.incl
             nav.path && (
               <Link
                 href={nav.path}
-                className={`menu-item group ${
+                className={`menu-item pl-[15px] group ${
                   isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
                 }`}
               >
@@ -217,7 +217,7 @@ const filteredNavItems = navItems.filter((item) => item.roles && item.roles.incl
                     : "0px",
               }}
             >
-              <ul className="mt-2 space-y-1 ml-9">
+              <ul className="bg-[#FFFFFF14]">
                 {nav.subItems.map((subItem) => (
                   <li className="font-family font-semibold" key={subItem.name}>
                     <Link
@@ -381,7 +381,7 @@ const filteredNavItems = navItems.filter((item) => item.roles && item.roles.incl
           <div className="flex flex-col gap-4">
             <div>
               <h2
-                className={`mb-4 text-xs pl-4 hidden uppercase font-family font-semibold lg:flex leading-[20px] text-gray-400 ${
+                className={`mb-4 text-xs pl-[15px] hidden uppercase font-family font-semibold lg:flex leading-[20px] text-gray-400 ${
                   !isExpanded && !isHovered
                     ? "lg:justify-center"
                     : "justify-start"
