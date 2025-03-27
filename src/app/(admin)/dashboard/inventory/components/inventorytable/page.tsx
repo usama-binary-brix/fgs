@@ -182,16 +182,80 @@ const handleOpenInvReqModal = (InventoryId:any) => {
                   <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.reconditioning || '---'}</TableCell>
                   <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.completionDate || '---'}</TableCell>
                   <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap font-family text-start">
-                    <div className='flex justify-center relative'>
-                      <svg onClick={()=>handleOpenInvReqModal(lead.id)} xmlns="http://www.w3.org/2000/svg" className='border cursor-pointer border-[#D1842880] bg-[#D184281A]  rounded' width="25" height="25" viewBox="0 0 21 20" fill="none">
-                        <path d="M10.5001 2.1998V17.7998" stroke="#D18428" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" />
-                        <path d="M9.63345 10.0002H11.3668C12.8027 10.0002 13.9668 11.1643 13.9668 12.6002C13.9668 14.0361 12.8027 15.2002 11.3668 15.2002H9.63345C8.19751 15.2002 7.03345 14.0361 7.03345 12.6002" stroke="#D18428" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" />
-                        <path d="M11.3668 10H9.63345C8.19751 10 7.03345 8.83594 7.03345 7.4C7.03345 5.96406 8.19751 4.8 9.63345 4.8H11.3668C12.8027 4.8 13.9668 5.96406 13.9668 7.4" stroke="#D18428" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" />
-                      </svg>
-                      <div className='absolute top-[-9px] border border-[#D18428] bg-[#D18428] rounded-full px-1 right-10'>
-                        <h1 className='text-xs  text-white'>2</h1>
-                      </div>
-                    </div>
+                  <div className="flex justify-center relative">
+  {lead.total_investors > 0 ? (
+    <>
+      <svg
+        onClick={() => handleOpenInvReqModal(lead.id)}
+        xmlns="http://www.w3.org/2000/svg"
+        className="border cursor-pointer border-[#D1842880] bg-[#D184281A] rounded"
+        width="25"
+        height="25"
+        viewBox="0 0 21 20"
+        fill="none"
+      >
+        <path
+          d="M10.5001 2.1998V17.7998"
+          stroke="#D18428"
+          strokeWidth="1.3"
+          strokeMiterlimit="10"
+          strokeLinecap="round"
+        />
+        <path
+          d="M9.63345 10.0002H11.3668C12.8027 10.0002 13.9668 11.1643 13.9668 12.6002C13.9668 14.0361 12.8027 15.2002 11.3668 15.2002H9.63345C8.19751 15.2002 7.03345 14.0361 7.03345 12.6002"
+          stroke="#D18428"
+          strokeWidth="1.3"
+          strokeMiterlimit="10"
+          strokeLinecap="round"
+        />
+        <path
+          d="M11.3668 10H9.63345C8.19751 10 7.03345 8.83594 7.03345 7.4C7.03345 5.96406 8.19751 4.8 9.63345 4.8H11.3668C12.8027 4.8 13.9668 5.96406 13.9668 7.4"
+          stroke="#D18428"
+          strokeWidth="1.3"
+          strokeMiterlimit="10"
+          strokeLinecap="round"
+        />
+      </svg>
+
+      <div className="absolute top-[-9px] border border-[#D18428] bg-[#D18428] rounded-full px-1 right-10">
+        <h1 className="text-xs text-white">{lead.total_investors}</h1>
+      </div>
+    </>
+  ) : (
+    <svg
+      onClick={() => toast.warning("No investment available")}
+      xmlns="http://www.w3.org/2000/svg"
+      className="border cursor-pointer border-[#D1842880] bg-[#D184281A] rounded"
+      width="25"
+      height="25"
+      viewBox="0 0 21 20"
+      fill="none"
+    >
+      <path
+        d="M10.5001 2.1998V17.7998"
+        stroke="#D18428"
+        strokeWidth="1.3"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+      />
+      <path
+        d="M9.63345 10.0002H11.3668C12.8027 10.0002 13.9668 11.1643 13.9668 12.6002C13.9668 14.0361 12.8027 15.2002 11.3668 15.2002H9.63345C8.19751 15.2002 7.03345 14.0361 7.03345 12.6002"
+        stroke="#D18428"
+        strokeWidth="1.3"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+      />
+      <path
+        d="M11.3668 10H9.63345C8.19751 10 7.03345 8.83594 7.03345 7.4C7.03345 5.96406 8.19751 4.8 9.63345 4.8H11.3668C12.8027 4.8 13.9668 5.96406 13.9668 7.4"
+        stroke="#D18428"
+        strokeWidth="1.3"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+      />
+    </svg>
+  )}
+</div>
+
 
  
                   </TableCell>
