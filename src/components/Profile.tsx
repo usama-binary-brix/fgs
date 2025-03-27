@@ -37,13 +37,25 @@ const Profile = () => {
       <h1 className="pb-5 font-semibold !font-family text-[10px] text-white opacity-[0.5]">PROFILE</h1>
       <div className="flex items-center gap-3">
 
-        <Image
-          width={12}
-          height={12}
-          src="/profile.jpg"
-          alt=""
-          className="w-12 h-12 rounded-full object-cover"
-        />
+      {user?.profileImage ? (
+  <Image
+    width={12}
+    height={12}
+    src={user.profileImage}
+    alt="User Profile"
+    className="w-12 h-12 rounded-full object-cover"
+  />
+) : (
+  <svg
+    className="w-12 h-12 rounded-full bg-gray-500 text-white p-2"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z" />
+  </svg>
+)}
+
         <div>
           <p className="text-sm font-semibold font-family">{user?.first_name} {user?.last_name}</p>
           <p className="text-xs text-gray-400 font-family">{user?.email}</p>

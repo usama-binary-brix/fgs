@@ -133,10 +133,10 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
                 >
                   <option value="">Select</option>
                   <option value="admin">Admin</option>
-                  <option value="Investor">Investor</option>
-                  <option value="Salesperson">Salesperson</option>
-                  <option value="Employee">Employee</option>
-                  <option value="Broker">Broker</option>
+                  <option value="investor">Investor</option>
+                  <option value="salesperson">Salesperson</option>
+                  <option value="employee">Employee</option>
+                  <option value="broker">Broker</option>
                 </select>
               </label>
               {formik.touched.account_type && formik.errors.account_type && (
