@@ -13,6 +13,7 @@ export default function SignInForm() {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -50,8 +51,11 @@ export default function SignInForm() {
       } else {
         router.push("/dashboard");
       }
-    } catch (err) {
-      console.log("Login failed:");
+
+      setLoginError(""); // Clear any previous login errors
+    } catch (err: any) {
+      console.error("Login failed:", err);
+      setLoginError(err?.data?.message || "Invalid credentials. Please try again.");
     }
   };
 
@@ -101,14 +105,7 @@ export default function SignInForm() {
               </div>
 
               {/* API Error Message */}
-              {error && (
-                <p className="text-error-500">
-                  {"status" in error && error.data && typeof error.data === "object" && "error" in error.data
-                    ? String(error.data.error)
-                    : "Something went wrong. Please try again."
-                  }
-                </p>
-              )}
+              {loginError && <p className="text-error-500 text-sm">{loginError}</p>}
 
               {/* Submit Button */}
               <div>

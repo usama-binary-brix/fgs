@@ -89,7 +89,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
       state: '',
       city: '',
       zip_code: '',
-      status: '',
+      status: 1,
       company: '',
       communication_preference: '',
       referredBy: '',
