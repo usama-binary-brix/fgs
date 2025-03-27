@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory", "leads"],
+  tagTypes: ["Users", "Inventory", "leads", 'Investment'],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -187,6 +187,27 @@ export const api = createApi({
       invalidatesTags: ["leads"],
 
     }),
+
+
+    // ----------------------------------------- Investors API -------------------
+    addInvestment: builder.mutation({
+      query: (lnvestmentData) => ({
+        url: 'add/investment', 
+        method: 'POST',
+        body: lnvestmentData,
+      }),
+      invalidatesTags: ["Investment"],
+
+    }),
+    getAllAdminInvestments: builder.query({
+      query: (id) => ({
+        url: `get/investment/${id}`,
+        method: 'GET',
+      }),
+      providesTags: ["Investment"],
+     
+    }),
+
   }),
 
 });
@@ -212,4 +233,6 @@ export const { useLoginMutation,
   usePromoteToInvestorMutation,
   useGetLeadByIdQuery,
   useEditLeadMutation,
+  useAddInvestmentMutation,
+  useGetAllAdminInvestmentsQuery,
 } = api;

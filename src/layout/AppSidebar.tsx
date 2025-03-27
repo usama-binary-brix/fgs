@@ -90,8 +90,8 @@ const navItems: NavItem[] = [
  
   {
     icon: <GridIcon />,
-    name: "All Investment",
-    path: "/investor-dashboard/all-investment",
+    name: "My Investment",
+    path: "/investor-dashboard/my-investment",
     roles: ["investor"], 
   },
  

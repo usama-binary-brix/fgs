@@ -11,6 +11,7 @@ import {
 import { RxCross2 } from 'react-icons/rx';
 import { TableHeader } from '@/components/ui/table';
 import { FiX, FiCheck } from "react-icons/fi";
+import { useGetAllAdminInvestmentsQuery } from '@/store/services/api';
 
 const modalStyle = {
   position: 'absolute' as const,
@@ -31,6 +32,7 @@ const modalStyle = {
 interface Props {
     open: boolean;
     onClose: () => void;
+    InventoryId:any
   }
 
   
@@ -48,11 +50,13 @@ interface Lead {
     
   ];
 
-const InvestorRequestModal:  React.FC<Props> = ({open, onClose}) => {
+const InvestorRequestModal:  React.FC<Props> = ({open, onClose, InventoryId}) => {
     const [activeTab, setActiveTab] = useState<'all' | 'accepted' | 'rejected'>('all');
     const filteredLeads = activeTab === 'all' ? leadsData : leadsData.filter(lead => lead.status === activeTab);
-
     
+    const { data: InvestmentData, isLoading, isError } = useGetAllAdminInvestmentsQuery(InventoryId);
+    
+    console.log(InvestmentData, 'investment data')
     
       
     

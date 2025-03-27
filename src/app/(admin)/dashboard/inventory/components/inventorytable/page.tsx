@@ -69,20 +69,28 @@ const router = useRouter()
 
 
   const [isInvReqModalOpen, setIsInvReqModalOpen] = useState(false);
+  const [selectedInventoryId, setSelectedInventoryId] = useState<number | null>(null);
 
-  const handleOpenInvReqModal = () => {
+const handleOpenInvReqModal = (InventoryId:any) => {
+  console.log(InventoryId, 'select inventory id')
+  
+    setSelectedInventoryId(InventoryId); // Save the Inventory ID
     setIsInvReqModalOpen(true);
   };
 
   const handleCloseInvReqModal = () => {
     setIsInvReqModalOpen(false);
+    setSelectedInventoryId(null); // Reset when modal closes
+
   };
+
+
 
   // totalInvestorsModal
 
   const [isTotalInvModalOpen, setIsTotalInvModalOpen] = useState(false);
 
-  const handleOpenTotalInvModal = () => {
+  const handleOpenTotalInvModal = (InventoryId:any) => {
     setIsTotalInvModalOpen(true);
   };
 
@@ -175,7 +183,7 @@ const router = useRouter()
                   <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.completionDate || '---'}</TableCell>
                   <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap font-family text-start">
                     <div className='flex justify-center relative'>
-                      <svg onClick={handleOpenInvReqModal} xmlns="http://www.w3.org/2000/svg" className='border cursor-pointer border-[#D1842880] bg-[#D184281A]  rounded' width="25" height="25" viewBox="0 0 21 20" fill="none">
+                      <svg onClick={()=>handleOpenInvReqModal(lead.id)} xmlns="http://www.w3.org/2000/svg" className='border cursor-pointer border-[#D1842880] bg-[#D184281A]  rounded' width="25" height="25" viewBox="0 0 21 20" fill="none">
                         <path d="M10.5001 2.1998V17.7998" stroke="#D18428" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" />
                         <path d="M9.63345 10.0002H11.3668C12.8027 10.0002 13.9668 11.1643 13.9668 12.6002C13.9668 14.0361 12.8027 15.2002 11.3668 15.2002H9.63345C8.19751 15.2002 7.03345 14.0361 7.03345 12.6002" stroke="#D18428" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" />
                         <path d="M11.3668 10H9.63345C8.19751 10 7.03345 8.83594 7.03345 7.4C7.03345 5.96406 8.19751 4.8 9.63345 4.8H11.3668C12.8027 4.8 13.9668 5.96406 13.9668 7.4" stroke="#D18428" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" />
@@ -187,7 +195,7 @@ const router = useRouter()
 
  
                   </TableCell>
-                  <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family  text-center"><span onClick={handleOpenTotalInvModal} className='border-b cursor-pointer  border-gray-400'>{lead.totalInvestors}</span></TableCell>
+                  <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family  text-center"><span onClick={()=>handleOpenTotalInvModal(lead.id)} className='border-b cursor-pointer  border-gray-400'>{lead.totalInvestors}</span></TableCell>
                   <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family text-start">{lead.investmentAmount || '---'}</TableCell>
                   <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family text-start">{lead.salePrice || '---'}</TableCell>
                   <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family text-start">{lead.profitAmt || '---'}</TableCell>
@@ -250,7 +258,7 @@ const router = useRouter()
         </div>
       </div>
       </div>
-      <InvestorRequestModal open={isInvReqModalOpen} onClose={handleCloseInvReqModal}/>
+      <InvestorRequestModal open={isInvReqModalOpen} onClose={handleCloseInvReqModal}   InventoryId={selectedInventoryId}/>
       <TotalInvestorsModal open={isTotalInvModalOpen} onClose={handleCloseTotalInvModal}/>
       <Dialog
   open={isDeleteModalOpen}
