@@ -67,7 +67,7 @@ const InvestmentOpportunityTable = () => {
                 }
 
                 const payload = {
-                    invertment_amount: values.investmentAmount,
+                    investment_amount: values.investmentAmount,
                     inventory_id: selectedId,
                 };
 
