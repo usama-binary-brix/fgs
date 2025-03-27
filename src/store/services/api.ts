@@ -207,6 +207,15 @@ export const api = createApi({
       providesTags: ["Investment"],
      
     }),
+    updateInvestorStatus: builder.mutation({
+      query: (lnvestorData) => ({
+        url: 'investment/update-status', 
+        method: 'POST',
+        body: lnvestorData,
+      }),
+      invalidatesTags: ["Investment"],
+
+    }),
 
   }),
 
@@ -235,4 +244,5 @@ export const { useLoginMutation,
   useEditLeadMutation,
   useAddInvestmentMutation,
   useGetAllAdminInvestmentsQuery,
+  useUpdateInvestorStatusMutation,
 } = api;
