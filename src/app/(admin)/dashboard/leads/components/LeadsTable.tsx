@@ -205,23 +205,23 @@ const LeadsTable = () => {
                       <button onClick={() => toggleDropdown(lead.id)} className="dropdown-toggle">
                         <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />
                       </button>
-                      <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown}  className="fixed right-15 z-50 w-40 p-2 bg-white shadow-md border rounded-lg">
-                        <DropdownItem onItemClick={() => hanldeViewDetails(lead.id)} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                      <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown}  className="fixed right-15 z-50 w-40 p-2 bg-white shadow-md border rounded-sm">
+                        <DropdownItem onItemClick={() => hanldeViewDetails(lead.id)} className="flex w-full font-normal !px-2  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
                           View Details
                         </DropdownItem>
-                        <DropdownItem onItemClick={() => hanldeViewDetails(lead.id)} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                        <DropdownItem onItemClick={() => hanldeViewDetails(lead.id)} className="flex w-full font-normal !px-2  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
                           Edit
-                        </DropdownItem> <DropdownItem onItemClick={() => handlePromoteClick(lead.id)} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                        </DropdownItem> <DropdownItem onItemClick={() => handlePromoteClick(lead.id)} className="flex w-full font-normal !px-2  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
                           {isPromoteLoading && selectedId === lead.id ? "Promoting..." : "Promote to investor"}
                         </DropdownItem>
-                        <DropdownItem onItemClick={closeDropdown} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                        <DropdownItem onItemClick={closeDropdown} className="flex w-full font-normal !px-2  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
                           Send Email
                         </DropdownItem>
                         <DropdownItem onItemClick={() => {
                           setOpenDropdownId(null);
                           setSelectedId(lead.id);
                           setIsDeleteModalOpen(true);
-                        }} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                        }} className="flex w-full font-normal !px-2  text-[12px] font-family   text-[#414141]">
                           Delete
                         </DropdownItem>
                       </Dropdown>
