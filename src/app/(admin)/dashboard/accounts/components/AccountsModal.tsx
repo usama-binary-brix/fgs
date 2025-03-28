@@ -16,7 +16,7 @@ const modalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '80%',
+  width: '75%',
   maxHeight: '90vh',
   bgcolor: 'background.paper',
   boxShadow: 24,
@@ -33,9 +33,9 @@ interface Props {
 const inputStyle = {
   width: '100%',
   padding: '10px',
-  borderRadius: '4px',
+  borderRadius: '3px',
   border: '1px solid #ccc',
-  marginTop: '8px',
+  // marginTop: '8px',
 };
 
 const selectStyle = {
@@ -50,24 +50,19 @@ const validationSchema = Yup.object().shape({
 
 last_name: Yup.string()
   .max(15, 'Must be 15 characters or less'),
-  // last_name: Yup.string().required('Required'),
   email: Yup.string().email('Invalid email').required('Required'),
   phone_number: Yup.string()
   .matches(/^[0-9]+$/, 'Only numbers are allowed')
   .required('Required'),
-  // phone_number: Yup.string().required('Required'),
-  // password: Yup.string().required('Required'),
-  // password_confirmation: Yup.string()
-  //   .oneOf([Yup.ref('password')], 'Passwords must match')
-  //   .required('Required'),
-  country: Yup.string().required('Required'),
-  address: Yup.string().required('Required'),
+  
+  country: Yup.string(),
+  address: Yup.string(),
   state: Yup.string(),
-  city: Yup.string().required('Required'),
-  zip_code: Yup.string().required('Required'),
-  status: Yup.string().required('Required'),
-  company: Yup.string().required('Required'),
-  communication_preference: Yup.string().required('Required'),
+  city: Yup.string(),
+  zip_code: Yup.string(),
+  status: Yup.string(),
+  company: Yup.string(),
+  communication_preference: Yup.string(),
   referredBy: Yup.string(),
   notes: Yup.string(),
 });
@@ -133,10 +128,10 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
                 >
                   <option value="">Select</option>
                   <option value="admin">Admin</option>
-                  <option value="Investor">Investor</option>
-                  <option value="Salesperson">Salesperson</option>
-                  <option value="Employee">Employee</option>
-                  <option value="Broker">Broker</option>
+                  <option value="investor">Investor</option>
+                  <option value="salesperson">Salesperson</option>
+                  <option value="employee">Employee</option>
+                  <option value="broker">Broker</option>
                 </select>
               </label>
               {formik.touched.account_type && formik.errors.account_type && (
@@ -252,7 +247,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             </Grid>
             <Grid item xs={12} md={4}>
             <label className='text-sm text-gray-500'>
-            Country<span className='text-red-600'>*</span>
+            Country
                 <select
                   name="country"
                   style={selectStyle}
@@ -271,7 +266,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             </Grid>
             <Grid item xs={12} md={4}>
             <label className='text-sm text-gray-500'>
-            Address <span className='text-red-600'>*</span>
+            Address 
                 <input
                   type="text"
                   name="address"
@@ -304,7 +299,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             </Grid>
             <Grid item xs={12} md={4}>
             <label className='text-sm text-gray-500'>
-            City <span className='text-red-600'>*</span>
+            City 
                 <input
                   type="text"
                   name="city"
@@ -320,7 +315,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             </Grid>
             <Grid item xs={12} md={4}>
             <label className='text-sm text-gray-500'>
-            Zip/Postal Code <span className='text-red-600'>*</span>
+            Zip/Postal Code 
                 <input
                   type="text"
                   name="zip_code"
@@ -337,7 +332,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
 
             <Grid item xs={12} md={4}>
             <label className='text-sm text-gray-500'>
-            Status <span className='text-red-600'>*</span>
+            Status 
                 <select
                   name="status"
                   style={selectStyle}
@@ -356,7 +351,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             </Grid>
             <Grid item xs={12} md={4}>
             <label className='text-sm text-gray-500'>
-            Company <span className='text-red-600'>*</span>
+            Company 
                 <input
                   type="text"
                   name="company"
@@ -372,7 +367,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
             </Grid>
             <Grid item xs={12} md={4}>
             <label className='text-sm text-gray-500'>
-            Communication Preferences <span className='text-red-600'>*</span>
+            Communication Preferences 
                 <select
                   name="communication_preference"
                   style={selectStyle}
@@ -424,7 +419,20 @@ const AccountsModal: React.FC<Props> = ({ open, onClose }) => {
 
             {/* Buttons */}
             <Grid item xs={12} display="flex" justifyContent="flex-end" mt={2}>
-              <Button onClick={onClose} variant="outlined" sx={{ mr: 2, textTransform:'none' }}>
+              <Button onClick={onClose} variant="outlined"
+                 sx={{
+                  backgroundColor: '#8080801A',
+                  mr: 2,
+                  color: '#808080',
+                  borderColor: '#8080801A', 
+                  outline: 'none',
+                  '&:hover': { 
+                    backgroundColor: '#8080801B', 
+                    borderColor: '#8080801A' 
+                  },
+                  textTransform: 'none',
+                }}
+              >
                 Cancel
               </Button>
               <Button

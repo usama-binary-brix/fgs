@@ -55,7 +55,7 @@ export default function SignInForm() {
       setLoginError(""); // Clear any previous login errors
     } catch (err: any) {
       console.error("Login failed:", err);
-      setLoginError(err?.data?.message || "Invalid credentials. Please try again.");
+      setLoginError(err?.data?.message || err?.data?.error);
     }
   };
 

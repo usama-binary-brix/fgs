@@ -12,7 +12,7 @@ const modalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '80%',
+  width: '75%',
   maxHeight: '90vh',
   bgcolor: 'background.paper',
   boxShadow: 24,
@@ -32,7 +32,7 @@ const inputStyle = {
     padding: '10px',
     borderRadius: '4px',
     border: '1px solid #ccc',
-    marginTop: '8px',
+    // marginTop: '8px',
   };
   
   const selectStyle = {
@@ -77,13 +77,13 @@ const formik = useFormik({
     last_name: Yup.string(),
     email: Yup.string().email('Invalid email').required('Required'),
     phone_number: Yup.string().required('Required'),
-    country: Yup.string().required('Required'),
-    address: Yup.string().required('Required'),
-    city: Yup.string().required('Required'),
-    zip_code: Yup.string().required('Required'),
-    status: Yup.string().required('Required'),
-    company_name: Yup.string().required('Required'),
-    communication_preference: Yup.string().required('Required'),
+    country: Yup.string(),
+    address: Yup.string(),
+    city: Yup.string(),
+    zip_code: Yup.string(),
+    status: Yup.string(),
+    company_name: Yup.string(),
+    communication_preference: Yup.string(),
   }),
   onSubmit: async (values, { resetForm }) => {
     setLoading(true)
@@ -258,7 +258,7 @@ useEffect(() => {
                        </Grid>
                        <Grid item xs={12} md={4}>
                        <label className='text-sm text-gray-500'>
-                       Country<span className='text-red-600'>*</span>
+                       Country
                            <select
                              name="country"
                              style={selectStyle}
@@ -277,7 +277,7 @@ useEffect(() => {
                        </Grid>
                        <Grid item xs={12} md={4}>
                        <label className='text-sm text-gray-500'>
-                       Address <span className='text-red-600'>*</span>
+                       Address 
                            <input
                              type="text"
                              name="address"
@@ -311,7 +311,7 @@ useEffect(() => {
                        </Grid>
                        <Grid item xs={12} md={4}>
                        <label className='text-sm text-gray-500'>
-                       City <span className='text-red-600'>*</span>
+                       City 
                            <input
                              type="text"
                              name="city"
@@ -328,7 +328,7 @@ useEffect(() => {
                        </Grid>
                        <Grid item xs={12} md={4}>
                        <label className='text-sm text-gray-500'>
-                       Zip/Postal Code <span className='text-red-600'>*</span>
+                       Zip/Postal Code 
                            <input
                              type="text"
                              name="zip_code"
@@ -346,7 +346,7 @@ useEffect(() => {
            
                        <Grid item xs={12} md={4}>
                        <label className='text-sm text-gray-500'>
-                       Status <span className='text-red-600'>*</span>
+                       Status 
                            <select
                              name="status"
                              style={selectStyle}
@@ -366,7 +366,7 @@ useEffect(() => {
                        </Grid>
                        <Grid item xs={12} md={4}>
                        <label className='text-sm text-gray-500'>
-                       Company <span className='text-red-600'>*</span>
+                       Company 
                            <input
                              type="text"
                              name="company_name"
@@ -383,7 +383,7 @@ useEffect(() => {
                        </Grid>
                        <Grid item xs={12} md={4}>
                        <label className='text-sm text-gray-500'>
-                       Communication Preferences <span className='text-red-600'>*</span>
+                       Communication Preferences
                            <select
                              name="communication_preference"
                              style={selectStyle}
@@ -445,12 +445,30 @@ useEffect(() => {
 
             {/* Submit Button */}
             <Grid item xs={12} className="text-right">
+
+            <Button onClick={onClose} variant="outlined"
+                           sx={{
+                            backgroundColor: '#8080801A',
+                            mr: 2,
+                            color: '#808080',
+                            borderColor: '#8080801A', 
+                            outline: 'none',
+                            '&:hover': { 
+                              backgroundColor: '#8080801B', 
+                              borderColor: '#8080801A' 
+                            },
+                            textTransform: 'none',
+                          }}
+                        >
+                          Close
+                        </Button>
+
               <Button
                type="submit"
                variant="contained"
                sx={{ backgroundColor: '#C28024', '&:hover': { backgroundColor: '#a56a1d' }, textTransform:'none' }}
               >
-              {loading ? 'Loading...' : 'Update Account'}
+              {loading ? 'Loading...' : 'Update Details'}
               </Button>
             </Grid>
           </Grid>
