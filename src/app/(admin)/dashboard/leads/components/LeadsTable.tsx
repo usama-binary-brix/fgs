@@ -129,9 +129,9 @@ const LeadsTable = () => {
           <div className="hidden sm:block">
             <div className="flex items-center space-x-2">
               <div className="relative">
-                <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <IoSearchOutline className="absolute left-3 top-1/2 transform w-[20px] h-[20px] text-[#616161] -translate-y-1/2" />
                 <input
-                  className="text-xs border rounded-lg font-family pl-9 pr-2 h-9 w-64 border-gray-300 focus:border-gray-400 focus:outline-none"
+                  className="text-xs border text-[12.5px] text-[#616161] font-medium placeholder-[#616161] font-family pl-9 pr-2 h-9 w-64 border-[#DDD] rounded focus:border-[#DDD] focus:outline-none"
                   placeholder="Search"
                 />
               </div>
@@ -151,8 +151,8 @@ const LeadsTable = () => {
             <TableHeader className="border-b border-gray-100 bg-[#F7F7F7] dark:border-white/[0.05]">
               <TableRow>
                 {['ID', 'Name', 'Email', 'Company', 'Source', 'Reminder Date', 'Budget', 'Condition', 'Assigned To', 'Action'].map((heading) => (
-                  <TableCell key={heading} isHeader className="px-3  py-3 font-family font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    <div className='flex justify-between items-center'>
+                  <TableCell key={heading} isHeader className="px-3  py-3 font-family whitespace-nowrap overflow-hidden font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    <div className='flex justify-between gap-5 items-center'>
 
                       {heading}
                       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">

@@ -12,7 +12,9 @@ export const metadata: Metadata = {
 const Page = () => {
   return (
     <>
-      <PageTitle title="All Leads" />
+    <h1 className="text-[27px] text-[#414141] font-family font-extrabold">
+    <PageTitle title="All Leads" />
+    </h1>
       <LeadsTable />
     </>
   );

@@ -32,10 +32,11 @@ interface Props {
 
 const inputStyle = {
     width: '100%',
-    padding: '10px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
+    padding: '6px',
+    borderRadius: '2px',
+    // border: '1px solid #ccc',
     marginTop: '8px',
+    
 };
 
 const selectStyle = {
@@ -159,8 +160,8 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                 <span className='text-red-500'> *</span>
 
                             </label>
-                            <select name="category_id" style={selectStyle} value={formik.values.category_id} onChange={handleCategoryChange}>
-                                <option value="">Select</option>
+                            <select name="category_id" className='border-1 border-[#E8E8E8] text-[#414141]  focus:outline-none focus:border-[#E8E8E8]' style={selectStyle} value={formik.values.category_id} onChange={handleCategoryChange}>
+                                <option className='text-[#414141] ' value="">Select</option>
                                 {categories?.categories?.map((category: any) => (
                                     <option key={category.id} value={category.id}>{category.name}</option>
                                 ))}
@@ -173,8 +174,8 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
 
 
                             </label>
-                            <select name="subcategory_id" style={inputStyle} value={formik.values.subcategory_id} onChange={formik.handleChange}>
-                                <option value="">Select</option>
+                            <select name="subcategory_id" className='border-1 border-[#E8E8E8] text-[#414141]  focus:outline-none focus:border-[#E8E8E8]' style={inputStyle} value={formik.values.subcategory_id} onChange={formik.handleChange}>
+                                <option className='text-[#414141] ' value="">Select</option>
                                 {subCategories?.categories?.map((sub: any) => (
                                     <option key={sub.id} value={sub.id}>{sub.name}</option>
                                 ))}
@@ -194,7 +195,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                     value={formik.values[field as keyof typeof formik.values]} // ✅ Fix
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    className='border-1 border-[#E8E8E8]'
+                                    className='border-1 border-[#E8E8E8]  focus:outline-none focus:border-[#E8E8E8] text-[#414141]'
                                 />
                                 {formik.touched[field as keyof typeof formik.values] && formik.errors[field as keyof typeof formik.errors] && (
                                     <p className="text-red-500">{formik.errors[field as keyof typeof formik.errors]}</p>
@@ -210,6 +211,8 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                 style={inputStyle}
                                 value={formik.values.date_purchased}
                                 onChange={formik.handleChange}
+                                className='border-1 border-[#E8E8E8]  focus:outline-none focus:border-[#E8E8E8] text-[#414141]'
+
                             />
                             {formik.errors.date_purchased && <p className="text-red-500">{formik.errors.date_purchased}</p>}
                         </Grid>
@@ -217,11 +220,11 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
 
                         <Grid xs={12} md={12} mt={2} ml={2}>
                             <div>
-                                <h1 className="text-sm text-black font-normal text-[12.5px] font-family">Attach Files</h1>
-                                <p className="text-custom-lightGray text-[10px] font-family font-normal">Only PDF, JPG & PNG formats are allowed</p>
+                                <h1 className="text-sm text-[#414141] font-normal text-[12.5px] font-family">Attach Files</h1>
+                                <p className="text-[#818181] text-[10px] font-family font-normal">Only PDF, JPG & PNG formats are allowed</p>
                             </div>
                             <div className="flex items-center gap-2 mt-3">
-                                <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-lg cursor-pointer h-30 px-2 hover:bg-gray-100">
+                                <label className="flex flex-col items-center justify-center border-2 border-dashed border-[#B1BFD0] rounded-lg cursor-pointer h-30 w-35 hover:bg-gray-100">
                                     <input
                                         type="file"
                                         accept="image/png, image/jpeg, application/pdf"
@@ -230,15 +233,15 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                         onChange={handleImageUpload}
                                     />
                                     <div className="text-center">
-                                        <p className="text-gray-700 font-semibold text-xs">Drop your image here,</p>
-                                        <p className="text-blue-600 underline text-xs">or browse</p>
+                                        <p className="text-[#132A00] font-family text-[9px] font-medium ">Drop your image here,</p>
+                                        <p className="text-[#1F4690] font-family font-medium underline text-[9px]">or browse</p>
                                     </div>
                                 </label>
 
                                 {images.length > 0 && (
                                     <div className="flex gap-4 mt-0 flex-wrap">
                                         {images.map((img, index) => (
-                                            <div key={index} className="relative h-30 w-40 rounded-lg">
+                                            <div key={index} className="relative h-30 w-35 rounded-lg">
                                                 <img
                                                     src={URL.createObjectURL(img)}
                                                     alt={`Uploaded preview ${index}`}
@@ -257,13 +260,14 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                             </div>
                         </Grid>
                         <Grid item xs={12} display="flex" justifyContent="flex-end" mt={2}>
-                            <Button className='!bg-[#8080801A] !font-family !border-1 !border-[#8080801A] !text-[#808080] !rounded' onClick={onClose} variant="outlined" sx={{ mr: 2, textTransform: 'none' }}>
+                            <Button className='!bg-[#8080801A] !font-family !text-[13px] !border-1 !font-semibold  !border-[#8080801A] !text-[#808080] !rounded' onClick={onClose} variant="outlined" sx={{ mr: 2, textTransform: 'none' }}>
                                 Cancel
                             </Button>
                             <Button
                                 type="submit"
                                 variant="contained"
                                 sx={{ backgroundColor: '#C28024', '&:hover': { backgroundColor: '#a56a1d' }, textTransform: 'none' }}
+                                className='!text-[13px] !font-family !font-semibold !rounded'
                             >
                                 Add Inventory
 
