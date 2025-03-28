@@ -106,11 +106,7 @@ const router = useRouter()
       name: Yup.string().required("Name is required"),
       phone: Yup.string().required("Phone is required"),
       email: Yup.string().email("Invalid email").required("Email is required"),
-      number_of_calls: Yup.string().required("Number of Calls is required"),
-      lead_source: Yup.string().required("Lead source is required"),
-      engine_type: Yup.string().required("Engine type is required"),
-      condition: Yup.string().required("Condition is required"),
-      lead_created_by: Yup.string().required("Lead created by is required"),
+     
     }),
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       try {
@@ -180,6 +176,7 @@ Add Lead
                     onBlur={formik.handleBlur}
                     error={formik.touched.name && formik.errors.name}
                     isRequired={true}
+                    placeholder="Enter Your Name"
                   />
                      {formik.touched.name && formik.errors.name && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.name}</p>
@@ -192,6 +189,8 @@ Add Lead
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     label="Title"
+                    placeholder="Enter Title"
+
                   />
                      {formik.touched.title && formik.errors.title && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.title}</p>
@@ -204,6 +203,8 @@ Add Lead
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     label="Company"
+                    placeholder="Enter Company"
+
                   />
                      {formik.touched.company && formik.errors.company && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.company}</p>
@@ -218,6 +219,8 @@ Add Lead
                     onBlur={formik.handleBlur}
                     error={formik.touched.phone && formik.errors.phone}
                     isRequired={true}
+                    placeholder="Enter Your Phone"
+
                   />
                      {formik.touched.phone && formik.errors.phone && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.phone}</p>
@@ -232,6 +235,8 @@ Add Lead
                     error={formik.touched.email && formik.errors.email}
                     label="Email"
                     isRequired={true}
+                    placeholder="Enter Your Email"
+
                   />
                      {formik.touched.email && formik.errors.email && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.email}</p>
@@ -244,6 +249,8 @@ Add Lead
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     label="Street Address"
+                    placeholder="Enter Street Address"
+
                   />
                      {formik.touched.street_address && formik.errors.street_address && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.street_address}</p>
@@ -256,6 +263,8 @@ Add Lead
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     label="City"
+                    placeholder="Enter City"
+
                   />
                      {formik.touched.city && formik.errors.city && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.city}</p>
@@ -268,6 +277,8 @@ Add Lead
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     label="State"
+                    placeholder="Enter State"
+
                   />
                      {formik.touched.state && formik.errors.state && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.state}</p>
@@ -281,6 +292,8 @@ Add Lead
                     onBlur={formik.handleBlur}
                     label="Zip Code"
                     type="text"
+                    placeholder="Enter Zip Code"
+
                   />
                      {formik.touched.zip_code && formik.errors.zip_code && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.zip_code}</p>
@@ -310,7 +323,7 @@ Add Lead
                       {options.map((option, index) => (
                         <li
                           key={index}
-                          className="px-3 py-2 text-darkGray font-family hover:bg-text hover:text-yellow text-sm cursor-pointer"
+                          className="px-3 py-2 text-darkGray font-family hover:bg-text hover:text-yellow text-xs cursor-pointer"
                           onClick={() => {
                             formik.setFieldValue("number_of_calls", option.value);
                             toggleDropdown('calls');
@@ -344,7 +357,7 @@ Add Lead
                       {leadSourceOptions.map((option, index) => (
                         <li
                           key={index}
-                          className="px-3 py-2 text-darkGray hover:bg-gray-100 text-md cursor-pointer"
+                          className="px-3 py-2 text-darkGray hover:bg-gray-100 text-xs cursor-pointer"
                           onClick={() => {
                             formik.setFieldValue("lead_source", option.value);
                             toggleDropdown('source');
@@ -367,6 +380,8 @@ Add Lead
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     label="Reminder"
+                    placeholder="Enter Reminder"
+
                   />
                      {formik.touched.reminder && formik.errors.reminder && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.lead_source}</p>
@@ -483,6 +498,8 @@ Add Lead
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       label="Lift Type"
+                    placeholder="Enter Lift Type"
+
                     />
                        {formik.touched.lift_type && formik.errors.lift_type && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.lift_type}</p>
@@ -506,7 +523,7 @@ Add Lead
                           {engineOptions.map((option, index) => (
                             <li
                               key={index}
-                              className="px-3 py-2 text-darkGray font-family hover:bg-gray-100 text-md cursor-pointer"
+                              className="px-3 py-2 text-darkGray font-family hover:bg-gray-100 text-xs cursor-pointer"
                               onClick={() => {
                                 formik.setFieldValue("engine_type", option.value);
                                 toggleDropdown('engine');
@@ -529,6 +546,8 @@ Add Lead
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       label="Location Used"
+                    placeholder="Enter Location Used"
+
                     />
                        {formik.touched.location_used && formik.errors.location_used && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.location_used}</p>
@@ -542,6 +561,8 @@ Add Lead
                       onBlur={formik.handleBlur}
                       label="Max Capacity"
                       type="number"
+                    placeholder="Enter Max Capacity "
+
                     />
                        {formik.touched.max_capacity && formik.errors.max_capacity && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.max_capacity}</p>
@@ -618,6 +639,8 @@ Add Lead
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       label="Financing"
+                    placeholder="Enter Financing"
+
                     />
                        {formik.touched.financing && formik.errors.financing && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.financing}</p>
@@ -697,7 +720,7 @@ Add Lead
                           {quickCommentValues.map((option, index) => (
                             <li
                               key={index}
-                              className="px-3 py-2 text-darkGray font-family hover:bg-gray-100 text-md cursor-pointer"
+                              className="px-3 py-2 text-darkGray font-family hover:bg-gray-100 text-xs cursor-pointer"
                               onClick={() => {
                                 formik.setFieldValue("quick_comment", option.value);
                                 toggleDropdown('quickComment');
@@ -718,12 +741,15 @@ Add Lead
                         value={formik.values.comments}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs"
+                        rows={5}
+                    placeholder="Enter Your Comment"
+
+                        className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-xs font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs"
                       />
                     </div>
                   </div>
                   <div className="mb-2">
-                    <label className="text-xs font-family text-gray-500 font-medium">Select Your Name</label>
+                    <label className="text-xs font-family text-gray-500 font-medium">Lead Created By</label>
                     <div className="flex items-center gap-5 mt-1">
                       <div className="flex items-center gap-2">
                         <RadioButton
