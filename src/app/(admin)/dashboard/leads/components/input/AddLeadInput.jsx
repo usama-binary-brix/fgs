@@ -16,7 +16,7 @@ const AddLeadInput = ({ label, type = "text", isRequired = false, placeholder = 
         name={name}
         onChange={onChange}
         onBlur={onBlur}
-        className="w-full  px-2 py-1 text-[#666] placeholder-[#666] text-[12px] font-medium rounded-xs border border-[#E8E8E8] mt-1 outline-none text-md"
+        className="w-full  px-2 py-1.5 text-[#666] placeholder-[#666] text-[12px] font-medium rounded-xs border border-[#E8E8E8] mt-1 outline-none text-md"
         {...props}
 
        
