@@ -219,6 +219,10 @@ layer(base);
   @apply bg-primary text-white dark:bg-brand-500/[0.12] dark:text-brand-400;
 }
 
+@utility menu-sub-item-active {
+  @apply bg-primary/10 text-white dark:bg-brand-500/[0.12] dark:text-brand-400;
+}
+
 @utility menu-item-inactive {
   @apply text-gray-400 hover:text-primary group-hover:text-black dark:text-black dark:hover:bg-white/5 dark:hover:text-gray-300;
 }
