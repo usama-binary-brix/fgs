@@ -85,7 +85,7 @@ const AppSidebar: React.FC = () => {
                 ) : (
                   <>
                     <button
-                      className={`w-full flex items-center justify-between px-6 py-2 font-semibold ${isActive(undefined, nav.subItems) ? "menu-item-active" : "menu-item-inactive"
+                      className={`w-full flex items-center justify-between px-6 py-2 text-sm font-semibold ${isActive(undefined, nav.subItems) ? "menu-item-active" : "menu-item-inactive"
                         }`}
                       onClick={() => toggleMenu(nav.name)}
                     >
