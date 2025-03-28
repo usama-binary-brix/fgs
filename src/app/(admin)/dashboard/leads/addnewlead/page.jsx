@@ -331,7 +331,7 @@ Add Lead
                   <label className="text-xs text-gray-500 font-family">Lead Source</label>
                   <button
                     type="button"
-                    className="w-full text-left mt-1 text-darkGray text-md border flex justify-between items-center border-gray-300 px-3 py-1 rounded bg-white focus:outline-none"
+                    className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
                     onClick={() => toggleDropdown('source')}
                   >
                     {formik.values.lead_source || "Select a source"}
@@ -381,10 +381,10 @@ Add Lead
                         selected={formik.values.reminder_date_time}
                         onChange={(date) => formik.setFieldValue("reminder_date_time", date)}
                         dateFormat="dd/MM/yyyy"
-                        className="w-full px-3 py-1 cursor-pointer text-sm pr-10 border border-gray-300 rounded"
+                        className="w-full px-3 py-1 cursor-pointer text-sm pr-10 border border-[#E8E8E8] rounded-xs outline-0 text-[#666] placeholder-[#666] text-[12px]"
                         placeholderText="dd/mm/yy"
                       />
-                      <FiCalendar className="absolute right-2 top-2 text-gray-500 cursor-pointer" />
+                      <FiCalendar className="absolute right-2 top-2 w-[14px] h-[14px] text-gray-500 cursor-pointer" />
                       {formik.touched.reminder_date_time && formik.errors.reminder_date_time && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.reminder_date_time}</p>
                   )}
@@ -402,12 +402,12 @@ Add Lead
                         timeFormat="h:mm aa"
                         dateFormat="h:mm aa"
                         placeholderText="0:00 AM"
-                        className="w-full px-3 py-1 border text-sm border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="w-full px-3 py-1 border text-sm border-[#E8E8E8] text-[#666] text-[12px] rounded-xs focus:outline-none "
                         onCalendarOpen={() => setIsIconRotate(true)}
                         onCalendarClose={() => setIsIconRotate(false)}
                       />
                       <FiChevronDown
-                        className={`absolute right-2 top-2 text-gray-500 cursor-pointer transition-transform duration-300 ${isIconRotate ? "rotate-180" : "rotate-0"}`}
+                        className={`absolute right-2 top-2 text-gray-500 w-[14px] h-[14px] cursor-pointer transition-transform duration-300 ${isIconRotate ? "rotate-180" : "rotate-0"}`}
                       />
                     </div>
                   </div>
@@ -417,9 +417,9 @@ Add Lead
                   <div className="flex justify-between gap-5 items-center">
                     <div>
                       <ul className="">
-                        <li className="text-gray-400 text-sm font-family">Hot Lead</li>
-                        <li className="text-gray-400 text-sm font-family">In Finance</li>
-                        <li className="text-gray-400 text-sm font-family">Sourcing</li>
+                        <li className="text-[#818181] text-[11.5px] font-normal font-family">Hot Lead</li>
+                        <li className="text-[#818181] text-[11.5px] font-normal font-family">In Finance</li>
+                        <li className="text-[#818181] text-[11.5px] font-normal font-family">Sourcing</li>
                       </ul>
                     </div>
                     <div>
@@ -428,7 +428,7 @@ Add Lead
                           isSelected={formik.values.hot_lead === "yes"}
                           onSelect={() => formik.setFieldValue("hot_lead", "yes")}
                         />
-                        <label className="text-darkGray text-sm font-family">Yes</label>
+                        <label className="text-[#666] text-[13px] font-medium font-family">Yes</label>
                       </div>
                       <div className="flex gap-1 items-center">
                         <RadioButton
@@ -442,7 +442,7 @@ Add Lead
                           isSelected={formik.values.sourcing === "yes"}
                           onSelect={() => formik.setFieldValue("sourcing", "yes")}
                         />
-                        <label className="text-darkGray text-sm font-family">Yes</label>
+                        <label className="text-[#666] text-[13px] font-medium font-family">Yes</label>
                       </div>
                     </div>
                   </div>
@@ -452,21 +452,21 @@ Add Lead
                         isSelected={formik.values.hot_lead === "no"}
                         onSelect={() => formik.setFieldValue("hot_lead", "no")}
                       />
-                      <label className="text-darkGray text-sm font-family">No</label>
+                      <label className="text-[#666] text-[13px] font-medium font-family">No</label>
                     </div>
                     <div className="flex gap-1 items-center">
                       <RadioButton
                         isSelected={formik.values.in_finance === "no"}
                         onSelect={() => formik.setFieldValue("in_finance", "no")}
                       />
-                      <label className="text-darkGray text-sm font-family">No</label>
+                      <label className="text-[#666] text-[13px] font-medium font-family">No</label>
                     </div>
                     <div className="flex gap-1 items-center">
                       <RadioButton
                         isSelected={formik.values.sourcing === "no"}
                         onSelect={() => formik.setFieldValue("sourcing", "no")}
                       />
-                      <label className="text-darkGray text-sm font-family">No</label>
+                      <label className="text-[#666] text-[13px] font-medium font-family">No</label>
                     </div>
                   </div>
                 </div>
@@ -493,7 +493,7 @@ Add Lead
                       <label className="text-xs text-gray-500 font-family font-medium">Engine Type</label>
                       <button
                         type="button"
-                        className="w-full text-left mt-1 text-darkGray text-md border font-family flex justify-between items-center border-gray-300 px-3 py-1 rounded bg-white focus:outline-none"
+                        className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
                         onClick={() => toggleDropdown('engine')}
                       >
                         {formik.values.engine_type || "Select an engine"}
@@ -548,28 +548,28 @@ Add Lead
                   )}
                   </div>
                   <div className="mb-2">
-                    <label className="text-customGray font-family font-mediumtext-sm">Condition</label>
+                    <label className="text-[#666] text-[13px] font-medium font-family">Condition</label>
                     <div className="flex gap-4 items-center">
                       <p className="flex gap-2">
                         <RadioButton
                           isSelected={formik.values.condition === "New"}
                           onSelect={() => formik.setFieldValue("condition", "New")}
                         />
-                        <label className="text-darkGray text-sm font-family">New</label>
+                        <label className="text-[#666] text-[13px] font-medium font-family">New</label>
                       </p>
                       <p className="flex gap-2">
                         <RadioButton
                           isSelected={formik.values.condition === "Used"}
                           onSelect={() => formik.setFieldValue("condition", "Used")}
                         />
-                        <label className="text-darkGray text-sm font-family">Used</label>
+                        <label className="text-[#666] text-[13px] font-medium font-family">Used</label>
                       </p>
                       <p className="flex gap-2">
                         <RadioButton
                           isSelected={formik.values.condition === "New/Used"}
                           onSelect={() => formik.setFieldValue("condition", "New/Used")}
                         />
-                        <label className="text-darkGray text-sm font-family">New/Used</label>
+                        <label className="text-[#666] text-[13px] font-medium font-family">New/Used</label>
                       </p>
                     </div>
                     {formik.touched.condition && formik.errors.condition && (
@@ -591,7 +591,7 @@ Add Lead
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         placeholder="$ 0.00"
-                        className="w-full px-2 py-1 rounded-sm border border-gray-300 mt-1 outline-none text-md"
+                        className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs outline-none text-md"
                       />
                          {formik.touched.budget_min && formik.errors.budget_min && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.budget_min}</p>
@@ -604,7 +604,7 @@ Add Lead
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         placeholder="$ 0.00"
-                        className="w-full px-2 py-1 rounded-sm border border-gray-300 mt-1 outline-none text-md"
+                        className="w-full text-left  text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs mt-1 outline-none text-md"
                       />
                          {formik.touched.budget_max && formik.errors.budget_max && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.budget_max}</p>
@@ -638,21 +638,21 @@ Add Lead
                             isSelected={formik.values.purchase_timeline === "ASAP"}
                             onSelect={() => formik.setFieldValue("purchase_timeline", "ASAP")}
                           />
-                          <label className="text-sm text-darkGray font-medium font-family">ASAP</label>
+                          <label className="text-[#666] text-[13px] font-medium font-family">ASAP</label>
                         </li>
                         <li className="flex gap-2 items-center pb-1 font-family">
                           <RadioButton
                             isSelected={formik.values.purchase_timeline === "In 1 Month"}
                             onSelect={() => formik.setFieldValue("purchase_timeline", "In 1 Month")}
                           />
-                          <label className="text-sm text-darkGray font-medium font-family">In 1 Month</label>
+                          <label className="text-[#666] text-[13px] font-medium font-family">In 1 Month</label>
                         </li>
                         <li className="flex gap-2 items-center">
                           <RadioButton
                             isSelected={formik.values.purchase_timeline === "3+ Months"}
                             onSelect={() => formik.setFieldValue("purchase_timeline", "3+ Months")}
                           />
-                          <label className="text-sm text-darkGray font-medium font-family">3+ Months</label>
+                          <label className="text-[#666] text-[13px] font-medium font-family">3+ Months</label>
                         </li>
                       </ul>
                     </div>
@@ -663,14 +663,14 @@ Add Lead
                             isSelected={formik.values.purchase_timeline === "In 2 Months"}
                             onSelect={() => formik.setFieldValue("purchase_timeline", "In 2 Months")}
                           />
-                          <label className="text-sm text-darkGray pb-1 font-medium font-family">In 2 Months</label>
+                          <label className="text-[#666] text-[13px] font-medium font-family">In 2 Months</label>
                         </li>
                         <li className="flex gap-2 items-center font-family">
                           <RadioButton
                             isSelected={formik.values.purchase_timeline === "More than 2 Months"}
                             onSelect={() => formik.setFieldValue("purchase_timeline", "More than 2 Months")}
                           />
-                          <label className="text-sm text-darkGray font-medium font-family">More than 2 Months</label>
+                          <label className="text-[#666] text-[13px] font-medium font-family">More than 2 Months</label>
                         </li>
                       </ul>
                     </div>
@@ -684,7 +684,7 @@ Add Lead
                       <label className="text-xs text-gray-500 font-family font-medium">Quick Comment</label>
                       <button
                         type="button"
-                        className="w-full text-left mt-1 font-family text-darkGray text-md border flex justify-between items-center border-gray-300 px-3 py-1 rounded bg-white focus:outline-none"
+                        className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
                         onClick={() => toggleDropdown('quickComment')}
                       >
                         {formik.values.quick_comment || "Select a comment"}
@@ -718,7 +718,7 @@ Add Lead
                         value={formik.values.comments}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className="mt-1 border-1 border-gray-300 rounded"
+                        className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs"
                       />
                     </div>
                   </div>
@@ -730,14 +730,14 @@ Add Lead
                           isSelected={formik.values.lead_created_by === "Arcangelo"}
                           onSelect={() => formik.setFieldValue("lead_created_by", "Arcangelo")}
                         />
-                        <label className="text-sm font-family text-darkGray font-medium">Arcangelo</label>
+                        <label className="text-[#666] text-[13px] font-medium font-family">Arcangelo</label>
                       </div>
                       <div className="flex items-center gap-2">
                         <RadioButton
                           isSelected={formik.values.lead_created_by === "Myron"}
                           onSelect={() => formik.setFieldValue("lead_created_by", "Myron")}
                         />
-                        <label className="text-sm font-family text-darkGray font-medium">Myron</label>
+                        <label className="text-[#666] text-[13px] font-medium font-family">Myron</label>
                       </div>
                     </div>
                     {formik.touched.lead_created_by && formik.errors.lead_created_by && (
