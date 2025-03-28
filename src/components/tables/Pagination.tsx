@@ -22,7 +22,7 @@ const Pagination: React.FC<PaginationProps> = ({
   );
   return (
 <>
-<div className="flex justify-between items-center">
+<div className="flex justify-between flex-col lg:flex-row mt-6 lg:mt-0 items-center">
 <div className="flex items-center space-x-2 text-gray-600">
       <span className="text-sm font-medium">PER PAGE</span>
       <select
