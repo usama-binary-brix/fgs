@@ -146,12 +146,12 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
     return (
         <Modal open={open} onClose={onClose}>
             <Box sx={modalStyle}>
-                <div className='flex justify-between items-center mb-3 border-b border-gray-400 pb-3'>
+                <div className='flex justify-between p-[15px] items-center mb-3 border-b border-gray-400 pb-3'>
                     <p className='text-[18px] text-black font-semibold font-family'>Add New Inventory</p>
                     <RxCross2 onClick={onClose} className='cursor-pointer text-[#616161] text-3xl' />
                 </div>
 
-                <form onSubmit={formik.handleSubmit} autoComplete='off'>
+                <form onSubmit={formik.handleSubmit} className='p-[15px]' autoComplete='off'>
                     <Grid container spacing={2}>
                         <Grid item xs={6} md={4}>
                             <label className='text-[12.5px] text-[#818181] font-normal font-family'>Category
@@ -186,7 +186,8 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                 <label className='capitalize text-[12.5px] text-[#818181] font-normal font-family'>
                                     {field.replace("_", " ")}
                                     <span className='text-red-500'> *</span>
-                                </label>                                <input
+                                </label>    
+                                 <input
                                     type="text"
                                     name={field}
                                     style={inputStyle}
