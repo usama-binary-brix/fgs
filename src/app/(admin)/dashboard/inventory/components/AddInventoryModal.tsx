@@ -90,8 +90,15 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
     const validationSchema = Yup.object().shape({
         category_id: Yup.string().required('Category is required'),
         subcategory_id: Yup.string().required('Subcategory is required'),
-        year: Yup.string().required('Year is required'),
-        make: Yup.string().required('Make is required'),
+        year: Yup.number()
+    .required('Year is required')
+   ,
+  make: Yup.number()
+    .required('Make is required')
+    .test('make-validation', 'Make should be the same as Year or later', function (value) {
+      const { year } = this.parent;
+      return value >= year;
+    }),
         model: Yup.string().required('Model is required'),
         serial_no: Yup.string().required('Serial No is required'),
         length: Yup.string().required('Length is required'),
@@ -101,9 +108,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
         hours: Yup.string().required('Hours are required'),
         price_paid: Yup.string().required('Price paid is required'),
         date_purchased: Yup.date().required('Purchase date is required').typeError('Invalid date format'),
-        condition: Yup.string().required('Condition is required'),
-        description: Yup.string().required('Description is required'),
-        location: Yup.string().required('Location is required'),
+       
     });
     const formik = useFormik({
         initialValues: {
@@ -120,9 +125,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
             hours: '',
             price_paid: '',
             date_purchased: '',
-            condition: '',
-            description: '',
-            location: '',
+          
         },
         validationSchema,
         onSubmit: async (values) => {
@@ -182,17 +185,17 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                             </select>
                         </Grid>
 
-                        {["year", "make", "model", "serial_no", "length", "height", "width", "weight", "hours", "price_paid", "condition", "description", "location"].map((field) => (
+                        {["year", "make", "model", "serial_no", "length", "height", "width", "weight", "hours", "price_paid",].map((field) => (
                             <Grid item xs={6} md={4} key={field}>
                                 <label className='capitalize text-[12.5px] text-[#818181] font-normal font-family'>
                                     {field.replace("_", " ")}
-                                    <span className='text-red-500'> *</span>
+                                    {field !== "description" && <span className='text-red-500'> *</span>}
                                 </label>    
                                  <input
                                     type="text"
                                     name={field}
                                     style={inputStyle}
-                                    value={formik.values[field as keyof typeof formik.values]} // ✅ Fix
+                                    value={formik.values[field as keyof typeof formik.values]}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     className='border-1 border-[#E8E8E8]  focus:outline-none focus:border-[#E8E8E8] text-[#414141]'
@@ -204,7 +207,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                         ))}
 
                         <Grid item xs={6} md={4}>
-                            <label className='text-[12.5px] text-[#818181] font-normal font-family'>Purchase Date *</label>
+                            <label className='text-[12.5px] text-[#818181] font-normal font-family'>Date Purchased <span className='text-red-500'>*</span></label>
                             <input
                                 type="date"
                                 name="date_purchased"

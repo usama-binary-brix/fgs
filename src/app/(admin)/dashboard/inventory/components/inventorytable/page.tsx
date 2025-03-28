@@ -293,9 +293,11 @@ const InventoryTable = () => {
                         <button onClick={() => toggleDropdown(lead.id)} className="dropdown-toggle">
                           <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                         </button>
-                        <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="w-40 p-2 !rounded">
-                          <DropdownItem onItemClick={closeDropdown} className="flex w-full  !px-1 text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9] text-left  rounded  dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                            View More
+                        <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="w-40 p-2 fixed right-15 !rounded">
+                          <DropdownItem onItemClick={() => {
+                              router.push(`/dashboard/edit-inventory/${lead.id}`); // Replace with your actual route
+                            }} className="flex w-full  !px-1 text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9] text-left  rounded  dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                            View Details
                           </DropdownItem>
                           <DropdownItem
                             onItemClick={() => {

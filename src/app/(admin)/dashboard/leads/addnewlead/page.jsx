@@ -12,6 +12,7 @@ import { useFormik } from "formik";
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import { Button } from "@mui/material";
+import { useRouter } from "next/navigation";
 const AddNewLead = () => {
   const [dropdownStates, setDropdownStates] = useState({
     calls: false,
@@ -23,7 +24,7 @@ const AddNewLead = () => {
   const [selectedTime, setSelectedTime] = useState(null);
   const [isIconRotate, setIsIconRotate] = useState(false);
   const [addLead] = useAddLeadMutation();
-
+const router = useRouter()
   const toggleDropdown = (dropdown) => {
     setDropdownStates(prev => ({
       ...Object.keys(prev).reduce((acc, key) => {
@@ -138,6 +139,7 @@ const AddNewLead = () => {
         toast.success(response.message);
         resetForm();
         setSelectedTime(null);
+        router.push('/dashboard/leads')
       } catch (error) {
         toast.error("Failed to add lead.");
       }
