@@ -91,14 +91,16 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
         category_id: Yup.string().required('Category is required'),
         subcategory_id: Yup.string().required('Subcategory is required'),
         year: Yup.number()
-    .required('Year is required')
-   ,
-  make: Yup.number()
-    .required('Make is required')
-    .test('make-validation', 'Make should be the same as Year or later', function (value) {
-      const { year } = this.parent;
-      return value >= year;
-    }),
+        .required('Year is required')
+        .max(9999, 'Maximum 4 digits allowed'),
+    
+      make: Yup.number()
+        .required('Make is required')
+        .max(9999, 'Maximum 4 digits allowed')
+        .test('make-validation', 'Make should be the same as Year or later', function (value) {
+          const { year } = this.parent;
+          return value >= year;
+        }),
         model: Yup.string().required('Model is required'),
         serial_no: Yup.string().required('Serial No is required'),
         length: Yup.string().required('Length is required'),
@@ -198,6 +200,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                     value={formik.values[field as keyof typeof formik.values]}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
+                                    maxLength={["year", "make"].includes(field) ? 4 : undefined}
                                     className='border-1 border-[#E8E8E8]  focus:outline-none focus:border-[#E8E8E8] text-[#414141]'
                                 />
                                 {formik.touched[field as keyof typeof formik.values] && formik.errors[field as keyof typeof formik.errors] && (
