@@ -145,7 +145,7 @@ const LeadsTable = () => {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border  border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+      <div className="overflow-hidden rounded border  border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full overflow-x-auto">
           <Table>
             <TableHeader className="border-b border-gray-100 bg-[#F7F7F7] dark:border-white/[0.05]">
@@ -168,19 +168,19 @@ const LeadsTable = () => {
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {data?.leads?.map((lead: any) => (
                 <TableRow key={lead.id}>
-                  <TableCell className="px-5 py-4 text-[#616161] font-normal text-xs font-family">{lead.id}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs flex items-center gap-3 font-family text-[#616161] font-normal">
+                  <TableCell className="px-3 py-4 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{lead.id}</TableCell>
+                  <TableCell className="px-3 py-4 text-[14px] flex items-center gap-3 font-family text-[#616161] font-normal">
                     <Image width={40} height={40} src={lead.image} alt={lead.name} className="rounded-full" />
                     <span>{lead.name}</span>
                   </TableCell>
-                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">{lead.email}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">{lead.company}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">{lead.lead_source}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">{lead.reminder_date_time}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">{lead.budget_min}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">{lead.condition}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">{lead.assignedTo || '---'}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs text-[#616161] font-normal font-family">
+                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.email}</TableCell>
+                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.company}</TableCell>
+                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.lead_source}</TableCell>
+                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.reminder_date_time}</TableCell>
+                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.budget_min}</TableCell>
+                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.condition}</TableCell>
+                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.assignedTo || '---'}</TableCell>
+                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">
                     <div className="relative inline-block">
                       <button onClick={() => toggleDropdown(lead.id)} className="dropdown-toggle">
                         <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />

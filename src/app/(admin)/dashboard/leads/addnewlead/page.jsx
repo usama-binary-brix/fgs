@@ -148,7 +148,7 @@ const AddNewLead = () => {
     <>
       <div className="container-fluid">
       <form onSubmit={formik.handleSubmit}>
-        <div className="row mb-10">
+        <div className="row mb-5">
           <div className="grid grid-cols-1">
             <div className="flex justify-between items-center">
               <h1 className="text-2xl font-extrabold font-family text-goldenBlack">Add New Lead</h1>
@@ -167,8 +167,8 @@ Add Lead
           <div className="row">
             <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 gap-4">
               {/* Contact Information */}
-              <div className="bg-white w-full p-3">
-                <h1 className="text-black font-family font-medium mb-2">Contact Information</h1>
+              <div className="bg-white w-full rounded p-3">
+                <h1 className="text-[#000] text-[14px] font-family font-medium mb-2">Contact Information</h1>
                 <div className="mb-2">
                   <AddLeadInput
                     label="Name"
@@ -287,8 +287,8 @@ Add Lead
               </div>
 
               {/* Lead Details */}
-              <div className="w-full bg-white p-3 h-[400px]">
-                <h1 className="text-black font-medium mb-2">Lead Details</h1>
+              <div className="w-full bg-white rounded p-3 h-[400px]">
+                <h1 className="text-[#000] text-[14px] font-family font-medium mb-2">Lead Details</h1>
 
                 <div className="relative w-full mb-2">
                   <label className="text-xs text-gray-500 font-family font-medium">Number of Calls</label>
@@ -472,8 +472,8 @@ Add Lead
 
               {/* Equipment Requirements */}
               <div>
-                <div className="mb-5 bg-white w-full p-3 h-[400px]">
-                  <h1 className="text-black font-medium font-family mb-2">Equipment Requirements</h1>
+                <div className="mb-5 bg-white w-full rounded p-3 h-[400px]">
+                  <h1 className="text-[#000] text-[14px] font-family font-medium mb-2">Equipment Requirements</h1>
                   <div className="mb-2">
                     <AddLeadInput
                       name="lift_type"
@@ -626,8 +626,8 @@ Add Lead
 
               {/* Additional Information */}
               <div>
-                <div className="bg-white p-3 w-full mb-5">
-                  <h1 className="text-black font-medium font-family mb-2">Purchase Timeline</h1>
+                <div className="bg-white p-3 rounded w-full mb-5">
+                  <h1 className="text-[#000] text-[14px] font-family font-medium mb-2">Purchase Timeline</h1>
                   <div className="flex gap-7">
                     <div>
                       <ul className="">
