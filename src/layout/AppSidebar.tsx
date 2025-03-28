@@ -56,7 +56,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 left-0 bg-[#222222] lg:opacity-[96%] dark:bg-gray-900 dark:border-gray-400 text-white h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 left-0 bg-[#222222] lg:opacity-[100%] dark:bg-gray-900 dark:border-gray-400 text-white h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
         ${isExpanded || isMobileOpen ? "w-[240px]" : isHovered ? "w-[240px]" : "w-[90px]"} 
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
@@ -69,7 +69,7 @@ const AppSidebar: React.FC = () => {
       </div>
       <div className="relative flex flex-col h-screen overflow-y-auto duration-300 ease-linear no-scrollbar justify-between">
         <nav className="mb-6">
-          <h2 className="mb-4 text-xs pl-[15px] hidden uppercase font-semibold lg:flex text-gray-400">
+          <h2 className="mb-4 text-[10px] tracking-widest pl-[15px] hidden uppercase font-medium lg:flex text-gray-400">
             {isExpanded || isHovered || isMobileOpen ? "Menu" : <HorizontaLDots />}
           </h2>
           <ul className="flex flex-col">
@@ -80,7 +80,7 @@ const AppSidebar: React.FC = () => {
                     href={nav.path}
                     className={`menu-item pl-[25px] ${isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"}`}
                   >
-                    <span className="menu-item-text font-semibold">{nav.name}</span>
+                    <span className="menu-item-text font-medium">{nav.name}</span>
                   </Link>
                 ) : (
                   <>

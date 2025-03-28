@@ -125,21 +125,21 @@ const LeadsTable = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-3">
+      <div className="flex justify-between items-center mb-4">
         <div className="inline-flex items-center gap-3">
           <div className="hidden sm:block">
             <div className="flex items-center space-x-2">
               <div className="relative">
                 <IoSearchOutline className="absolute left-3 top-1/2 transform w-[20px] h-[20px] text-[#616161] -translate-y-1/2" />
                 <input
-                  className="text-xs border text-[12.5px] text-[#616161] font-medium placeholder-[#616161] font-family pl-9 pr-2 h-9 w-64 border-[#DDD] rounded focus:border-[#DDD] focus:outline-none"
+                  className="text-xs border text-[12.5px] text-[#616161] font-medium placeholder-[#616161] font-family pl-9 pr-2 h-9 w-64 border-[#DDD] rounded bg-[#fff] focus:border-[#DDD] focus:outline-none"
                   placeholder="Search"
                 />
               </div>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <TopButtons label="Edit Columns" variant="outlined" />
           <TopButtons label="Filters" variant="outlined" />
           <TopButtons onClick={handleNavigate} label="Add New Lead" variant="primary" />
@@ -152,7 +152,7 @@ const LeadsTable = () => {
             <TableHeader className="border-b border-gray-100 overflow-auto bg-[#F7F7F7] dark:border-white/[0.05]">
               <TableRow>
                 {['ID', 'Name', 'Email', 'Company', 'Source', 'Reminder Date', 'Budget', 'Condition', 'Assigned To', 'Action'].map((heading) => (
-                  <TableCell key={heading} isHeader className="px-3  py-3 font-family whitespace-nowrap overflow-hidden font-medium text-[#616161] text-[12.5px] text-start text-theme-sm dark:text-gray-400">
+                  <TableCell key={heading} isHeader className="px-3  py-3.5 font-family whitespace-nowrap overflow-hidden font-medium text-[#616161] text-[12.5px] text-start text-theme-sm dark:text-gray-400">
                     <div className='flex justify-between gap-5 items-center'>
 
                       {heading}
@@ -169,8 +169,8 @@ const LeadsTable = () => {
             <TableBody className="overflow-auto">
               {data?.leads?.map((lead: any) => (
                 <TableRow key={lead.id}>
-                  <TableCell className="px-3 py-4 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{lead.id}</TableCell>
-                  <TableCell className="px-3 py-4 text-[14px] flex items-center gap-3 font-family text-[#616161] font-normal">
+                  <TableCell className="px-3 py-2.5 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{lead.id}</TableCell>
+                  <TableCell className="px-3 py-2.5 text-[14px] flex items-center gap-2 font-family text-[#616161] font-normal">
 
 
 
@@ -193,14 +193,14 @@ const LeadsTable = () => {
 
 
                   </TableCell>
-                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.email}</TableCell>
-                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.company}</TableCell>
-                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.lead_source}</TableCell>
-                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.reminder_date_time}</TableCell>
-                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.budget_min}</TableCell>
-                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.condition}</TableCell>
-                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.assignedTo || '---'}</TableCell>
-                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">
+                  <TableCell className="px-3 py-2.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.email}</TableCell>
+                  <TableCell className="px-3 py-2.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.company}</TableCell>
+                  <TableCell className="px-3 py-2.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.lead_source}</TableCell>
+                  <TableCell className="px-3 py-2.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.reminder_date_time}</TableCell>
+                  <TableCell className="px-3 py-2.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.budget_min}</TableCell>
+                  <TableCell className="px-3 py-2.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.condition}</TableCell>
+                  <TableCell className="px-3 py-2.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.assignedTo || '---'}</TableCell>
+                  <TableCell className="px-3 py-2.5 text-[14px] text-[#616161] text-center whitespace-nowrap overflow-hidden font-normal font-family">
                     <div className="relative inline-block">
                       <button onClick={() => toggleDropdown(lead.id)} className="dropdown-toggle">
                         <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />

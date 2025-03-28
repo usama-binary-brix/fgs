@@ -8,7 +8,7 @@ interface ButtonProps {
 
 const TopButtons: React.FC<ButtonProps> = ({ label, onClick,  variant = "primary" }) => {
   const baseClass =
-    "inline-flex items-center gap-2 !rounded px-4 py-2.5 text-xs font-semibold transition-all duration-200 shadow-sm";
+    "inline-flex items-center gap-2 !rounded px-4 py-1.5 text-xs font-semibold transition-all duration-200";
 
   const variantClass = {
     primary: "bg-primary text-white",
@@ -19,7 +19,7 @@ const TopButtons: React.FC<ButtonProps> = ({ label, onClick,  variant = "primary
   };
 
   return (
-    <button onClick={onClick}  className={`${baseClass}  font-family rounded-lg bg-[#d184280a] ${variantClass[variant]}`}>
+    <button onClick={onClick}  className={`${baseClass}  font-family rounded-lg  bg-[#d184280a] ${variantClass[variant]}`}>
       {label}
     </button>
   );
