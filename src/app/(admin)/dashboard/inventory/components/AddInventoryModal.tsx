@@ -16,7 +16,7 @@ const modalStyle = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '80%',
+    width: '75%',
     maxHeight: '90vh',
     bgcolor: 'background.paper',
     boxShadow: 24,
@@ -35,7 +35,7 @@ const inputStyle = {
     padding: '6px',
     borderRadius: '2px',
     // border: '1px solid #ccc',
-    marginTop: '8px',
+    // marginTop: '8px',
     
 };
 
@@ -152,7 +152,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
     return (
         <Modal open={open} onClose={onClose}>
             <Box sx={modalStyle}>
-                <div className='flex justify-between p-[15px] items-center mb-3 border-b border-gray-400 pb-3'>
+                <div className='flex justify-between items-center border-b border-gray-400 pb-3'>
                     <p className='text-[18px] text-black font-semibold font-family'>Add New Inventory</p>
                     <RxCross2 onClick={onClose} className='cursor-pointer text-[#616161] text-3xl' />
                 </div>
