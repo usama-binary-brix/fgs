@@ -11,7 +11,7 @@ import RadioButton from '../../components/radiobutton/RadioButton';
 const ViewDetailsLeads = () => {
   const { id } = useParams();
   const { data: leadData, error, isLoading } = useGetLeadByIdQuery(id);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
   const [editLead] = useEditLeadMutation()
   const [dropdownStates, setDropdownStates] = useState({
     calls: false,
@@ -102,7 +102,7 @@ const ViewDetailsLeads = () => {
         const response = await editLead(updatedValues).unwrap();
         toast.success(response.message);
       } catch (error) {
-        toast.error("Failed to add lead.");
+        toast.error("Failed to Update lead.");
       }
       setIsEditing(false)
     },
@@ -164,7 +164,8 @@ const ViewDetailsLeads = () => {
 
       toast.success("Investor promoted successfully!");
     } catch (error) {
-      toast.error("Failed to promote investor.");
+      const err = error as { data?: { error?: string } };
+      toast.error(err.data?.error || "Email is Already Promoted");
     }
   };
 
@@ -183,24 +184,21 @@ const ViewDetailsLeads = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">I-{id}</h1>
-        <div className="flex gap-2">
-          <button
-            className="bg-primary text-white px-4 py-2 rounded-md"
-            onClick={() => setIsEditing(!isEditing)}
-          >
-            {isEditing ? "Cancel" : "Edit"}
-          </button>
-          <button className="bg-primary text-white px-4 py-2 rounded-md"
-            onClick={() => handlePromoteClick(id)}
-          >
-            Promote to Investor
-          </button>
-        </div>
-      </div>
-
       <form onSubmit={formik.handleSubmit}>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold">I-{id}</h1>
+          <div className="flex gap-2">
+          <button type="submit" className="bg-primary text-white px-4 py-2 rounded-sm">
+                Update
+              </button>
+            <button className="bg-primary text-white px-4 py-2 rounded-sm"
+              onClick={() => handlePromoteClick(id)}
+              type='button'
+            >
+              Promote to Investor
+            </button>
+          </div>
+        </div>
         <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 gap-4">
           <div className="bg-white w-full p-3">
             <h1 className="text-black font-medium mb-2">Contact Information</h1>

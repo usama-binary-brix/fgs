@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useDeleteLeadMutation, useGetAllLeadsQuery, usePromoteToInvestorMutation } from '@/store/services/api';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
+import { FaUserCircle } from 'react-icons/fa';
 
 interface Lead {
   id: string;
@@ -44,81 +45,81 @@ const LeadsTable = () => {
     router.push("/dashboard/leads/addnewlead")
   }
 
-  const hanldeViewDetails = (id:any) => {
+  const hanldeViewDetails = (id: any) => {
     router.push(`/dashboard/leads/view-lead/${id}`)
   }
 
-  
-    const [isModalOpen, setIsModalOpen] = useState(false);
-  
-    const handleOpenModal = () => {
-      setIsModalOpen(true);
-    };
-  
-    const handleCloseModal = () => {
-      setIsModalOpen(false);
-    };
-  
-    // INVRequest Modal
-  
-  
-    const [isInvReqModalOpen, setIsInvReqModalOpen] = useState(false);
-  
-    const handleOpenInvReqModal = () => {
-      setIsInvReqModalOpen(true);
-    };
-  
-    const handleCloseInvReqModal = () => {
-      setIsInvReqModalOpen(false);
-    };
-  
-    // totalInvestorsModal
-  
-    const [isTotalInvModalOpen, setIsTotalInvModalOpen] = useState(false);
-  
-    const handleOpenTotalInvModal = () => {
-      setIsTotalInvModalOpen(true);
-    };
-  
-    const handleCloseTotalInvModal = () => {
-      setIsTotalInvModalOpen(false);
-    };
-  
-      const [isOpen, setIsOpen] = useState(false);
-  
-      const [openDropdownId, setOpenDropdownId] = useState<string | number | null>();
-      const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-      const [isViewMoreOpen, setIsViewMoreOpen] = useState(false);
-      const [selectedId, setSelectedId] = useState<string | number | null>(null);
-      const [deleteLead, { isLoading: isDeleting }] = useDeleteLeadMutation();
-      const [promoteInvestor, { isLoading: isPromoteLoading }] = usePromoteToInvestorMutation();
-    
-      const handlePromoteClick = async (leadId:any) => {
-        setSelectedId(leadId); // Clicked item ka ID store karo
-      
-        try {
-          const response = await promoteInvestor({
-            lead_id: leadId,
-            type: "promote_to_investor",
-          }).unwrap();
-      
-          console.log("Promotion Successful:", response);
-          toast.success("Investor promoted successfully!");
-        } catch (error) {
-          console.error("Error promoting investor:", error);
-          toast.error("Failed to promote investor.");
-        }
-      };
-        const handleDeleteLead = async (leadId:string | number | null) => {
-          try {
-            await deleteLead(leadId).unwrap();
-            toast.success('Lead deleted successfully!');
-          } catch (error) {
-            toast.error('Failed to delete inventory!');
-          } finally {
-            setIsDeleteModalOpen(false); 
-          }
-        };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // INVRequest Modal
+
+
+  const [isInvReqModalOpen, setIsInvReqModalOpen] = useState(false);
+
+  const handleOpenInvReqModal = () => {
+    setIsInvReqModalOpen(true);
+  };
+
+  const handleCloseInvReqModal = () => {
+    setIsInvReqModalOpen(false);
+  };
+
+  // totalInvestorsModal
+
+  const [isTotalInvModalOpen, setIsTotalInvModalOpen] = useState(false);
+
+  const handleOpenTotalInvModal = () => {
+    setIsTotalInvModalOpen(true);
+  };
+
+  const handleCloseTotalInvModal = () => {
+    setIsTotalInvModalOpen(false);
+  };
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [openDropdownId, setOpenDropdownId] = useState<string | number | null>();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isViewMoreOpen, setIsViewMoreOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | number | null>(null);
+  const [deleteLead, { isLoading: isDeleting }] = useDeleteLeadMutation();
+  const [promoteInvestor, { isLoading: isPromoteLoading }] = usePromoteToInvestorMutation();
+
+  const handlePromoteClick = async (leadId: any) => {
+    setSelectedId(leadId); // Clicked item ka ID store karo
+
+      try {
+        const response = await promoteInvestor({
+          lead_id: leadId,
+          type: "promote_to_investor",
+        }).unwrap();
+
+        console.log("Promotion Successful:", response);
+        toast.success("Investor promoted successfully!");
+      } catch (error) {
+        const err = error as { data?: { error?: string } };
+        toast.error(err.data?.error || "Email is Already Promoted");
+      }
+  };
+  const handleDeleteLead = async (leadId: string | number | null) => {
+    try {
+      await deleteLead(leadId).unwrap();
+      toast.success('Lead deleted successfully!');
+    } catch (error) {
+      toast.error('Failed to delete inventory!');
+    } finally {
+      setIsDeleteModalOpen(false);
+    }
+  };
 
 
 
@@ -145,10 +146,10 @@ const LeadsTable = () => {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded border  border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-        <div className="max-w-full overflow-x-auto">
+      <div className="overflow-auto rounded border  border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div className="max-w-full overflow-auto">
           <Table>
-            <TableHeader className="border-b border-gray-100 bg-[#F7F7F7] dark:border-white/[0.05]">
+            <TableHeader className="border-b border-gray-100 overflow-auto bg-[#F7F7F7] dark:border-white/[0.05]">
               <TableRow>
                 {['ID', 'Name', 'Email', 'Company', 'Source', 'Reminder Date', 'Budget', 'Condition', 'Assigned To', 'Action'].map((heading) => (
                   <TableCell key={heading} isHeader className="px-3  py-3 font-family whitespace-nowrap overflow-hidden font-medium text-[#616161] text-[12.5px] text-start text-theme-sm dark:text-gray-400">
@@ -165,13 +166,32 @@ const LeadsTable = () => {
                 ))}
               </TableRow>
             </TableHeader>
-            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+            <TableBody className="overflow-auto">
               {data?.leads?.map((lead: any) => (
                 <TableRow key={lead.id}>
                   <TableCell className="px-3 py-4 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{lead.id}</TableCell>
                   <TableCell className="px-3 py-4 text-[14px] flex items-center gap-3 font-family text-[#616161] font-normal">
-                    <Image width={40} height={40} src={lead.image} alt={lead.name} className="rounded-full" />
+
+
+
+                    {lead.image ? (
+                      <Image
+                        width={32}
+                        height={32}
+                        src={lead.image}
+                        alt={lead.first_name}
+                        className="rounded-full"
+                      />
+                    ) : (
+                      <span>
+                        <FaUserCircle className="w-6 h-6 text-gray-500" />
+
+                      </span>
+                    )}
                     <span>{lead.name}</span>
+
+
+
                   </TableCell>
                   <TableCell className="px-3 py-4 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.email}</TableCell>
                   <TableCell className="px-3 py-4 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.company}</TableCell>
@@ -185,14 +205,14 @@ const LeadsTable = () => {
                       <button onClick={() => toggleDropdown(lead.id)} className="dropdown-toggle">
                         <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />
                       </button>
-                      <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="w-40 p-2">
-                        <DropdownItem onItemClick={()=>hanldeViewDetails(lead.id)} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                      <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown}  className="fixed right-15 z-50 w-40 p-2 bg-white shadow-md border rounded-lg">
+                        <DropdownItem onItemClick={() => hanldeViewDetails(lead.id)} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                           View Details
                         </DropdownItem>
-                        <DropdownItem onItemClick={()=>hanldeViewDetails(lead.id)} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                         Edit
+                        <DropdownItem onItemClick={() => hanldeViewDetails(lead.id)} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                          Edit
                         </DropdownItem> <DropdownItem onItemClick={() => handlePromoteClick(lead.id)} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                         {isPromoteLoading && selectedId === lead.id ? "Promoting..." : "Promote to investor"}
+                          {isPromoteLoading && selectedId === lead.id ? "Promoting..." : "Promote to investor"}
                         </DropdownItem>
                         <DropdownItem onItemClick={closeDropdown} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                           Send Email
