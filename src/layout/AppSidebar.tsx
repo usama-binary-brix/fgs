@@ -40,16 +40,15 @@ const AppSidebar: React.FC = () => {
 
   const filteredNavItems = navItems.filter((item) => item.roles?.includes(userRole));
 
-  // const isActive = useCallback((path: string) => pathname === path, [pathname]);
   const isActive = useCallback(
-    (path: string, subItems?: { name: string; path: string }[]) => {
-      if (pathname === path) return true; // Exact match
-      if (subItems?.filter((sub) => pathname == sub.path)) return true; // Any sub-item is active
-      return false;
+    (path?: string, subItems?: { name: string; path: string }[]) => {
+      if (!path && subItems) {
+        return subItems.some((sub) => pathname === sub.path);
+      }
+      return pathname === path || (subItems && subItems.some((sub) => pathname === sub.path));
     },
     [pathname]
   );
-  
 
   const toggleMenu = (key: string) => {
     setOpenMenus((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -79,26 +78,28 @@ const AppSidebar: React.FC = () => {
                 {nav.path ? (
                   <Link
                     href={nav.path}
-                    className={`menu-item pl-[15px] ${isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"}`}
+                    className={`menu-item pl-[25px] ${isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"}`}
                   >
                     <span className="menu-item-text font-semibold">{nav.name}</span>
                   </Link>
                 ) : (
                   <>
                     <button
-                      className="w-full flex items-center justify-between px-4 py-2 font-semibold text-gray-400 hover:text-primary"
+                      className={`w-full flex items-center justify-between px-6 py-2 font-semibold ${isActive(undefined, nav.subItems) ? "menu-item-active" : "menu-item-inactive"
+                        }`}
                       onClick={() => toggleMenu(nav.name)}
                     >
                       <span>{nav.name}</span>
                       <ChevronDownIcon className={`transition-transform ${openMenus[nav.name] ? "rotate-180" : ""}`} />
                     </button>
+
                     {openMenus[nav.name] && (
-                      <ul className="pl-6">
+                      <ul className="bg-[#FFFFFF14]">
                         {nav.subItems?.map((sub) => (
-                          <li key={sub.name}>
+                          <li key={sub.name} className="">
                             <Link
                               href={sub.path}
-                              className={`menu-item ${isActive(sub.path) ? "menu-sub-item-active" : "menu-item-inactive"}`}
+                              className={`pl-10 menu-item ${isActive(sub.path) ? "menu-sub-item-active" : "menu-item-inactive"}`}
                             >
                               {sub.name}
                             </Link>
