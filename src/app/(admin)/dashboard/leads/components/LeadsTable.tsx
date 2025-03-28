@@ -151,7 +151,7 @@ const LeadsTable = () => {
             <TableHeader className="border-b border-gray-100 bg-[#F7F7F7] dark:border-white/[0.05]">
               <TableRow>
                 {['ID', 'Name', 'Email', 'Company', 'Source', 'Reminder Date', 'Budget', 'Condition', 'Assigned To', 'Action'].map((heading) => (
-                  <TableCell key={heading} isHeader className="px-3  py-3 font-family whitespace-nowrap overflow-hidden font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                  <TableCell key={heading} isHeader className="px-3  py-3 font-family whitespace-nowrap overflow-hidden font-medium text-[#616161] text-[12.5px] text-start text-theme-sm dark:text-gray-400">
                     <div className='flex justify-between gap-5 items-center'>
 
                       {heading}
