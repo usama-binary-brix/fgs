@@ -42,7 +42,6 @@ const inputStyle = {
 const EditAccount: React.FC<Props> = ({ open, onClose, userData }) => {
   const [register] = useRegisterMutation();
   const [loading, setLoading] = useState(false)
-
 const getInitialValues = (userData:any) => ({
   account_type: userData?.account_type || '',
   first_name: userData?.first_name || '',

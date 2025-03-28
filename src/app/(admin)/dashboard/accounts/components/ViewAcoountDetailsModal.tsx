@@ -82,7 +82,7 @@ const ViewAccountDetailsModal: React.FC<ViewMoreModalProps> = ({ open, onClose, 
               </div>
             )
           )}
-
+<UserProjects/>
         </DialogContent>
         <DialogActions sx={{paddingBottom:'1rem', paddingRight:'1rem'}}>
        
