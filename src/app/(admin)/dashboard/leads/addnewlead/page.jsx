@@ -294,7 +294,7 @@ Add Lead
                   <label className="text-xs text-gray-500 font-family font-medium">Number of Calls</label>
                   <button
                     type="button"
-                    className="w-full text-left mt-1 text-darkGray font-family text-md border flex justify-between items-center border-gray-300 px-3 py-1 rounded bg-white focus:outline-none"
+                    className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
                     onClick={() => toggleDropdown('calls')}
                   >
                     {formik.values.number_of_calls || "Select an option"}
