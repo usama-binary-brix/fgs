@@ -1,17 +1,11 @@
+
 "use client";
-import React, { useEffect, useRef, useState,useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
-import {
-  
-  ChevronDownIcon,
-  GridIcon,
-  HorizontaLDots,
-
-} from "../icons/index";
-// import SidebarWidget from "./SidebarWidget";
+import { ChevronDownIcon, GridIcon, HorizontaLDots } from "../icons/index";
 import Profile from "@/components/Profile";
 import { useSelector } from "react-redux";
 
@@ -19,406 +13,108 @@ type NavItem = {
   name: string;
   icon: React.ReactNode;
   path?: string;
-  subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
-  roles?:string[]
+  subItems?: { name: string; path: string }[];
+  roles?: string[];
 };
 
-// const navItems: NavItem[] = [
-//   {
-//     icon: <GridIcon />,
-//     name: "Dashboard",
-//     path: "/dashboard",
-//   },
-//   {
-//     icon: <GridIcon />,
-//     name: "All Leads",
-//     path: "/dashboard/leads",
-//   },
-//   {
-//     icon: <GridIcon />,
-//     name: "Accounts",
-//     path: "/dashboard/accounts",
-//   }, {
-//     icon: <GridIcon />,
-//     name: "Inventory",
-//     // path: "/dashboard/inventory",
-//     subItems: [{ name: "All Inventory", path: "/dashboard/inventory", pro: false }],
-
-//   },
-// ];
-
 const navItems: NavItem[] = [
-  {
-    icon: <GridIcon />,
-    name: "Dashboard",
-    path: "/dashboard",
-    roles: ["admin"], 
-  },
-  {
-    icon: <GridIcon />,
-    name: "All Leads",
-    path: "/dashboard/leads",
-    roles: ["admin"], 
-  },
-  {
-    icon: <GridIcon />,
-    name: "Accounts",
-    path: "/dashboard/accounts",
-    roles: ["admin"], 
-  },
+  { icon: <GridIcon />, name: "Dashboard", path: "/dashboard", roles: ["admin"] },
+  { icon: <GridIcon />, name: "All Leads", path: "/dashboard/leads", roles: ["admin"] },
+  { icon: <GridIcon />, name: "Accounts", path: "/dashboard/accounts", roles: ["admin"] },
   {
     icon: <GridIcon />,
     name: "Inventory",
-    subItems: [
-      { name: "All Inventory", path: "/dashboard/inventory", pro: false },
-    ],
-    roles: ["admin"], 
+    subItems: [{ name: "All Inventory", path: "/dashboard/inventory" }],
+    roles: ["admin"],
   },
-
-  {
-    icon: <GridIcon />,
-    name: "Dashboard",
-    path: "/investor-dashboard",
-    roles: ["investor"], 
-  },
-  {
-    icon: <GridIcon />,
-    name: "Investment Opportunities",
-    path: "/investor-dashboard/investment-opportunities",
-    roles: ["investor"], 
-  },
- 
-  {
-    icon: <GridIcon />,
-    name: "My Investment",
-    path: "/investor-dashboard/my-investment",
-    roles: ["investor"], 
-  },
- 
-
-];
-
-
-const othersItems: NavItem[] = [
-  // {
-  //   icon: <PieChartIcon />,
-  //   name: "Charts",
-  //   subItems: [
-  //     { name: "Line Chart", path: "/line-chart", pro: false },
-  //     { name: "Bar Chart", path: "/bar-chart", pro: false },
-  //   ],
-  // },
-  // {
-  //   icon: <BoxCubeIcon />,
-  //   name: "UI Elements",
-  //   subItems: [
-  //     { name: "Alerts", path: "/alerts", pro: false },
-  //     { name: "Avatar", path: "/avatars", pro: false },
-  //     { name: "Badge", path: "/badge", pro: false },
-  //     { name: "Buttons", path: "/buttons", pro: false },
-  //     { name: "Images", path: "/images", pro: false },
-  //     { name: "Videos", path: "/videos", pro: false },
-  //   ],
-  // },
-  // {
-  //   icon: <PlugInIcon />,
-  //   name: "Authentication",
-  //   subItems: [
-  //     { name: "Sign In", path: "/signin", pro: false },
-  //     { name: "Sign Up", path: "/signup", pro: false },
-  //   ],
-  // },
+  { icon: <GridIcon />, name: "Dashboard", path: "/investor-dashboard", roles: ["investor"] },
+  { icon: <GridIcon />, name: "Investment Opportunities", path: "/investor-dashboard/investment-opportunities", roles: ["investor"] },
+  { icon: <GridIcon />, name: "My Investment", path: "/investor-dashboard/my-investment", roles: ["investor"] },
 ];
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
-  const userRole = useSelector((state:any) => state?.user?.user?.account_type);
-// const userRole= 'investor'
-
-const filteredNavItems = navItems.filter((item) => item.roles && item.roles.includes(userRole));
-
+  const userRole = useSelector((state: any) => state?.user?.user?.account_type);
   const pathname = usePathname();
-  const renderMenuItems = (
-    navItems: NavItem[],
-    menuType: "main" | "others"
-  ) => (
-    <ul className="flex flex-col">
-      {filteredNavItems.map((nav, index) => (
-        <li className="font-family  font-semibold" key={nav.name} >
-          {nav.subItems ? (
-            <button
-              onClick={() => handleSubmenuToggle(index, menuType)}
-              className={`menu-item group font-family font-semibold  ${
-                openSubmenu?.type === menuType && openSubmenu?.index === index
-                  ? "menu-item-active"
-                  : "menu-item-inactive"
-              } cursor-pointer ${
-                !isExpanded && !isHovered
-                  ? "lg:justify-center"
-                  : "lg:justify-start"
-              }`}
-            >
-              {/* <span
-                className={` ${
-                  openSubmenu?.type === menuType && openSubmenu?.index === index
-                    ? "menu-item-icon-active"
-                    : "menu-item-icon-inactive"
-                }`}
-              >
-                {nav.icon}
-              </span> */}
-              {(isExpanded || isHovered || isMobileOpen) && (
-                <span className={`menu-item-text pl-[5px]`}>{nav.name}</span>
-              )}
-              {(isExpanded || isHovered || isMobileOpen) && (
-                <ChevronDownIcon
-                  className={`ml-auto w-5 h-5 transition-transform duration-200  ${
-                    openSubmenu?.type === menuType &&
-                    openSubmenu?.index === index
-                      ? "rotate-180 white"
-                      : ""
-                  }`}
-                />
-              )}
-            </button>
-          ) : (
-            nav.path && (
-              <Link
-                href={nav.path}
-                className={`menu-item pl-[15px] group ${
-                  isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
-                }`}
-              >
-                {/* <span
-                  className={`${
-                    isActive(nav.path)
-                      ? "menu-item-icon-active"
-                      : "menu-item-icon-inactive"
-                  }`}
-                >
-                  {nav.icon}
-                </span> */}
-                {(isExpanded || isHovered || isMobileOpen) && (
-                  <span className={`menu-item-text font-family font-semibold`}>{nav.name}</span>
-                )}
-              </Link>
-            )
-          )}
-          {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
-            <div
-              ref={(el) => {
-                subMenuRefs.current[`${menuType}-${index}`] = el;
-              }}
-              className="overflow-hidden transition-all duration-300"
-              style={{
-                height:
-                  openSubmenu?.type === menuType && openSubmenu?.index === index
-                    ? `${subMenuHeight[`${menuType}-${index}`]}px`
-                    : "0px",
-              }}
-            >
-              <ul className="bg-[#FFFFFF14]">
-                {nav.subItems.map((subItem) => (
-                  <li className="font-family font-semibold" key={subItem.name}>
-                    <Link
-                      href={subItem.path}
-                      className={`menu-dropdown-item ${
-                        isActive(subItem.path)
-                          ? "menu-dropdown-item-active"
-                          : "menu-dropdown-item-inactive"
-                      }`}
-                    >
-                      {subItem.name}
-                      <span className="flex font-family font-semibold items-center gap-1 ml-auto">
-                        {subItem.new && (
-                          <span
-                            className={`ml-auto ${
-                              isActive(subItem.path)
-                                ? "menu-dropdown-badge-active"
-                                : "menu-dropdown-badge-inactive"
-                            } menu-dropdown-badge `}
-                          >
-                            new
-                          </span>
-                        )}
-                        {subItem.pro && (
-                          <span
-                            className={`ml-auto ${
-                              isActive(subItem.path)
-                                ? "menu-dropdown-badge-active"
-                                : "menu-dropdown-badge-inactive"
-                            } menu-dropdown-badge `}
-                          >
-                            pro
-                          </span>
-                        )}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </li>
-      ))}
-    </ul>
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+
+  const filteredNavItems = navItems.filter((item) => item.roles?.includes(userRole));
+
+  // const isActive = useCallback((path: string) => pathname === path, [pathname]);
+  const isActive = useCallback(
+    (path: string, subItems?: { name: string; path: string }[]) => {
+      if (pathname === path) return true; // Exact match
+      if (subItems?.filter((sub) => pathname == sub.path)) return true; // Any sub-item is active
+      return false;
+    },
+    [pathname]
   );
+  
 
-  const [openSubmenu, setOpenSubmenu] = useState<{
-    type: "main" | "others";
-    index: number;
-  } | null>(null);
-  const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
-    {}
-  );
-  const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
-
-  // const isActive = (path: string) => path === pathname;
-   const isActive = useCallback((path: string) => path === pathname, [pathname]);
-
-  useEffect(() => {
-    // Check if the current path matches any submenu item
-    let submenuMatched = false;
-    ["main", "others"].forEach((menuType) => {
-      const items = menuType === "main" ? navItems : othersItems;
-      items.forEach((nav, index) => {
-        if (nav.subItems) {
-          nav.subItems.forEach((subItem) => {
-            if (isActive(subItem.path)) {
-              setOpenSubmenu({
-                type: menuType as "main" | "others",
-                index,
-              });
-              submenuMatched = true;
-            }
-          });
-        }
-      });
-    });
-
-    // If no submenu item matches, close the open submenu
-    if (!submenuMatched) {
-      setOpenSubmenu(null);
-    }
-  }, [pathname,isActive]);
-
-  useEffect(() => {
-    // Set the height of the submenu items when the submenu is opened
-    if (openSubmenu !== null) {
-      const key = `${openSubmenu.type}-${openSubmenu.index}`;
-      if (subMenuRefs.current[key]) {
-        setSubMenuHeight((prevHeights) => ({
-          ...prevHeights,
-          [key]: subMenuRefs.current[key]?.scrollHeight || 0,
-        }));
-      }
-    }
-  }, [openSubmenu]);
-
-  const handleSubmenuToggle = (index: number, menuType: "main" | "others") => {
-    setOpenSubmenu((prevOpenSubmenu) => {
-      if (
-        prevOpenSubmenu &&
-        prevOpenSubmenu.type === menuType &&
-        prevOpenSubmenu.index === index
-      ) {
-        return null;
-      }
-      return { type: menuType, index };
-    });
+  const toggleMenu = (key: string) => {
+    setOpenMenus((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   return (
     <aside
-      className={`fixed mt-16  flex flex-col lg:mt-0 top-0 left-0 bg-[#222222] opacity-[96%] dark:bg-gray-900 dark:border-gray-400 text-white h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
-        ${
-          isExpanded || isMobileOpen
-            ? "w-[290px]"
-            : isHovered
-            ? "w-[290px]"
-            : "w-[90px]"
-        }
-        ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0`}
+      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 left-0 bg-[#222222] lg:opacity-[96%] dark:bg-gray-900 dark:border-gray-400 text-white h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+        ${isExpanded || isMobileOpen ? "w-[240px]" : isHovered ? "w-[240px]" : "w-[90px]"} 
+        ${isMobileOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div
-        className={`py-8 px-4 lg:flex hidden border-b border-[#ffffff1a] pb-5 mb-5  ${
-          !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
-        }`}
-      >
+      <div className="py-4 px-4 lg:flex hidden border-b border-[#ffffff1a] pb-5 mb-5">
         <Link href="/">
-          {isExpanded || isHovered || isMobileOpen ? (
-            <>
-              <Image
-                className="dark:hidden"
-                src="/images/logo/logo.svg"
-                alt="Logo"
-                width={250}
-                height={40}
-              />
-              <Image
-                className="hidden dark:block"
-                src="/images/logo/logo.svg"
-                alt="Logo"
-                width={250}
-                height={40}
-              />
-            </>
-          ) : (
-            <Image
-              src="/images/logo/logo.svg"
-              alt="Logo"
-              width={32}
-              height={32}
-            />
-          )}
+          <Image src="/images/logo/logo.svg" alt="Logo" width={isExpanded || isHovered || isMobileOpen ? 200 : 32} height={40} />
         </Link>
       </div>
-      <div className="flex pt-6 lg:pt-0 flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
+      <div className="relative flex flex-col h-screen overflow-y-auto duration-300 ease-linear no-scrollbar justify-between">
         <nav className="mb-6">
-          <div className="flex flex-col gap-4">
-            <div>
-              <h2
-                className={`mb-4 text-xs pl-[15px] hidden uppercase font-family font-semibold lg:flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
+          <h2 className="mb-4 text-xs pl-[15px] hidden uppercase font-semibold lg:flex text-gray-400">
+            {isExpanded || isHovered || isMobileOpen ? "Menu" : <HorizontaLDots />}
+          </h2>
+          <ul className="flex flex-col">
+            {filteredNavItems.map((nav) => (
+              <li key={nav.name} className="font-semibold">
+                {nav.path ? (
+                  <Link
+                    href={nav.path}
+                    className={`menu-item pl-[15px] ${isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"}`}
+                  >
+                    <span className="menu-item-text font-semibold">{nav.name}</span>
+                  </Link>
                 ) : (
-                  <HorizontaLDots />
+                  <>
+                    <button
+                      className="w-full flex items-center justify-between px-4 py-2 font-semibold text-gray-400 hover:text-primary"
+                      onClick={() => toggleMenu(nav.name)}
+                    >
+                      <span>{nav.name}</span>
+                      <ChevronDownIcon className={`transition-transform ${openMenus[nav.name] ? "rotate-180" : ""}`} />
+                    </button>
+                    {openMenus[nav.name] && (
+                      <ul className="pl-6">
+                        {nav.subItems?.map((sub) => (
+                          <li key={sub.name}>
+                            <Link
+                              href={sub.path}
+                              className={`menu-item ${isActive(sub.path) ? "menu-sub-item-active" : "menu-item-inactive"}`}
+                            >
+                              {sub.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </>
                 )}
-              </h2>
-              {renderMenuItems(navItems, "main")}
-              <div className=" absolute bottom-22 lg:bottom-0">
-<Profile/>
-
-</div>
-            </div>
-
-            {/* <div className="">
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
-                ) : (
-                  <HorizontaLDots />
-                )}
-              </h2>
-              {renderMenuItems(othersItems, "others")}
-            </div> */}
-          </div>
+              </li>
+            ))}
+          </ul>
         </nav>
-        {/* {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null} */}
+        <div className="absolute bottom-15 lg:bottom-0 w-full">
+          {isExpanded || isHovered || isMobileOpen ? <Profile /> : null}
+        </div>
       </div>
     </aside>
   );

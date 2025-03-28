@@ -5,6 +5,7 @@ import { useSingleUserQuery } from '@/store/services/api';
 import { RxCross2 } from 'react-icons/rx';
 import { useState } from 'react';
 import EditAccount from './EditAccount';
+import UserProjects from './UserProjects';
 
 interface ViewMoreModalProps {
   open: boolean;
@@ -81,6 +82,7 @@ const ViewAccountDetailsModal: React.FC<ViewMoreModalProps> = ({ open, onClose, 
               </div>
             )
           )}
+
         </DialogContent>
         <DialogActions sx={{paddingBottom:'1rem', paddingRight:'1rem'}}>
        
