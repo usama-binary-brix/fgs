@@ -74,9 +74,9 @@ export default function ExampleFormWithIcon() {
               <Label className="mb-0"> Remember me</Label>
             </div>
             <div>
-              <Button size="sm">
+              {/* <Button size="sm">
                 Create Account <ArrowRightIcon />
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>

@@ -64,7 +64,7 @@ export default function ExampleFormTwo() {
             <Label htmlFor="lastName">Last Name</Label>
             <Input type="text" placeholder="Enter last name" id="firstName" />
           </div>
-          <div className="col-span-2">
+          {/* <div className="col-span-2">
             <Label htmlFor="email">Gender</Label>
             <Select
               options={optionsGender}
@@ -73,7 +73,7 @@ export default function ExampleFormTwo() {
               defaultValue=""
               className="bg-gray-50 dark:bg-gray-800"
             />
-          </div>
+          </div> */}
           <div className="col-span-2">
             <Label htmlFor="lastName">Date of Birth</Label>
             <div className="relative w-full flatpickr-wrapper">
@@ -91,7 +91,7 @@ export default function ExampleFormTwo() {
               </span>
             </div>
           </div>
-          <div className="col-span-2">
+          {/* <div className="col-span-2">
             <Label htmlFor="email">Category</Label>
             <Select
               options={categoryOptions}
@@ -100,7 +100,7 @@ export default function ExampleFormTwo() {
               defaultValue=""
               className="bg-gray-50 dark:bg-gray-800"
             />
-          </div>
+          </div> */}
           <div className="col-span-2">
             <h4 className="pb-4 text-base font-medium text-gray-800 border-b border-gray-200 dark:border-gray-800 dark:text-white/90">
               Address
@@ -122,7 +122,7 @@ export default function ExampleFormTwo() {
             <Label htmlFor="postCode">Post Code</Label>
             <Input type="text" id="postCode" />
           </div>
-          <div>
+          {/* <div>
             <Label htmlFor="email">Category</Label>
             <Select
               options={country}
@@ -131,7 +131,7 @@ export default function ExampleFormTwo() {
               defaultValue=""
               className="bg-gray-50 dark:bg-gray-800"
             />
-          </div>
+          </div> */}
           <div className="flex items-center gap-3 col-span-full">
             <Label className="m-0">Membership:</Label>
             <div className="flex flex-wrap items-center gap-4">
@@ -153,12 +153,12 @@ export default function ExampleFormTwo() {
               />
             </div>
           </div>
-          <div className="flex gap-3">
+          {/* <div className="flex gap-3">
             <Button size="sm">Save Changes</Button>
             <Button size="sm" variant="outline">
               Cancel
             </Button>
-          </div>
+          </div> */}
         </div>
       </Form>
     </ComponentCard>

@@ -48,7 +48,7 @@ export default function ExampleFormOne() {
               id="firstName"
             />
           </div>
-          <div className="col-span-2">
+          {/* <div className="col-span-2">
             <Label htmlFor="subject">Subject</Label>
             <Select
               options={options}
@@ -57,7 +57,7 @@ export default function ExampleFormOne() {
               defaultValue=""
               className="bg-gray-50 dark:bg-gray-800"
             />
-          </div>
+          </div> */}
           <div className="col-span-2">
             <Label htmlFor="email">Messages</Label>
             <TextArea
@@ -69,10 +69,10 @@ export default function ExampleFormOne() {
             />
           </div>
           <div className="col-span-2">
-            <Button size="sm" className="w-full">
+            {/* <Button size="sm" className="w-full">
               Send Message
               <PaperPlaneIcon />
-            </Button>
+            </Button> */}
           </div>
         </div>
       </Form>
