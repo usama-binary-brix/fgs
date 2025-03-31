@@ -1,5 +1,4 @@
 'use client'
-import TopButtons from '@/components/Buttons/TopButtons';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { DropdownItem } from '@/components/ui/dropdown/DropdownItem';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
@@ -9,13 +8,13 @@ import { useState } from 'react';
 import { IoSearchOutline } from 'react-icons/io5';
 import AccountsModal from './AccountsModal';
 import { useDeleteUserMutation, useGetAllUsersQuery } from '@/store/services/api';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import { format } from "date-fns";
 import { FaUserCircle } from "react-icons/fa";
 import ViewAccountDetailsModal from './ViewAcoountDetailsModal';
-import EditAccount from './EditAccount';
 import Pagination from '@/components/tables/Pagination';
+import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
+import Button from '@/components/ui/button/Button';
 
 const AccountsTable = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,13 +43,6 @@ const AccountsTable = () => {
     setSelectedUserId(userId);
     setIsViewMoreOpen(true);
   };
-
-
-
-  function closeDropdown() {
-    setIsOpen(false);
-  }
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -103,11 +95,24 @@ const AccountsTable = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <TopButtons label="Edit Columns" variant="outlined" />
-          <TopButtons label="Filters" variant="outlined" />
-          <TopButtons label="Add New Account" variant="primary" onClick={handleOpenModal} />
+          <Button variant="outlined"
+            size='sm'
+          >
+            Edit Columns
+          </Button>
 
-          <AccountsModal open={isModalOpen} onClose={handleCloseModal} />
+          <Button variant="outlined"
+            size='sm'
+          >
+            Filters
+          </Button>
+
+          <Button variant="primary"
+            size='sm'
+            onClick={handleOpenModal}
+          >
+            Add New Account
+          </Button>
         </div>
       </div>
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -161,8 +166,8 @@ const AccountsTable = () => {
                   <TableCell className="px-5 py-3 text-sm text-[#616161]">
                     <span
                       className={`px-2 py-2 rounded-sm text-sm font-medium ${user.status === 'Active'
-                          ? 'bg-green-100 px-3 text-green-600'
-                          : 'bg-orange-100 text-orange-500'
+                        ? 'bg-green-100 px-3 text-green-600'
+                        : 'bg-orange-100 text-orange-500'
                         }`}
                     >
                       {user.status}
@@ -221,51 +226,18 @@ const AccountsTable = () => {
         </div>
 
       </div>
-
-
-      <Dialog
+      <DeleteConfirmationModal
+        title={'Account'}
         open={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-      >
-        <DialogTitle>Remove Account</DialogTitle>
-        <DialogContent>
-          <Typography>Are you sure you want to remove account for <span className='text-primary'>{selectedName}</span></Typography>
-        </DialogContent>
-        <DialogActions>
-
-          <Button onClick={() => setIsDeleteModalOpen(false)} variant="outlined"
-            sx={{
-              backgroundColor: '#8080801A',
-              mr: 2,
-              color: '#808080',
-              borderColor: '#8080801A',
-              outline: 'none',
-              '&:hover': {
-                backgroundColor: '#8080801B',
-                borderColor: '#8080801A'
-              },
-              textTransform: 'none',
-            }}
-          >
-            Close
-          </Button>
-
-          <Button
-            onClick={() => handleDeleteUser(selectedUserId)}
-
-            variant="contained"
-            sx={{ backgroundColor: '#C28024', '&:hover': { backgroundColor: '#a56a1d' }, textTransform: 'none' }}
-          >
-            Remove
-          </Button>
-
-        </DialogActions>
-      </Dialog>
+        onConfirm={() => handleDeleteUser(selectedUserId)}
+        name={selectedName}
+      />
       <ViewAccountDetailsModal open={isViewMoreOpen} onClose={() => setIsViewMoreOpen(false)} userId={selectedUserId} />
-      <EditAccount open={isEditModalOpen}
+      <AccountsModal open={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         userData={selectedUserData} />
-
+      <AccountsModal open={isModalOpen} onClose={handleCloseModal} />
 
     </>
   );

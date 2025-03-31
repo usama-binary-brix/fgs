@@ -4,8 +4,8 @@ import Image from 'next/image';
 import { useSingleUserQuery } from '@/store/services/api';
 import { RxCross2 } from 'react-icons/rx';
 import { useState } from 'react';
-import EditAccount from './EditAccount';
 import UserProjects from './UserProjects';
+import AccountsModal from './AccountsModal';
 
 interface ViewMoreModalProps {
   open: boolean;
@@ -113,10 +113,10 @@ const ViewAccountDetailsModal: React.FC<ViewMoreModalProps> = ({ open, onClose, 
           </Button>
         </DialogActions>
       </Dialog>
-      <EditAccount open={isEditModalOpen}
+     
+<AccountsModal open={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         userData={selectedUserData} />
-
 
     </>
   );

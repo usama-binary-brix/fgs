@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
@@ -10,54 +12,41 @@ import { setUser } from "@/store/services/userSlice";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
-
   const dispatch = useDispatch();
   const router = useRouter();
-  const [login, { isLoading, error }] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
 
-  // Email Validation - Show error only after typing "@"
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email.includes("@") && !emailRegex.test(email)) {
-      return "Please enter a valid email.";
-    }
-    return "";
-  };
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .email("Please enter a valid email.")
+        .required("Email is required."),
+      password: Yup.string().required("Password is required."),
+    }),
+    onSubmit: async (values, { setSubmitting, setFieldError }) => {
+      try {
+        const res = await login(values).unwrap();
+        dispatch(setUser({ user: res.user, token: res.token }));
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newEmail = e.target.value;
-    setEmail(newEmail);
-    setEmailError(validateEmail(newEmail));
-  };
-
-  // Handle Login
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (emailError) return;
-
-    try {
-      const res = await login({ email, password }).unwrap();
-      dispatch(setUser({ user: res.user, token: res.token }));
-
-      if (res.user.role === "admin") {
-        router.push("/dashboard");
-      } else if (res.user.role === "investor") {
-        router.push("/investor-dashboard");
-      } else {
-        router.push("/dashboard");
-      }
-
-      setLoginError(""); // Clear any previous login errors
-    } catch (err: any) {
-      console.error("Login failed:", err);
-      setLoginError(err?.data?.message || err?.data?.error);
-    }
-  };
+        if (res.user.role === "admin") {
+          router.push("/dashboard");
+        } else if (res.user.role === "investor") {
+          router.push("/investor-dashboard");
+        } else {
+          router.push("/dashboard");
+        }
+      } 
+        catch (err: any) {
+          setFieldError("password", err?.data?.message || err?.data?.error || "Login failed");
+       
+              }
+      setSubmitting(false);
+    },
+  });
 
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
@@ -71,29 +60,27 @@ export default function SignInForm() {
               Enter your email and password to sign in!
             </p>
           </div>
-          <form>
+          <form onSubmit={formik.handleSubmit}>
             <div className="space-y-6">
-              {/* Email Input */}
               <div>
                 <Label>Email <span className="text-error-500">*</span></Label>
                 <Input
                   placeholder="info@gmail.com"
                   type="email"
-                  value={email}
-                  onChange={handleEmailChange}
+                  {...formik.getFieldProps("email")}
                 />
-                {emailError && <p className="text-error-500 text-sm">{emailError}</p>}
+                {formik.touched.email && formik.errors.email && (
+                  <p className="text-error-500 text-sm">{formik.errors.email}</p>
+                )}
               </div>
 
-              {/* Password Input */}
               <div>
                 <Label>Password <span className="text-error-500">*</span></Label>
                 <div className="relative">
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    {...formik.getFieldProps("password")}
                   />
                   <span
                     onClick={() => setShowPassword(!showPassword)}
@@ -102,19 +89,18 @@ export default function SignInForm() {
                     {showPassword ? <EyeIcon className="fill-gray-500 dark:fill-gray-400" /> : <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />}
                   </span>
                 </div>
+                {formik.touched.password && formik.errors.password && (
+                  <p className="text-error-500 text-sm">{formik.errors.password}</p>
+                )}
               </div>
 
-              {/* API Error Message */}
-              {loginError && <p className="text-error-500 text-sm">{loginError}</p>}
-
-              {/* Submit Button */}
               <div>
                 <button
-                  onClick={handleLogin}
+                  type="submit"
                   className="w-full bg-primary hover:bg-primary py-2 text-white rounded-lg"
-                  disabled={isLoading}
+                  disabled={isLoading || formik.isSubmitting}
                 >
-                  {isLoading ? "Signing in..." : "Sign in"}
+                  {isLoading || formik.isSubmitting ? "Signing in..." : "Sign in"}
                 </button>
               </div>
             </div>

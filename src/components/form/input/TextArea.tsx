@@ -8,8 +8,8 @@ interface TextareaProps {
   className?: string; // Additional CSS classes
   disabled?: boolean; // Disabled state
   error?: boolean; // Error state
-  hint?: string; // Hint text to display
-}
+  hint?: any; // Hint text to display
+  onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void; }
 
 const TextArea: React.FC<TextareaProps> = ({
   placeholder = "Enter your message", // Default placeholder
@@ -20,6 +20,7 @@ const TextArea: React.FC<TextareaProps> = ({
   disabled = false, // Disabled state
   error = false, // Error state
   hint = "", // Default hint text
+  onBlur
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (onChange) {
@@ -34,7 +35,7 @@ const TextArea: React.FC<TextareaProps> = ({
   } else if (error) {
     textareaClasses += ` bg-transparent text-gray-400 border-gray-300 focus:border-error-300 focus:ring-3 focus:ring-error-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-error-800`;
   } else {
-    textareaClasses += ` bg-transparent text-gray-400 border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800`;
+    textareaClasses += ` bg-transparent text-black border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800`;
   }
 
   return (
@@ -44,6 +45,7 @@ const TextArea: React.FC<TextareaProps> = ({
         rows={rows}
         value={value}
         onChange={handleChange}
+        onBlur={onBlur}
         disabled={disabled}
         className={textareaClasses}
       />
