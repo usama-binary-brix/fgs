@@ -10,9 +10,13 @@ import Image from 'next/image';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
 import { useDeleteLeadMutation, useGetAllLeadsQuery, usePromoteToInvestorMutation } from '@/store/services/api';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import { FaUserCircle } from 'react-icons/fa';
+import Button from '@/components/ui/button/Button';
+import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
+import Pagination from '@/components/tables/Pagination';
+import { format } from 'date-fns';
 
 interface Lead {
   id: string;
@@ -97,18 +101,18 @@ const LeadsTable = () => {
   const handlePromoteClick = async (leadId: any) => {
     setSelectedId(leadId); // Clicked item ka ID store karo
 
-      try {
-        const response = await promoteInvestor({
-          lead_id: leadId,
-          type: "promote_to_investor",
-        }).unwrap();
+    try {
+      const response = await promoteInvestor({
+        lead_id: leadId,
+        type: "promote_to_investor",
+      }).unwrap();
 
-        console.log("Promotion Successful:", response);
-        toast.success("Investor promoted successfully!");
-      } catch (error) {
-        const err = error as { data?: { error?: string } };
-        toast.error(err.data?.error || "Email is Already Promoted");
-      }
+      console.log("Promotion Successful:", response);
+      toast.success("Investor promoted successfully!");
+    } catch (error) {
+      const err = error as { data?: { error?: string } };
+      toast.error(err.data?.error || "Email is Already Promoted");
+    }
   };
   const handleDeleteLead = async (leadId: string | number | null) => {
     try {
@@ -120,6 +124,19 @@ const LeadsTable = () => {
       setIsDeleteModalOpen(false);
     }
   };
+   const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(10); // Example total pages
+    const [perPage, setPerPage] = useState(10); // Default items per page
+  
+    const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+    };
+  
+    const handlePerPageChange = (newPerPage: number) => {
+      setPerPage(newPerPage);
+      setCurrentPage(1); // Reset to first page on per-page change
+    };
+  
 
 
 
@@ -140,19 +157,34 @@ const LeadsTable = () => {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <TopButtons label="Edit Columns" variant="outlined" />
-          <TopButtons label="Filters" variant="outlined" />
-          <TopButtons onClick={handleNavigate} label="Add New Lead" variant="primary" />
+          <Button variant="outlined"
+            size='sm'
+          >
+            Edit Columns
+          </Button>
+
+          <Button variant="outlined"
+            size='sm'
+          >
+            Filters
+          </Button>
+
+          <Button variant="primary"
+            size='sm'
+            onClick={handleNavigate}
+          >
+            Add New Lead
+          </Button>
         </div>
       </div>
 
       <div className="overflow-auto rounded border  border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-        <div className="max-w-full overflow-auto">
+        <div className="max-w-full h-[30rem] overflow-x-auto">
           <Table>
             <TableHeader className="border-b border-gray-100 overflow-auto bg-[#F7F7F7] dark:border-white/[0.05]">
               <TableRow>
                 {['ID', 'Name', 'Email', 'Company', 'Source', 'Reminder Date', 'Budget', 'Condition', 'Created by', 'Action'].map((heading) => (
-                  <TableCell key={heading} isHeader className="px-3  py-3 font-family whitespace-nowrap overflow-hidden font-medium text-[#616161] text-[12.5px] text-start text-theme-sm dark:text-gray-400">
+                  <TableCell key={heading} isHeader className="px-3  py-3 font-family whitespace-nowrap overflow-hidden font-semibold text-[#616161] text-start text-theme-sm dark:text-gray-400">
                     <div className='flex justify-between gap-5 items-center'>
 
                       {heading}
@@ -196,8 +228,10 @@ const LeadsTable = () => {
                   <TableCell className="px-3 py-4 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.email}</TableCell>
                   <TableCell className="px-3 py-4 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.company}</TableCell>
                   <TableCell className="px-3 py-4 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.lead_source}</TableCell>
-                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.reminder_date_time}</TableCell>
-                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.budget_min}</TableCell>
+                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">
+                     {format(new Date(lead.reminder_date_time), "dd-MM-yy")}
+                  </TableCell>
+                  <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">$ {lead.budget_min}</TableCell>
                   <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.condition}</TableCell>
                   <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.lead_created_by || '---'}</TableCell>
                   <TableCell className="px-3 py-4 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">
@@ -205,23 +239,23 @@ const LeadsTable = () => {
                       <button onClick={() => toggleDropdown(lead.id)} className="dropdown-toggle">
                         <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />
                       </button>
-                      <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown}  className="fixed right-15 z-50 w-40 p-2 bg-white shadow-md border rounded-sm">
-                        <DropdownItem onItemClick={() => hanldeViewDetails(lead.id)} className="flex w-full font-normal !px-2  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
+                      <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="fixed right-15 z-50 w-40 bg-white shadow-md border rounded-sm">
+                        <DropdownItem onItemClick={() => hanldeViewDetails(lead.id)} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
                           View Details
                         </DropdownItem>
-                        <DropdownItem onItemClick={() => hanldeViewDetails(lead.id)} className="flex w-full font-normal !px-2  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
+                        <DropdownItem onItemClick={() => hanldeViewDetails(lead.id)} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
                           Edit
-                        </DropdownItem> <DropdownItem onItemClick={() => handlePromoteClick(lead.id)} className="flex w-full font-normal !px-2  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
+                        </DropdownItem> <DropdownItem onItemClick={() => handlePromoteClick(lead.id)} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
                           {isPromoteLoading && selectedId === lead.id ? "Promoting..." : "Promote to investor"}
                         </DropdownItem>
-                        <DropdownItem onItemClick={closeDropdown} className="flex w-full font-normal !px-2  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
+                        <DropdownItem onItemClick={closeDropdown} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
                           Send Email
                         </DropdownItem>
                         <DropdownItem onItemClick={() => {
                           setOpenDropdownId(null);
                           setSelectedId(lead.id);
                           setIsDeleteModalOpen(true);
-                        }} className="flex w-full font-normal !px-2  text-[12px] font-family   text-[#414141]">
+                        }} className="flex w-full font-normal !px-4  text-[12px] font-family   text-[#414141]">
                           Delete
                         </DropdownItem>
                       </Dropdown>
@@ -232,31 +266,26 @@ const LeadsTable = () => {
             </TableBody>
           </Table>
         </div>
+
+        <div className='px-6 border-t'>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            perPage={perPage}
+            onPerPageChange={handlePerPageChange}
+          />
+        </div>
       </div>
-      <Dialog
+
+      <DeleteConfirmationModal
+        title={'Lead'}
         open={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-      >
-        <DialogTitle>Remove Lead</DialogTitle>
-        <DialogContent>
-          <Typography>Are you sure you want to remove this Lead. </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsDeleteModalOpen(false)} sx={{ color: "#D18428", border: '1px solid #D18428', paddingX: '1rem', textTransform: 'none' }}>
-            Cancel
-          </Button>
-          <Button
-            className='bg-primary hover:bg-primary'
-            onClick={() => handleDeleteLead(selectedId)}
-            // color="error"
-            sx={{ backgroundColor: '#D18428', '&:hover': { backgroundColor: '#D18428' }, textTransform: 'none' }}
-            variant="contained"
-          >
-            Remove
-          </Button>
+        onConfirm={() => handleDeleteLead(selectedId)}
+        name={selectedId}
+      />
 
-        </DialogActions>
-      </Dialog>
     </>
   );
 };

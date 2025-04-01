@@ -6,8 +6,8 @@ import { Metadata } from "next";
 
 
 export const metadata: Metadata = {
-  title: "All Inventroy",
-  description: "All Inventry",
+  title: "All Inventory",
+  description: "All Inventory",
 };
 
 const InventoryPage = () => {
@@ -17,7 +17,7 @@ const InventoryPage = () => {
   return (
     <>
      <h1 className="text-[27px]  font-extrabold font-family text-[#414141] mb-5">
-     <PageTitle  title="All Inventry" />
+     <PageTitle  title="All Inventory" />
      </h1>
       <InventoryTable />
     </>

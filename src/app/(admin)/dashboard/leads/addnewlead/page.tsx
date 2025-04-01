@@ -13,26 +13,45 @@ import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
+
+type ErrorResponse = {
+  data: {
+    error: Record<string, string>; // `error` contains field names as keys and error messages as values
+  };
+};
+
 const AddNewLead = () => {
   const [dropdownStates, setDropdownStates] = useState({
     calls: false,
     source: false,
     engine: false,
-    quickComment: false
+    quickComment: false,
+    lead_created_by: false
   });
-  
-  const [selectedTime, setSelectedTime] = useState(null);
+
   const [isIconRotate, setIsIconRotate] = useState(false);
   const [addLead] = useAddLeadMutation();
-const router = useRouter()
-  const toggleDropdown = (dropdown) => {
-    setDropdownStates(prev => ({
+  const router = useRouter()
+
+  const toggleDropdown = (dropdown: keyof typeof dropdownStates) => {
+    setDropdownStates((prev) => ({
       ...Object.keys(prev).reduce((acc, key) => {
-        acc[key] = key === dropdown ? !prev[key] : false;
-        return acc;
-      }, {})
+        return {
+          ...acc,
+          [key]: key === dropdown ? !prev[key as keyof typeof prev] : false
+        };
+      }, {} as typeof prev)
     }));
   };
+
+  // const toggleDropdown = (dropdown) => {
+  //   setDropdownStates(prev => ({
+  //     ...Object.keys(prev).reduce((acc, key) => {
+  //       acc[key] = key === dropdown ? !prev[key] : false;
+  //       return acc;
+  //     }, {})
+  //   }));
+  // };
 
   const options = [
     { label: "No Calls - Black", value: "No Calls - Black" },
@@ -70,6 +89,11 @@ const router = useRouter()
     { value: "Customer Already Bought a List" },
   ];
 
+  const createdbyValues = [
+    { value: "Arcangelo" },
+    { value: "Myron" },
+  ];
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -86,9 +110,9 @@ const router = useRouter()
       reminder: "",
       reminder_date_time: null,
       reminder_time: null,
-      hot_lead: "",
-      in_finance: "",
-      sourcing: "",
+      hot_lead: false,
+      in_finance: false,
+      sourcing: false,
       lift_type: "",
       engine_type: "",
       location_used: "",
@@ -106,68 +130,94 @@ const router = useRouter()
       name: Yup.string().required("Name is required"),
       phone: Yup.string().required("Phone is required"),
       email: Yup.string().email("Invalid email").required("Email is required"),
-     
     }),
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       try {
-    
-          // Convert "Yes" / "No" to true / false
-          values.sourcing = values.sourcing === "yes" ? true : false;
-          values.hot_lead = values.hot_lead === "yes" ? true : false;
-          values.in_finance = values.in_finance === "yes" ? true : false;
-    
-          // Convert zip_code to string
-          values.zip_code = String(values.zip_code);
-          values.max_capacity = Number(values.max_capacity);
 
-    
-          if (values.reminder_date_time && values.reminder_time) {
-            const reminderDate = new Date(values.reminder_date_time);
-            reminderDate.setHours(
-              new Date(values.reminder_time).getHours(),
-              new Date(values.reminder_time).getMinutes()
-            );
-          
-            // Format reminder_date_time as "YYYY-MM-DD HH:mm:ss"
-            values.reminder_date_time = reminderDate.toISOString().slice(0, 19).replace("T", " ");
-          }
+
+
+        values.zip_code = String(values.zip_code);
+        values.sourcing = values.sourcing ? true : false;
+        values.hot_lead = values.hot_lead ? true : false;
+        values.in_finance = values.in_finance ? true : false;
+
+
+
+
+
+
         const response = await addLead(values).unwrap();
         toast.success(response.message);
         resetForm();
         setSelectedTime(null);
-        router.push('/dashboard/leads')
+        router.push("/dashboard/leads");
       } catch (error) {
-        toast.error("Failed to add lead.");
+
+        const errorResponse = error as ErrorResponse; 
+        console.log(errorResponse, 'error response')
+        if (errorResponse.data.error) {
+          Object.values(errorResponse.data.error).forEach((errorMessage) => {
+            toast.error(errorMessage); 
+          });
+        } else {
+          toast.error("Failed to add lead."); 
+        }
       }
     },
   });
 
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState<Date | null>(null);
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+    if (date && selectedTime) {
+      // Combine date & time
+      const finalDateTime = new Date(date);
+      finalDateTime.setHours(selectedTime.getHours(), selectedTime.getMinutes());
+      formik.setFieldValue("reminder_date_time", finalDateTime);
+    }
+  };
+
+  const handleTimeChange = (time: Date | null) => {
+    setSelectedTime(time);
+    if (time && selectedDate) {
+      // Combine date & time
+      const finalDateTime = new Date(selectedDate);
+      finalDateTime.setHours(time.getHours(), time.getMinutes());
+      formik.setFieldValue("reminder_date_time", finalDateTime);
+    }
+  };
+
+
+
   return (
     <>
       <div className="container-fluid">
-      <form onSubmit={formik.handleSubmit}>
-        <div className="row mb-5">
-          <div className="grid grid-cols-1">
-            <div className="flex justify-between items-center">
-              <h1 className="text-2xl font-extrabold font-family text-goldenBlack">Add New Lead</h1>
-               <Button
-                             type="submit"
-                             variant="contained"
-                             sx={{ backgroundColor: '#C28024', '&:hover': { backgroundColor: '#a56a1d' }, textTransform:'none' }}
-                            >
-Add Lead
-                            </Button>     
+        <form onSubmit={formik.handleSubmit}>
+          <div className="row mb-5">
+            <div className="grid grid-cols-1">
+              <div className="flex justify-between items-center">
+                <h1 className="text-2xl font-extrabold font-family text-goldenBlack">Add New Lead</h1>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{ backgroundColor: '#C28024', '&:hover': { backgroundColor: '#a56a1d' }, textTransform: 'none' }}
+                >
+                  Add Lead
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-        
-     
+
+
           <div className="row">
             <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 gap-4">
               {/* Contact Information */}
               <div className="bg-white w-full rounded p-3">
                 <h1 className="text-[#000] text-[14px] font-family font-medium mb-2">Contact Information</h1>
-                <div className="mb-2">
+                <div>
+
                   <AddLeadInput
                     label="Name"
                     name="name"
@@ -178,11 +228,11 @@ Add Lead
                     isRequired={true}
                     placeholder="Enter Your Name"
                   />
-                     {formik.touched.name && formik.errors.name && (
+                  {formik.touched.name && formik.errors.name && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.name}</p>
                   )}
                 </div>
-                <div className="mb-2">
+                <div className="">
                   <AddLeadInput
                     name="title"
                     value={formik.values.title}
@@ -192,11 +242,11 @@ Add Lead
                     placeholder="Enter Title"
 
                   />
-                     {formik.touched.title && formik.errors.title && (
+                  {formik.touched.title && formik.errors.title && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.title}</p>
                   )}
                 </div>
-                <div className="mb-2">
+                <div className="">
                   <AddLeadInput
                     name="company"
                     value={formik.values.company}
@@ -206,11 +256,11 @@ Add Lead
                     placeholder="Enter Company"
 
                   />
-                     {formik.touched.company && formik.errors.company && (
+                  {formik.touched.company && formik.errors.company && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.company}</p>
                   )}
                 </div>
-                <div className="mb-2">
+                <div className="">
                   <AddLeadInput
                     label="Phone"
                     name="phone"
@@ -222,11 +272,11 @@ Add Lead
                     placeholder="Enter Your Phone"
 
                   />
-                     {formik.touched.phone && formik.errors.phone && (
+                  {formik.touched.phone && formik.errors.phone && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.phone}</p>
                   )}
                 </div>
-                <div className="mb-2">
+                <div className="">
                   <AddLeadInput
                     name="email"
                     value={formik.values.email}
@@ -238,11 +288,11 @@ Add Lead
                     placeholder="Enter Your Email"
 
                   />
-                     {formik.touched.email && formik.errors.email && (
+                  {formik.touched.email && formik.errors.email && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.email}</p>
                   )}
                 </div>
-                <div className="mb-2">
+                <div className="">
                   <AddLeadInput
                     name="street_address"
                     value={formik.values.street_address}
@@ -252,11 +302,11 @@ Add Lead
                     placeholder="Enter Street Address"
 
                   />
-                     {formik.touched.street_address && formik.errors.street_address && (
+                  {formik.touched.street_address && formik.errors.street_address && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.street_address}</p>
                   )}
                 </div>
-                <div className="mb-2">
+                <div className="">
                   <AddLeadInput
                     name="city"
                     value={formik.values.city}
@@ -266,11 +316,11 @@ Add Lead
                     placeholder="Enter City"
 
                   />
-                     {formik.touched.city && formik.errors.city && (
+                  {formik.touched.city && formik.errors.city && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.city}</p>
                   )}
                 </div>
-                <div className="mb-2">
+                <div className="">
                   <AddLeadInput
                     name="state"
                     value={formik.values.state}
@@ -280,7 +330,7 @@ Add Lead
                     placeholder="Enter State"
 
                   />
-                     {formik.touched.state && formik.errors.state && (
+                  {formik.touched.state && formik.errors.state && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.state}</p>
                   )}
                 </div>
@@ -295,17 +345,17 @@ Add Lead
                     placeholder="Enter Zip Code"
 
                   />
-                     {formik.touched.zip_code && formik.errors.zip_code && (
+                  {formik.touched.zip_code && formik.errors.zip_code && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.zip_code}</p>
                   )}
                 </div>
               </div>
 
               {/* Lead Details */}
-              <div className="w-full bg-white rounded p-3 h-[400px]">
+              <div className="w-full bg-white rounded p-3 h-[350px]">
                 <h1 className="text-[#000] text-[14px] font-family font-medium mb-2">Lead Details</h1>
 
-                <div className="relative w-full mb-2">
+                <div className="relative w-full">
                   <label className="text-xs text-gray-500 font-family font-medium">Number of Calls</label>
                   <button
                     type="button"
@@ -340,7 +390,7 @@ Add Lead
                 </div>
 
                 {/* Lead Source Dropdown */}
-                <div className="relative w-full mb-2">
+                <div className="relative w-full">
                   <label className="text-xs text-gray-500 font-family">Lead Source</label>
                   <button
                     type="button"
@@ -373,7 +423,7 @@ Add Lead
                   )}
                 </div>
 
-                <div className="mb-2">
+                <div className="">
                   <AddLeadInput
                     name="reminder"
                     value={formik.values.reminder}
@@ -383,7 +433,7 @@ Add Lead
                     placeholder="Enter Reminder"
 
                   />
-                     {formik.touched.reminder && formik.errors.reminder && (
+                  {formik.touched.reminder && formik.errors.reminder && (
                     <p className="text-red-500 text-xs mt-1">{formik.errors.lead_source}</p>
                   )}
                 </div>
@@ -391,40 +441,34 @@ Add Lead
                 <div className="mb-2">
                   <label className="text-xs text-gray-500 font-family font-medium">Reminder Date & Time</label>
                   <div className="flex justify-between items-center gap-2 mt-1">
+                    {/* Date Picker */}
                     <div className="relative w-full">
                       <DatePicker
-                        selected={formik.values.reminder_date_time}
-                        onChange={(date) => formik.setFieldValue("reminder_date_time", date)}
+                        selected={selectedDate}
+                        onChange={handleDateChange} // Handles only date
                         dateFormat="dd/MM/yyyy"
                         className="w-full px-3 py-1 cursor-pointer text-sm pr-10 border border-[#E8E8E8] rounded-xs outline-0 text-[#666] placeholder-[#666] text-[12px]"
-                        placeholderText="dd/mm/yy"
+                        placeholderText="Select Date"
                       />
                       <FiCalendar className="absolute right-2 top-2 w-[14px] h-[14px] text-gray-500 cursor-pointer" />
-                      {formik.touched.reminder_date_time && formik.errors.reminder_date_time && (
-                    <p className="text-red-500 text-xs mt-1">{formik.errors.reminder_date_time}</p>
-                  )}
                     </div>
-                    <div className="relative w-full">
+
+                    {/* Time Picker */}
+                    <div className="relative w-full mt-2">
                       <DatePicker
                         selected={selectedTime}
-                        onChange={(time) => {
-                          setSelectedTime(time);
-                          formik.setFieldValue("reminder_time", time);
-                        }}
+                        onChange={handleTimeChange} // Handles only time
                         showTimeSelect
                         showTimeSelectOnly
                         timeIntervals={15}
                         timeFormat="h:mm aa"
                         dateFormat="h:mm aa"
-                        placeholderText="0:00 AM"
-                        className="w-full px-3 py-1 border text-sm border-[#E8E8E8] text-[#666] text-[12px] rounded-xs focus:outline-none "
-                        onCalendarOpen={() => setIsIconRotate(true)}
-                        onCalendarClose={() => setIsIconRotate(false)}
+                        placeholderText="Select Time"
+                        className="w-full px-3 py-1 border text-sm border-[#E8E8E8] text-[#666] text-[12px] rounded-xs focus:outline-none"
                       />
-                      <FiChevronDown
-                        className={`absolute right-2 top-2 text-gray-500 w-[14px] h-[14px] cursor-pointer transition-transform duration-300 ${isIconRotate ? "rotate-180" : "rotate-0"}`}
-                      />
+                      <FiChevronDown className="absolute right-2 top-2 text-gray-500 w-[14px] h-[14px] cursor-pointer" />
                     </div>
+
                   </div>
                 </div>
 
@@ -440,22 +484,22 @@ Add Lead
                     <div>
                       <div className="flex gap-1 items-center">
                         <RadioButton
-                          isSelected={formik.values.hot_lead === "yes"}
-                          onSelect={() => formik.setFieldValue("hot_lead", "yes")}
+                          isSelected={formik.values.hot_lead === true}
+                          onSelect={() => formik.setFieldValue("hot_lead", true)}
                         />
                         <label className="text-[#666] text-[13px] font-medium font-family">Yes</label>
                       </div>
                       <div className="flex gap-1 items-center">
                         <RadioButton
-                          isSelected={formik.values.in_finance === "yes"}
-                          onSelect={() => formik.setFieldValue("in_finance", "yes")}
+                          isSelected={formik.values.in_finance === true}
+                          onSelect={() => formik.setFieldValue("in_finance", true)}
                         />
                         <label className="text-darkGray text-sm font-family">Yes</label>
                       </div>
                       <div className="flex gap-1 items-center">
                         <RadioButton
-                          isSelected={formik.values.sourcing === "yes"}
-                          onSelect={() => formik.setFieldValue("sourcing", "yes")}
+                          isSelected={formik.values.sourcing === true}
+                          onSelect={() => formik.setFieldValue("sourcing", true)}
                         />
                         <label className="text-[#666] text-[13px] font-medium font-family">Yes</label>
                       </div>
@@ -464,22 +508,22 @@ Add Lead
                   <div>
                     <div className="flex gap-1 items-center">
                       <RadioButton
-                        isSelected={formik.values.hot_lead === "no"}
-                        onSelect={() => formik.setFieldValue("hot_lead", "no")}
+                        isSelected={formik.values.hot_lead === false}
+                        onSelect={() => formik.setFieldValue("hot_lead", false)}
                       />
                       <label className="text-[#666] text-[13px] font-medium font-family">No</label>
                     </div>
                     <div className="flex gap-1 items-center">
                       <RadioButton
-                        isSelected={formik.values.in_finance === "no"}
-                        onSelect={() => formik.setFieldValue("in_finance", "no")}
+                        isSelected={formik.values.in_finance === false}
+                        onSelect={() => formik.setFieldValue("in_finance", false)}
                       />
                       <label className="text-[#666] text-[13px] font-medium font-family">No</label>
                     </div>
                     <div className="flex gap-1 items-center">
                       <RadioButton
-                        isSelected={formik.values.sourcing === "no"}
-                        onSelect={() => formik.setFieldValue("sourcing", "no")}
+                        isSelected={formik.values.sourcing === false}
+                        onSelect={() => formik.setFieldValue("sourcing", false)}
                       />
                       <label className="text-[#666] text-[13px] font-medium font-family">No</label>
                     </div>
@@ -489,23 +533,23 @@ Add Lead
 
               {/* Equipment Requirements */}
               <div>
-                <div className="mb-5 bg-white w-full rounded p-3 h-[400px]">
+                <div className="mb-5 bg-white w-full rounded p-3 ">
                   <h1 className="text-[#000] text-[14px] font-family font-medium mb-2">Equipment Requirements</h1>
-                  <div className="mb-2">
+                  <div className="">
                     <AddLeadInput
                       name="lift_type"
                       value={formik.values.lift_type}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       label="Lift Type"
-                    placeholder="Enter Lift Type"
+                      placeholder="Enter Lift Type"
 
                     />
-                       {formik.touched.lift_type && formik.errors.lift_type && (
-                    <p className="text-red-500 text-xs mt-1">{formik.errors.lift_type}</p>
-                  )}
+                    {formik.touched.lift_type && formik.errors.lift_type && (
+                      <p className="text-red-500 text-xs mt-1">{formik.errors.lift_type}</p>
+                    )}
                   </div>
-                  <div className="mb-2">
+                  <div className="">
                     <div className="relative w-full mb-2">
                       <label className="text-xs text-gray-500 font-family font-medium">Engine Type</label>
                       <button
@@ -539,21 +583,21 @@ Add Lead
                       )}
                     </div>
                   </div>
-                  <div className="mb-2">
+                  <div className="">
                     <AddLeadInput
                       name="location_used"
                       value={formik.values.location_used}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       label="Location Used"
-                    placeholder="Enter Location Used"
+                      placeholder="Enter Location Used"
 
                     />
-                       {formik.touched.location_used && formik.errors.location_used && (
-                    <p className="text-red-500 text-xs mt-1">{formik.errors.location_used}</p>
-                  )}
+                    {formik.touched.location_used && formik.errors.location_used && (
+                      <p className="text-red-500 text-xs mt-1">{formik.errors.location_used}</p>
+                    )}
                   </div>
-                  <div className="mb-2">
+                  <div className="">
                     <AddLeadInput
                       name="max_capacity"
                       value={formik.values.max_capacity}
@@ -561,14 +605,14 @@ Add Lead
                       onBlur={formik.handleBlur}
                       label="Max Capacity"
                       type="number"
-                    placeholder="Enter Max Capacity "
+                      placeholder="Enter Max Capacity "
 
                     />
-                       {formik.touched.max_capacity && formik.errors.max_capacity && (
-                    <p className="text-red-500 text-xs mt-1">{formik.errors.max_capacity}</p>
-                  )}
+                    {formik.touched.max_capacity && formik.errors.max_capacity && (
+                      <p className="text-red-500 text-xs mt-1">{formik.errors.max_capacity}</p>
+                    )}
                   </div>
-                  <div className="mb-2">
+                  <div className="">
                     <label className="text-[#666] text-[13px] font-medium font-family">Condition</label>
                     <div className="flex gap-4 items-center">
                       <p className="flex gap-2">
@@ -602,7 +646,7 @@ Add Lead
                 {/* Budget & Financing */}
                 <div className="mb-5 bg-white w-full p-3">
                   <h1 className="text-black font-family font-medium mb-2">Budget & Financing</h1>
-                  <div className="mb-2">
+                  <div className="">
                     <label className="text-xs text-gray-500 font-family font-medium">Budget</label>
                     <div className="flex gap-3 items-center">
                       <input
@@ -614,9 +658,9 @@ Add Lead
                         placeholder="$ 0.00"
                         className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs outline-none text-md"
                       />
-                         {formik.touched.budget_min && formik.errors.budget_min && (
-                    <p className="text-red-500 text-xs mt-1">{formik.errors.budget_min}</p>
-                  )}
+                      {formik.touched.budget_min && formik.errors.budget_min && (
+                        <p className="text-red-500 text-xs mt-1">{formik.errors.budget_min}</p>
+                      )}
                       -
                       <input
                         type="number"
@@ -627,24 +671,24 @@ Add Lead
                         placeholder="$ 0.00"
                         className="w-full text-left  text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs mt-1 outline-none text-md"
                       />
-                         {formik.touched.budget_max && formik.errors.budget_max && (
-                    <p className="text-red-500 text-xs mt-1">{formik.errors.budget_max}</p>
-                  )}
+                      {formik.touched.budget_max && formik.errors.budget_max && (
+                        <p className="text-red-500 text-xs mt-1">{formik.errors.budget_max}</p>
+                      )}
                     </div>
                   </div>
-                  <div className="mb-2">
+                  <div className="">
                     <AddLeadInput
                       name="financing"
                       value={formik.values.financing}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       label="Financing"
-                    placeholder="Enter Financing"
+                      placeholder="Enter Financing"
 
                     />
-                       {formik.touched.financing && formik.errors.financing && (
-                    <p className="text-red-500 text-xs mt-1">{formik.errors.financing}</p>
-                  )}
+                    {formik.touched.financing && formik.errors.financing && (
+                      <p className="text-red-500 text-xs mt-1">{formik.errors.financing}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -703,11 +747,11 @@ Add Lead
                 <div className="bg-white p-3 w-full">
                   <h1 className="text-black font-medium mb-2 font-family">Additional Information</h1>
                   <div className="mb-2">
-                    <div className="relative w-full mb-2">
+                    <div className="relative w-full">
                       <label className="text-xs text-gray-500 font-family font-medium">Quick Comment</label>
                       <button
                         type="button"
-                        className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
+                        className="w-full text-left px-2 mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] py-1.5 rounded-xs bg-white focus:outline-none"
                         onClick={() => toggleDropdown('quickComment')}
                       >
                         {formik.values.quick_comment || "Select a comment"}
@@ -733,7 +777,7 @@ Add Lead
                       )}
                     </div>
                   </div>
-                  <div className="mb-2">
+                  <div className="">
                     <div className="flex flex-col">
                       <label className="font-medium font-family text-xs text-gray-500">Comments</label>
                       <textarea
@@ -742,15 +786,56 @@ Add Lead
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         rows={5}
-                    placeholder="Enter Your Comment"
+                        placeholder="Enter Your Comment"
 
                         className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-xs font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs"
                       />
                     </div>
                   </div>
-                  <div className="mb-2">
-                    <label className="text-xs font-family text-gray-500 font-medium">Lead Created By</label>
-                    <div className="flex items-center gap-5 mt-1">
+
+
+                  <div className="">
+                    <div className="relative w-full">
+                      <label className="text-xs text-gray-500 font-family font-medium">Lead Created By</label>
+                      <button
+                        type="button"
+                        className="w-full text-left px-2 mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] py-1.5 rounded-xs bg-white focus:outline-none"
+                        onClick={() => toggleDropdown('lead_created_by')}
+                      >
+                        {formik.values.lead_created_by || "Select"}
+                        <FiChevronDown
+                          className={`text-lg transition-transform duration-300 ${dropdownStates.lead_created_by ? "rotate-180" : "rotate-0"}`}
+                        />
+                      </button>
+                      {dropdownStates.lead_created_by && (
+                        <ul className="absolute w-full bg-white border z-10 border-gray-300 rounded-md shadow-md mt-1">
+                          {createdbyValues.map((option, index) => (
+                            <li
+                              key={index}
+                              className="px-3 py-2 text-darkGray font-family hover:bg-gray-100 text-xs cursor-pointer"
+                              onClick={() => {
+                                formik.setFieldValue("lead_created_by", option.value);
+                                toggleDropdown('lead_created_by');
+                              }}
+                            >
+                              {option.value}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+                    {/* <div className="flex items-center gap-5 mt-1">
                       <div className="flex items-center gap-2">
                         <RadioButton
                           isSelected={formik.values.lead_created_by === "Arcangelo"}
@@ -768,7 +853,7 @@ Add Lead
                     </div>
                     {formik.touched.lead_created_by && formik.errors.lead_created_by && (
                       <p className="text-red-500 text-xs mt-1">{formik.errors.lead_created_by}</p>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>

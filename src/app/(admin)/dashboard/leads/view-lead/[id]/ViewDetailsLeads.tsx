@@ -1,5 +1,5 @@
 'use client'
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik';
 import AddLeadInput from '../../components/input/AddLeadInput';
@@ -13,6 +13,7 @@ const ViewDetailsLeads = () => {
   const { data: leadData, error, isLoading } = useGetLeadByIdQuery(id);
   const [isEditing, setIsEditing] = useState(true);
   const [editLead] = useEditLeadMutation()
+  const router = useRouter()
   const [dropdownStates, setDropdownStates] = useState({
     calls: false,
     source: false,
@@ -101,6 +102,7 @@ const ViewDetailsLeads = () => {
       try {
         const response = await editLead(updatedValues).unwrap();
         toast.success(response.message);
+        router.push('dashboard/leads')
       } catch (error) {
         toast.error("Failed to Update lead.");
       }

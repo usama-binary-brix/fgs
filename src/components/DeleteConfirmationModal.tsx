@@ -6,7 +6,7 @@ type DeleteConfirmationModalProps = {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  name: string;
+  name: any;
   title: string
 };
 
