@@ -11,13 +11,17 @@ import {
 } from "@/store/services/api";
 import { RxCross2 } from "react-icons/rx";
 import { toast } from "react-toastify";
+import Shipment from "./Shipment";
+import Reconditioning from "./Reconditioning";
+import Timeline from "./Timeline";
 
 const EditInventoryForm = () => {
   const { id } = useParams();
   const { data: inventoryData, error, isLoading } = useGetInventoryByIdQuery(id);
   const { data: categories, isLoading: loadingCategories } = useGetAllCategoriesQuery('');
   const [fetchSubCategories] = useGetSubCategoriesMutation();
-    const [editInventory] = useEditInventoryMutation()
+  const [editInventory] = useEditInventoryMutation()
+  const [activeTab, setActiveTab] = useState("details");
 
   const [isEditing, setIsEditing] = useState(false);
   const [subCategories, setSubCategories] = useState<{ categories: any[] }>({ categories: [] });
@@ -27,7 +31,7 @@ const EditInventoryForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      id:id,
+      id: id,
       category_id: "",
       subcategory_id: "",
       year: "",
@@ -44,34 +48,34 @@ const EditInventoryForm = () => {
     },
     onSubmit: async (values) => {
       const formData = new FormData();
-      
-    
-  
+
+
+
       // Append all other form values
       Object.entries(values).forEach(([key, value]) => {
-          formData.append(key, value as string);
+        formData.append(key, value as string);
       });
-  
-    existingFiles.forEach((file) => {
+
+      existingFiles.forEach((file) => {
         if (!removedExistingFiles.includes(file.id)) {
           formData.append("existing_files[]", file.url);
         }
       });
 
-    // Append new files
-    images.forEach((image) => {
+      // Append new files
+      images.forEach((image) => {
         formData.append("files[]", image);
-    });
-  
+      });
+
       try {
-          await editInventory(formData).unwrap();
-          toast.success("Inventory updated successfully!");
+        await editInventory(formData).unwrap();
+        toast.success("Inventory updated successfully!");
       } catch (error) {
-          toast.error("Failed to update inventory");
-          console.error("Error submitting form:", error);
+        toast.error("Failed to update inventory");
+        console.error("Error submitting form:", error);
       }
-  },
-  
+    },
+
   });
 
   useEffect(() => {
@@ -92,7 +96,7 @@ const EditInventoryForm = () => {
     if (inventoryData?.inventory) {
       const inv = inventoryData.inventory;
       formik.setValues({
-        id:id,
+        id: id,
         category_id: inv.category_id || "",
         subcategory_id: inv.subcategory_id || "",
         year: inv.year || "",
@@ -134,12 +138,38 @@ const EditInventoryForm = () => {
   if (isLoading || loadingCategories) return <p>Loading...</p>;
   if (error) return <p>Error fetching inventory</p>;
 
+
+
+
   return (
     <div className="p-6 bg-white shadow-md rounded-md">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold">I-{id}</h1>
           <p className="text-gray-600">Inventory</p>
+          <div className="flex gap-4 mt-4">
+            <button
+              className={`border border-[#D184281A] text-[13px] font-family py-1 px-4 font-semibold rounded transition-all duration-300
+                ${activeTab === "details" ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
+              onClick={() => setActiveTab("details")}
+            >
+              Details
+            </button>
+            <button
+              className={`border border-[#D184281A] text-[13px] font-family py-1 px-4 font-semibold rounded transition-all duration-300
+                ${activeTab === "shipment" ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
+              onClick={() => setActiveTab("shipment")}
+            >
+              Shipments
+            </button>
+            <button
+              className={`border border-[#D184281A] text-[13px] font-family py-1 px-4 font-semibold rounded transition-all duration-300
+                ${activeTab === "reconditioning" ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
+              onClick={() => setActiveTab("reconditioning")}
+            >
+              Reconditioning
+            </button>
+          </div>
         </div>
         <button
           className="bg-primary text-white px-4 py-2 rounded-md flex items-center gap-2"
@@ -148,136 +178,155 @@ const EditInventoryForm = () => {
           <FaEdit /> {isEditing ? "Cancel" : "Edit"}
         </button>
       </div>
+      {
+        activeTab === "details" &&
+        <>
+        <form onSubmit={formik.handleSubmit}>
 
-      <form onSubmit={formik.handleSubmit}>
-
-        <div className="mt-6 grid grid-cols-3 gap-4">
-          <div>
-            <label className="block text-gray-600">Category *</label>
-            <select
-              name="category_id"
-              value={formik.values.category_id}
-              onChange={formik.handleChange}
-              disabled={!isEditing}
-              className="w-full border p-2 rounded-md"
-            >
-              <option value="">Select</option>
-              {categories?.categories?.map((cat: any) => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-gray-600">Subcategory *</label>
-            <select
-              name="subcategory_id"
-              value={formik.values.subcategory_id}
-              onChange={formik.handleChange}
-              disabled={!isEditing}
-              className="w-full border p-2 rounded-md"
-            >
-              <option value="">Select</option>
-              {subCategories?.categories?.map((sub: any) => (
-                <option key={sub.id} value={sub.id}>{sub.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-gray-600">Year *</label>
-            <input
-              type="text"
-              name="year"
-              value={formik.values.year}
-              onChange={formik.handleChange}
-              disabled={!isEditing}
-              className="w-full border p-2 rounded-md"
-            />
-          </div>
-          {["make", "model", "serial_no", "length", "height", "width", "weight", "hours", "price_paid"].map((field) => (
-            <div key={field}>
-              <label className="block text-gray-600 capitalize">{field.replace("_", " ")} *</label>
+          <div className="mt-6 grid grid-cols-3 gap-4">
+            <div>
+              <label className="block text-gray-600">Category *</label>
+              <select
+                name="category_id"
+                value={formik.values.category_id}
+                onChange={formik.handleChange}
+                disabled={!isEditing}
+                className="w-full border p-2 rounded-md"
+              >
+                <option value="">Select</option>
+                {categories?.categories?.map((cat: any) => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-600">Subcategory *</label>
+              <select
+                name="subcategory_id"
+                value={formik.values.subcategory_id}
+                onChange={formik.handleChange}
+                disabled={!isEditing}
+                className="w-full border p-2 rounded-md"
+              >
+                <option value="">Select</option>
+                {subCategories?.categories?.map((sub: any) => (
+                  <option key={sub.id} value={sub.id}>{sub.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-600">Year *</label>
               <input
                 type="text"
-                name={field}
-                value={formik.values[field as keyof typeof formik.values]}
+                name="year"
+                value={formik.values.year}
                 onChange={formik.handleChange}
                 disabled={!isEditing}
                 className="w-full border p-2 rounded-md"
               />
             </div>
-          ))}
-          <div>
-            <label className="block text-gray-600">Date Purchased *</label>
-            <input
-              type="date"
-              name="date_purchased"
-              value={formik.values.date_purchased}
-              onChange={formik.handleChange}
-              disabled={!isEditing}
-              className="w-full border p-2 rounded-md"
-            />
-          </div>
-        </div>
-        <div className="mt-6">
-          <h1 className="font-semibold">Attached Files</h1>
-          <div className="flex mt-2 gap-5 items-center">
-            {existingFiles.map((file, index) => (
-              <div key={file.id} className="relative h-30 w-40 rounded-lg">
-                <img src={file.url} alt={`Existing File ${index}`} className="w-full h-full object-cover rounded-lg" />
-                <button className="absolute top-1 right-1 bg-red-500 text-white rounded-lg p-1" onClick={() => removeExistingFile(index)}>
-                  <RxCross2 />
-                </button>
+            {["make", "model", "serial_no", "length", "height", "width", "weight", "hours", "price_paid"].map((field) => (
+              <div key={field}>
+                <label className="block text-gray-600 capitalize">{field.replace("_", " ")} *</label>
+                <input
+                  type="text"
+                  name={field}
+                  value={formik.values[field as keyof typeof formik.values]}
+                  onChange={formik.handleChange}
+                  disabled={!isEditing}
+                  className="w-full border p-2 rounded-md"
+                />
               </div>
             ))}
-
-            {images.length > 0 && (
-              <div className="flex gap-4 flex-wrap">
-                {images.map((img, index) => (
-                  <div key={index} className="relative h-30 w-40 rounded-lg">
-                    <img
-                      src={URL.createObjectURL(img)}
-                      alt={`Uploaded preview ${index}`}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                    <button
-                      className="absolute top-1 right-1 bg-red-500 text-white rounded-lg p-1"
-                      onClick={() => removeImage(index)}
-                    >
-                      <RxCross2 />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-
             <div>
-
-              <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-lg cursor-pointer h-30 px-2 hover:bg-gray-100">
-                <input
-                  type="file"
-                  accept="image/png, image/jpeg, application/pdf"
-                  multiple
-                  className="hidden"
-                  onChange={handleImageUpload}
-                />
-                <div className="text-center px-6">
-                  {/* <h1 className="text-sm text-black font-normal">Attach Files</h1>   */}
-                  {/* <p className="text-custom-lightGray text-xs">Only PDF, JPG & PNG formats are allowed</p> */}
-                  <p className="text-gray-700 font-semibold text-xs">Drop your files here,</p>
-                  <p className="text-blue-600 underline text-xs">or browse</p>
-                </div>
-              </label>
+              <label className="block text-gray-600">Date Purchased *</label>
+              <input
+                type="date"
+                name="date_purchased"
+                value={formik.values.date_purchased}
+                onChange={formik.handleChange}
+                disabled={!isEditing}
+                className="w-full border p-2 rounded-md"
+              />
             </div>
           </div>
-        </div>
-        {isEditing && (
-          <div className="col-span-3 flex justify-end">
-            <button type="submit" className="bg-primary text-white px-6 py-2 rounded-md">
-              Update
-            </button>
+          <div className="mt-6">
+            <h1 className="font-semibold">Attached Files</h1>
+            <div className="flex mt-2 gap-5 items-center">
+              {existingFiles.map((file, index) => (
+                <div key={file.id} className="relative h-30 w-40 rounded-lg">
+                  <img src={file.url} alt={`Existing File ${index}`} className="w-full h-full object-cover rounded-lg" />
+                  <button className="absolute top-1 right-1 bg-red-500 text-white rounded-lg p-1" onClick={() => removeExistingFile(index)}>
+                    <RxCross2 />
+                  </button>
+                </div>
+                
+              ))}
+
+              {images.length > 0 && (
+                <div className="flex gap-4 flex-wrap">
+                  {images.map((img, index) => (
+                    <div key={index} className="relative h-30 w-40 rounded-lg">
+                      <img
+                        src={URL.createObjectURL(img)}
+                        alt={`Uploaded preview ${index}`}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                      <button
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-lg p-1"
+                        onClick={() => removeImage(index)}
+                      >
+                        <RxCross2 />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                
+              )}
+
+              <div>
+
+                <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-lg cursor-pointer h-30 px-2 hover:bg-gray-100">
+                  <input
+                    type="file"
+                    accept="image/png, image/jpeg, application/pdf"
+                    multiple
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
+                  <div className="text-center px-6">
+                    {/* <h1 className="text-sm text-black font-normal">Attach Files</h1>   */}
+                    {/* <p className="text-custom-lightGray text-xs">Only PDF, JPG & PNG formats are allowed</p> */}
+                    <p className="text-gray-700 font-semibold text-xs">Drop your files here,</p>
+                    <p className="text-blue-600 underline text-xs">or browse</p>
+                  </div>
+                </label>
+              </div>
+            </div>
           </div>
-        )}
-      </form>
+          {isEditing && (
+            <div className="col-span-3 flex justify-end">
+              <button type="submit" className="bg-primary text-white px-6 py-2 rounded-md">
+                Update
+              </button>
+            </div>
+          )}
+        </form>
+        <div>
+          <h1 className="text-[#000] text-[17px] font-medium font-family mt-10 mb-5">Inventory Stages</h1>
+          <div className="flex justify-center">
+            <Timeline />
+          </div>
+        </div>
+        </>
+
+       
+      }
+
+      {activeTab === "shipment" && <Shipment />}
+      {activeTab === "reconditioning" && <Reconditioning />}
+
     </div>
   );
 };
