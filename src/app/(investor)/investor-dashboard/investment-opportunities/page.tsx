@@ -1,5 +1,4 @@
 
-import InventoryTable from "./components/inventorytable/page";
 import { PageTitle } from "@/components/PageTitle";
 import { Metadata } from "next";
 import InvestmentOpportunityTable from "./components/InvestmentOpportunityTable";

@@ -11,9 +11,9 @@ import { IoSearchOutline } from 'react-icons/io5'
 import { useDeleteInventoryMutation, useGetAllInventoryQuery } from '@/store/services/api';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
-import AddInventoryModal from '../AddInventoryModal';
-import InvestorRequestModal from '../InvestorRequestModal';
-import TotalInvestorsModal from '../TotalInvestorsModal';
+// import AddInventoryModal from '../AddInventoryModal';
+// import InvestorRequestModal from '../InvestorRequestModal';
+// import TotalInvestorsModal from '../TotalInvestorsModal';
 
 
 
@@ -133,7 +133,7 @@ const InventoryTable = () => {
           <TopButtons label="Filters" variant="outlined" />
           <TopButtons onClick={handleOpenModal} label="Add New Inventory" variant="primary" />
         </div>
-        <AddInventoryModal open={isModalOpen} onClose={handleCloseModal} />
+        {/* <AddInventoryModal open={isModalOpen} onClose={handleCloseModal} /> */}
 
       </div>
 
@@ -148,7 +148,7 @@ const InventoryTable = () => {
                   'PURCHASE PRICE', 'RECONDITIONING %', 'COMPLETION DATE', 'INV. REQUESTS', 'TOTAL INVESTORS',
                   'INVESTMENT AMOUNT', 'SALE PRICE', 'PROFIT AMT', 'PROFIT %', 'STATUS', 'ACTION'
                 ].map((heading) => (
-                  <TableCell key={heading} isHeader className="px-5 py-3 whitespace-nowrap whitespace-nowrap overflow-hidden font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                  <TableCell key={heading} isHeader className="px-5 py-3 whitespace-nowrap overflow-hidden font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
                   <div className=' w-full flex justify-between items-center '>
                   {heading}
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -241,8 +241,8 @@ const InventoryTable = () => {
         </div>
       </div>
       </div>
-      <InvestorRequestModal open={isInvReqModalOpen} onClose={handleCloseInvReqModal}/>
-      <TotalInvestorsModal open={isTotalInvModalOpen} onClose={handleCloseTotalInvModal}/>
+      {/* <InvestorRequestModal open={isInvReqModalOpen} onClose={handleCloseInvReqModal}/>
+      <TotalInvestorsModal open={isTotalInvModalOpen} onClose={handleCloseTotalInvModal}/> */}
       <Dialog
   open={isDeleteModalOpen}
   onClose={() => setIsDeleteModalOpen(false)}
