@@ -37,6 +37,13 @@ interface Props {
   userData?: any;
 }
 
+type ErrorResponse = {
+  data: {
+    error: Record<string, string>; // `error` contains field names as keys and error messages as values
+  };
+};
+
+
 const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
   const [register] = useRegisterMutation();
   const [showPassword, setShowPassword] = useState(false);
@@ -132,7 +139,26 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
         resetForm();
         onClose();
       } catch (error) {
-        toast.error('Operation failed, please try again.');
+          const errorResponse = error as ErrorResponse;
+
+
+        if (errorResponse?.data?.error) {
+          Object.values(errorResponse.data.error).forEach((errorMessage) => {
+            if (Array.isArray(errorMessage)) {
+              errorMessage.forEach((msg) => toast.error(msg)); // Handle array errors
+            } else {
+              toast.error(errorMessage); // Handle single string errors
+            }
+          });
+        }
+          // const errorResponse = error as ErrorResponse;
+          //       console.log(errorResponse, 'error response')
+          //       if (errorResponse.data.error) {
+          //         Object.values(errorResponse.data.error).forEach((errorMessage) => {
+          //           toast.error(errorMessage);
+          //         });
+          //       }
+
         setLoading(false);
       }
     },
