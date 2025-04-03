@@ -180,7 +180,27 @@ const AccountsTable = () => {
                         <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                       </button>
 
-                      <Dropdown isOpen={openDropdownId === user.id} onClose={() => setOpenDropdownId(null)} className="w-40 p-2">
+                      <Dropdown isOpen={openDropdownId === user.id} onClose={() => setOpenDropdownId(null)} className="fixed right-30  z-50 w-30 bg-white shadow-md border rounded-sm">
+                        <DropdownItem    onItemClick={() => handleViewMore(user.id)} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
+                          View Details
+                        </DropdownItem>
+                        <DropdownItem onItemClick={() => handleEditUser(user)} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
+                          Edit
+                        </DropdownItem>
+
+                     
+                        <DropdownItem onItemClick={() => {
+                            setOpenDropdownId(null);
+                            setSelectedUserId(user.id);
+                            setIsDeleteModalOpen(true);
+                            setSelectedName(`${user.first_name}`);
+                          }} className="flex w-full font-normal !px-4  text-[12px] font-family   text-[#414141]">
+                          Delete
+                        </DropdownItem>
+                      </Dropdown>
+
+
+                      {/* <Dropdown isOpen={openDropdownId === user.id} onClose={() => setOpenDropdownId(null)} className="w-40 p-2">
                         <DropdownItem
                           onItemClick={() => handleViewMore(user.id)}
                           className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
@@ -206,7 +226,7 @@ const AccountsTable = () => {
                           Delete
                         </DropdownItem>
 
-                      </Dropdown>
+                      </Dropdown> */}
                     </div>
                   </TableCell>
                 </TableRow>

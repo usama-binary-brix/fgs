@@ -17,9 +17,8 @@ const InventoryPage = () => {
 
   return (
     <>
-     <h1 className="text-xl font-bold text-black mb-5">
      <PageTitle  title="Investment Opportunities" />
-     </h1>
+
      <InvestmentOpportunityTable/>
     </>
 

@@ -7,14 +7,15 @@ import { DropdownItem } from '@/components/ui/dropdown/DropdownItem';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { MoreDotIcon } from '@/icons';
 import { IoSearchOutline } from 'react-icons/io5'
-
+import Button from '@/components/ui/button/Button';
 import { useDeleteInventoryMutation, useGetAllInventoryQuery } from '@/store/services/api';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import {  Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import AddInventoryModal from '../AddInventoryModal';
 import InvestorRequestModal from '../InvestorRequestModal';
 import TotalInvestorsModal from '../TotalInvestorsModal';
 import { useRouter } from 'next/navigation';
+import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 
 
 
@@ -138,11 +139,25 @@ const InventoryTable = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <TopButtons label="Edit Columns" variant="outlined" />
-            <TopButtons label="Filters" variant="outlined" />
-            <TopButtons onClick={handleOpenModal} label="Add New Inventory" variant="primary" />
-          </div>
-          <AddInventoryModal open={isModalOpen} onClose={handleCloseModal} />
+          <Button variant="outlined"
+            size='sm'
+          >
+            Edit Columns
+          </Button>
+
+          <Button variant="outlined"
+            size='sm'
+          >
+            Filters
+          </Button>
+
+          <Button variant="primary"
+            size='sm'
+            onClick={handleOpenModal}
+          >
+            Add New Inventory
+          </Button>
+        </div>
 
         </div>
 
@@ -189,6 +204,7 @@ const InventoryTable = () => {
                               onClick={() => handleOpenInvReqModal(lead.id)}
                               xmlns="http://www.w3.org/2000/svg"
                               className="border cursor-pointer border-[#D1842880] bg-[#D184281A] rounded"
+                            
                               width="25"
                               height="25"
                               viewBox="0 0 21 20"
@@ -217,7 +233,7 @@ const InventoryTable = () => {
                               />
                             </svg>
 
-                            <div className="absolute top-[-9px] border border-[#D18428] bg-[#D18428] rounded-full px-1 right-10">
+                            <div className="absolute top-[-9px] border border-[#D18428] bg-[#D18428] rounded-full px-1 right-12">
                               <h1 className="text-xs text-white">{lead.total_investors}</h1>
                             </div>
                           </>
@@ -255,9 +271,6 @@ const InventoryTable = () => {
                           </svg>
                         )}
                       </div>
-
-
-
                     </TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family  text-center"><span onClick={() => handleOpenTotalInvModal(lead.id)} className='border-b cursor-pointer  border-gray-400'>{lead.totalInvestors}</span></TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.investmentAmount || '---'}</TableCell>
@@ -296,14 +309,14 @@ const InventoryTable = () => {
                         <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="w-40 p-2 fixed right-15 !rounded">
                           <DropdownItem onItemClick={() => {
                               router.push(`/dashboard/edit-inventory/${lead.id}`); // Replace with your actual route
-                            }} className="flex w-full  !px-1 text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9] text-left  rounded  dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                            }} className="flex w-full   text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9] text-left  rounded  dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                             View Details
                           </DropdownItem>
                           <DropdownItem
                             onItemClick={() => {
                               router.push(`/dashboard/edit-inventory/${lead.id}`); // Replace with your actual route
                             }}
-                            className="flex w-full  text-left border-t !px-1 text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9] rounded  dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                            className="flex w-full  text-left border-t  text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9] rounded  dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
                           >
                             Edit
                           </DropdownItem>
@@ -311,7 +324,7 @@ const InventoryTable = () => {
                             setOpenDropdownId(null);
                             setSelectedId(lead.id);
                             setIsDeleteModalOpen(true);
-                          }} className="flex w-full  text-left border-t !px-1 text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9]   dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                          }} className="flex w-full  text-left border-t text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9]   dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                             Delete
                           </DropdownItem>
                         </Dropdown>
@@ -324,32 +337,22 @@ const InventoryTable = () => {
           </div>
         </div>
       </div>
+      <AddInventoryModal open={isModalOpen} onClose={handleCloseModal} />
       <InvestorRequestModal open={isInvReqModalOpen} onClose={handleCloseInvReqModal} InventoryId={selectedInventoryId} />
       <TotalInvestorsModal open={isTotalInvModalOpen} onClose={handleCloseTotalInvModal} />
-      <Dialog
+
+
+
+      <DeleteConfirmationModal
+        title={'Inventory'}
         open={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-      >
-        <DialogTitle>Remove Inventory</DialogTitle>
-        <DialogContent>
-          <Typography>Are you sure you want to remove this inventory. </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsDeleteModalOpen(false)} sx={{ color: "#D18428", border: '1px solid #D18428', paddingX: '1rem', textTransform: 'none' }}>
-            Cancel
-          </Button>
-          <Button
-            className='bg-primary hover:bg-primary'
-            onClick={() => handleDeleteInventory(selectedId)}
-            // color="error"
-            sx={{ backgroundColor: '#D18428', '&:hover': { backgroundColor: '#D18428' }, textTransform: 'none' }}
-            variant="contained"
-          >
-            Remove
-          </Button>
+        onConfirm={() => handleDeleteInventory(selectedId)}
+        name={selectedId}
+      />
 
-        </DialogActions>
-      </Dialog>
+
+ 
 
     </>
   );
