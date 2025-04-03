@@ -161,7 +161,7 @@ const InvestmentOpportunityTable = () => {
                                                 </button>
                                                 <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="w-40 p-2">
                                                     <DropdownItem onItemClick={closeDropdown} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                                                        View More
+                                                        View Details
                                                     </DropdownItem>
 
                                                     <DropdownItem onItemClick={() => {
@@ -194,13 +194,16 @@ const InvestmentOpportunityTable = () => {
                             <AddLeadInput
                                 name="investmentAmount"
                                 value={formik.values.investmentAmount}
-                                onChange={formik.handleChange}
+                                onChange={(e: any) => {
+                                    const value = e.target.value;
+                                    if (/^\d*\.?\d*$/.test(value)) {
+                                        formik.setFieldValue("investmentAmount", value);
+                                    }
+                                }}
                                 onBlur={formik.handleBlur}
                                 label="Investment Amount"
                             />
-                            {formik.touched.investmentAmount && formik.errors.investmentAmount && (
-                                <p className="text-red-500 text-xs mt-1">{formik.errors.investmentAmount}</p>
-                            )}
+
                         </div>
                     </DialogContent>
                     <DialogActions>

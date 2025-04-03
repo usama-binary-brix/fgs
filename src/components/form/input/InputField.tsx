@@ -17,6 +17,7 @@ interface InputProps {
   success?: boolean;
   error?: boolean;
   hint?: any;
+  maxLength?:any
 }
 
 const Input: FC<InputProps> = ({
@@ -36,6 +37,7 @@ const Input: FC<InputProps> = ({
   success = false,
   error = false,
   hint,
+  maxLength,
 }) => {
   let inputClasses = `h-9 w-full rounded-sm border appearance-none px-4 py-1 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ${className}`;
 
@@ -65,6 +67,7 @@ const Input: FC<InputProps> = ({
         disabled={disabled}
         className={inputClasses}
         value={value}
+        maxLength={maxLength}
       />
       {hint && (
         <p

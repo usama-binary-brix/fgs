@@ -8,6 +8,7 @@ import { useSidebar } from "../context/SidebarContext";
 import { ChevronDownIcon, GridIcon, HorizontaLDots } from "../icons/index";
 import Profile from "@/components/Profile";
 import { useSelector } from "react-redux";
+import AdminProfile from "@/components/AdminProfile";
 
 type NavItem = {
   name: string;
@@ -27,14 +28,20 @@ const navItems: NavItem[] = [
     subItems: [{ name: "All Inventory", path: "/dashboard/inventory" }],
     roles: ["admin"],
   },
+
   { icon: <GridIcon />, name: "Dashboard", path: "/investor-dashboard", roles: ["investor"] },
   { icon: <GridIcon />, name: "Investment Opportunities", path: "/investor-dashboard/investment-opportunities", roles: ["investor"] },
   { icon: <GridIcon />, name: "My Investment", path: "/investor-dashboard/my-investment", roles: ["investor"] },
+
+
+  { icon: <GridIcon />, name: "Dashboard", path: "/sales-dashboard", roles: ["salesperson"] },
+  { icon: <GridIcon />, name: "All Leads", path: "/sales-dashboard/leads", roles: ["salesperson"] },
 ];
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const userRole = useSelector((state: any) => state?.user?.user?.account_type);
+  // const userRole = 'salesperson'
   const pathname = usePathname();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
@@ -85,7 +92,7 @@ const AppSidebar: React.FC = () => {
                 ) : (
                   <>
                     <button
-                      className={`w-full flex items-center justify-between px-6 py-2 text-sm font-semibold ${isActive(undefined, nav.subItems) ? "menu-item-active" : "menu-item-inactive"
+                      className={`w-full flex items-center justify-between px-6 font-medium py-2 text-sm ${isActive(undefined, nav.subItems) ? "menu-item-active" : "menu-item-inactive"
                         }`}
                       onClick={() => toggleMenu(nav.name)}
                     >
@@ -114,8 +121,10 @@ const AppSidebar: React.FC = () => {
           </ul>
         </nav>
         <div className="absolute bottom-15 lg:bottom-0 w-full">
-          {isExpanded || isHovered || isMobileOpen ? <Profile /> : null}
-        </div>
+  {(isExpanded || isHovered || isMobileOpen) &&
+    (userRole === "admin" ? <AdminProfile /> : <Profile />)}
+</div>
+
       </div>
     </aside>
   );

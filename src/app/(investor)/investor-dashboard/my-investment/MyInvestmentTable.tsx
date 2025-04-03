@@ -54,7 +54,9 @@ const MyInvestmentTable = () => {
     const [openDropdownId, setOpenDropdownId] = useState<string | number | null>();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedId, setSelectedId] = useState<string | number | null>(null);
-
+const handleNavigate = (id:any)=>{
+    router.push(`my-investment/view-project/${id}`)
+}
     const formik = useFormik({
         initialValues: {
             investmentAmount: '',
@@ -157,29 +159,29 @@ const MyInvestmentTable = () => {
 
 
                                         {lead.status ? (
-                    <TableCell className="px-5 py-4 text-xs">
-                      <span
-                        className={`px-3 py-1 rounded-md text-sm font-medium ${lead.status === 'in progress'
-                          ? 'bg-orange-100 text-orange-500'
-                          : lead.status === 'sold'
-                            ? 'bg-green-100 text-green-600'
-                            : lead.status === 'pending'
-                              ? 'bg-[#8E7F9C1F] text-[#8E7F9C]'
-                              : ''
-                          }`}
-                      >
-                        {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)} {/* Capitalize */}
-                      </span>
-                    </TableCell>
-                  ) : (
-                    <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-familytext-start">
-                      <span
-                        className={`px-3 py-2 rounded-md text-sm font-medium bg-[#8E7F9C1F] text-[#8E7F9C]`}
-                      >
-                        Pending
-                      </span>
-                    </TableCell>
-                  )}
+                                            <TableCell className="px-5 py-4 text-xs">
+                                                <span
+                                                    className={`px-3 py-1 rounded-md text-sm font-medium ${lead.status === 'in progress'
+                                                        ? 'bg-orange-100 text-orange-500'
+                                                        : lead.status === 'sold'
+                                                            ? 'bg-green-100 text-green-600'
+                                                            : lead.status === 'pending'
+                                                                ? 'bg-[#8E7F9C1F] text-[#8E7F9C]'
+                                                                : ''
+                                                        }`}
+                                                >
+                                                    {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)} {/* Capitalize */}
+                                                </span>
+                                            </TableCell>
+                                        ) : (
+                                            <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-familytext-start">
+                                                <span
+                                                    className={`px-3 py-2 rounded-md text-sm font-medium bg-[#8E7F9C1F] text-[#8E7F9C]`}
+                                                >
+                                                    Pending
+                                                </span>
+                                            </TableCell>
+                                        )}
 
 
                                         <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family text-start">
@@ -188,17 +190,11 @@ const MyInvestmentTable = () => {
                                                     <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                                                 </button>
                                                 <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="w-40 p-2">
-                                                    <DropdownItem onItemClick={closeDropdown} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                                                        View More
+                                                    <DropdownItem onItemClick={()=>handleNavigate(lead.id)} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                                                        View Details
                                                     </DropdownItem>
 
-                                                    <DropdownItem onItemClick={() => {
-                                                        setOpenDropdownId(null);
-                                                        setSelectedId(lead.id);
-                                                        setIsOpen(true);
-                                                    }} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                                                        Request Investment
-                                                    </DropdownItem>
+
                                                 </Dropdown>
                                             </div>
                                         </TableCell>

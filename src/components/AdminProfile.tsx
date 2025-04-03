@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 
-const Profile = () => {
+const AdminProfile = () => {
   const [logout, { isLoading }] = useLogoutMutation();
   const router = useRouter()
   const user = useSelector((state: any) => state?.user?.user)
@@ -70,8 +70,16 @@ const Profile = () => {
         {/* <FiSettings onClick={handleNavigate}  className="text-gray-400 cursor-pointer hover:text-gray-200" size={18} /> */}
       </div>
 
+      <button onClick={handleLogout} disabled={isLoading} className="w-full mt-[1.25rem] mb-5 flex items-center justify-center gap-2 bg-[#333] text-gray-400 px-4 py-2 rounded-sm text-sm font-medium hover:bg-gray-600 hover:text-white transition">
+        {/* <IoLogOutOutline size={16} /> */}
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M9.99959 16.6668C13.6815 16.6668 16.6663 13.6821 16.6663 10.0002C16.6663 6.31826 13.6815 3.3335 9.99959 3.3335" stroke="white" strokeOpacity="0.4" strokeWidth="1.25" strokeLinecap="round" />
+          <path d="M11.6663 10H3.33293M3.33293 10L5.83293 7.5M3.33293 10L5.83293 12.5" stroke="white" strokeOpacity="0.4" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        {isLoading ? 'Logging out...' : 'Logout'}
+      </button>
     </div>
   );
 };
 
-export default Profile;
+export default AdminProfile;

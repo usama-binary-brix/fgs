@@ -35,7 +35,7 @@ interface Props {
 }
 
 const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId }) => {
-  const [activeTab, setActiveTab] = useState<'all' | 'accepted' | 'rejected' | 'pending'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'approved' | 'rejected' | 'pending'>('all');
 
   const { data: InvestmentData, isLoading, isError } = useGetAllAdminInvestmentsQuery(InventoryId);
   const [updateStatus] = useUpdateInvestorStatusMutation()
@@ -62,13 +62,13 @@ const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId }) =
         </div>
 
         {/* Tabs */}
-        <div className="flex items-center gap-3 p-[15px]">
-          {['all', 'pending', 'accepted', 'rejected'].map((tab) => (
+        <div className="flex items-center gap-3 py-0 px-[15px]">
+          {['all', 'pending', 'approved', 'rejected'].map((tab) => (
             <button
               key={tab}
-              className={`border border-[#D184281A] text-[13px] font-family py-1 px-4 font-semibold rounded transition-all duration-300
+              className={`border border-[#D184281A] text-[13px] font-family py-2 px-4 font-semibold rounded transition-all duration-300
                 ${activeTab === tab ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
-              onClick={() => setActiveTab(tab as 'all' | 'pending' | 'accepted' | 'rejected')}
+              onClick={() => setActiveTab(tab as 'all' | 'pending' | 'approved' | 'rejected')}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
