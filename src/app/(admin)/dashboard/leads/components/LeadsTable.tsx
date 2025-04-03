@@ -142,14 +142,14 @@ const LeadsTable = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-3">
+      <div className="flex justify-between items-center mb-4">
         <div className="inline-flex items-center gap-3">
           <div className="hidden sm:block">
             <div className="flex items-center space-x-2">
               <div className="relative">
                 <IoSearchOutline className="absolute left-3 top-1/2 transform w-[20px] h-[20px] text-[#616161] -translate-y-1/2" />
                 <input
-                  className="text-xs border text-[12.5px] text-[#616161] font-medium placeholder-[#616161] font-family pl-9 pr-2 h-9 w-64 border-[#DDD] rounded focus:border-[#DDD] focus:outline-none"
+                  className="text-xs border text-[12.5px] text-[#616161] font-medium placeholder-[#616161] font-family pl-9 pr-2 h-9 w-64 border-[#DDD] rounded bg-[#fff] focus:border-[#DDD] focus:outline-none"
                   placeholder="Search"
                 />
               </div>
@@ -201,8 +201,8 @@ const LeadsTable = () => {
             <TableBody className="overflow-auto">
               {data?.leads?.map((lead: any) => (
                 <TableRow key={lead.id}>
-                  <TableCell className="px-3 py-4 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{lead.id}</TableCell>
-                  <TableCell className="px-3 py-4 text-[14px] flex items-center gap-3 font-family text-[#616161] font-normal">
+                  <TableCell className="px-3 py-2.5 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{lead.id}</TableCell>
+                  <TableCell className="px-3 py-2.5 text-[14px] flex items-center gap-2 font-family text-[#616161] font-normal">
 
 
 
