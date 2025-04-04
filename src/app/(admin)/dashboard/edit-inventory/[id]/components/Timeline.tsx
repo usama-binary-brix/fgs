@@ -53,7 +53,7 @@ const Timeline = () => {
             }}
             icon={<FaCheckCircle />}
             contentStyle={{
-              background: "#f9f9f9",
+              background: "transparent",
               color: "#333",
               borderRadius: "8px",
               padding: "15px",

@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import Shipment from "./Shipment";
 import Reconditioning from "./Reconditioning";
 import Timeline from "./Timeline";
+import { QRCodeCanvas } from "qrcode.react";
 
 const EditInventoryForm = () => {
   const { id } = useParams();
@@ -142,12 +143,12 @@ const EditInventoryForm = () => {
 
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-md">
-      <div className="flex justify-between items-center">
+    <div className=" rounded-md">
+      <div className="flex justify-between bg-white rounded shadow-md p-3 items-center">
         <div>
           <h1 className="text-2xl font-bold">I-{id}</h1>
           <p className="text-gray-600">Inventory</p>
-          <div className="flex gap-4 mt-4">
+          <div className="flex gap-4 mt-2">
             <button
               className={`border border-[#D184281A] text-[13px] font-family py-1 px-4 font-semibold rounded transition-all duration-300
                 ${activeTab === "details" ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
@@ -171,7 +172,21 @@ const EditInventoryForm = () => {
             </button>
           </div>
         </div>
-        <button
+       <div className="flex flex-col items-cetner">
+       <QRCodeCanvas value="https://yourwebsite.com" size={76} />
+       <h1 className="text-[#818181] text-[9.5px] font-normal font-family text-center mt-1">QR-Code</h1>
+       </div>
+        {/* <button
+          className="bg-primary text-white px-4 py-2 rounded-md flex items-center gap-2"
+          onClick={() => setIsEditing(!isEditing)}
+        >
+          <FaEdit /> {isEditing ? "Cancel" : "Edit"}
+        </button> */}
+      </div>
+
+      <div className="flex justify-between items-center mt-5">
+        <h1 className="text-[#000] text-[17px] font-family font-medium">Details</h1>
+          <button
           className="bg-primary text-white px-4 py-2 rounded-md flex items-center gap-2"
           onClick={() => setIsEditing(!isEditing)}
         >
@@ -185,13 +200,13 @@ const EditInventoryForm = () => {
 
           <div className="mt-6 grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-gray-600">Category *</label>
+              <label className="block text-[#818181] text-[12.5px] font-normal font-family mb-1">Category <span className="text-red-600">*</span></label>
               <select
                 name="category_id"
                 value={formik.values.category_id}
                 onChange={formik.handleChange}
                 disabled={!isEditing}
-                className="w-full border p-2 rounded-md"
+                className="w-full border p-2 rounded-xs border-[#E8E8E8] text-[13px] font-medium font-family"
               >
                 <option value="">Select</option>
                 {categories?.categories?.map((cat: any) => (
@@ -200,13 +215,13 @@ const EditInventoryForm = () => {
               </select>
             </div>
             <div>
-              <label className="block text-gray-600">Subcategory *</label>
+              <label className="block text-[#818181] text-[12.5px] font-normal font-family mb-1">Subcategory <span className="text-red-600">*</span></label>
               <select
                 name="subcategory_id"
                 value={formik.values.subcategory_id}
                 onChange={formik.handleChange}
                 disabled={!isEditing}
-                className="w-full border p-2 rounded-md"
+                className="w-full border p-2 rounded-xs border-[#E8E8E8] text-[13px] font-medium font-family"
               >
                 <option value="">Select</option>
                 {subCategories?.categories?.map((sub: any) => (
@@ -215,38 +230,38 @@ const EditInventoryForm = () => {
               </select>
             </div>
             <div>
-              <label className="block text-gray-600">Year *</label>
+              <label className="block text-[#818181] text-[12.5px] font-normal font-family mb-1">Year <span className="text-red-600">*</span></label>
               <input
                 type="text"
                 name="year"
                 value={formik.values.year}
                 onChange={formik.handleChange}
                 disabled={!isEditing}
-                className="w-full border p-2 rounded-md"
+                className="w-full border p-2 rounded-xs border-[#E8E8E8] text-[13px] font-medium font-family"
               />
             </div>
             {["make", "model", "serial_no", "length", "height", "width", "weight", "hours", "price_paid"].map((field) => (
               <div key={field}>
-                <label className="block text-gray-600 capitalize">{field.replace("_", " ")} *</label>
+                <label className="block text-[#818181] text-[12.5px] font-normal font-family mb-1">{field.replace("_", " ")} <span className="text-red-600">*</span></label>
                 <input
                   type="text"
                   name={field}
                   value={formik.values[field as keyof typeof formik.values]}
                   onChange={formik.handleChange}
                   disabled={!isEditing}
-                  className="w-full border p-2 rounded-md"
+                  className="w-full border p-2 rounded-xs border-[#E8E8E8] text-[13px] font-medium font-family"
                 />
               </div>
             ))}
             <div>
-              <label className="block text-gray-600">Date Purchased *</label>
+              <label className="block text-[#818181] text-[12.5px] font-normal font-family mb-1">Date Purchased <span className="text-red-600">*</span></label>
               <input
                 type="date"
                 name="date_purchased"
                 value={formik.values.date_purchased}
                 onChange={formik.handleChange}
                 disabled={!isEditing}
-                className="w-full border p-2 rounded-md"
+                className="w-full border p-2 rounded-xs border-[#E8E8E8] text-[13px] font-medium font-family"
               />
             </div>
           </div>
