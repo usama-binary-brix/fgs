@@ -107,7 +107,7 @@ const ViewDetailsLeads = () => {
       } catch (error) {
         toast.error("Failed to Update lead.");
       }
-      setIsEditing(false)
+      // setIsEditing(false)
     },
 
   });
@@ -227,15 +227,15 @@ const ViewDetailsLeads = () => {
         <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 gap-4">
           <div className="bg-white w-full p-3">
             <h1 className="text-black font-medium mb-2">Contact Information</h1>
-            <AddLeadInput label="Name" name="name" value={formik.values.name} onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={!isEditing} />
-            <AddLeadInput label="Title" name="title" value={formik.values.title} onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={!isEditing} />
-            <AddLeadInput label="Company" name="company" value={formik.values.company} onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={!isEditing} />
-            <AddLeadInput label="Phone" name="phone" value={formik.values.phone} onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={!isEditing} />
-            <AddLeadInput label="Email" name="email" value={formik.values.email} onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={!isEditing} />
-            <AddLeadInput label="Street Address" name="street_address" value={formik.values.street_address} onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={!isEditing} />
-            <AddLeadInput label="City" name="city" value={formik.values.city} onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={!isEditing} />
-            <AddLeadInput label="State" name="state" value={formik.values.state} onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={!isEditing} />
-            <AddLeadInput label="Zip Code" name="zip_code" value={formik.values.zip_code} onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={!isEditing} />
+            <AddLeadInput label="Name" name="name" value={formik.values.name} onChange={formik.handleChange} onBlur={formik.handleBlur}  />
+            <AddLeadInput label="Title" name="title" value={formik.values.title} onChange={formik.handleChange} onBlur={formik.handleBlur}  />
+            <AddLeadInput label="Company" name="company" value={formik.values.company} onChange={formik.handleChange} onBlur={formik.handleBlur}  />
+            <AddLeadInput label="Phone" name="phone" value={formik.values.phone} onChange={formik.handleChange} onBlur={formik.handleBlur}  />
+            <AddLeadInput label="Email" name="email" value={formik.values.email} onChange={formik.handleChange} onBlur={formik.handleBlur}  />
+            <AddLeadInput label="Street Address" name="street_address" value={formik.values.street_address} onChange={formik.handleChange} onBlur={formik.handleBlur}  />
+            <AddLeadInput label="City" name="city" value={formik.values.city} onChange={formik.handleChange} onBlur={formik.handleBlur}  />
+            <AddLeadInput label="State" name="state" value={formik.values.state} onChange={formik.handleChange} onBlur={formik.handleBlur}  />
+            <AddLeadInput label="Zip Code" name="zip_code" value={formik.values.zip_code} onChange={formik.handleChange} onBlur={formik.handleBlur}  />
           </div>
 
           <div className="w-full bg-white p-3 h-[400px]">
@@ -312,7 +312,6 @@ const ViewDetailsLeads = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 label="Reminder"
-                disabled={!isEditing}
               />
 
             </div>
@@ -697,11 +696,7 @@ const ViewDetailsLeads = () => {
             </div>
           </div>
         </div>
-        {isEditing && (
-          <button type="submit" className="bg-primary text-white px-4 py-2 mt-4 rounded-md">
-            Update
-          </button>
-        )}
+     
       </form>
     </>
   )
