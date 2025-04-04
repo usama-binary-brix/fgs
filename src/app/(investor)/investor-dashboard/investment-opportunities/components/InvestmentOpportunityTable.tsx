@@ -8,12 +8,14 @@ import { MoreDotIcon } from '@/icons';
 import { IoSearchOutline } from 'react-icons/io5'
 
 import { useAddInvestmentMutation, useDeleteInventoryMutation, useGetAllInventoryQuery } from '@/store/services/api';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 
 import { useRouter } from 'next/navigation';
 import AddLeadInput from '@/app/(admin)/dashboard/leads/components/input/AddLeadInput';
 import { useFormik } from 'formik';
+import { RxCross2 } from 'react-icons/rx';
+import Button from '@/components/ui/button/Button';
 
 
 
@@ -75,6 +77,7 @@ const InvestmentOpportunityTable = () => {
                 toast.success(response.message);
                 resetForm();
                 setIsDeleteModalOpen(false);
+                setIsOpen(false);
             } catch (error) {
                 let errorMessage = "An unexpected error occurred";
 
@@ -182,16 +185,24 @@ const InvestmentOpportunityTable = () => {
                 </div>
             </div>
             <Dialog
+                sx={{ minWidth: '30rem' }}
                 open={isOpen}
                 onClose={handleCloseModal}
             >
                 <form onSubmit={formik.handleSubmit}>
-                    <DialogTitle>Request Investment for {selectedId}</DialogTitle>
-                    <DialogContent
+                    <div className=' border-b border-gray-400 mb-3 py-3'>
 
-                    >
+                        <div className='flex justify-between items-center px-4'>
+                            <p className='text-xl font-semibold'>Request Investment for {selectedId}</p>
+
+                            <RxCross2 onClick={handleCloseModal} className='cursor-pointer text-3xl' />
+
+                        </div>
+                    </div>
+                    <div className='min-w-[30rem] px-5'>
                         <div className="mb-2">
                             <AddLeadInput
+                                placeholder='Enter Investment Amount'
                                 name="investmentAmount"
                                 value={formik.values.investmentAmount}
                                 onChange={(e: any) => {
@@ -205,22 +216,24 @@ const InvestmentOpportunityTable = () => {
                             />
 
                         </div>
-                    </DialogContent>
+                    </div>
                     <DialogActions>
-                        <Button
-                            onClick={handleCloseModal}
-                            sx={{ color: "#D18428", border: '1px solid #D18428', paddingX: '1rem', textTransform: 'none' }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            type="submit"
-                            className='bg-primary hover:bg-primary'
-                            sx={{ backgroundColor: '#D18428', '&:hover': { backgroundColor: '#D18428' }, textTransform: 'none' }}
-                            variant="contained"
-                        >
-                            Request Investment
-                        </Button>
+
+                        <div className='flex items-center gap-4'>
+                            <Button onClick={handleCloseModal} variant="fgsoutline"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="primary"
+                            >
+                                Request Investment
+                            </Button>
+                        </div>
+
+
+
                     </DialogActions>
                 </form>
             </Dialog>

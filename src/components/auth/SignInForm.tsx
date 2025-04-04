@@ -32,12 +32,12 @@ export default function SignInForm() {
         const res = await login(values).unwrap();
         dispatch(setUser({ user: res.user, token: res.token }));
 
-        if (res.user.role === "admin") {
-          router.push("/dashboard");
-        } else if (res.user.role === "investor") {
+        if (res.user.account_type === "investor") {
           router.push("/investor-dashboard");
-        } else {
+        } else if (res.user.account_type === "admin") {
           router.push("/dashboard");
+        } else {
+          router.push("/");
         }
       } 
         catch (err: any) {
