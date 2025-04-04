@@ -25,7 +25,7 @@ const Timeline = () => {
     <div className="w-full flex justify-center">
       <div className="relative flex flex-col items-center w-full max-w-3xl">
                 <div 
-          className="absolute left-1/2 transform -translate-x-1/2 w-[2px] bg-gray-300" 
+          className="absolute left-1/2  transform -translate-x-1/2 w-[2px] bg-gray-300" 
           style={{
             height: `${totalHeight}rem`,
             top: "1rem", 
@@ -47,10 +47,17 @@ const Timeline = () => {
           return (
             <div className="relative flex items-start mb-6 w-full" key={index}>
               {index % 2 === 0 ? (
-                <div className={`w-1/2 pr-4 text-right ${isActive ? "text-black font-semibold text-lg" : isCompleted ? "text-[#414141] font-semibold" : "text-gray-500"}`}>
-                  {step.text}
-                  <p className="text-sm text-gray-600">{step.description}</p>
+               <>
+                <div 
+                className={`w-1/2 pr-4 text-right ${isActive ? "text-gray-500  text-lg" : isCompleted ? "text-[#414141]" : "text-gray-500"}`}>
+                <p
+                className={` ${isActive ? "text-gray-500 font-semibold text-lg" : isCompleted ? "text-[#414141] font-semibold" : "text-gray-500"}`}>
+                
+                {step.text}
+                </p>
+                  <p className="text-sm text-gray-500">{step.description}</p>
                 </div>
+               </>
               ) : (
                 <div className="w-1/2"></div>
               )}
@@ -60,17 +67,17 @@ const Timeline = () => {
                 {isActive ? (
                   <>
                     <LuCircle size={22} className="text-[#d49149] z-50" />
-                    <div className="absolute w-2 h-2 bg-[#d49149] rounded-full"></div>
+                    <div className="absolute w-2 h-2 bg-[#d49149] rounded-full z-50"></div>
                   </>
                 ) : (
-                  <FaCheckCircle size={18} className={isCompleted ? "text-[#d49149]" : "text-gray-400"} />
+                  <FaCheckCircle size={18} className={isCompleted ? "text-[#d49149] z-50" : "text-gray-400 z-50"} />
                 )}
               </div>
 
               {index % 2 !== 0 ? (
                 <div className={`w-1/2 pl-4 ${isActive ? "text-black font-semibold text-lg" : isCompleted ? "text-gray-500 font-semibold" : "text-gray-500"}`}>
                   {step.text}
-                  <p className="text-sm text-gray-600">{step.description}</p>
+                  <p className="text-xs text-gray-500">{step.description}</p>
                 </div>
               ) : (
                 <div className="w-1/2"></div>
