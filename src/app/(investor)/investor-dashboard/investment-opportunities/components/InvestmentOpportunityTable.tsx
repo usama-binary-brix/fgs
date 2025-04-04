@@ -16,6 +16,7 @@ import AddLeadInput from '@/app/(admin)/dashboard/leads/components/input/AddLead
 import { useFormik } from 'formik';
 import { RxCross2 } from 'react-icons/rx';
 import Button from '@/components/ui/button/Button';
+import Label from '@/components/form/Label';
 
 
 
@@ -201,20 +202,27 @@ const InvestmentOpportunityTable = () => {
                     </div>
                     <div className='min-w-[30rem] px-5'>
                         <div className="mb-2">
-                            <AddLeadInput
-                                placeholder='Enter Investment Amount'
-                                name="investmentAmount"
+                            <label className="text-[12.5px] text-[#818181] font-normal font-family" htmlFor='InvestmentAmount'>
+                                Investment Amount <span className="text-red-500">*</span>
+
+
+                            </label>
+
+                            <input
                                 value={formik.values.investmentAmount}
                                 onChange={(e: any) => {
                                     const value = e.target.value;
-                                    if (/^\d*\.?\d*$/.test(value)) {
+                                    if (/^\d*\.?\d*$/.test(value) && value !== "0" && value !== "00") {
                                         formik.setFieldValue("investmentAmount", value);
                                     }
                                 }}
                                 onBlur={formik.handleBlur}
-                                label="Investment Amount"
+                                type="text"
+                                placeholder="$ 0.00"
+                                name="investmentAmount"
+                                className="w-full px-2 py-1.5 text-[#666] placeholder-[#666] text-[12px] 
+                                font-medium rounded-xs border border-[#E8E8E8] mt-1 outline-none text-md"
                             />
-
                         </div>
                     </div>
                     <DialogActions>

@@ -268,6 +268,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                 <Label>Password</Label>
                 <div className="relative">
                   <Input
+                  
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter password"
                     {...formik.getFieldProps("password")}

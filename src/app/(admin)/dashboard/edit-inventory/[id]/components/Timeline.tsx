@@ -63,14 +63,14 @@ const Timeline = () => {
               )}
 
               {/* Status Icon */}
-              <div className="relative flex items-center justify-center w-6 z-50">
+              <div className="relative flex items-center justify-center w-6">
                 {isActive ? (
                   <>
-                    <LuCircle size={22} className="text-[#d49149] z-50" />
+                    <LuCircle size={22} className="text-[#d49149] z-50" style={{zIndex:999}}/>
                     <div className="absolute w-2 h-2 bg-[#d49149] rounded-full z-50"></div>
                   </>
                 ) : (
-                  <FaCheckCircle size={18} className={isCompleted ? "text-[#d49149] z-50" : "text-gray-400 z-50"} />
+                  <FaCheckCircle size={18} style={{zIndex:9999}} className={isCompleted ? "text-[#d49149] z-50" : "text-gray-400 z-50"} />
                 )}
               </div>
 

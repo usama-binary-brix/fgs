@@ -52,7 +52,7 @@ const Input: FC<InputProps> = ({
   }
 
   return (
-    <div className="relative">
+    <div className="relative" >
       <input
         type={type}
         id={id}
@@ -68,6 +68,7 @@ const Input: FC<InputProps> = ({
         className={inputClasses}
         value={value}
         maxLength={maxLength}
+        autoComplete="off"
       />
       {hint && (
         <p

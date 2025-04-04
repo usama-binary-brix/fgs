@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from "next/navigation";
 import { PageTitle } from "@/components/PageTitle";
 import Button from "@/components/ui/button/Button";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 type ErrorResponse = {
   data: {
@@ -204,7 +205,9 @@ const AddNewLead = () => {
     }
   };
 
-
+  const handleNavigate = () => {
+    router.push('/dashboard/leads')
+  }
 
   return (
     <>
@@ -214,8 +217,11 @@ const AddNewLead = () => {
             <div className="grid grid-cols-1">
               <div className="flex justify-between items-center">
                 {/* <h1 className="text-2xl font-extrabold font-family text-goldenBlack">Add New Lead</h1> */}
-
-                <PageTitle title="Add New Lead" />
+                <div className="flex gap-4">
+                  <IoMdArrowRoundBack onClick={handleNavigate} className="text-[1.5rem] mt-1 cursor-pointer" />
+                  <PageTitle title="Add New Lead" />
+                
+                </div>
 
 
                 <Button

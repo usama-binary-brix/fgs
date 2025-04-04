@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { FiCalendar, FiChevronDown } from 'react-icons/fi';
 import RadioButton from '../../components/radiobutton/RadioButton';
 import Button from '@/components/ui/button/Button';
+import { IoMdArrowRoundBack } from 'react-icons/io';
 
 const ViewDetailsLeads = () => {
   const { id } = useParams();
@@ -183,12 +184,18 @@ const ViewDetailsLeads = () => {
       }, {} as typeof prev)
     }));
   };
-
+  const handleNavigate = () => {
+    router.push('/dashboard/leads')
+  }
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
         <div className="flex justify-between items-center mb-4">
+                         <div className='flex gap-4 items-center'>
+                         <IoMdArrowRoundBack onClick={handleNavigate} className="text-[1.5rem] cursor-pointer" />
+          
           <h1 className="text-2xl font-bold">I-{id}</h1>
+                         </div>
           <div className="flex gap-2">
 
           <div className='flex items-center gap-4'>
