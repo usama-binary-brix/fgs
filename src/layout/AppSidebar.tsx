@@ -41,7 +41,7 @@ const navItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const userRole = useSelector((state: any) => state?.user?.user?.account_type);
-  // const userRole = 'salesperson'
+  // const userRole = 'investor'
   const pathname = usePathname();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
@@ -121,8 +121,9 @@ const AppSidebar: React.FC = () => {
           </ul>
         </nav>
         <div className="absolute bottom-15 lg:bottom-0 w-full">
-  {(isExpanded || isHovered || isMobileOpen) &&
-    (userRole === "admin" ? <AdminProfile /> : <Profile />)}
+  {/* {(isExpanded || isHovered || isMobileOpen) &&
+    (userRole === "admin" ? <AdminProfile /> : <Profile />)} */}
+<AdminProfile />
 </div>
 
       </div>
