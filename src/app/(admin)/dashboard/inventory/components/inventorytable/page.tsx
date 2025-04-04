@@ -16,6 +16,7 @@ import InvestorRequestModal from '../InvestorRequestModal';
 import TotalInvestorsModal from '../TotalInvestorsModal';
 import { useRouter } from 'next/navigation';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
+import Pagination from '@/components/tables/Pagination';
 
 
 
@@ -118,7 +119,20 @@ const InventoryTable = () => {
     }
   };
 
-
+    
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(10); // Example total pages
+    const [perPage, setPerPage] = useState(10); // Default items per page
+  
+    const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+    };
+  
+    const handlePerPageChange = (newPerPage: number) => {
+      setPerPage(newPerPage);
+      setCurrentPage(1); // Reset to first page on per-page change
+    };
+  
   return (
     <>
       <div className=''>
@@ -335,7 +349,18 @@ const InventoryTable = () => {
               </TableBody>
             </Table>
           </div>
+          <div className='px-6 border-t'>
+                <Pagination 
+          currentPage={currentPage} 
+          totalPages={data?.totalPages || 1} 
+          onPageChange={handlePageChange} 
+          perPage={perPage} 
+          onPerPageChange={handlePerPageChange} 
+        />
+        
+                </div>
         </div>
+          
       </div>
       <AddInventoryModal open={isModalOpen} onClose={handleCloseModal} />
       <InvestorRequestModal open={isInvReqModalOpen} onClose={handleCloseInvReqModal} InventoryId={selectedInventoryId} />

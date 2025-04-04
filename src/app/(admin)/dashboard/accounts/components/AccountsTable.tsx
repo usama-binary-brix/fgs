@@ -236,13 +236,14 @@ const AccountsTable = () => {
 
         </div>
         <div className='px-6 border-t'>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-            perPage={perPage}
-            onPerPageChange={handlePerPageChange}
-          />
+        <Pagination 
+  currentPage={currentPage} 
+  totalPages={data?.totalPages || 1} 
+  onPageChange={handlePageChange} 
+  perPage={perPage} 
+  onPerPageChange={handlePerPageChange} 
+/>
+
         </div>
 
       </div>
