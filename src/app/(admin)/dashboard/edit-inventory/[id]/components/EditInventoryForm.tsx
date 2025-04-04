@@ -148,23 +148,23 @@ const EditInventoryForm = () => {
         <div>
           <h1 className="text-2xl font-bold">I-{id}</h1>
           <p className="text-gray-600">Inventory</p>
-          <div className="flex gap-4 mt-2">
+          <div className="flex gap-2 mt-2">
             <button
-              className={`border border-[#D184281A] text-[13px] font-family py-1 px-4 font-semibold rounded transition-all duration-300
+              className={`border border-[#D184281A] text-[13px] font-family py-2 px-4 font-semibold rounded transition-all duration-300
                 ${activeTab === "details" ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
               onClick={() => setActiveTab("details")}
             >
               Details
             </button>
             <button
-              className={`border border-[#D184281A] text-[13px] font-family py-1 px-4 font-semibold rounded transition-all duration-300
+              className={`border border-[#D184281A] text-[13px] font-family py-2 px-4 font-semibold rounded transition-all duration-300
                 ${activeTab === "shipment" ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
               onClick={() => setActiveTab("shipment")}
             >
               Shipments
             </button>
             <button
-              className={`border border-[#D184281A] text-[13px] font-family py-1 px-4 font-semibold rounded transition-all duration-300
+              className={`border border-[#D184281A] text-[13px] font-family py-2 px-4 font-semibold rounded transition-all duration-300
                 ${activeTab === "reconditioning" ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
               onClick={() => setActiveTab("reconditioning")}
             >
@@ -184,10 +184,10 @@ const EditInventoryForm = () => {
         </button> */}
       </div>
 
-      <div className="flex justify-between items-center mt-5">
+      <div className="flex justify-between items-center mt-3">
         <h1 className="text-[#000] text-[17px] font-family font-medium">Details</h1>
           <button
-          className="bg-primary text-white px-4 py-2 rounded-md flex items-center gap-2"
+          className="bg-primary text-white px-4 py-2 rounded-sm flex items-center gap-1 text-sm"
           onClick={() => setIsEditing(!isEditing)}
         >
           <FaEdit /> {isEditing ? "Cancel" : "Edit"}
