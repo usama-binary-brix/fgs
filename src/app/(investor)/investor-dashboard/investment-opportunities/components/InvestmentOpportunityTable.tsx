@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { DropdownItem } from '@/components/ui/dropdown/DropdownItem';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
@@ -73,20 +73,16 @@ const InvestmentOpportunityTable = () => {
                     toast.error("No inventory selected");
                     return;
                 }
-
                 const payload = {
                     investment_amount: values.investmentAmount,
                     inventory_id: selectedId,
                 };
-
                 const response = await addInvestment(payload).unwrap();
                 toast.success(response.message);
                 resetForm();
                 setIsDeleteModalOpen(false);
                 setIsOpen(false);
             } catch (error) {
-
-
                 const errorResponse = error as ErrorResponse;
                 if (errorResponse?.data?.error) {
                     if (Array.isArray(errorResponse.data.error)) {
@@ -98,7 +94,7 @@ const InvestmentOpportunityTable = () => {
                         //  toast.error(errorResponse.data.error);
                     }
                 }
-       
+
 
             } finally {
                 setSubmitting(false);
@@ -106,6 +102,10 @@ const InvestmentOpportunityTable = () => {
         },
     });
 
+    useEffect(() => {
+        formik.setFieldValue("investmentAmount", "");
+    }, [selectedId]);
+    
     return (
         <>
             <div className=''>
@@ -161,33 +161,43 @@ const InvestmentOpportunityTable = () => {
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.model}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.serial_no}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.date_purchased}</TableCell>
-                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.price_paid || '---'}</TableCell>
+                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">$ {lead.price_paid || '---'}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.reconditioning || '---'}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.completionDate || '---'}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family text-start">{lead.salePrice || '---'}</TableCell>
 
-                                        <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family  text-center">{lead.totalInvestors || '---'}</TableCell>
+                                        <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family  text-center">{lead.total_investors || '---'}</TableCell>
 
-                                        <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family text-start">
+
+                                        <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-center">
                                             <div className="relative inline-block">
                                                 <button onClick={() => toggleDropdown(lead.id)} className="dropdown-toggle">
                                                     <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                                                 </button>
-                                                <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="w-40 p-2">
-                                                    <DropdownItem onItemClick={closeDropdown} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                                                <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="w-40 fixed right-20 !rounded">
+                                                    <DropdownItem onItemClick={closeDropdown} className="flex w-full   text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9] text-left  rounded  dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                                                         View Details
                                                     </DropdownItem>
+                                                    {!lead.complete_investment && (
+                                                        <>
+                                                            <DropdownItem onItemClick={() => {
+                                                                setOpenDropdownId(null);
+                                                                setSelectedId(lead.id);
+                                                                setIsOpen(true);
+                                                                closeDropdown
+                                                            }} className="flex w-full  text-left border-t text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9]   dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                                                                Request Investment
+                                                            </DropdownItem>
+                                                        </>
+                                                    )}
 
-                                                    <DropdownItem onItemClick={() => {
-                                                        setOpenDropdownId(null);
-                                                        setSelectedId(lead.id);
-                                                        setIsOpen(true);
-                                                    }} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                                                        Request Investment
-                                                    </DropdownItem>
                                                 </Dropdown>
                                             </div>
                                         </TableCell>
+
+
+
+
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -249,9 +259,6 @@ const InvestmentOpportunityTable = () => {
                                 Request Investment
                             </Button>
                         </div>
-
-
-
                     </DialogActions>
                 </form>
             </Dialog>
@@ -260,4 +267,3 @@ const InvestmentOpportunityTable = () => {
 };
 
 export default InvestmentOpportunityTable;
-

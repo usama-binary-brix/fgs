@@ -10,6 +10,7 @@ import {
 import { RxCross2 } from 'react-icons/rx';
 import { TableHeader } from '@/components/ui/table';
 import { FiX, FiCheck } from "react-icons/fi";
+import { useGetAllAdminInvestmentsQuery } from '@/store/services/api';
 
 const modalStyle = {
   position: 'absolute' as const,
@@ -26,69 +27,71 @@ const modalStyle = {
 };
 
 
-
 interface Props {
-    open: boolean;
-    onClose: () => void;
-  }
+  open: boolean;
+  onClose: () => void;
+  InventoryId: any;
+}
 
-  
+
 interface Lead {
-    name: string;
-    email: string;
-    investmentAmount: string;
-    profitAmt: string;
-    profits: string;
-  }
-  
-  const leadsData: Lead[] = [
-    { name: 'John', email: 'johndoe@example.com', investmentAmount: '$ 500.00', profitAmt: 'accepted', profits: '10.00%' },
-    { name: 'John', email: 'johndoe@example.com', investmentAmount: '$ 500.00', profitAmt: 'accepted', profits: '10.00%' },
-    { name: 'John', email: 'johndoe@example.com', investmentAmount: '$ 500.00', profitAmt: 'accepted', profits: '10.00%' },
-    
-    
-  ];
+  name: string;
+  email: string;
+  investmentAmount: string;
+  profitAmt: string;
+  profits: string;
+}
 
-const TotalInvestorsModal:  React.FC<Props> = ({open, onClose}) => {
-  
+const leadsData: Lead[] = [
+  { name: 'John', email: 'johndoe@example.com', investmentAmount: '$ 500.00', profitAmt: 'accepted', profits: '10.00%' },
+  { name: 'John', email: 'johndoe@example.com', investmentAmount: '$ 500.00', profitAmt: 'accepted', profits: '10.00%' },
+  { name: 'John', email: 'johndoe@example.com', investmentAmount: '$ 500.00', profitAmt: 'accepted', profits: '10.00%' },
+
+
+];
+
+const TotalInvestorsModal: React.FC<Props> = ({ open, onClose, InventoryId }) => {
+  const { data: InvestmentData, isLoading, isError } = useGetAllAdminInvestmentsQuery(InventoryId);
+  const approvedInvestments = InvestmentData?.investment?.filter((lead: any) => lead.status === 'approved');
+  console.log(approvedInvestments, 'approved investment ')
   return (
     <>
-     <Modal open={open} onClose={onClose}>
-            <Box sx={modalStyle}>
-      
-      <div className='flex  justify-between items-center mb-6 border-b border-gray-400 pb-3'>
-      <p className='text-xl font-semibold'>Total Investors</p>
-      
-      <RxCross2 onClick={onClose} className='cursor-pointer text-3xl'/>
-      </div>
-     
-              <div className="max-w-full overflow-x-auto border border-gray-400 rounded-lg">
-          <Table>
-            <TableHeader className="bg-[#F5F5F5]">
-              <TableRow>
-                {[ 'NAME', 'EMAIL', 'INV. AMT', 'PROFIT AMT', 'PROFITS%'].map((heading) => (
-                  <TableCell key={heading}  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {heading}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {leadsData.map((lead, index) => (
-                <TableRow key={index}>
-                  <TableCell className="px-5 py-4 text-xs">{lead.name}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs">{lead.email}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs">{lead.investmentAmount}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs">{lead.profitAmt}</TableCell>
-                  <TableCell className="px-5 py-4 text-xs">{lead.profits}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+      <Modal open={open} onClose={onClose}>
+        <Box sx={modalStyle}>
+    <div className='w-full flex p-[15px] justify-between items-center mb-6 border-b border-[#DDD] pb-3'>
+          <p className='text-[18px] font-family text-black font-semibold'>Total Investors</p>
+          <RxCross2 onClick={onClose} className='cursor-pointer text-[#818181] text-3xl' />
         </div>
-             
-            </Box>
-          </Modal>
+       
+        <div className="max-w-full mx-[15px] my-6 overflow-x-auto border border-[#DDD] rounded-lg">
+        <Table>
+              <TableHeader className="bg-[#F5F5F5]">
+                <TableRow>
+                  {['NAME', 'EMAIL', 'INV. AMT', 'PROFIT AMT', 'PROFITS%'].map((heading) => (
+                    <TableCell key={heading} className="px-5 py-3 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                      {heading}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+                {approvedInvestments?.map((lead: any, index: any) => (
+                  <TableRow key={index}>
+                    <TableCell className="px-5 py-4 text-xs">{lead.user.first_name} {lead?.user?.last_name}</TableCell>
+                    <TableCell className="px-5 py-4 text-xs">{lead.user.email}</TableCell>
+                    <TableCell className="px-5 py-4 text-xs">$ {lead.investment_amount}</TableCell>
+                    <TableCell className="px-5 py-4 text-xs">{lead.profitAmt || '--'}</TableCell>
+                    <TableCell className="px-5 py-4 text-xs">{lead.profits || '--'}</TableCell>
+                  </TableRow>
+                ))}
+                
+              </TableBody>
+            </Table>
+        </div>
+       
+
+        </Box>
+      </Modal>
     </>
   )
 }
