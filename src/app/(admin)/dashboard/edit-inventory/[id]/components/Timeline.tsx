@@ -29,6 +29,7 @@ const Timeline = () => {
           style={{
             height: `${totalHeight}rem`,
             top: "1rem", 
+            
           }}
         ></div>
 
@@ -37,6 +38,7 @@ const Timeline = () => {
           style={{
             top: "1rem",
             height: `${(lastCompletedIndex + 1) * 4}rem`, 
+            
           }}
         ></div>
 

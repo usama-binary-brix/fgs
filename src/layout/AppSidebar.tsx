@@ -36,12 +36,25 @@ const navItems: NavItem[] = [
 
   { icon: <GridIcon />, name: "Dashboard", path: "/sales-dashboard", roles: ["salesperson"] },
   { icon: <GridIcon />, name: "All Leads", path: "/sales-dashboard/leads", roles: ["salesperson"] },
+
+  { icon: <GridIcon />, name: "Dashboard", path: "/broker-dashboard", roles: ["broker"] },
+  {
+    icon: <GridIcon />,
+    name: "Shipment Opportunities",
+    subItems: [
+      { name: "All Shipments", path: "/broker-dashboard/shipments-opportunities/all-shipments" },
+      {name: "New Shipments", path: "/dashborad/inventory"},
+      {name: "Accepted/InProgress Shipments", path: "/dashborad/inventory"},
+      {name: "Archived Shipments", path: "/dashborad/inventory"},
+    ],
+    roles: ["broker"],
+  },
 ];
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
-  const userRole = useSelector((state: any) => state?.user?.user?.account_type);
-  // const userRole = 'investor'
+  // const userRole = useSelector((state: any) => state?.user?.user?.account_type);
+  const userRole = 'broker'
   const pathname = usePathname();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
