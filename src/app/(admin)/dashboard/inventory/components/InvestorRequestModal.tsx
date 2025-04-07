@@ -13,6 +13,11 @@ import { TableHeader } from '@/components/ui/table';
 import { FiX, FiCheck } from "react-icons/fi";
 import { useGetAllAdminInvestmentsQuery, useUpdateInvestorStatusMutation } from '@/store/services/api';
 import { toast } from 'react-toastify';
+type ErrorResponse = {
+  data: {
+      error: Record<string, string>; // `error` contains field names as keys and error messages as values
+  };
+};
 
 const modalStyle = {
   position: 'absolute' as const,
@@ -48,8 +53,24 @@ const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId }) =
       await updateStatus({ investment_id: investmentId, status }).unwrap();
       toast.success(`Investment ${status} successfully!`);
     } catch (error) {
-      console.error("Error updating status:", error);
-      toast.error("Failed to update status.");
+      // console.error("Error updating status:", error);
+      // toast.error("Failed to update status.");
+
+           const errorResponse = error as ErrorResponse;
+
+
+           if (errorResponse?.data?.error) {
+               if (Array.isArray(errorResponse.data.error)) {
+                   errorResponse.data.error.forEach((msg) => toast.error(msg));
+               } else {
+                if (typeof errorResponse.data.error === 'string') {
+                  toast.error(errorResponse.data.error); 
+                }
+                  //  toast.error(errorResponse.data.error);
+               }
+           }
+           
+      
     }
   };
 

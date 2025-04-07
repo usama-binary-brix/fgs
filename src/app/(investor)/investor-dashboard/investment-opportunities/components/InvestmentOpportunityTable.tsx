@@ -20,10 +20,10 @@ import Label from '@/components/form/Label';
 
 type ErrorResponse = {
     data: {
-      error: Record<string, string>; // `error` contains field names as keys and error messages as values
+        error: Record<string, string>; // `error` contains field names as keys and error messages as values
     };
-  };
-  
+};
+
 
 interface Lead {
     id: string;
@@ -87,29 +87,18 @@ const InvestmentOpportunityTable = () => {
             } catch (error) {
 
 
-                          const errorResponse = error as ErrorResponse;
-                
-                
-                        if (errorResponse?.data?.error) {
-                          Object.values(errorResponse.data.error).forEach((errorMessage) => {
-                            if (Array.isArray(errorMessage)) {
-                              errorMessage.forEach((msg) => toast.error(msg)); // Handle array errors
-                            } else {
-                              toast.error(errorMessage); // Handle single string errors
-                            }
-                          });
+                const errorResponse = error as ErrorResponse;
+                if (errorResponse?.data?.error) {
+                    if (Array.isArray(errorResponse.data.error)) {
+                        errorResponse.data.error.forEach((msg) => toast.error(msg));
+                    } else {
+                        if (typeof errorResponse.data.error === 'string') {
+                            toast.error(errorResponse.data.error);
                         }
-
-
-                // let errorMessage = "An unexpected error occurred";
-
-                // if (error instanceof Error) {
-                //     errorMessage = error.message;
-                // } else if (typeof error === "object" && error !== null && "error" in error) {
-                //     errorMessage = (error as { error: string }).error;
-                // }
-
-                // toast.error(errorMessage);
+                        //  toast.error(errorResponse.data.error);
+                    }
+                }
+       
 
             } finally {
                 setSubmitting(false);
