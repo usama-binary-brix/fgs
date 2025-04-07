@@ -56,7 +56,19 @@ const AppSidebar: React.FC = () => {
     },
     [pathname]
   );
-
+  // const isActive = useCallback(
+  //   (path?: string, subItems?: { name: string; path: string }[]) => {
+  //     if (path && pathname.startsWith(path)) {
+  //       return true;
+  //     }
+  //     if (subItems) {
+  //       return subItems.some((sub) => pathname.startsWith(sub.path));
+  //     }
+  //     return false;
+  //   },
+  //   [pathname]
+  // );
+  
   const toggleMenu = (key: string) => {
     setOpenMenus((prev) => ({ ...prev, [key]: !prev[key] }));
   };
@@ -70,11 +82,8 @@ const AppSidebar: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="py-4 px-4 lg:flex hidden border-b border-[#ffffff1a] pb-5 mb-5">
-      <Image src="/images/logo/logo.svg" alt="Logo" width={isExpanded || isHovered || isMobileOpen ? 200 : 32} height={40} />
-       
-        {/* <Link href="">
-          <Image src="/images/logo/logo.svg" alt="Logo" width={isExpanded || isHovered || isMobileOpen ? 200 : 32} height={40} />
-        </Link> */}
+        <Image src="/images/logo/logo.svg" alt="Logo" width={isExpanded || isHovered || isMobileOpen ? 200 : 32} height={40} />
+
       </div>
       <div className="relative flex flex-col h-screen overflow-y-auto duration-300 ease-linear no-scrollbar justify-between">
         <nav className="mb-6">
@@ -123,10 +132,10 @@ const AppSidebar: React.FC = () => {
           </ul>
         </nav>
         <div className="absolute bottom-15 lg:bottom-0 w-full">
-  {/* {(isExpanded || isHovered || isMobileOpen) &&
+          {/* {(isExpanded || isHovered || isMobileOpen) &&
     (userRole === "admin" ? <AdminProfile /> : <Profile />)} */}
-<AdminProfile />
-</div>
+          <AdminProfile />
+        </div>
 
       </div>
     </aside>
