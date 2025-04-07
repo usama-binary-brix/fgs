@@ -20,7 +20,7 @@ const Reconditioning = () => {
             size='sm'
             onClick={handleOpenEditTimeline}
           >
-            Add New Inventory
+            Edit Timeline
           </Button>
       </div>
     <Timeline/>
