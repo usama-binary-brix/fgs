@@ -94,6 +94,7 @@ const InventoryTable = () => {
 
   const handleOpenTotalInvModal = (InventoryId: any) => {
     setIsTotalInvModalOpen(true);
+    setSelectedId(InventoryId)
   };
 
   const handleCloseTotalInvModal = () => {
@@ -286,7 +287,7 @@ const InventoryTable = () => {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family  text-center"><span onClick={() => handleOpenTotalInvModal(lead.id)} className='border-b cursor-pointer  border-gray-400'>{lead.totalInvestors}</span></TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family  text-center"><span onClick={() => handleOpenTotalInvModal(lead.id)} className='border-b cursor-pointer  border-gray-400'>{lead.total_investors}</span></TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.investmentAmount || '---'}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.salePrice || '---'}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.profitAmt || '---'}</TableCell>
@@ -364,7 +365,7 @@ const InventoryTable = () => {
       </div>
       <AddInventoryModal open={isModalOpen} onClose={handleCloseModal} />
       <InvestorRequestModal open={isInvReqModalOpen} onClose={handleCloseInvReqModal} InventoryId={selectedInventoryId} />
-      <TotalInvestorsModal open={isTotalInvModalOpen} onClose={handleCloseTotalInvModal} />
+      <TotalInvestorsModal open={isTotalInvModalOpen} onClose={handleCloseTotalInvModal} InventoryId={selectedId}/>
 
 
 

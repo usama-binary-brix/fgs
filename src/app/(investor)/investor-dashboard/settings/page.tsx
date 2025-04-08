@@ -1,26 +1,63 @@
 "use client";
-import React, { useState } from 'react'
+import Input from '@/components/form/input/InputField';
+import Label from '@/components/form/Label';
+import { PageTitle } from '@/components/PageTitle';
+import { useFormik } from 'formik';
+import React, { useRef, useState } from 'react'
 import { FiCamera, FiX, FiCheck } from "react-icons/fi";
+import { useSelector } from 'react-redux';
 
 const page = () => {
     const [selected, setSelected] = useState(null);
-
-
-    const handleSelect = (index) => {
+    const User = useSelector((state: any) => state.user.user)
+    // const username = User?.first_name + User?.last_name
+    const handleSelect = (index: any) => {
         setSelected(index);
     };
+
+
+
+    const username = `${User?.first_name || ''} ${User?.last_name || ''}`;
+
+
+
+    const [image, setImage] = useState<string | null>(User?.image || null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setImage(imageUrl);
+        }
+    };
+
+    const handleRemoveImage = () => {
+        setImage(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
+    const formik = useFormik({
+        initialValues: {
+            username: User?.username || '',
+            phone: User?.phone || '',
+        },
+        onSubmit: (values) => {
+            console.log('Updated values:', values);
+        },
+    });
     return (
         <>
-            <div className='mb-5'>
-                <h1 className='text-xl font-bold'>Settings</h1>
-            </div>
+            <PageTitle title='Settings' />
             <div className="container">
                 <div className="row justify-center">
                     <div className="gird gird-cols-1">
                         {/* section 1 */}
                         <div className='max-w-xl mx-auto mb-5'>
                             <div className='mb-2'>
-                                <h1 className='text-lg font-normal text-black'>Your Profile</h1>
+                                <h1 className='text-lg font-medium text-black'>Your Profile</h1>
                                 <p className='text-xs text-customGray'>Update your profile here</p>
                             </div>
 
@@ -30,24 +67,57 @@ const page = () => {
                                     {/* Profile Pic Section */}
                                     <div className='flex items-center gap-20'>
                                         <div>
-                                            <label className='text-xs text-custom-darkGray' htmlFor="">Profile Pic</label>
+                                            <Label className='text-sm ' htmlFor="">Profile Pic</Label>
                                         </div>
                                         <div className="relative">
-                                            <img
-                                                src="/profile.jpg"
-                                                alt=""
-                                                className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
+
+                                            {image ? (
+                                                <>
+                                                    <img
+                                                        src={image}
+                                                        alt="Profile"
+                                                        className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
+                                                    />
+                                                    <label onClick={() => fileInputRef.current?.click()}
+                                                        className="absolute top-0 right-0 bg-orange-400 text-white p-1 rounded-full cursor-pointer">
+                                                        <FiCamera className="w-4 h-4" />
+                                                    </label>
+                                                </>
+                                            ) : (
+
+                                                <>
+                                                    <div
+                                                        className="w-20 h-20 rounded-full bg-gray-200 border-2 border-gray-300 flex items-center justify-center cursor-pointer"
+                                                        onClick={() => fileInputRef.current?.click()}
+                                                    >
+                                                        <FiCamera className="text-gray-500 w-6 h-6" />
+                                                    </div>
+
+                                                </>
+
+                                            )}
+
+
+
+                                            <input
+                                                ref={fileInputRef}
+                                                type="file"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={handleImageChange}
                                             />
 
-                                            <label className="absolute top-0 right-0 bg-orange-400 text-white p-1 rounded-full cursor-pointer">
-                                                <FiCamera className="w-4 h-4" />
-                                            </label>
-                                            <div className="flex flex-col">
-                                                <button className="text-red-500 flex ml-2 items-center text-xs mt-1">
-                                                    <FiX className="w-4 h-4" />
-                                                    Remove
-                                                </button>
-                                            </div>
+                                            {image && (
+                                                <>
+
+                                                    <div className="flex flex-col">
+                                                        <button onClick={handleRemoveImage} className="text-red-500 flex ml-2 items-center text-xs mt-1">
+                                                            <FiX className="w-4 h-4" />
+                                                            Remove
+                                                        </button>
+                                                    </div>
+                                                </>
+                                            )}
                                         </div>
 
                                     </div>
@@ -57,18 +127,29 @@ const page = () => {
 
                                 <div className='flex items-center gap-5 mb-4'>
                                     <div className='w-[25%]'>
-                                        <label className='text-xs text-custom-darkGray' htmlFor="">Username</label>
+                                        <Label className='text-sm ' htmlFor="">Username</Label>
+
                                     </div>
                                     <div className='w-[75%]'>
-                                        <input className='p-1 rounded font-normal w-full border-1 outline-0 border-gray-200' placeholder='---' type="text" />
+                                        <Input
+                                            value={username || '---'}
+                                            onChange={formik.handleChange}
+
+                                            type="text"
+                                        />
                                     </div>
                                 </div>
                                 <div className='flex items-center gap-5 mb-4'>
                                     <div className='w-[25%]'>
-                                        <label className='text-xs w-full text-custom-darkGray' htmlFor="">Phone Number</label>
+                                        <Label className='text-sm ' htmlFor="">Phone Number</Label>
+
                                     </div>
                                     <div className='w-[75%]'>
-                                        <input className='p-1 font-normal rounded w-full border-1 outline-0 border-gray-200' placeholder='---' type="number" />
+                                        <Input
+                                            value={User?.phone_number || '---'}
+                                            onChange={formik.handleChange}
+                                            type="text"
+                                        />
                                     </div>
                                 </div>
 
@@ -80,7 +161,7 @@ const page = () => {
                         <div className='max-w-xl mx-auto mb-5'>
                             <div className='mb-2'>
                                 <h1 className='text-lg font-normal text-black'>Security</h1>
-                                <p className='text-xs text-customGray'>change your password here</p>
+                                <p className='text-sm text-customGray'>Change your password here</p>
                             </div>
 
 
@@ -89,26 +170,26 @@ const page = () => {
 
                                 <div className='flex items-center gap-5 mb-4'>
                                     <div className='w-[25%]'>
-                                        <label className='text-xs text-custom-darkGray' htmlFor="">Old Password</label>
+                                        <Label className='text-sm ' htmlFor="">Old Password</Label>
                                     </div>
                                     <div className='w-[75%]'>
-                                        <input className='p-1 rounded font-normal w-full border-1 outline-0 border-gray-200' placeholder='---' type="text" />
+                                        <Input placeholder='---' type="text" />
                                     </div>
                                 </div>
                                 <div className='flex items-center gap-5 mb-4'>
                                     <div className='w-[25%]'>
-                                        <label className='text-xs w-full text-custom-darkGray' htmlFor="">New Password</label>
+                                        <Label className='text-sm w-full ' htmlFor="">New Password</Label>
                                     </div>
                                     <div className='w-[75%]'>
-                                        <input className='p-1 font-normal rounded w-full border-1 outline-0 border-gray-200' placeholder='---' type="number" />
+                                        <Input placeholder='---' type="number" />
                                     </div>
                                 </div>
                                 <div className='flex items-center gap-5 mb-4'>
                                     <div className='w-[25%]'>
-                                        <label className='text-xs w-full text-custom-darkGray' htmlFor="">Confirm New Password</label>
+                                        <Label className='text-sm w-full ' htmlFor="">Confirm New Password</Label>
                                     </div>
                                     <div className='w-[75%]'>
-                                        <input className='p-1 font-normal rounded w-full border-1 outline-0 border-gray-200' placeholder='---' type="number" />
+                                        <Input placeholder='---' type="text" />
                                     </div>
                                 </div>
 
@@ -121,7 +202,7 @@ const page = () => {
                         <div className='max-w-xl mx-auto'>
                             <div className='mb-2'>
                                 <h1 className='text-lg font-normal text-black'>Notifications Preferences</h1>
-                                <p className='text-xs text-customGray'>Change your preferences here</p>
+                                <p className='text-sm text-customGray'>Change your preferences here</p>
                             </div>
 
 

@@ -5,6 +5,7 @@ import { useLogoutMutation } from "@/store/services/api";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const AdminProfile = () => {
   const [logout, { isLoading }] = useLogoutMutation();
@@ -22,6 +23,7 @@ const AdminProfile = () => {
 
     } catch (error) {
       console.error('Logout error:', error);
+      toast.error('Please try again')
       setLoading(false)
 
     }
