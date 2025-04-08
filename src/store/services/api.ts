@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead"],
+  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -217,6 +217,15 @@ export const api = createApi({
       providesTags: ["Investment"],
      
     }),
+
+    getAllUserInvestments: builder.query({
+      query: (id) => ({
+        url: `get/investment`,
+        method: 'GET',
+      }),
+      providesTags: ["UserInvestment"],
+     
+    }),
     updateInvestorStatus: builder.mutation({
       query: (lnvestorData) => ({
         url: 'investment/update-status', 
@@ -256,4 +265,5 @@ export const { useLoginMutation,
   useGetAllAdminInvestmentsQuery,
   useUpdateInvestorStatusMutation,
   useGetAllUserLeadsQuery,
+  useGetAllUserInvestmentsQuery,
 } = api;
