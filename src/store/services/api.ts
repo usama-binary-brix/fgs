@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory", "leads", 'Investment'],
+  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -143,6 +143,8 @@ export const api = createApi({
         method: 'POST',
         body: leadData,
       }),
+      invalidatesTags: ["leads", 'userLead'],
+
     }),
     getAllLeads: builder.query({
       query: () => ({
@@ -150,6 +152,14 @@ export const api = createApi({
         method: 'GET',
       }),
       providesTags: ["leads"],
+     
+    }),
+    getAllUserLeads: builder.query({
+      query: () => ({
+        url: 'get/lead',
+        method: 'GET',
+      }),
+      providesTags: ["userLead"],
      
     }),
     deleteLead: builder.mutation({
@@ -245,4 +255,5 @@ export const { useLoginMutation,
   useAddInvestmentMutation,
   useGetAllAdminInvestmentsQuery,
   useUpdateInvestorStatusMutation,
+  useGetAllUserLeadsQuery,
 } = api;

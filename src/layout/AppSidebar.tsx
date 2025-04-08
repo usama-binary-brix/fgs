@@ -49,12 +49,25 @@ const navItems: NavItem[] = [
     ],
     roles: ["broker"],
   },
+
+
+  { icon: <GridIcon />, name: "Dashboard", path: "/employee-dashboard", roles: ["employee"] },
+  {
+    icon: <GridIcon />,
+    name: "Inventory Tasks",
+    subItems: [
+      { name: "All Inventory Tasks", path: "/employee-dashboard/inventory-tasks" },
+      {name: "With Active Tasks", path: "/employee-dashboard/active-tasks"},
+      {name: "With Completed Tasks", path: "/employee-dashboard/completed-tasks"},
+    ],
+    roles: ["employee"],
+  },
 ];
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
-  // const userRole = useSelector((state: any) => state?.user?.user?.account_type);
-  const userRole = 'broker'
+  const userRole = useSelector((state: any) => state?.user?.user?.account_type);
+  // const userRole = 'broker'
   const pathname = usePathname();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 

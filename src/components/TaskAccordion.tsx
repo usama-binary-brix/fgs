@@ -60,7 +60,7 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
           <span className="text-[14px] text-[#616161] font-medium mr-1">
             Assigned to:
           </span>
-          <AvatarGroup max={2}>
+          <AvatarGroup>
             {assignedUsers.map((user:any, index:any) => (
               <Avatar key={index} alt={user.name} src={user.avatar} />
             ))}
