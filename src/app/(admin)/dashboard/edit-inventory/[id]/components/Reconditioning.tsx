@@ -2,6 +2,8 @@ import Button from '@/components/ui/button/Button'
 import React, { useState } from 'react'
 import Timeline from './Timeline'
 import EditTimelineModal from './EditTimelineModal'
+import TaskAccordion from '@/components/TaskAccordion'
+import TasksList from './TaskManagement/TasksList'
 
 const Reconditioning = () => {
   const [openTimelineModal, setOpenEditTimelineModal] = useState(false)
@@ -20,13 +22,12 @@ const Reconditioning = () => {
             size='sm'
             onClick={handleOpenEditTimeline}
           >
-            Add New Inventory
+            Edit Timeline
           </Button>
       </div>
     <Timeline/>
-
+<TasksList/>
     <EditTimelineModal open={openTimelineModal} onClose={handleCloseModal}/>
-    
     </>
   )
 }
