@@ -49,7 +49,12 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false)
-
+  useEffect(() => {
+    if (!open && !userData) {
+      formik.resetForm();
+    }
+  }, [open, userData]);
+  
   const options = [
     { value: "admin", label: "Admin" },
     { value: "investor", label: "Investor" },
