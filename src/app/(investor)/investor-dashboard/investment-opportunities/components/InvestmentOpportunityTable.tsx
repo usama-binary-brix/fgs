@@ -10,6 +10,7 @@ import { IoSearchOutline } from 'react-icons/io5'
 import { useAddInvestmentMutation, useDeleteInventoryMutation, useGetAllInventoryQuery } from '@/store/services/api';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
+import * as Yup from 'yup';
 
 import { useRouter } from 'next/navigation';
 import AddLeadInput from '@/app/(admin)/dashboard/leads/components/input/AddLeadInput';
@@ -63,11 +64,18 @@ const InvestmentOpportunityTable = () => {
     const [openDropdownId, setOpenDropdownId] = useState<string | number | null>();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedId, setSelectedId] = useState<string | number | null>(null);
+    const [selectedListingNumber, setSelectedListingNumber] = useState<string | number | null>(null);
  
     const formik = useFormik({
         initialValues: {
             investmentAmount: '',
         },
+        validationSchema: Yup.object().shape({
+            investmentAmount: Yup.number()
+              .typeError('Investment amount must be a number')
+              .required('Investment amount is required')
+              .positive('Amount must be greater than 0'),
+          }),
         onSubmit: async (values, { resetForm, setSubmitting }) => {
             try {
                 if (!selectedId) {
@@ -189,6 +197,7 @@ const InvestmentOpportunityTable = () => {
                                                                 setOpenDropdownId(null);
                                                                 setSelectedId(lead.id);
                                                                 setIsOpen(true);
+                                                                setSelectedListingNumber(lead.listing_number)
                                                                 closeDropdown
                                                             }} className="flex w-full  text-left border-t text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9]   dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                                                                 Request Investment
@@ -219,7 +228,7 @@ const InvestmentOpportunityTable = () => {
                     <div className=' border-b border-gray-400 mb-3 py-3'>
 
                         <div className='flex justify-between items-center px-4'>
-                            <p className='text-xl font-semibold'>Request Investment for {selectedId}</p>
+                            <p className='text-xl font-semibold'>Request Investment for {selectedListingNumber}</p>
 
                             <RxCross2 onClick={handleCloseModal} className='cursor-pointer text-3xl' />
 
@@ -227,12 +236,13 @@ const InvestmentOpportunityTable = () => {
                     </div>
                     <div className='min-w-[30rem] px-5'>
                         <div className="mb-2">
-                            <label className="text-[12.5px] text-[#818181] font-normal font-family" htmlFor='InvestmentAmount'>
+                            <label className="text-[13px] text-[#818181] font-normal font-family" htmlFor='InvestmentAmount'>
                                 Investment Amount <span className="text-red-500">*</span>
 
 
                             </label>
 
+                        
                             <input
                                 value={formik.values.investmentAmount}
                                 onChange={(e: any) => {
@@ -243,11 +253,16 @@ const InvestmentOpportunityTable = () => {
                                 }}
                                 onBlur={formik.handleBlur}
                                 type="text"
-                                placeholder="$ 0.00"
+                                placeholder="Enter your investment amount"
                                 name="investmentAmount"
                                 className="w-full px-2 py-1.5 text-[#666] placeholder-[#666] text-[12px] 
                                 font-medium rounded-xs border border-[#E8E8E8] mt-1 outline-none text-md"
                             />
+                            {formik.touched.investmentAmount && formik.errors.investmentAmount && (
+  <div className="text-red-500 text-[12px] mt-1">
+    {formik.errors.investmentAmount}
+  </div>
+)}
                         </div>
                     </div>
                     <DialogActions>
@@ -258,6 +273,7 @@ const InvestmentOpportunityTable = () => {
                                 Cancel
                             </Button>
                             <Button
+                             disabled={formik.isSubmitting}
                                 type="submit"
                                 variant="primary"
                             >

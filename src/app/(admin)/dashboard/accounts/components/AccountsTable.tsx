@@ -181,7 +181,7 @@ const AccountsTable = () => {
                         <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                       </button>
 
-                      <Dropdown isOpen={openDropdownId === user.id} onClose={() => setOpenDropdownId(null)} className="fixed right-30  z-50 w-30 bg-white shadow-md border rounded-sm">
+                      <Dropdown isOpen={openDropdownId === user.id} onClose={() => setOpenDropdownId(null)} className="fixed right-25  z-50 w-30 bg-white shadow-md border rounded-sm">
                         <DropdownItem onItemClick={() => handleViewMore(user.id)} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
                           View Details
                         </DropdownItem>
