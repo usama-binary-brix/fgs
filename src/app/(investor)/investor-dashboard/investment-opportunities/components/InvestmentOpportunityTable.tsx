@@ -58,11 +58,12 @@ const InvestmentOpportunityTable = () => {
         setIsOpen(false);
     };
     const [isOpen, setIsOpen] = useState(false);
-
+  
+      
     const [openDropdownId, setOpenDropdownId] = useState<string | number | null>();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedId, setSelectedId] = useState<string | number | null>(null);
-
+ 
     const formik = useFormik({
         initialValues: {
             investmentAmount: '',
@@ -101,11 +102,15 @@ const InvestmentOpportunityTable = () => {
             }
         },
     });
-
     useEffect(() => {
-        formik.setFieldValue("investmentAmount", "");
-    }, [selectedId]);
-    
+        formik.resetForm();
+      
+      }, [isOpen, selectedId]);
+      
+    // useEffect(() => {
+    //     formik.setFieldValue("investmentAmount", "");
+    // }, [selectedId]);
+   
     return (
         <>
             <div className=''>

@@ -94,6 +94,7 @@ const handleNavigate = (id:any)=>{
         },
     });
 
+    console.log(data?.investment,'investment my ')
     return (
         <>
             <div className=''>
@@ -142,7 +143,7 @@ const handleNavigate = (id:any)=>{
                             </TableHeader>
 
                             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                                {data?.Investment?.map((lead: any) => (
+                                {data?.investment?.map((lead: any) => (
                                     <TableRow key={lead.inventory.id}>
                                         <TableCell className="px-5 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.inventory.id}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.make}</TableCell>
