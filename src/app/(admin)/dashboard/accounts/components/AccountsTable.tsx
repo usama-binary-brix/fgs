@@ -136,7 +136,7 @@ const AccountsTable = () => {
             <TableBody className="">
               {data?.users.map((user: any, index: any) => (
                 <TableRow key={index}>
-                  <TableCell className="px-5 py-3 text-sm flex items-center gap-3">
+                  <TableCell className="px-5 py-2 text-sm flex items-center gap-3">
                     {user.image ? (
                       <Image
                         width={32}
@@ -158,13 +158,13 @@ const AccountsTable = () => {
                     {/* <span className="font-medium break-words ">{user.first_name} {user.last_name}</span> */}
                   </TableCell>
 
-                  <TableCell className="px-5 py-3 text-sm text-[#616161]">{user.email}</TableCell>
-                  <TableCell className="px-5 py-3 text-sm text-[#616161]">{user.account_type}</TableCell>
-                  <TableCell className="px-5 py-3 text-sm text-[#616161]">{user.phone_number}</TableCell>
-                  <TableCell className="px-5 py-3 text-sm text-[#616161]">
+                  <TableCell className="px-5 py-2 text-sm text-[#616161]">{user.email}</TableCell>
+                  <TableCell className="px-5 py-2 text-sm text-[#616161]">{user.account_type}</TableCell>
+                  <TableCell className="px-5 py-2 text-sm text-[#616161]">{user.phone_number}</TableCell>
+                  <TableCell className="px-5 py-2 text-sm text-[#616161]">
                     {format(new Date(user.created_at), "dd-MM-yy")}
                   </TableCell>
-                  <TableCell className="px-5 py-3 text-sm text-[#616161]">
+                  <TableCell className="px-5 py-2 text-sm text-[#616161]">
                     <span
                       className={`px-2 py-2 rounded-sm text-sm font-medium ${user.status === 'Active'
                         ? 'bg-green-100 px-3 text-green-600'
@@ -175,13 +175,13 @@ const AccountsTable = () => {
                     </span>
                   </TableCell>
 
-                  <TableCell className="px-5 py-3 text-sm text-[#616161]">
+                  <TableCell className="px-5 py-2 text-sm text-center text-[#616161]">
                     <div className="relative inline-block">
                       <button onClick={() => toggleDropdown(user.id)} className="dropdown-toggle">
                         <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                       </button>
 
-                      <Dropdown isOpen={openDropdownId === user.id} onClose={() => setOpenDropdownId(null)} className="fixed right-25  z-50 w-30 bg-white shadow-md border rounded-sm">
+                      <Dropdown isOpen={openDropdownId === user.id} onClose={() => setOpenDropdownId(null)} className="fixed right-20  z-50 w-30 bg-white shadow-md border rounded-sm">
                         <DropdownItem onItemClick={() => handleViewMore(user.id)} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
                           View Details
                         </DropdownItem>

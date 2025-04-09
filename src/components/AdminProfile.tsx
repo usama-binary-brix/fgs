@@ -60,7 +60,7 @@ const AdminProfile = () => {
 
         <div>
           <p className="text-[13px]  capitalize font-normal font-family mb-[1.5px]">{user?.first_name} {user?.last_name}</p>
-          <p className="text-[10.5px] text-[#fff] opacity-[70%] font-normal font-family">{user?.email}</p>
+          <p className="text-[11px] text-[#fff] opacity-[70%] font-normal font-family">{user?.email}</p>
         </div>
 
       </div>

@@ -28,7 +28,8 @@ const modalStyle = {
   maxHeight: '80vh',
   bgcolor: 'background.paper',
   boxShadow: 24,
-  p: 4,
+  // boxShadow: '0px 5px 37px 0px rgba(209, 132, 40, 0.20)',
+ 
   overflowY: 'auto',
   borderRadius: 2,
 };
@@ -77,7 +78,7 @@ const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId }) =
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={modalStyle}>
-        <div className='w-full flex p-[15px] justify-between items-center mb-6 border-b border-[#DDD] pb-3'>
+        <div className='w-full flex p-[15px] justify-between items-center mb-2 border-b border-[#DDD] pb-3'>
           <p className='text-[18px] font-family text-black font-semibold'>Investment Requests</p>
           <RxCross2 onClick={onClose} className='cursor-pointer text-[#818181] text-3xl' />
         </div>
@@ -87,7 +88,7 @@ const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId }) =
           {['all', 'pending', 'approved', 'rejected'].map((tab) => (
             <button
               key={tab}
-              className={`border border-[#D184281A] text-[13px] font-family py-2 px-4 font-semibold rounded transition-all duration-300
+              className={`border border-[#D184281A] text-[13px] font-family py-1.5 px-3.5 font-semibold rounded transition-all duration-300
                 ${activeTab === tab ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
               onClick={() => setActiveTab(tab as 'all' | 'pending' | 'approved' | 'rejected')}
             >
@@ -97,7 +98,7 @@ const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId }) =
         </div>
 
         {/* Table */}
-        <div className="max-w-full mx-[15px] my-6 overflow-x-auto border border-[#DDD] rounded-lg">
+        <div className="max-w-full mx-[15px] mb-6 mt-3 overflow-x-auto border border-[#DDD] rounded-lg">
           <Table className='border-separate border-spacing-0'>
             <TableHeader className="bg-[#F5F5F5] h-[40px] font-medium font-family text-[12px]">
               <TableRow className='border-b-0'>
@@ -139,7 +140,7 @@ const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId }) =
                       </span>
                     </div>
                   ) : (
-                    <span className={`px-3 py-1 rounded text-white ${lead.status === 'approved' ? 'bg-green-500' : 'bg-red-500'}`}>
+                    <span className={`px-3 py-2 rounded text-white ${lead.status === 'approved' ? 'bg-green-500' : 'bg-red-500'}`}>
                       {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
                     </span>
                   )}
