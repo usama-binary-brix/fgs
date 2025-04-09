@@ -238,6 +238,7 @@ const ViewDetailsLeads = () => {
   const handleNavigate = () => {
     router.push('/dashboard/leads')
   }
+
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
@@ -245,7 +246,7 @@ const ViewDetailsLeads = () => {
           <div className='flex gap-4 items-center'>
             <IoMdArrowRoundBack onClick={handleNavigate} className="text-[1.5rem] cursor-pointer" />
 
-            <h1 className="text-2xl font-bold">I-{id}</h1>
+            <h1 className="text-2xl font-bold">{leadData?.lead?.listing_number}</h1>
           </div>
           <div className="flex gap-2">
 

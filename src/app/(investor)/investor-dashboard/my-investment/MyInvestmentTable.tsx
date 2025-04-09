@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components
 import { MoreDotIcon } from '@/icons';
 import { IoSearchOutline } from 'react-icons/io5'
 
-import { useAddInvestmentMutation, useDeleteInventoryMutation, useGetAllInventoryQuery } from '@/store/services/api';
+import { useAddInvestmentMutation, useDeleteInventoryMutation, useGetAllInventoryQuery, useGetAllUserInvestmentsQuery } from '@/store/services/api';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 
@@ -36,7 +36,7 @@ interface Lead {
 
 const MyInvestmentTable = () => {
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-    const { data, isLoading, error } = useGetAllInventoryQuery('');
+    const { data, isLoading, error } = useGetAllUserInvestmentsQuery('');
     const router = useRouter()
     const [addInvestment] = useAddInvestmentMutation()
     const toggleDropdown = (id: string) => {
@@ -142,41 +142,41 @@ const handleNavigate = (id:any)=>{
                             </TableHeader>
 
                             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                                {data?.inventories?.map((lead: any) => (
-                                    <TableRow key={lead.id}>
-                                        <TableCell className="px-5 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.id}</TableCell>
-                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.make}</TableCell>
-                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.model}</TableCell>
-                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.serial_no}</TableCell>
-                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.date_purchased}</TableCell>
-                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.price_paid || '---'}</TableCell>
-                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.my_investment || '---'}</TableCell>
-                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.reconditioning || '---'}</TableCell>
-                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.completionDate || '---'}</TableCell>
-                                        <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family text-start">{lead.salePrice || '---'}</TableCell>
+                                {data?.Investment?.map((lead: any) => (
+                                    <TableRow key={lead.inventory.id}>
+                                        <TableCell className="px-5 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.inventory.id}</TableCell>
+                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.make}</TableCell>
+                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.model}</TableCell>
+                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.serial_no}</TableCell>
+                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.date_purchased}</TableCell>
+                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">$ {lead.inventory.price_paid || '---'}</TableCell>
+                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">$ {lead.investment_amount || '---'}</TableCell>
+                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.inventory.reconditioning || '---'}</TableCell>
+                                        <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.inventory.completionDate || '---'}</TableCell>
+                                        <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family text-start">{lead.inventory.salePrice || '---'}</TableCell>
 
-                                        <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family  text-center">{lead.totalInvestors || '---'}</TableCell>
+                                        <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family  text-center">{lead.inventory.totalInvestors || '---'}</TableCell>
 
 
-                                        {lead.status ? (
+                                        {lead.inventory.status ? (
                                             <TableCell className="px-5 py-4 text-xs">
                                                 <span
-                                                    className={`px-3 py-1 rounded-md text-sm font-medium ${lead.status === 'in progress'
+                                                    className={`px-3 py-1 rounded-md text-sm font-medium ${lead.inventory.status === 'in progress'
                                                         ? 'bg-orange-100 text-orange-500'
-                                                        : lead.status === 'sold'
+                                                        : lead.inventory.status === 'sold'
                                                             ? 'bg-green-100 text-green-600'
-                                                            : lead.status === 'pending'
+                                                            : lead.inventory.status === 'pending'
                                                                 ? 'bg-[#8E7F9C1F] text-[#8E7F9C]'
                                                                 : ''
                                                         }`}
                                                 >
-                                                    {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)} {/* Capitalize */}
+                                                    {lead.inventory.status.charAt(0).toUpperCase() + lead.inventory.status.slice(1)} {/* Capitalize */}
                                                 </span>
                                             </TableCell>
                                         ) : (
                                             <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-familytext-start">
                                                 <span
-                                                    className={`px-3 py-2 rounded-md text-sm font-medium bg-[#8E7F9C1F] text-[#8E7F9C]`}
+                                                    className={`px-3 py-3 rounded-md text-sm font-medium bg-[#8E7F9C1F] text-[#8E7F9C]`}
                                                 >
                                                     Pending
                                                 </span>

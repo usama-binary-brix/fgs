@@ -143,13 +143,11 @@ const EditInventoryForm = () => {
   if (error) return <p>Error fetching inventory</p>;
 
 
-
-
   return (
     <div className=" rounded-md">
       <div className="flex justify-between bg-white rounded shadow-md p-3 items-center">
         <div>
-          <h1 className="text-2xl font-bold">I-{id}</h1>
+          <h1 className="text-2xl font-bold">{inventoryData?.inventory?.listing_number}  </h1>
           <p className="text-gray-600">Inventory</p>
           <div className="flex gap-2 mt-2">
             <button

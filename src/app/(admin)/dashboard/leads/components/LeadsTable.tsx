@@ -94,6 +94,9 @@ const LeadsTable = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isViewMoreOpen, setIsViewMoreOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | number | null>(null);
+  
+  const [selectedListingNumber, setSelectedListingNumber] = useState<string | number | null>(null);
+
   const [deleteLead, { isLoading: isDeleting }] = useDeleteLeadMutation();
   const [promoteInvestor, { isLoading: isPromoteLoading }] = usePromoteToInvestorMutation();
 
@@ -200,7 +203,7 @@ const LeadsTable = () => {
             <TableBody className="overflow-auto">
               {data?.leads?.map((lead: any) => (
                 <TableRow key={lead.id}>
-                  <TableCell className="px-3 py-3.5 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{lead.id}</TableCell>
+                  <TableCell className="px-3 py-3.5 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{lead.listing_number}</TableCell>
                  
                  
                   <TableCell className="px-3 py-3.5 text-[14px] flex items-center gap-2 font-family text-[#616161] font-normal">
@@ -261,6 +264,7 @@ const LeadsTable = () => {
                         <DropdownItem onItemClick={() => {
                           setOpenDropdownId(null);
                           setSelectedId(lead.id);
+                          setSelectedListingNumber(lead.listing_number)
                           setIsDeleteModalOpen(true);
                         }} className="flex w-full font-normal !px-4  text-[12px] font-family   text-[#414141]">
                           Delete
@@ -291,7 +295,7 @@ const LeadsTable = () => {
         open={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={() => handleDeleteLead(selectedId)}
-        name={selectedId}
+        name={selectedListingNumber}
       />
 
     </>

@@ -107,6 +107,8 @@ const InventoryTable = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isViewMoreOpen, setIsViewMoreOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | number | null>(null);
+  const [selectedListingNumber, setSelectedListingNumber] = useState<string | number | null>(null);
+
   const [deleteInventory, { isLoading: isDeleting }] = useDeleteInventoryMutation();
 
   const handleDeleteInventory = async (inventoryId: string | number | null) => {
@@ -203,7 +205,7 @@ const InventoryTable = () => {
               <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                 {data?.inventories?.map((lead: any) => (
                   <TableRow className='border-b-0' key={lead.id}>
-                    <TableCell className="px-5 py-2 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.id}</TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.listing_number}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.make}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.model}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.serial_no}</TableCell>
@@ -338,6 +340,7 @@ const InventoryTable = () => {
                           <DropdownItem onItemClick={() => {
                             setOpenDropdownId(null);
                             setSelectedId(lead.id);
+                            setSelectedListingNumber(lead.listing_number)
                             setIsDeleteModalOpen(true);
                           }} className="flex w-full  text-left border-t text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9]   dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                             Delete
@@ -374,7 +377,7 @@ const InventoryTable = () => {
         open={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={() => handleDeleteInventory(selectedId)}
-        name={selectedId}
+        name={selectedListingNumber}
       />
 
 

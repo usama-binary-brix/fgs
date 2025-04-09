@@ -46,6 +46,12 @@ const inputStyle = {
 
 };
 
+type ErrorResponse = {
+    data: {
+      error: Record<string, string>; // `error` contains field names as keys and error messages as values
+    };
+  };
+
 const selectStyle = {
     ...inputStyle,
 };
@@ -54,6 +60,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
     const [images, setImages] = useState<File[]>([]);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [subCategories, setSubCategories] = useState<any>([]);
+const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { data: categories, isLoading: loadingCategories } = useGetAllCategoriesQuery(null, { skip: !open });
     const [fetchSubCategories] = useGetSubCategoriesMutation();
@@ -135,6 +142,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
         },
         validationSchema,
         onSubmit: async (values) => {
+            setIsSubmitting(true); // start processing
             const formData = new FormData();
             Object.entries(values).forEach(([key, value]) => {
                 formData.append(key, value as string);
@@ -147,8 +155,24 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                 toast.success('Inventory added successfully!');
                 onClose();
             } catch (error) {
-                toast.error('Failed to add inventory');
-                console.error("Error submitting form:", error);
+
+                 const errorResponse = error as ErrorResponse;
+                
+                
+                        if (errorResponse?.data?.error) {
+                          Object.values(errorResponse.data.error).forEach((errorMessage) => {
+                            if (Array.isArray(errorMessage)) {
+                              errorMessage.forEach((msg) => toast.error(msg)); // Handle array errors
+                            } else {
+                              toast.error(errorMessage); // Handle single string errors
+                            }
+                          });
+                        }
+                // toast.error('Failed to add inventory');
+                // console.error("Error submitting form:", error);
+            }
+            finally {
+                setIsSubmitting(false); // stop processing
             }
         },
     });
@@ -282,12 +306,13 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                     Cancel
                                 </Button>
                                 <Button
-                                    type="submit"
-                                    variant="primary"
-                                    className='font-semibold'
-                                >
-                                    Add Inventory
-                                </Button>
+    type="submit"
+    variant="primary"
+    className='font-semibold'
+    disabled={isSubmitting}
+>
+    {isSubmitting ? "Processing..." : "Add Inventory"}
+</Button>
                             </div>
                         </Grid>
                     </Grid>
