@@ -121,7 +121,7 @@ const AccountsTable = () => {
             <TableHeader className="border-b bg-[#F7F7F7] border-gray-100 dark:border-white/[0.05]">
               <TableRow>
                 {['Name', 'Email', 'Account Type', 'Phone Number', 'Created Date', 'Status', 'Action'].map((heading) => (
-                  <TableCell key={heading} isHeader className="px-5 py-3 uppercase text-[#616161] font-[500] text-start text-theme-sm dark:text-gray-400">
+                  <TableCell key={heading} isHeader className="px-5 py-3 uppercase text-[#616161] font-medium text-start text-[14px] dark:text-gray-400">
                     <div className=' w-full flex justify-between items-center '>
                       {heading}
                       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">

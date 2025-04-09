@@ -188,7 +188,7 @@ const ViewDetailsLeads = () => {
     <>
       <form onSubmit={formik.handleSubmit}>
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">I-{id}</h1>
+          <h1 className="text-2xl font-bold">{leadData?.lead?.listing_number}</h1>
           <div className="flex gap-2">
 
           <div className='flex items-center gap-4'>

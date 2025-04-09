@@ -94,6 +94,7 @@ const LeadsTable = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isViewMoreOpen, setIsViewMoreOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | number | null>(null);
+  const [selectedListingNumber, setSelectedListingNumber] = useState<string | number | null>(null);
   const [deleteLead, { isLoading: isDeleting }] = useDeleteLeadMutation();
   const [promoteInvestor, { isLoading: isPromoteLoading }] = usePromoteToInvestorMutation();
 
@@ -183,7 +184,7 @@ const LeadsTable = () => {
             <TableHeader className="border-b border-gray-100 overflow-auto bg-[#F7F7F7] dark:border-white/[0.05]">
               <TableRow>
                 {['ID', 'Name', 'Email', 'Company', 'Source', 'Reminder Date', 'Budget', 'Condition', 'Created by', 'Action'].map((heading) => (
-                  <TableCell key={heading} isHeader className="px-3  py-3 font-family whitespace-nowrap overflow-hidden font-semibold text-[#616161] text-start text-theme-sm dark:text-gray-400">
+                  <TableCell key={heading} isHeader className="px-3  py-3 font-family whitespace-nowrap overflow-hidden font-medium text-[#616161] text-start text-[14px] dark:text-gray-400">
                     <div className='flex justify-between gap-5 items-center'>
 
                       {heading}
@@ -227,13 +228,16 @@ const LeadsTable = () => {
 
                   </TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.email}</TableCell>
-                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.company}</TableCell>
-                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.lead_source}</TableCell>
+                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.company || '---'}</TableCell>
+                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.lead_source || '---'}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">
-                     {format(new Date(lead.reminder_date_time), "dd-MM-yy")}
-                  </TableCell>
-                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">$ {lead.budget_min}</TableCell>
-                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.condition}</TableCell>
+  {lead.reminder_date_time
+    ? format(new Date(lead.reminder_date_time), "dd-MM-yy")
+    : "---"}
+</TableCell>
+
+                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.budget_min ? ` $ ${lead.budget_min}` : '---'}  </TableCell>
+                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.condition || '---'}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.lead_created_by || '---'}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">
                     <div className="relative inline-block">
@@ -261,6 +265,7 @@ const LeadsTable = () => {
                         <DropdownItem onItemClick={() => {
                           setOpenDropdownId(null);
                           setSelectedId(lead.id);
+                          setSelectedListingNumber(lead.listing_number)
                           setIsDeleteModalOpen(true);
                         }} className="flex w-full font-normal !px-4  text-[12px] font-family   text-[#414141]">
                           Delete
@@ -275,13 +280,13 @@ const LeadsTable = () => {
         </div>
 
         <div className='px-6 border-t'>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-            perPage={perPage}
-            onPerPageChange={handlePerPageChange}
-          />
+        <Pagination 
+  currentPage={currentPage} 
+  totalPages={data?.totalPages || 1} 
+  onPageChange={handlePageChange} 
+  perPage={perPage} 
+  onPerPageChange={handlePerPageChange} 
+/>
         </div>
       </div>
 
@@ -290,7 +295,7 @@ const LeadsTable = () => {
         open={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={() => handleDeleteLead(selectedId)}
-        name={selectedId}
+        name={selectedListingNumber}
       />
 
     </>

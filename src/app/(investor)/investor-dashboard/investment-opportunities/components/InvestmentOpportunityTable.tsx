@@ -140,7 +140,7 @@ const InvestmentOpportunityTable = () => {
                                         'PURCHASE PRICE', 'RECONDITIONING %', 'COMPLETION DATE', 'SALE PRICE', 'TOTAL INVESTORS',
                                         'ACTION'
                                     ].map((heading) => (
-                                        <TableCell key={heading} isHeader className="px-5 py-3 whitespace-nowrap overflow-hidden font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                        <TableCell key={heading} isHeader className="px-5 py-3 whitespace-nowrap overflow-hidden font-medium text-gray-500 text-start text-[14px] dark:text-gray-400">
                                             <div className=' w-full flex justify-between items-center '>
                                                 {heading}
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
