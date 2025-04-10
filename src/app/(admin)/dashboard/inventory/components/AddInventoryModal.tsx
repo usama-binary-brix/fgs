@@ -259,7 +259,7 @@ const [isSubmitting, setIsSubmitting] = useState(false);
                         </Grid>
                         <Grid xs={12} md={12} mt={2} ml={2}>
                             <div>
-                                <h1 className="text-sm text-[#414141] font-normal text-[12.5px] font-family">Attach Files</h1>
+                                <h1 className="text-sm text-[#414141] font-medium text-[13px] font-family">Attach Files</h1>
                                 <p className="text-[#818181] text-[10px] font-family font-normal">Only PDF, JPG & PNG formats are allowed</p>
                             </div>
                             <div className="flex items-center gap-2 mt-3">
@@ -272,8 +272,8 @@ const [isSubmitting, setIsSubmitting] = useState(false);
                                         onChange={handleImageUpload}
                                     />
                                     <div className="text-center">
-                                        <p className="text-[#132A00] font-family text-[9px] font-medium ">Drop your image here,</p>
-                                        <p className="text-[#1F4690] font-family font-medium underline text-[9px]">or browse</p>
+                                    <p className="text-gray-700 font-semibold text-xs">Drop your files here,</p>
+                                    <p className="text-blue-600 underline text-xs">or browse</p>
                                     </div>
                                 </label>
 

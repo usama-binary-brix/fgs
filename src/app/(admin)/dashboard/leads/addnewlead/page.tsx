@@ -161,7 +161,7 @@ const [isSubmitting, setIsSubmitting] = useState(false);
           reminder_date_time: reminderDateTime,
         };
 
-
+        setIsSubmitting(true);
         const response = await addLead(dataToSubmit).unwrap();
         toast.success(response.message);
         resetForm();
@@ -178,6 +178,8 @@ const [isSubmitting, setIsSubmitting] = useState(false);
         } else {
           toast.error("Failed to add lead.");
         }
+      }finally{
+        setIsSubmitting(false);
       }
     },
   });

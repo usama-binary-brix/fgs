@@ -15,7 +15,7 @@ import { useGetAllAdminInvestmentsQuery, useUpdateInvestorStatusMutation } from 
 import { toast } from 'react-toastify';
 type ErrorResponse = {
   data: {
-      error: Record<string, string>; // `error` contains field names as keys and error messages as values
+    error: Record<string, string>; // `error` contains field names as keys and error messages as values
   };
 };
 
@@ -29,7 +29,7 @@ const modalStyle = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   // boxShadow: '0px 5px 37px 0px rgba(209, 132, 40, 0.20)',
- 
+
   overflowY: 'auto',
   borderRadius: 2,
 };
@@ -38,10 +38,12 @@ interface Props {
   open: boolean;
   onClose: () => void;
   InventoryId: any;
+  listingNumber?:any
 }
 
-const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId }) => {
+const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId, listingNumber }) => {
   const [activeTab, setActiveTab] = useState<'all' | 'approved' | 'rejected' | 'pending'>('all');
+  const [loadingStatus, setLoadingStatus] = useState<Record<string, boolean>>({});
 
   const { data: InvestmentData, isLoading, isError } = useGetAllAdminInvestmentsQuery(InventoryId);
   const [updateStatus] = useUpdateInvestorStatusMutation()
@@ -50,28 +52,29 @@ const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId }) =
   );
 
   const handleStatusUpdate = async (investmentId: string, status: 'approved' | 'rejected') => {
+    setLoadingStatus((prev) => ({ ...prev, [investmentId]: true }));
     try {
       await updateStatus({ investment_id: investmentId, status }).unwrap();
       toast.success(`Investment ${status} successfully!`);
     } catch (error) {
-      // console.error("Error updating status:", error);
-      // toast.error("Failed to update status.");
 
-           const errorResponse = error as ErrorResponse;
+      const errorResponse = error as ErrorResponse;
 
 
-           if (errorResponse?.data?.error) {
-               if (Array.isArray(errorResponse.data.error)) {
-                   errorResponse.data.error.forEach((msg) => toast.error(msg));
-               } else {
-                if (typeof errorResponse.data.error === 'string') {
-                  toast.error(errorResponse.data.error); 
-                }
-                  //  toast.error(errorResponse.data.error);
-               }
-           }
-           
-      
+      if (errorResponse?.data?.error) {
+        if (Array.isArray(errorResponse.data.error)) {
+          errorResponse.data.error.forEach((msg) => toast.error(msg));
+        } else {
+          if (typeof errorResponse.data.error === 'string') {
+            toast.error(errorResponse.data.error);
+          }
+          //  toast.error(errorResponse.data.error);
+        }
+      }
+
+
+    }finally {
+      setLoadingStatus((prev) => ({ ...prev, [investmentId]: false }));
     }
   };
 
@@ -79,7 +82,7 @@ const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId }) =
     <Modal open={open} onClose={onClose}>
       <Box sx={modalStyle}>
         <div className='w-full flex p-[15px] justify-between items-center mb-2 border-b border-[#DDD] pb-3'>
-          <p className='text-[18px] font-family text-black font-semibold'>Investment Requests</p>
+          <p className='text-[18px] font-family text-black font-semibold'>Investment Requests for {listingNumber}</p>
           <RxCross2 onClick={onClose} className='cursor-pointer text-[#818181] text-3xl' />
         </div>
 
@@ -115,40 +118,57 @@ const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId }) =
               </TableRow>
             </TableHeader>
             <TableBody className="divide-y divide-gray-100">
-              {filteredInvestments?.map((lead: any, index: number) => (
-                <TableRow className=" !border-t-0 !border-b-0" key={index}>
-                <TableCell className=" !text-[13px] !text-[#616161] !font-medium !font-family !border-b-0">{lead.user.first_name} {lead.user.last_name}</TableCell>
-                <TableCell className=" !text-[13px] !text-[#616161] !font-medium !font-family !border-b-0">{lead.user.email}</TableCell>
-                <TableCell className=" !text-[13px] !text-[#616161] !font-medium !font-family !border-b-0">$ {lead.investment_amount}</TableCell>
-              
-                <TableCell className="px-5 py-4 text-[13px] !border-b-0">
-                  {lead.status === 'pending' ? (
-                    <div className="flex items-center gap-3">
-                      {/* Reject Button */}
-                      <span
-                        className="border border-[#D1842880] bg-[#D184281A] cursor-pointer rounded p-1"
-                        onClick={() => handleStatusUpdate(lead.id, 'rejected')}
-                      >
-                        <FiX size={19} color="#D18428" />
-                      </span>
-                      {/* Approve Button */}
-                      <span
-                        className="border border-[#D1842880] rounded p-1 cursor-pointer bg-[#D18428]"
-                        onClick={() => handleStatusUpdate(lead.id, 'approved')}
-                      >
-                        <FiCheck size={19} color="#fff" />
-                      </span>
-                    </div>
-                  ) : (
-                    <span className={`px-3 py-2 rounded text-white ${lead.status === 'approved' ? 'bg-green-500' : 'bg-red-500'}`}>
-                      {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
-                    </span>
-                  )}
-                </TableCell>
-              </TableRow>
-              
-              ))}
-            </TableBody>
+  {filteredInvestments && filteredInvestments.length > 0 ? (
+    filteredInvestments.map((lead: any, index: number) => (
+      <TableRow className="!border-t-0 !border-b-0" key={index}>
+        <TableCell className="!text-[13px] !text-[#616161] !font-medium !font-family !border-b-0">
+          {lead.user.first_name} {lead.user.last_name}
+        </TableCell>
+        <TableCell className="!text-[13px] !text-[#616161] !font-medium !font-family !border-b-0">
+          {lead.user.email}
+        </TableCell>
+        <TableCell className="!text-[13px] !text-[#616161] !font-medium !font-family !border-b-0">
+          $ {lead.investment_amount}
+        </TableCell>
+        <TableCell className="px-5 py-4 text-[13px] !border-b-0">
+          {lead.status === 'pending' ? (
+            <div className="flex items-center gap-3">
+              <span
+                className={`border border-[#D1842880] bg-[#D184281A] rounded p-1 ${
+                  loadingStatus[lead.id] ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                }`}
+                onClick={() => !loadingStatus[lead.id] && handleStatusUpdate(lead.id, 'rejected')}
+              >
+                <FiX size={19} color="#D18428" />
+              </span>
+              <span
+                className={`border border-[#D1842880] rounded p-1 bg-[#D18428] ${
+                  loadingStatus[lead.id] ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                }`}
+                onClick={() => !loadingStatus[lead.id] && handleStatusUpdate(lead.id, 'approved')}
+              >
+                <FiCheck size={19} color="#fff" />
+              </span>
+            </div>
+          ) : (
+            <span className={`px-3 items-center py-2 rounded text-white ${lead.status === 'approved' ? 'bg-green-500' : 'bg-red-500'}`}>
+              {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
+            </span>
+          )}
+        </TableCell>
+      </TableRow>
+    ))
+  ) : (
+    <TableRow>
+      <TableCell colSpan={4} className="text-center py-6 text-[#999] text-[14px] font-medium">
+<p className='flex items-center justify-center'>
+No Record Found
+</p>
+      </TableCell>
+    </TableRow>
+  )}
+</TableBody>
+
           </Table>
         </div>
       </Box>
