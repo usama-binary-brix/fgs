@@ -33,6 +33,7 @@ const AddNewLead = () => {
   const [isIconRotate, setIsIconRotate] = useState(false);
   const [addLead] = useAddLeadMutation();
   const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const toggleDropdown = (dropdown: keyof typeof dropdownStates) => {
     setDropdownStates((prev) => ({
@@ -160,7 +161,7 @@ const AddNewLead = () => {
           reminder_date_time: reminderDateTime,
         };
 
-
+        setIsSubmitting(true)
         const response = await addLead(dataToSubmit).unwrap();
         toast.success(response.message);
         resetForm();
@@ -177,6 +178,8 @@ const AddNewLead = () => {
         } else {
           toast.error("Failed to add lead.");
         }
+      }finally{
+        setIsSubmitting(false)
       }
     },
   });
@@ -218,12 +221,15 @@ const AddNewLead = () => {
                 <PageTitle title="Add New Lead" />
 
 
+           
                 <Button
                   type="submit"
                   variant="primary"
                   className="text-[13px] font-semibold"
-                >
-                  Add Lead
+                  disabled={isSubmitting}
+                  >
+                      {isSubmitting ? "Processing..." : " Add Lead"}
+                 
                 </Button>
 
 
@@ -814,7 +820,7 @@ const AddNewLead = () => {
                     </div>
                   </div>
 
-
+{/* 
                   <div className="">
                     <div className="relative w-full">
                       <label className="text-xs text-gray-500 font-family font-medium">Lead Created By</label>
@@ -845,37 +851,7 @@ const AddNewLead = () => {
                         </ul>
                       )}
                     </div>
-
-
-
-
-
-
-
-
-
-
-
-                    {/* <div className="flex items-center gap-5 mt-1">
-                      <div className="flex items-center gap-2">
-                        <RadioButton
-                          isSelected={formik.values.lead_created_by === "Arcangelo"}
-                          onSelect={() => formik.setFieldValue("lead_created_by", "Arcangelo")}
-                        />
-                        <label className="text-[#666] text-[13px] font-medium font-family">Arcangelo</label>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <RadioButton
-                          isSelected={formik.values.lead_created_by === "Myron"}
-                          onSelect={() => formik.setFieldValue("lead_created_by", "Myron")}
-                        />
-                        <label className="text-[#666] text-[13px] font-medium font-family">Myron</label>
-                      </div>
-                    </div>
-                    {formik.touched.lead_created_by && formik.errors.lead_created_by && (
-                      <p className="text-red-500 text-xs mt-1">{formik.errors.lead_created_by}</p>
-                    )} */}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

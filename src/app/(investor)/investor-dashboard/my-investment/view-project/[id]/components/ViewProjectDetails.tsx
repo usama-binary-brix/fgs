@@ -2,36 +2,49 @@
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Label from '@/components/form/Label';
+import { useGetInventoryByIdQuery } from '@/store/services/api';
 import { useFormik } from 'formik';
 import { useParams } from 'next/navigation';
 import React from 'react'
 
 const ViewProjectDetails = () => {
   const { id } = useParams();
+ const { data: inventoryData, error, isLoading } = useGetInventoryByIdQuery(id);
+ const getValue = (value: any) => (value !== undefined && value !== null && value !== "" ? value : "---");
+ const formatDate = (dateString: string | null | undefined) => {
+  if (!dateString) return "---";
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = (`0${date.getMonth() + 1}`).slice(-2); // Add leading zero
+  const day = (`0${date.getDate()}`).slice(-2); // Add leading zero
+  return `${year}-${month}-${day}`;
+};
 
-  const formik = useFormik({
-    initialValues: {
-      project_name: "Project C",
-      purchase_date: "02-26-2024",
-      start_date: "03-15-2024",
-      completion_date: "06-15-2024",
-      purchase_price: "$ 2170.00",
-      elevator_manufacturer: "Hoist",
-      elevator_model: "C25L",
-      elevator_serial: "C09701",
-      project_status: "In-progress",
-      project_description:
-        "This project typically includes modernizing mechanical components, updating control systems, and refreshing the interior design, resulting in improved reliability, and energy efficiency.",
-    },
-    onSubmit: () => {}, // Dummy function to satisfy Formik
-  });
+
+ const formik = useFormik({
+  enableReinitialize: true,
+  initialValues: {
+    project_name: getValue(inventoryData?.inventory?.listing_number),
+    purchase_date: formatDate(inventoryData?.inventory?.date_purchased),
+    start_date: formatDate(inventoryData?.inventory?.created_at),
+    completion_date: formatDate(inventoryData?.inventory?.updated_at),
+    purchase_price: `$ ${getValue(inventoryData?.inventory?.price_paid)}`,
+    elevator_manufacturer: getValue(inventoryData?.inventory?.make),
+    elevator_model: getValue(inventoryData?.inventory?.model),
+    elevator_serial: getValue(inventoryData?.inventory?.serial_no),
+    project_status: "In-progress",
+    project_description: `Listing: ${getValue(inventoryData?.inventory?.listing_number)}, Year: ${getValue(inventoryData?.inventory?.year)}, Height: ${getValue(inventoryData?.inventory?.height)}, Width: ${getValue(inventoryData?.inventory?.width)}, Weight: ${getValue(inventoryData?.inventory?.weight)}, Hours: ${getValue(inventoryData?.inventory?.hours)}`,
+  }
   
+,  
+  onSubmit: () => {},
+});
 
 return (
 <>
 
 <div className="flex flex-col mb-4">
-          <h1 className="text-2xl font-bold">I-{id}</h1>
+          <h1 className="text-2xl font-bold">{inventoryData?.inventory?.listing_number}</h1>
           <h1>Elevator Project</h1>
 
         </div>

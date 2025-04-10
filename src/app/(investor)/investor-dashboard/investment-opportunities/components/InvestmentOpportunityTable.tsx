@@ -245,7 +245,7 @@ const InvestmentOpportunityTable = () => {
                     <div className='min-w-[30rem] px-5'>
                         <div className="mb-2">
                             <label className="text-[13px] text-[#818181] font-normal font-family" htmlFor='InvestmentAmount'>
-                                Investment Amount <span className="text-red-500">*</span>
+                                Investment Amount $ <span className="text-red-500">*</span>
 
 
                             </label>

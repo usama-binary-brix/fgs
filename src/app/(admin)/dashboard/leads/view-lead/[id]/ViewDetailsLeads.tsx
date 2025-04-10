@@ -130,19 +130,19 @@ const ViewDetailsLeads = () => {
         router.push('/dashboard/leads')
       } catch (error) {
 
-         const errorResponse = error as ErrorResponse;
-        
-        
-                if (errorResponse?.data?.error) {
-                  Object.values(errorResponse.data.error).forEach((errorMessage) => {
-                    if (Array.isArray(errorMessage)) {
-                      errorMessage.forEach((msg) => toast.error(msg)); // Handle array errors
-                    } else {
-                      toast.error(errorMessage); // Handle single string errors
-                    }
-                  });
-                }
-      }finally{
+        const errorResponse = error as ErrorResponse;
+
+
+        if (errorResponse?.data?.error) {
+          Object.values(errorResponse.data.error).forEach((errorMessage) => {
+            if (Array.isArray(errorMessage)) {
+              errorMessage.forEach((msg) => toast.error(msg)); // Handle array errors
+            } else {
+              toast.error(errorMessage); // Handle single string errors
+            }
+          });
+        }
+      } finally {
         setIsSubmitting(false)
       }
       setIsEditing(false)
@@ -267,7 +267,7 @@ const ViewDetailsLeads = () => {
           <div className='flex gap-4 items-center'>
             <IoMdArrowRoundBack onClick={handleNavigate} className="text-[1.5rem] cursor-pointer" />
 
-            <h1 className="text-2xl font-bold">{leadData?.lead?.listing_number}</h1>
+            <h1 className="text-3xl font-bold">{leadData?.lead?.listing_number}</h1>
           </div>
           <div className="flex gap-2">
 
@@ -277,7 +277,7 @@ const ViewDetailsLeads = () => {
                 type="submit"
                 variant="primary"
                 className='font-semibold'
-                disabled={isSubmitting}
+                disabled={isSubmitting || leadData?.lead?.type !== 'lead'}
               >
                 {isSubmitting ? 'Updating' : 'Update'}
               </Button>
@@ -287,7 +287,7 @@ const ViewDetailsLeads = () => {
                 disabled={leadData?.lead?.type !== 'lead'}
 
               >
-              
+
                 {isPromoteLoading ? "Promoting..." : (leadData?.lead?.type === 'lead' ? "Promote to Investor" : "Already Promoted")}
               </Button>
             </div>

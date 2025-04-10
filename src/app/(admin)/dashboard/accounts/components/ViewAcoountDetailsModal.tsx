@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions,  Typography } from '@mui/material';
 import { FaUserCircle } from "react-icons/fa";
 import Image from 'next/image';
 import { useSingleUserQuery } from '@/store/services/api';
@@ -6,6 +6,7 @@ import { RxCross2 } from 'react-icons/rx';
 import { useState } from 'react';
 import UserProjects from './UserProjects';
 import AccountsModal from './AccountsModal';
+import Button from '@/components/ui/button/Button';
 
 interface ViewMoreModalProps {
   open: boolean;
@@ -33,8 +34,9 @@ const ViewAccountDetailsModal: React.FC<ViewMoreModalProps> = ({ open, onClose, 
       <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" >
         <DialogTitle sx={{ borderBottom: '1px solid gray' }}>
           <div className='flex justify-between items-center'>
-            <p>Accounts Details</p>
-            <div>
+            <p className='text-xl font-semibold'>Accounts Details</p>
+           
+           <div>
               <RxCross2 onClick={onClose} className='cursor-pointer text-3xl' />
 
             </div>
@@ -82,32 +84,23 @@ const ViewAccountDetailsModal: React.FC<ViewMoreModalProps> = ({ open, onClose, 
               </div>
             )
           )}
+<div className='mt-4'>
 <UserProjects/>
-        </DialogContent>
+  
+  </div>        </DialogContent>
         <DialogActions sx={{paddingBottom:'1rem', paddingRight:'1rem'}}>
        
 
-           <Button onClick={onClose} variant="outlined"
-                           sx={{
-                            backgroundColor: '#8080801A',
-                            mr: 2,
-                            color: '#808080',
-                            borderColor: '#8080801A', 
-                            outline: 'none',
-                            '&:hover': { 
-                              backgroundColor: '#8080801B', 
-                              borderColor: '#8080801A' 
-                            },
-                            textTransform: 'none',
-                          }}
+
+           <Button onClick={onClose} variant="fgsoutline"
+                          
                         >
                           Close
                         </Button>
           <Button
             onClick={() => handleEditUser(user?.user)}
             // type="submit"
-            variant="contained"
-            sx={{ backgroundColor: '#C28024', '&:hover': { backgroundColor: '#a56a1d' }, textTransform: 'none' }}
+            variant="primary"
           >
             Edit Account
           </Button>
