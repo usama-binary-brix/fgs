@@ -113,7 +113,7 @@ const AppSidebar: React.FC = () => {
       </div>
       <div className="relative flex flex-col h-screen overflow-y-auto duration-300 ease-linear no-scrollbar justify-between">
         <nav className="mb-6">
-          <h2 className="mb-4 text-[10px] tracking-widest pl-[15px] hidden uppercase font-medium lg:flex text-gray-400">
+          <h2 className="mb-4 text-[14px] tracking-widest pl-[15px] hidden uppercase font-medium lg:flex text-gray-400">
             {isExpanded || isHovered || isMobileOpen ? "Menu" : <HorizontaLDots />}
           </h2>
           <ul className="flex flex-col">

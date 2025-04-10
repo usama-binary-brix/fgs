@@ -16,7 +16,7 @@ type PageTitleProps = {
 
 const PageTitle = ({ title, centerItems }: PageTitleProps) => {
     return (
-        <div className="flex items-center justify-between mb-4 text-[27px] font-bold">
+        <div className="flex items-center justify-between mb-4 text-[25px] font-extrabold">
             <h3 className="">{title}</h3>
             {centerItems != null && centerItems}
           

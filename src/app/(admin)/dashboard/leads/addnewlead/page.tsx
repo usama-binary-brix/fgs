@@ -1,6 +1,5 @@
 "use client";
 
-import TopButtons from "@/components/Buttons/TopButtons";
 import AddLeadInput from "../components/input/AddLeadInput"
 import { useState } from "react";
 import { FiChevronDown, FiCalendar } from "react-icons/fi";
@@ -34,6 +33,7 @@ const AddNewLead = () => {
   const [isIconRotate, setIsIconRotate] = useState(false);
   const [addLead] = useAddLeadMutation();
   const router = useRouter()
+const [isSubmitting, setIsSubmitting] = useState(false);
 
   const toggleDropdown = (dropdown: keyof typeof dropdownStates) => {
     setDropdownStates((prev) => ({
@@ -213,14 +213,18 @@ const AddNewLead = () => {
     <>
       <div className="container-fluid">
         <form onSubmit={formik.handleSubmit}>
-          <div className="row mb-5">
+          <div className="row mb-2">
             <div className="grid grid-cols-1">
               <div className="flex justify-between items-center">
                 {/* <h1 className="text-2xl font-extrabold font-family text-goldenBlack">Add New Lead</h1> */}
                 <div className="flex gap-4">
-                  <IoMdArrowRoundBack onClick={handleNavigate} className="text-[1.5rem] mt-1 cursor-pointer" />
-                  <PageTitle title="Add New Lead" />
-                
+                  <IoMdArrowRoundBack onClick={handleNavigate} className="text-[1.5rem] mt-2 cursor-pointer" />
+                  {/* <PageTitle title="Add New Lead" /> */}
+                  <div className="flex items-center justify-between text-[25px] font-extrabold">
+                    <h3 className="">Add New Lead</h3>
+
+
+                  </div>
                 </div>
 
 
@@ -228,8 +232,10 @@ const AddNewLead = () => {
                   type="submit"
                   variant="primary"
                   className="text-[13px] font-semibold"
-                >
-                  Add Lead
+                  disabled={isSubmitting}
+                  >
+                      {isSubmitting ? "Processing..." : " Add Lead"}
+                 
                 </Button>
 
 
@@ -674,7 +680,7 @@ const AddNewLead = () => {
                 <div className="mb-5 bg-white w-full p-3">
                   <h1 className="text-black font-family font-medium mb-2">Budget & Financing</h1>
                   <div className="">
-                    <label className="text-xs text-gray-500 font-family font-medium">Budget</label>
+                    <label className="text-xs text-gray-500 font-family font-medium">Budget Range</label>
                     <div className="flex gap-3 items-center">
                       <input
                         type="number"
@@ -682,7 +688,7 @@ const AddNewLead = () => {
                         value={formik.values.budget_min}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        placeholder="$ 0.00"
+                        placeholder="$ 1.00"
                         className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs outline-none text-md"
                       />
                       {formik.touched.budget_min && formik.errors.budget_min && (
@@ -695,7 +701,7 @@ const AddNewLead = () => {
                         value={formik.values.budget_max}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        placeholder="$ 0.00"
+                        placeholder="$ 100.00"
                         className="w-full text-left  text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs mt-1 outline-none text-md"
                       />
                       {formik.touched.budget_max && formik.errors.budget_max && (
@@ -741,17 +747,7 @@ const AddNewLead = () => {
                           />
                           <label className="text-[#666] text-[13px] font-medium font-family">In 1 Month</label>
                         </li>
-                        <li className="flex gap-2 items-center">
-                          <RadioButton
-                            isSelected={formik.values.purchase_timeline === "3+ Months"}
-                            onSelect={() => formik.setFieldValue("purchase_timeline", "3+ Months")}
-                          />
-                          <label className="text-[#666] text-[13px] font-medium font-family">3+ Months</label>
-                        </li>
-                      </ul>
-                    </div>
-                    <div>
-                      <ul>
+
                         <li className="flex gap-2 items-center font-family">
                           <RadioButton
                             isSelected={formik.values.purchase_timeline === "In 2 Months"}
@@ -759,13 +755,27 @@ const AddNewLead = () => {
                           />
                           <label className="text-[#666] text-[13px] font-medium font-family">In 2 Months</label>
                         </li>
+
+
+                      </ul>
+                    </div>
+                    <div>
+                      <ul>
                         <li className="flex gap-2 items-center font-family">
                           <RadioButton
                             isSelected={formik.values.purchase_timeline === "More than 2 Months"}
                             onSelect={() => formik.setFieldValue("purchase_timeline", "More than 2 Months")}
                           />
-                          <label className="text-[#666] text-[13px] font-medium font-family">More than 2 Months</label>
+                          <label className="text-[#666] text-[13px] font-medium font-family">2+ Months</label>
                         </li>
+                        <li className="flex gap-2 items-center">
+                          <RadioButton
+                            isSelected={formik.values.purchase_timeline === "3+ Months"}
+                            onSelect={() => formik.setFieldValue("purchase_timeline", "3+ Months")}
+                          />
+                          <label className="text-[#666] text-[13px] font-medium font-family">3+ Months</label>
+                        </li>
+
                       </ul>
                     </div>
                   </div>
