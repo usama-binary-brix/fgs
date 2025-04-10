@@ -204,29 +204,29 @@ const LeadsTable = () => {
                   <TableCell className="px-3 py-3.5 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{lead.id}</TableCell>
 
 
-                               <TableCell className="px-3 py-5 text-[14px] flex items-center gap-2 font-family text-[#616161] font-normal">
-             
-             
-             
-                                 {lead.image ? (
-                                   <Image
-                                     width={32}
-                                     height={32}
-                                     src={lead.image}
-                                     alt={lead.first_name}
-                                     className="rounded-full"
-                                   />
-                                 ) : (
-                                   <span>
-                                     <FaUserCircle className="w-6 h-6 text-gray-500" />
-             
-                                   </span>
-                                 )}
-                                 <span>{lead.name}</span>
-             
-             
-             
-                               </TableCell>
+                  <TableCell className="px-3 py-5 text-[14px] flex items-center gap-2 font-family text-[#616161] font-normal">
+
+
+
+                    {lead.image ? (
+                      <Image
+                        width={32}
+                        height={32}
+                        src={lead.image}
+                        alt={lead.first_name}
+                        className="rounded-full"
+                      />
+                    ) : (
+                      <span>
+                        <FaUserCircle className="w-6 h-6 text-gray-500" />
+
+                      </span>
+                    )}
+                    <span>{lead.name}</span>
+
+
+
+                  </TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.email}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.company || '---'}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.lead_source || '---'}</TableCell>
@@ -241,7 +241,7 @@ const LeadsTable = () => {
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.lead_created_by || '---'}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-visible font-normal font-family">
                     <div className="relative inline-block">
-                      <button onClick={() => toggleDropdown(lead.id)}  className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : ''}`}>
+                      <button onClick={() => toggleDropdown(lead.id)} className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : ''}`}>
                         <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />
                       </button>
 
@@ -253,12 +253,17 @@ const LeadsTable = () => {
                           >
                             View Details
                           </DropdownItem>
-                          <DropdownItem
-                            onItemClick={() => hanldeViewDetails(lead.id)}
-                            className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
-                          >
-                            Edit
-                          </DropdownItem>
+
+                          {lead.type === 'lead' && (
+                            <DropdownItem
+                              onItemClick={() => hanldeViewDetails(lead.id)}
+                              className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
+                            >
+                              Edit
+                            </DropdownItem>
+                          )}
+
+
 
                           <DropdownItem
                             onItemClick={() => lead.type === 'lead' && handlePromoteClick(lead.id)}

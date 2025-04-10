@@ -251,12 +251,15 @@ const LeadsTable = () => {
                           >
                             View Details
                           </DropdownItem>
-                          <DropdownItem
-                            onItemClick={() => hanldeViewDetails(lead.id)}
-                            className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]"
-                          >
-                            Edit
-                          </DropdownItem>
+                            {lead.type === 'lead' && (
+                                                      <DropdownItem
+                                                        onItemClick={() => hanldeViewDetails(lead.id)}
+                                                        className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
+                                                      >
+                                                        Edit
+                                                      </DropdownItem>
+                                                    )}
+                        
                           <DropdownItem
                             onItemClick={() => lead.type === 'lead' && handlePromoteClick(lead.id)}
                             className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]"

@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import AddLeadInput from '@/app/(admin)/dashboard/leads/components/input/AddLeadInput';
 import { useFormik } from 'formik';
+import Pagination from '@/components/tables/Pagination';
 
 
 
@@ -49,6 +50,21 @@ const MyInvestmentTable = () => {
     const handleCloseModal = () => {
         setIsOpen(false);
     };
+
+    
+        const [currentPage, setCurrentPage] = useState(1);
+        const [totalPages, setTotalPages] = useState(10); // Example total pages
+        const [perPage, setPerPage] = useState(10); // Default items per page
+      
+        const handlePageChange = (page: number) => {
+          setCurrentPage(page);
+        };
+      
+        const handlePerPageChange = (newPerPage: number) => {
+          setPerPage(newPerPage);
+          setCurrentPage(1); // Reset to first page on per-page change
+        };
+      
     const [isOpen, setIsOpen] = useState(false);
 
     const [openDropdownId, setOpenDropdownId] = useState<string | number | null>();
@@ -119,7 +135,7 @@ const MyInvestmentTable = () => {
 
 
                 <div className="rounded-xl border  border-[#DDD] bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-                    <div className=" overflow-auto">
+                <div className="max-w-full h-[30rem] overflow-x-auto">
                         <Table className='table-auto'>
                             <TableHeader className="border-b bg-[#F7F7F7] text-[#616161] font-family font-medium text-[12.5px] border-gray-100 dark:border-white/[0.05]">
                                 <TableRow>
@@ -208,6 +224,18 @@ const MyInvestmentTable = () => {
                             </TableBody>
                         </Table>
                     </div>
+
+                    
+                                        <div className='px-6 border-t'>
+                              <Pagination
+                                currentPage={currentPage}
+                                totalPages={data?.totalPages || 1}
+                                onPageChange={handlePageChange}
+                                perPage={perPage}
+                                onPerPageChange={handlePerPageChange}
+                              />
+                    
+                            </div>
                 </div>
             </div>
             <Dialog

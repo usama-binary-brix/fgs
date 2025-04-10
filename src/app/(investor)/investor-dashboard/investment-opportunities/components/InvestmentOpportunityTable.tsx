@@ -18,6 +18,7 @@ import { useFormik } from 'formik';
 import { RxCross2 } from 'react-icons/rx';
 import Button from '@/components/ui/button/Button';
 import Label from '@/components/form/Label';
+import Pagination from '@/components/tables/Pagination';
 
 type ErrorResponse = {
     data: {
@@ -66,6 +67,19 @@ const InvestmentOpportunityTable = () => {
     const [selectedId, setSelectedId] = useState<string | number | null>(null);
     const [selectedListingNumber, setSelectedListingNumber] = useState<string | number | null>(null);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(10); // Example total pages
+    const [perPage, setPerPage] = useState(10); // Default items per page
+  
+    const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+    };
+  
+    const handlePerPageChange = (newPerPage: number) => {
+      setPerPage(newPerPage);
+      setCurrentPage(1); // Reset to first page on per-page change
+    };
+  
     const formik = useFormik({
         initialValues: {
             investmentAmount: '',
@@ -143,8 +157,8 @@ const InvestmentOpportunityTable = () => {
                 </div>
 
 
-                <div className="rounded-xl border  border-[#DDD] bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-                    <div className=" overflow-auto">
+                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+                <div className="max-w-full h-[30rem] overflow-x-auto">
                         <Table className='table-auto'>
                             <TableHeader className="border-b bg-[#F7F7F7] text-[#616161] font-family font-medium text-[12.5px] border-gray-100 dark:border-white/[0.05]">
                                 <TableRow>
@@ -225,6 +239,17 @@ const InvestmentOpportunityTable = () => {
                             </TableBody>
                         </Table>
                     </div>
+
+                    <div className='px-6 border-t'>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={data?.totalPages || 1}
+            onPageChange={handlePageChange}
+            perPage={perPage}
+            onPerPageChange={handlePerPageChange}
+          />
+
+        </div>
                 </div>
             </div>
             <Dialog

@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from "next/navigation";
 import { PageTitle } from "@/components/PageTitle";
 import Button from "@/components/ui/button/Button";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 type ErrorResponse = {
   data: {
@@ -178,7 +179,7 @@ const AddNewLead = () => {
         } else {
           toast.error("Failed to add lead.");
         }
-      }finally{
+      } finally {
         setIsSubmitting(false)
       }
     },
@@ -208,6 +209,9 @@ const AddNewLead = () => {
   };
 
 
+  const handleNavigate = () => {
+    router.push('/sales-dashboard/leads')
+  }
 
   return (
     <>
@@ -218,18 +222,24 @@ const AddNewLead = () => {
               <div className="flex justify-between items-center">
                 {/* <h1 className="text-2xl font-extrabold font-family text-goldenBlack">Add New Lead</h1> */}
 
-                <PageTitle title="Add New Lead" />
+                <div className="flex gap-4">
+                  <IoMdArrowRoundBack onClick={handleNavigate} className="text-[1.5rem] mt-2 cursor-pointer" />
+                  {/* <PageTitle title="Add New Lead" /> */}
+                  <div className="flex items-center justify-between text-[25px] font-extrabold">
+                    <h3 className="">Add New Lead</h3>
 
 
-           
+                  </div>
+                </div>
+
                 <Button
                   type="submit"
                   variant="primary"
                   className="text-[13px] font-semibold"
                   disabled={isSubmitting}
-                  >
-                      {isSubmitting ? "Processing..." : " Add Lead"}
-                 
+                >
+                  {isSubmitting ? "Processing..." : " Add Lead"}
+
                 </Button>
 
 
@@ -820,7 +830,7 @@ const AddNewLead = () => {
                     </div>
                   </div>
 
-{/* 
+                  {/* 
                   <div className="">
                     <div className="relative w-full">
                       <label className="text-xs text-gray-500 font-family font-medium">Lead Created By</label>
