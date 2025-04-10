@@ -66,8 +66,8 @@ const navItems: NavItem[] = [
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
-  // const userRole = useSelector((state: any) => state?.user?.user?.account_type);
-  const userRole = 'broker'
+  const userRole = useSelector((state: any) => state?.user?.user?.account_type);
+  // const userRole = 'broker'
   const pathname = usePathname();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
