@@ -16,6 +16,7 @@ import Pagination from '@/components/tables/Pagination';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import Button from '@/components/ui/button/Button';
 
+
 const AccountsTable = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { data, isLoading, error } = useGetAllUsersQuery('');
@@ -31,6 +32,10 @@ const AccountsTable = () => {
     setSelectedUserData(user);
     setIsEditModalOpen(true);
   };
+
+ 
+
+  
 
 
   const toggleDropdown = (id: string | number | null) => {
@@ -183,10 +188,19 @@ const AccountsTable = () => {
 
                       {openDropdownId === user.id && (
                         <div className="absolute right-9 top-[-7px] mt-2 z-50 w-30 bg-white shadow-md border rounded-sm">
-                          <DropdownItem onItemClick={() => handleViewMore(user.id)} className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]">
+                          <DropdownItem
+                           onItemClick={() => {                           
+                            handleViewMore(user.id);
+                            setOpenDropdownId(null);
+                          }}
+                             className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]">
                             View Details
                           </DropdownItem>
-                          <DropdownItem onItemClick={() => handleEditUser(user)} className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]">
+                          <DropdownItem onItemClick={() =>{
+                           handleEditUser(user);
+                           setOpenDropdownId(null);
+                          }}
+                           className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]">
                             Edit
                           </DropdownItem>
                           <DropdownItem
@@ -195,6 +209,7 @@ const AccountsTable = () => {
                               setSelectedUserId(user.id);
                               setIsDeleteModalOpen(true);
                               setSelectedName(`${user.first_name}`);
+                              setOpenDropdownId(null);
                             }}
                             className="flex w-full font-normal px-4 text-[12px] text-[#414141]"
                           >

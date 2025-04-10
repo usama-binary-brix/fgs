@@ -204,6 +204,7 @@ const AllShipmentsTable = () => {
                           <DropdownItem
                             onItemClick={() => {
                               router.push(`/broker-dashboard/shipments-opportunities/all-shipments/view-shipment`);
+                              closeDropdown();
                             }}
                             className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
                           >
@@ -211,14 +212,21 @@ const AllShipmentsTable = () => {
                           </DropdownItem>
 
                           <DropdownItem
-                            onItemClick={() => hanldeViewDetails(lead.id)}
+                            onItemClick={() => {
+                               hanldeViewDetails(lead.id);
+                               closeDropdown();
+                            }}
                             className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
                           >
                             Edit
                           </DropdownItem>
 
                           <DropdownItem
-                            onItemClick={() => lead.type === 'lead' && handlePromoteClick(lead.id)}
+                            onItemClick={() => {
+                               lead.type === 'lead' &&
+                              handlePromoteClick(lead.id);
+                              closeDropdown();
+                            }}
                             className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
                           >
                             {isPromoteLoading && selectedId === lead.id
@@ -240,6 +248,7 @@ const AllShipmentsTable = () => {
                               setOpenDropdownId(null);
                               setSelectedId(lead.id);
                               setIsDeleteModalOpen(true);
+                              closeDropdown();
                             }}
                             className="flex w-full font-normal !px-4 text-[12px] font-family text-[#414141]"
                           >

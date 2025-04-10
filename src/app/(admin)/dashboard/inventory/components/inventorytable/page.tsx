@@ -332,6 +332,7 @@ const InventoryTable = () => {
                             <DropdownItem
                               onItemClick={() => {
                                 router.push(`/dashboard/edit-inventory/${lead.id}`);
+                                closeDropdown();
                               }}
                               className="flex w-full text-left text-[12px] font-family text-[#414141] font-normal border-b border-[#E9E9E9] rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
                             >
@@ -341,6 +342,7 @@ const InventoryTable = () => {
                             <DropdownItem
                               onItemClick={() => {
                                 router.push(`/dashboard/edit-inventory/${lead.id}`);
+                                closeDropdown(); 
                               }}
                               className="flex w-full text-left text-[12px] font-family text-[#414141] font-normal border-b border-[#E9E9E9] rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
                             >
@@ -353,6 +355,7 @@ const InventoryTable = () => {
                                 setSelectedId(lead.id);
                                 setSelectedListingNumber(lead.listing_number);
                                 setIsDeleteModalOpen(true);
+                                closeDropdown();
                               }}
                               className="flex w-full text-left text-[12px] font-family text-[#414141] font-normal rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
                             >
