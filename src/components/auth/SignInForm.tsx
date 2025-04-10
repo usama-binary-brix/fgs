@@ -40,6 +40,8 @@ export default function SignInForm() {
           router.push("/sales-dashboard");
         } else if (res.user.account_type === "employee") {
           router.push("/employee-dashboard");
+        } else if (res.user.account_type === "broker") {
+          router.push("/broker-dashboard");
         } else {
           router.push("/");
         }
