@@ -248,20 +248,29 @@ const LeadsTable = () => {
                       {openDropdown === lead.id && (
                         <div className="absolute right-9 top-[-5px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
                           <DropdownItem
-                            onItemClick={() => hanldeViewDetails(lead.id)}
+                            onItemClick={() => {
+                                hanldeViewDetails(lead.id);
+                                closeDropdown();
+                             }}
                             className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
                           >
                             View Details
                           </DropdownItem>
                           <DropdownItem
-                            onItemClick={() => hanldeViewDetails(lead.id)}
+                             onItemClick={() => {
+                              hanldeViewDetails(lead.id);
+                              closeDropdown();
+                           }}
                             className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
                           >
                             Edit
                           </DropdownItem>
 
                           <DropdownItem
-                            onItemClick={() => lead.type === 'lead' && handlePromoteClick(lead.id)}
+                             onItemClick={() => {
+                              hanldeViewDetails(lead.id);
+                              closeDropdown();
+                           }}
                             className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
                           >
                             {isPromoteLoading && selectedId === lead.id ? "Promoting..." : (lead.type === 'lead' ? "Promote to investor" : "Already Promoted")}
@@ -280,6 +289,7 @@ const LeadsTable = () => {
                               setSelectedId(lead.id);
                               setSelectedListingNumber(lead.listing_number);
                               setIsDeleteModalOpen(true);
+                              closeDropdown();
                             }}
                             className="flex w-full font-normal !px-4 text-[12px] font-family text-[#414141]"
                           >

@@ -17,6 +17,7 @@ import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import Pagination from '@/components/tables/Pagination';
 import { format } from 'date-fns';
 
+
 interface Lead {
   id: string;
   name: string;
@@ -34,6 +35,7 @@ const LeadsTable = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const router = useRouter();
   const { data, isLoading, error } = useGetAllLeadsQuery("");
+ 
 
   const toggleDropdown = (id: string) => {
     setOpenDropdown(openDropdown === id ? null : id);
@@ -235,30 +237,40 @@ const LeadsTable = () => {
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">
                     {format(new Date(lead.reminder_date_time), "dd-MM-yy")}
                   </TableCell>
-                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.budget_min ? `$ ${lead.budget_min}`:'---'}</TableCell>
+                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.budget_min ? `$ ${lead.budget_min}` : '---'}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.condition || '---'}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.lead_created_by || '---'}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-visible relative  font-normal font-family">
                     <div className="relative inline-block">
-                      <button onClick={() => toggleDropdown(lead.id)}  className={`dropdown-toggle p-1 rounded ${ openDropdown === lead.id ? 'bg-gray-100' : ''}`}>
+                      <button onClick={() => toggleDropdown(lead.id)} className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : ''}`}>
                         <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />
                       </button>
                       {openDropdown === lead.id && (
                         <div className="absolute right-9 top-[-4px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
                           <DropdownItem
-                            onItemClick={() => hanldeViewDetails(lead.id)}
+                            onItemClick={() =>{
+                               hanldeViewDetails(lead.id);
+                              closeDropdown();
+                             }}
                             className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]"
                           >
                             View Details
                           </DropdownItem>
                           <DropdownItem
-                            onItemClick={() => hanldeViewDetails(lead.id)}
+                            onItemClick={() =>{
+                              hanldeViewDetails(lead.id);
+                             closeDropdown();
+                            }}
                             className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]"
                           >
                             Edit
                           </DropdownItem>
                           <DropdownItem
-                            onItemClick={() => lead.type === 'lead' && handlePromoteClick(lead.id)}
+                            onItemClick={() =>{
+                               lead.type === 'lead' &&
+                                handlePromoteClick(lead.id);
+                                closeDropdown();
+                            }}
                             className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]"
                           >
                             {isPromoteLoading && selectedId === lead.id
@@ -279,6 +291,7 @@ const LeadsTable = () => {
                               setSelectedId(lead.id);
                               setSelectedListingNumber(lead.listing_number);
                               setIsDeleteModalOpen(true);
+                              closeDropdown();
                             }}
                             className="flex w-full font-normal px-4 text-[12px] text-[#414141]"
                           >
