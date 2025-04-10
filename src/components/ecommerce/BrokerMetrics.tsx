@@ -32,7 +32,7 @@ export const BrokerMetrics = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-4 md:gap-3">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-5 md:gap-3">
       {metricsData.map((item, index) => (
         <div
           key={index}

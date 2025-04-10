@@ -47,9 +47,6 @@ const AllShipmentsTable = () => {
   };
 
 
-  const handleNavigate = () => {
-    router.push("/dashboard/leads/addnewlead")
-  }
 
   const hanldeViewDetails = (id: any) => {
     router.push(`/dashboard/leads/view-lead/${id}`)
@@ -58,40 +55,6 @@ const AllShipmentsTable = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  // INVRequest Modal
-
-
-  const [isInvReqModalOpen, setIsInvReqModalOpen] = useState(false);
-
-  const handleOpenInvReqModal = () => {
-    setIsInvReqModalOpen(true);
-  };
-
-  const handleCloseInvReqModal = () => {
-    setIsInvReqModalOpen(false);
-  };
-
-  // totalInvestorsModal
-
-  const [isTotalInvModalOpen, setIsTotalInvModalOpen] = useState(false);
-
-  const handleOpenTotalInvModal = () => {
-    setIsTotalInvModalOpen(true);
-  };
-
-  const handleCloseTotalInvModal = () => {
-    setIsTotalInvModalOpen(false);
-  };
-
-  const [isOpen, setIsOpen] = useState(false);
 
   const [openDropdownId, setOpenDropdownId] = useState<string | number | null>();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -101,7 +64,7 @@ const AllShipmentsTable = () => {
   const [promoteInvestor, { isLoading: isPromoteLoading }] = usePromoteToInvestorMutation();
 
   const handlePromoteClick = async (leadId: any) => {
-    setSelectedId(leadId); // Clicked item ka ID store karo
+    setSelectedId(leadId);
 
     try {
       const response = await promoteInvestor({
@@ -180,7 +143,7 @@ const AllShipmentsTable = () => {
             <TableHeader className="border-b border-gray-100 overflow-auto bg-[#F7F7F7] dark:border-white/[0.05]">
               <TableRow>
                 {['ID', 'SHIPMENT DATE', 'ETA', 'ELEVATOR YEAR', 'MANUFACTURER', 'MODEL', 'SERIAL NO.', 'STATUS', 'ACTION'].map((heading) => (
-                  <TableCell key={heading} isHeader className="px-3  py-3 font-family whitespace-nowrap overflow-hidden font-semibold text-[#616161] text-start text-theme-sm dark:text-gray-400">
+                  <TableCell key={heading} isHeader className="px-3  py-3 font-family whitespace-nowrap overflow-hidden font-medium text-[#616161] text-start text-theme-sm dark:text-gray-400">
                     <div className='flex justify-between gap-5 items-center'>
 
                       {heading}
