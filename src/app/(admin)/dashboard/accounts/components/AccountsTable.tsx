@@ -32,7 +32,7 @@ const AccountsTable = () => {
     setIsEditModalOpen(true);
   };
 
-  
+
   const toggleDropdown = (id: string | number | null) => {
     if (openDropdownId === id) {
       setOpenDropdownId(null);
@@ -176,30 +176,35 @@ const AccountsTable = () => {
                   </TableCell>
 
                   <TableCell className="px-5 py-2 text-sm text-center text-[#616161]">
-                    <div className="inline-block">
-                      <button onClick={() => toggleDropdown(user.id)} >
+                    <div className="relative inline-block">
+                      <button onClick={() => toggleDropdown(user.id)}  className={`dropdown-toggle p-1 rounded ${ openDropdownId === user.id ? 'bg-gray-100' : ''}`}>
                         <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                       </button>
 
-                      <Dropdown isOpen={openDropdownId === user.id} onClose={() => setOpenDropdownId(null)} className="  z-50 w-30 bg-white shadow-md border rounded-sm">
-                        <DropdownItem onItemClick={() => handleViewMore(user.id)} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
-                          View Details
-                        </DropdownItem>
-                        <DropdownItem onItemClick={() => handleEditUser(user)} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
-                          Edit
-                        </DropdownItem>
-                        <DropdownItem onItemClick={() => {
-                          setOpenDropdownId(null);
-                          setSelectedUserId(user.id);
-                          setIsDeleteModalOpen(true);
-                          setSelectedName(`${user.first_name}`);
-                        }} className="flex w-full font-normal !px-4  text-[12px] font-family   text-[#414141]">
-                          Delete
-                        </DropdownItem>
-                      </Dropdown>
-
+                      {openDropdownId === user.id && (
+                        <div className="absolute right-9 top-[-7px] mt-2 z-50 w-30 bg-white shadow-md border rounded-sm">
+                          <DropdownItem onItemClick={() => handleViewMore(user.id)} className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]">
+                            View Details
+                          </DropdownItem>
+                          <DropdownItem onItemClick={() => handleEditUser(user)} className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]">
+                            Edit
+                          </DropdownItem>
+                          <DropdownItem
+                            onItemClick={() => {
+                              setOpenDropdownId(null);
+                              setSelectedUserId(user.id);
+                              setIsDeleteModalOpen(true);
+                              setSelectedName(`${user.first_name}`);
+                            }}
+                            className="flex w-full font-normal px-4 text-[12px] text-[#414141]"
+                          >
+                            Delete
+                          </DropdownItem>
+                        </div>
+                      )}
                     </div>
                   </TableCell>
+
                 </TableRow>
               ))}
             </TableBody>

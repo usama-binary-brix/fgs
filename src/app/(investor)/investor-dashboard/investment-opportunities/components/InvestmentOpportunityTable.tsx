@@ -59,23 +59,23 @@ const InvestmentOpportunityTable = () => {
         setIsOpen(false);
     };
     const [isOpen, setIsOpen] = useState(false);
-  
-      
+
+
     const [openDropdownId, setOpenDropdownId] = useState<string | number | null>();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedId, setSelectedId] = useState<string | number | null>(null);
     const [selectedListingNumber, setSelectedListingNumber] = useState<string | number | null>(null);
- 
+
     const formik = useFormik({
         initialValues: {
             investmentAmount: '',
         },
         validationSchema: Yup.object().shape({
             investmentAmount: Yup.number()
-              .typeError('Investment amount must be a number')
-              .required('Investment amount is required')
-              .positive('Amount must be greater than 0'),
-          }),
+                .typeError('Investment amount must be a number')
+                .required('Investment amount is required')
+                .positive('Amount must be greater than 0'),
+        }),
         onSubmit: async (values, { resetForm, setSubmitting }) => {
             try {
                 if (!selectedId) {
@@ -112,13 +112,13 @@ const InvestmentOpportunityTable = () => {
     });
     useEffect(() => {
         formik.resetForm();
-      
-      }, [isOpen, selectedId]);
-      
+
+    }, [isOpen, selectedId]);
+
     // useEffect(() => {
     //     formik.setFieldValue("investmentAmount", "");
     // }, [selectedId]);
-   
+
     return (
         <>
             <div className=''>
@@ -184,30 +184,38 @@ const InvestmentOpportunityTable = () => {
 
                                         <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-center">
                                             <div className="relative inline-block">
-                                                <button onClick={() => toggleDropdown(lead.id)} className="dropdown-toggle">
+                                                <button onClick={() => toggleDropdown(lead.id)}  className={`dropdown-toggle p-1 rounded ${ openDropdown === lead.id ? 'bg-gray-100' : 'hover:bg-gray-50'  }`}>
                                                     <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                                                 </button>
-                                                <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="w-40 fixed right-20 !rounded">
-                                                    <DropdownItem onItemClick={closeDropdown} className="flex w-full   text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9] text-left  rounded  dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                                                        View Details
-                                                    </DropdownItem>
-                                                    {!lead.complete_investment && (
-                                                        <>
-                                                            <DropdownItem onItemClick={() => {
-                                                                setOpenDropdownId(null);
-                                                                setSelectedId(lead.id);
-                                                                setIsOpen(true);
-                                                                setSelectedListingNumber(lead.listing_number)
-                                                                closeDropdown
-                                                            }} className="flex w-full  text-left border-t text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9]   dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+
+                                                {openDropdown === lead.id && (
+                                                    <div className="absolute right-9 top-[-4px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
+                                                        <DropdownItem
+                                                            onItemClick={closeDropdown}
+                                                            className="flex w-full text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9] text-left rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                                                        >
+                                                            View Details
+                                                        </DropdownItem>
+
+                                                        {!lead.complete_investment && (
+                                                            <DropdownItem
+                                                                onItemClick={() => {
+                                                                    setOpenDropdownId(null);
+                                                                    setSelectedId(lead.id);
+                                                                    setIsOpen(true); // Open the modal for investment request
+                                                                    setSelectedListingNumber(lead.listing_number);
+                                                                    closeDropdown(); // Close the dropdown after the action
+                                                                }}
+                                                                className="flex w-full text-left border-t text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9] dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                                                            >
                                                                 Request Investment
                                                             </DropdownItem>
-                                                        </>
-                                                    )}
-
-                                                </Dropdown>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </div>
                                         </TableCell>
+
 
 
 
@@ -242,7 +250,7 @@ const InvestmentOpportunityTable = () => {
 
                             </label>
 
-                        
+
                             <input
                                 value={formik.values.investmentAmount}
                                 onChange={(e: any) => {
@@ -259,10 +267,10 @@ const InvestmentOpportunityTable = () => {
                                 font-medium rounded-xs border border-[#E8E8E8] mt-1 outline-none text-md"
                             />
                             {formik.touched.investmentAmount && formik.errors.investmentAmount && (
-  <div className="text-red-500 text-[12px] mt-1">
-    {formik.errors.investmentAmount}
-  </div>
-)}
+                                <div className="text-red-500 text-[12px] mt-1">
+                                    {formik.errors.investmentAmount}
+                                </div>
+                            )}
                         </div>
                     </div>
                     <DialogActions>
@@ -273,7 +281,7 @@ const InvestmentOpportunityTable = () => {
                                 Cancel
                             </Button>
                             <Button
-                             disabled={formik.isSubmitting}
+                                disabled={formik.isSubmitting}
                                 type="submit"
                                 variant="primary"
                             >

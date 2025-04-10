@@ -9,7 +9,7 @@ import { MoreDotIcon } from '@/icons';
 import { IoSearchOutline } from 'react-icons/io5'
 import Button from '@/components/ui/button/Button';
 import { useDeleteInventoryMutation, useGetAllInventoryQuery } from '@/store/services/api';
-import {  Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import AddInventoryModal from '../AddInventoryModal';
 import InvestorRequestModal from '../InvestorRequestModal';
@@ -122,20 +122,20 @@ const InventoryTable = () => {
     }
   };
 
-    
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(10); // Example total pages
-    const [perPage, setPerPage] = useState(10); // Default items per page
-  
-    const handlePageChange = (page: number) => {
-      setCurrentPage(page);
-    };
-  
-    const handlePerPageChange = (newPerPage: number) => {
-      setPerPage(newPerPage);
-      setCurrentPage(1); // Reset to first page on per-page change
-    };
-  
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(10); // Example total pages
+  const [perPage, setPerPage] = useState(10); // Default items per page
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePerPageChange = (newPerPage: number) => {
+    setPerPage(newPerPage);
+    setCurrentPage(1); // Reset to first page on per-page change
+  };
+
   return (
     <>
       <div className=''>
@@ -156,25 +156,25 @@ const InventoryTable = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-          <Button variant="outlined"
-            size='sm'
-          >
-            Edit Columns
-          </Button>
+            <Button variant="outlined"
+              size='sm'
+            >
+              Edit Columns
+            </Button>
 
-          <Button variant="outlined"
-            size='sm'
-          >
-            Filters
-          </Button>
+            <Button variant="outlined"
+              size='sm'
+            >
+              Filters
+            </Button>
 
-          <Button variant="primary"
-            size='sm'
-            onClick={handleOpenModal}
-          >
-            Add New Inventory
-          </Button>
-        </div>
+            <Button variant="primary"
+              size='sm'
+              onClick={handleOpenModal}
+            >
+              Add New Inventory
+            </Button>
+          </div>
 
         </div>
 
@@ -221,7 +221,7 @@ const InventoryTable = () => {
                               onClick={() => handleOpenInvReqModal(lead.id)}
                               xmlns="http://www.w3.org/2000/svg"
                               className="border cursor-pointer border-[#D1842880] bg-[#D184281A] rounded-md"
-                            
+
                               width="26"
                               height="26"
                               viewBox="0 0 21 20"
@@ -318,57 +318,73 @@ const InventoryTable = () => {
                         </span>
                       </TableCell>
                     )}
-                    <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-center">
+                    <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-center relative">
                       <div className="relative inline-block">
-                        <button onClick={() => toggleDropdown(lead.id)} className="dropdown-toggle">
+                        <button
+                          onClick={() => toggleDropdown(lead.id)}
+                          className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : 'hover:bg-gray-50'
+                            }`}
+                        >
                           <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                         </button>
-                        <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="w-40 p-2 fixed right-15 !rounded">
-                          <DropdownItem onItemClick={() => {
-                              router.push(`/dashboard/edit-inventory/${lead.id}`); // Replace with your actual route
-                            }} className="flex w-full   text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9] text-left  rounded  dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                            View Details
-                          </DropdownItem>
-                          <DropdownItem
-                            onItemClick={() => {
-                              router.push(`/dashboard/edit-inventory/${lead.id}`); // Replace with your actual route
-                            }}
-                            className="flex w-full  text-left border-t  text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9] rounded  dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-                          >
-                            Edit
-                          </DropdownItem>
-                          <DropdownItem onItemClick={() => {
-                            setOpenDropdownId(null);
-                            setSelectedId(lead.id);
-                            setSelectedListingNumber(lead.listing_number)
-                            setIsDeleteModalOpen(true);
-                          }} className="flex w-full  text-left border-t text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9]   dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                            Delete
-                          </DropdownItem>
-                        </Dropdown>
+
+                        {openDropdown === lead.id && (
+                          <div className="absolute right-9 top-[-7px] mt-2 z-[999] w-40 bg-white p-2 shadow-md border rounded-sm">
+                            <DropdownItem
+                              onItemClick={() => {
+                                router.push(`/dashboard/edit-inventory/${lead.id}`);
+                              }}
+                              className="flex w-full text-left text-[12px] font-family text-[#414141] font-normal border-b border-[#E9E9E9] rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                            >
+                              View Details
+                            </DropdownItem>
+
+                            <DropdownItem
+                              onItemClick={() => {
+                                router.push(`/dashboard/edit-inventory/${lead.id}`);
+                              }}
+                              className="flex w-full text-left text-[12px] font-family text-[#414141] font-normal border-b border-[#E9E9E9] rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                            >
+                              Edit
+                            </DropdownItem>
+
+                            <DropdownItem
+                              onItemClick={() => {
+                                setOpenDropdownId(null);
+                                setSelectedId(lead.id);
+                                setSelectedListingNumber(lead.listing_number);
+                                setIsDeleteModalOpen(true);
+                              }}
+                              className="flex w-full text-left text-[12px] font-family text-[#414141] font-normal rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                            >
+                              Delete
+                            </DropdownItem>
+                          </div>
+                        )}
                       </div>
                     </TableCell>
+
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </div>
           <div className='px-6 border-t'>
-                <Pagination 
-          currentPage={currentPage} 
-          totalPages={data?.totalPages || 1} 
-          onPageChange={handlePageChange} 
-          perPage={perPage} 
-          onPerPageChange={handlePerPageChange} 
-        />
-        
-                </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={data?.totalPages || 1}
+              onPageChange={handlePageChange}
+              perPage={perPage}
+              onPerPageChange={handlePerPageChange}
+            />
+
+          </div>
         </div>
-          
+
       </div>
       <AddInventoryModal open={isModalOpen} onClose={handleCloseModal} />
       <InvestorRequestModal open={isInvReqModalOpen} onClose={handleCloseInvReqModal} InventoryId={selectedInventoryId} />
-      <TotalInvestorsModal open={isTotalInvModalOpen} onClose={handleCloseTotalInvModal} InventoryId={selectedId}/>
+      <TotalInvestorsModal open={isTotalInvModalOpen} onClose={handleCloseTotalInvModal} InventoryId={selectedId} />
 
 
 
@@ -381,7 +397,7 @@ const InventoryTable = () => {
       />
 
 
- 
+
 
     </>
   );

@@ -8,7 +8,7 @@ import { MoreDotIcon } from '@/icons';
 import Image from 'next/image';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
-import { useDeleteLeadMutation,  useGetAllUserLeadsQuery, usePromoteToInvestorMutation } from '@/store/services/api';
+import { useDeleteLeadMutation, useGetAllUserLeadsQuery, usePromoteToInvestorMutation } from '@/store/services/api';
 // import { Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import { FaUserCircle } from 'react-icons/fa';
@@ -124,19 +124,19 @@ const LeadsTable = () => {
       setIsDeleteModalOpen(false);
     }
   };
-   const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(10); // Example total pages
-    const [perPage, setPerPage] = useState(10); // Default items per page
-  
-    const handlePageChange = (page: number) => {
-      setCurrentPage(page);
-    };
-  
-    const handlePerPageChange = (newPerPage: number) => {
-      setPerPage(newPerPage);
-      setCurrentPage(1); // Reset to first page on per-page change
-    };
-  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(10); // Example total pages
+  const [perPage, setPerPage] = useState(10); // Default items per page
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePerPageChange = (newPerPage: number) => {
+    setPerPage(newPerPage);
+    setCurrentPage(1); // Reset to first page on per-page change
+  };
+
 
 
 
@@ -202,8 +202,8 @@ const LeadsTable = () => {
               {data?.lead?.map((lead: any) => (
                 <TableRow key={lead.id}>
                   <TableCell className="px-3 py-3.5 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{lead.id}</TableCell>
-                 
-                 
+
+
                   <TableCell className="px-3 py-3.5 text-[14px] flex items-center gap-2 font-family text-[#616161] font-normal">
 
 
@@ -231,48 +231,65 @@ const LeadsTable = () => {
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.company || '---'}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.lead_source || '---'}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">
-  {lead.reminder_date_time
-    ? format(new Date(lead.reminder_date_time), "dd-MM-yy")
-    : "---"}
-</TableCell>
+                    {lead.reminder_date_time
+                      ? format(new Date(lead.reminder_date_time), "dd-MM-yy")
+                      : "---"}
+                  </TableCell>
 
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.budget_min ? ` $ ${lead.budget_min}` : '---'}  </TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.condition || '---'}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.lead_created_by || '---'}</TableCell>
-                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">
+                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-visible font-normal font-family">
                     <div className="relative inline-block">
-                      <button onClick={() => toggleDropdown(lead.id)} className="dropdown-toggle">
+                      <button onClick={() => toggleDropdown(lead.id)}  className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : ''}`}>
                         <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />
                       </button>
-                      <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="fixed right-15 z-50 w-40 bg-white shadow-md border rounded-sm">
-                        <DropdownItem onItemClick={() => hanldeViewDetails(lead.id)} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
-                          View Details
-                        </DropdownItem>
-                        <DropdownItem onItemClick={() => hanldeViewDetails(lead.id)} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
-                          Edit
-                        </DropdownItem> 
-                    
-                        <DropdownItem
-  onItemClick={() => lead.type === 'lead' && handlePromoteClick(lead.id)}
-  className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
->
-  {isPromoteLoading && selectedId === lead.id ? "Promoting..." : (lead.type === 'lead' ? "Promote to investor" : "Already Promoted")}
-</DropdownItem>
 
-                        <DropdownItem onItemClick={closeDropdown} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
-                          Send Email
-                        </DropdownItem>
-                        <DropdownItem onItemClick={() => {
-                          setOpenDropdownId(null);
-                          setSelectedId(lead.id);
-                          setSelectedListingNumber(lead.listing_number)
-                          setIsDeleteModalOpen(true);
-                        }} className="flex w-full font-normal !px-4  text-[12px] font-family   text-[#414141]">
-                          Delete
-                        </DropdownItem>
-                      </Dropdown>
+                      {openDropdown === lead.id && (
+                        <div className="absolute right-9 top-[-5px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
+                          <DropdownItem
+                            onItemClick={() => hanldeViewDetails(lead.id)}
+                            className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
+                          >
+                            View Details
+                          </DropdownItem>
+                          <DropdownItem
+                            onItemClick={() => hanldeViewDetails(lead.id)}
+                            className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
+                          >
+                            Edit
+                          </DropdownItem>
+
+                          <DropdownItem
+                            onItemClick={() => lead.type === 'lead' && handlePromoteClick(lead.id)}
+                            className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
+                          >
+                            {isPromoteLoading && selectedId === lead.id ? "Promoting..." : (lead.type === 'lead' ? "Promote to investor" : "Already Promoted")}
+                          </DropdownItem>
+
+                          <DropdownItem
+                            onItemClick={closeDropdown}
+                            className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
+                          >
+                            Send Email
+                          </DropdownItem>
+
+                          <DropdownItem
+                            onItemClick={() => {
+                              setOpenDropdownId(null);
+                              setSelectedId(lead.id);
+                              setSelectedListingNumber(lead.listing_number);
+                              setIsDeleteModalOpen(true);
+                            }}
+                            className="flex w-full font-normal !px-4 text-[12px] font-family text-[#414141]"
+                          >
+                            Delete
+                          </DropdownItem>
+                        </div>
+                      )}
                     </div>
                   </TableCell>
+
                 </TableRow>
               ))}
             </TableBody>
@@ -280,13 +297,13 @@ const LeadsTable = () => {
         </div>
 
         <div className='px-6 border-t'>
-        <Pagination 
-  currentPage={currentPage} 
-  totalPages={data?.totalPages || 1} 
-  onPageChange={handlePageChange} 
-  perPage={perPage} 
-  onPerPageChange={handlePerPageChange} 
-/>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={data?.totalPages || 1}
+            onPageChange={handlePageChange}
+            perPage={perPage}
+            onPerPageChange={handlePerPageChange}
+          />
         </div>
       </div>
 

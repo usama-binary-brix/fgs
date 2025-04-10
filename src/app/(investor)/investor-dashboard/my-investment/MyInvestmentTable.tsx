@@ -54,9 +54,9 @@ const MyInvestmentTable = () => {
     const [openDropdownId, setOpenDropdownId] = useState<string | number | null>();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedId, setSelectedId] = useState<string | number | null>(null);
-const handleNavigate = (id:any)=>{
-    router.push(`my-investment/view-project/${id}`)
-}
+    const handleNavigate = (id: any) => {
+        router.push(`my-investment/view-project/${id}`)
+    }
     const formik = useFormik({
         initialValues: {
             investmentAmount: '',
@@ -186,18 +186,23 @@ const handleNavigate = (id:any)=>{
 
                                         <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family text-start">
                                             <div className="relative inline-block">
-                                                <button onClick={() => toggleDropdown(lead.id)} className="dropdown-toggle">
+                                                <button onClick={() => toggleDropdown(lead.id)}  className={`dropdown-toggle p-1 rounded ${ openDropdown === lead.id ? 'bg-gray-100' : 'hover:bg-gray-50'}`}>
                                                     <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                                                 </button>
-                                                <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="w-40 p-2">
-                                                    <DropdownItem onItemClick={()=>handleNavigate(lead.id)} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                                                        View Details
-                                                    </DropdownItem>
 
-
-                                                </Dropdown>
+                                                {openDropdown === lead.id && (
+                                                    <div className="absolute right-9 top-[-4px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
+                                                        <DropdownItem
+                                                            onItemClick={() => handleNavigate(lead.id)}
+                                                            className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                                                        >
+                                                            View Details
+                                                        </DropdownItem>
+                                                    </div>
+                                                )}
                                             </div>
                                         </TableCell>
+
                                     </TableRow>
                                 ))}
                             </TableBody>

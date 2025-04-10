@@ -167,66 +167,89 @@ const AllShipmentsTable = () => {
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.manufuctorer}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.model}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">$ {lead.serialNumber}</TableCell>
-                 
-                    {lead.status ? (
-                      <TableCell className="px-5 py-2 text-xs">
-                        <span
-                          className={`px-3 py-2 rounded-md text-sm font-medium ${lead.status === 'in progress'
-                            ? 'bg-orange-100 text-orange-500'
-                            : lead.status === 'sold'
-                              ? 'bg-green-100 text-green-600'
-                              : lead.status === 'pending'
-                                ? 'bg-[#8e7f9c1f] font-family text-[14px] font-medium  text-[#8E7F9C]'
-                                : ''
-                            }`}
-                        >
-                          {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)} {/* Capitalize */}
-                        </span>
-                      </TableCell>
-                    ) : (
-                      <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-familytext-start text-left">
-                        <span
-                          className={`px-3 py-2 rounded-md text-sm font-medium bg-[#8E7F9C1F] text-[#8E7F9C]`}
-                        >
-                          Pending
-                        </span>
-                      </TableCell>
-                    )}
-               
-                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family text-center">
+
+                  {lead.status ? (
+                    <TableCell className="px-5 py-2 text-xs">
+                      <span
+                        className={`px-3 py-2 rounded-md text-sm font-medium ${lead.status === 'in progress'
+                          ? 'bg-orange-100 text-orange-500'
+                          : lead.status === 'sold'
+                            ? 'bg-green-100 text-green-600'
+                            : lead.status === 'pending'
+                              ? 'bg-[#8e7f9c1f] font-family text-[14px] font-medium  text-[#8E7F9C]'
+                              : ''
+                          }`}
+                      >
+                        {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)} {/* Capitalize */}
+                      </span>
+                    </TableCell>
+                  ) : (
+                    <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-familytext-start text-left">
+                      <span
+                        className={`px-3 py-2 rounded-md text-sm font-medium bg-[#8E7F9C1F] text-[#8E7F9C]`}
+                      >
+                        Pending
+                      </span>
+                    </TableCell>
+                  )}
+
+                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-visible font-normal font-family text-center">
                     <div className="relative inline-block">
-                      <button onClick={() => toggleDropdown(lead.id)} className="dropdown-toggle">
+                      <button onClick={() => toggleDropdown(lead.id)}   className={`dropdown-toggle p-1 rounded ${ openDropdown === lead.id ? 'bg-gray-100' : 'hover:bg-gray-50'}`}>
                         <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />
                       </button>
-                      <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="fixed right-15 z-50 w-40 bg-white shadow-md border rounded-sm">
-                        <DropdownItem  onItemClick={() => {router.push(`/broker-dashboard/shipments-opportunities/all-shipments/view-shipment`);}} 
-                         className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
-                          View Details
-                        </DropdownItem>
-                        <DropdownItem onItemClick={() => hanldeViewDetails(lead.id)} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
-                          Edit
-                        </DropdownItem>
 
-                        <DropdownItem
-                          onItemClick={() => lead.type === 'lead' && handlePromoteClick(lead.id)}
-                          className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
-                        >
-                          {isPromoteLoading && selectedId === lead.id ? "Promoting..." : (lead.type === 'lead' ? "Promote to investor" : "Already Promoted")}
-                        </DropdownItem>
+                      {openDropdown === lead.id && (
+                        <div className="absolute right-9 top-[-5px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
+                          <DropdownItem
+                            onItemClick={() => {
+                              router.push(`/broker-dashboard/shipments-opportunities/all-shipments/view-shipment`);
+                            }}
+                            className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
+                          >
+                            View Details
+                          </DropdownItem>
 
-                        <DropdownItem onItemClick={closeDropdown} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
-                          Send Email
-                        </DropdownItem>
-                        <DropdownItem onItemClick={() => {
-                          setOpenDropdownId(null);
-                          setSelectedId(lead.id);
-                          setIsDeleteModalOpen(true);
-                        }} className="flex w-full font-normal !px-4  text-[12px] font-family   text-[#414141]">
-                          Delete
-                        </DropdownItem>
-                      </Dropdown>
+                          <DropdownItem
+                            onItemClick={() => hanldeViewDetails(lead.id)}
+                            className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
+                          >
+                            Edit
+                          </DropdownItem>
+
+                          <DropdownItem
+                            onItemClick={() => lead.type === 'lead' && handlePromoteClick(lead.id)}
+                            className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
+                          >
+                            {isPromoteLoading && selectedId === lead.id
+                              ? "Promoting..."
+                              : lead.type === 'lead'
+                                ? "Promote to investor"
+                                : "Already Promoted"}
+                          </DropdownItem>
+
+                          <DropdownItem
+                            onItemClick={closeDropdown}
+                            className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
+                          >
+                            Send Email
+                          </DropdownItem>
+
+                          <DropdownItem
+                            onItemClick={() => {
+                              setOpenDropdownId(null);
+                              setSelectedId(lead.id);
+                              setIsDeleteModalOpen(true);
+                            }}
+                            className="flex w-full font-normal !px-4 text-[12px] font-family text-[#414141]"
+                          >
+                            Delete
+                          </DropdownItem>
+                        </div>
+                      )}
                     </div>
                   </TableCell>
+
                 </TableRow>
               ))}
             </TableBody>

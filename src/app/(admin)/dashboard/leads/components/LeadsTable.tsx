@@ -94,7 +94,7 @@ const LeadsTable = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isViewMoreOpen, setIsViewMoreOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | number | null>(null);
-  
+
   const [selectedListingNumber, setSelectedListingNumber] = useState<string | number | null>(null);
 
   const [deleteLead, { isLoading: isDeleting }] = useDeleteLeadMutation();
@@ -126,19 +126,19 @@ const LeadsTable = () => {
       setIsDeleteModalOpen(false);
     }
   };
-   const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(10); // Example total pages
-    const [perPage, setPerPage] = useState(10); // Default items per page
-  
-    const handlePageChange = (page: number) => {
-      setCurrentPage(page);
-    };
-  
-    const handlePerPageChange = (newPerPage: number) => {
-      setPerPage(newPerPage);
-      setCurrentPage(1); // Reset to first page on per-page change
-    };
-  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(10); // Example total pages
+  const [perPage, setPerPage] = useState(10); // Default items per page
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePerPageChange = (newPerPage: number) => {
+    setPerPage(newPerPage);
+    setCurrentPage(1); // Reset to first page on per-page change
+  };
+
 
 
 
@@ -180,7 +180,7 @@ const LeadsTable = () => {
         </div>
       </div>
 
-      <div className="overflow-auto rounded border  border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+      <div className="relative overflow-auto rounded border  border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full h-[30rem] overflow-x-auto">
           <Table>
             <TableHeader className="border-b border-gray-100 overflow-auto bg-[#F7F7F7] dark:border-white/[0.05]">
@@ -204,8 +204,8 @@ const LeadsTable = () => {
               {data?.leads?.map((lead: any) => (
                 <TableRow key={lead.id}>
                   <TableCell className="px-3 py-3.5 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{lead.listing_number}</TableCell>
-                 
-                 
+
+
                   <TableCell className="px-3 py-3.5 text-[14px] flex items-center gap-2 font-family text-[#616161] font-normal">
 
 
@@ -233,43 +233,59 @@ const LeadsTable = () => {
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.company}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{lead.lead_source}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">
-                     {format(new Date(lead.reminder_date_time), "dd-MM-yy")}
+                    {format(new Date(lead.reminder_date_time), "dd-MM-yy")}
                   </TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">$ {lead.budget_min}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.condition}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.lead_created_by || '---'}</TableCell>
-                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">
+                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-visible relative  font-normal font-family">
                     <div className="relative inline-block">
-                      <button onClick={() => toggleDropdown(lead.id)} className="dropdown-toggle">
+                      <button onClick={() => toggleDropdown(lead.id)}  className={`dropdown-toggle p-1 rounded ${ openDropdown === lead.id ? 'bg-gray-100' : ''}`}>
                         <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />
                       </button>
-                      <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="fixed right-15 z-50 w-40 bg-white shadow-md border rounded-sm">
-                        <DropdownItem onItemClick={() => hanldeViewDetails(lead.id)} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
-                          View Details
-                        </DropdownItem>
-                        <DropdownItem onItemClick={() => hanldeViewDetails(lead.id)} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
-                          Edit
-                        </DropdownItem> 
-                    
-                        <DropdownItem
-  onItemClick={() => lead.type === 'lead' && handlePromoteClick(lead.id)}
-  className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
->
-  {isPromoteLoading && selectedId === lead.id ? "Promoting..." : (lead.type === 'lead' ? "Promote to investor" : "Already Promoted")}
-</DropdownItem>
-
-                        <DropdownItem onItemClick={closeDropdown} className="flex w-full font-normal !px-4  text-[12px] font-family border-b border-[#E9E9E9]  text-[#414141]">
-                          Send Email
-                        </DropdownItem>
-                        <DropdownItem onItemClick={() => {
-                          setOpenDropdownId(null);
-                          setSelectedId(lead.id);
-                          setSelectedListingNumber(lead.listing_number)
-                          setIsDeleteModalOpen(true);
-                        }} className="flex w-full font-normal !px-4  text-[12px] font-family   text-[#414141]">
-                          Delete
-                        </DropdownItem>
-                      </Dropdown>
+                      {openDropdown === lead.id && (
+                        <div className="absolute right-9 top-[-4px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
+                          <DropdownItem
+                            onItemClick={() => hanldeViewDetails(lead.id)}
+                            className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]"
+                          >
+                            View Details
+                          </DropdownItem>
+                          <DropdownItem
+                            onItemClick={() => hanldeViewDetails(lead.id)}
+                            className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]"
+                          >
+                            Edit
+                          </DropdownItem>
+                          <DropdownItem
+                            onItemClick={() => lead.type === 'lead' && handlePromoteClick(lead.id)}
+                            className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]"
+                          >
+                            {isPromoteLoading && selectedId === lead.id
+                              ? 'Promoting...'
+                              : lead.type === 'lead'
+                                ? 'Promote to investor'
+                                : 'Already Promoted'}
+                          </DropdownItem>
+                          <DropdownItem
+                            onItemClick={closeDropdown}
+                            className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]"
+                          >
+                            Send Email
+                          </DropdownItem>
+                          <DropdownItem
+                            onItemClick={() => {
+                              setOpenDropdownId(null);
+                              setSelectedId(lead.id);
+                              setSelectedListingNumber(lead.listing_number);
+                              setIsDeleteModalOpen(true);
+                            }}
+                            className="flex w-full font-normal px-4 text-[12px] text-[#414141]"
+                          >
+                            Delete
+                          </DropdownItem>
+                        </div>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
@@ -278,16 +294,16 @@ const LeadsTable = () => {
           </Table>
         </div>
         <div className='px-6 border-t'>
-        <Pagination 
-  currentPage={currentPage} 
-  totalPages={data?.totalPages || 1} 
-  onPageChange={handlePageChange} 
-  perPage={perPage} 
-  onPerPageChange={handlePerPageChange} 
-/>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={data?.totalPages || 1}
+            onPageChange={handlePageChange}
+            perPage={perPage}
+            onPerPageChange={handlePerPageChange}
+          />
 
         </div>
-   
+
       </div>
 
       <DeleteConfirmationModal
