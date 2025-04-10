@@ -239,6 +239,7 @@ const AddNewLead = () => {
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Processing..." : " Add Lead"}
+                  {/* {isSubmitting ? <CircularProgress size={30} color="primary"/> : " Add Lead"} */}
 
                 </Button>
 
