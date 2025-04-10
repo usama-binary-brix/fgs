@@ -167,7 +167,7 @@ export const api = createApi({
         url: `delete/lead/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ["leads"],
+      invalidatesTags: ["leads", 'userLead'],
 
     }),
     promoteToInvestor: builder.mutation({
@@ -176,7 +176,7 @@ export const api = createApi({
         method: 'POST',
         body: promoteData,
       }),
-      invalidatesTags: ["leads"],
+      invalidatesTags: ["leads", "userLead"],
 
     }),
     getLeadById: builder.query({

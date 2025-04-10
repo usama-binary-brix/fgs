@@ -157,20 +157,22 @@ const ViewDetailsLeads = () => {
     }
   }, [leadData?.lead]);
   const matchedOption = options.find(option => option.value === formik.values.number_of_calls);
-  // const [promoteInvestor, { isLoading: isPromoteLoading }] = usePromoteToInvestorMutation();
-  // const handlePromoteClick = async (leadId: any) => {
-  //   try {
-  //     const response = await promoteInvestor({
-  //       lead_id: leadId,
-  //       type: "promote_to_investor",
-  //     }).unwrap();
+  const [promoteInvestor, { isLoading: isPromoteLoading }] = usePromoteToInvestorMutation();
+  const handlePromoteClick = async (leadId: any) => {
+    try {
+      const response = await promoteInvestor({
+        lead_id: leadId,
+        type: "promote_to_investor",
+      }).unwrap();
 
-  //     toast.success("Investor promoted successfully!");
-  //   } catch (error) {
-  //     const err = error as { data?: { error?: string } };
-  //     toast.error(err.data?.error || "Email is Already Promoted");
-  //   }
-  // };
+      toast.success("Lead promoted to investor successfully!");
+      router.push('/sales-dashboard/leads')
+
+    } catch (error) {
+      const err = error as { data?: { error?: string } };
+      toast.error(err.data?.error || "Email is Already Promoted");
+    }
+  };
 
 
   const toggleDropdown = (dropdown: keyof typeof dropdownStates) => {
@@ -200,14 +202,14 @@ const ViewDetailsLeads = () => {
                                 >
                                Update
                                 </Button>
-                                {/* <Button variant="primary"
+                                <Button variant="primary"
                                 className='font-semibold'
                                 onClick={() => handlePromoteClick(id)}
               disabled={leadData?.lead?.type !== 'lead'}
 
                                 >
                                     Promote to Investor
-                                </Button> */}
+                                </Button>
                             </div>
 
 
