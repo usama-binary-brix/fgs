@@ -11,6 +11,11 @@ import Button from '@/components/ui/button/Button';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+type ErrorResponse = {
+  data: {
+    error: Record<string, string>; // `error` contains field names as keys and error messages as values
+  };
+};
 
 const ViewDetailsLeads = () => {
   const { id } = useParams();
@@ -18,6 +23,7 @@ const ViewDetailsLeads = () => {
   const [isEditing, setIsEditing] = useState(true);
   const [editLead] = useEditLeadMutation()
   const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [dropdownStates, setDropdownStates] = useState({
     calls: false,
     source: false,
@@ -118,11 +124,26 @@ const ViewDetailsLeads = () => {
 
       };
       try {
+        setIsSubmitting(true)
         const response = await editLead(updatedValues).unwrap();
         toast.success(response.message);
         router.push('/dashboard/leads')
       } catch (error) {
-        toast.error("Failed to Update lead.");
+
+         const errorResponse = error as ErrorResponse;
+        
+        
+                if (errorResponse?.data?.error) {
+                  Object.values(errorResponse.data.error).forEach((errorMessage) => {
+                    if (Array.isArray(errorMessage)) {
+                      errorMessage.forEach((msg) => toast.error(msg)); // Handle array errors
+                    } else {
+                      toast.error(errorMessage); // Handle single string errors
+                    }
+                  });
+                }
+      }finally{
+        setIsSubmitting(false)
       }
       setIsEditing(false)
     },
@@ -256,8 +277,9 @@ const ViewDetailsLeads = () => {
                 type="submit"
                 variant="primary"
                 className='font-semibold'
+                disabled={isSubmitting}
               >
-                Update
+                {isSubmitting ? 'Updating' : 'Update'}
               </Button>
               <Button variant="primary"
                 className='font-semibold'
@@ -265,7 +287,8 @@ const ViewDetailsLeads = () => {
                 disabled={leadData?.lead?.type !== 'lead'}
 
               >
-                Promote to Investor
+              
+                {isPromoteLoading ? "Promoting..." : (leadData?.lead?.type === 'lead' ? "Promote to Investor" : "Already Promoted")}
               </Button>
             </div>
 
@@ -806,7 +829,7 @@ const ViewDetailsLeads = () => {
                           isSelected={formik.values.purchase_timeline === "More than 2 Months"}
                           onSelect={() => formik.setFieldValue("purchase_timeline", "More than 2 Months")}
                         />
-                        <label className="text-[#666] text-[13px] font-medium font-family">More than 2 Months</label>
+                        <label className="text-[#666] text-[13px] font-medium font-family">2+ Months</label>
                       </li>
                     </ul>
                   </div>

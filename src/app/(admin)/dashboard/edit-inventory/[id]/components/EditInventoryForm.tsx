@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { FaEdit } from "react-icons/fa";
 import { useFormik } from "formik";
 import {
@@ -18,9 +18,17 @@ import { QRCodeCanvas } from "qrcode.react";
 import MuiDatePicker from "@/components/CustomDatePicker";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
+import Button from "@/components/ui/button/Button";
+
+type ErrorResponse = {
+  data: {
+    error: Record<string, string>; // `error` contains field names as keys and error messages as values
+  };
+};
 
 const EditInventoryForm = () => {
   const { id } = useParams();
+  const router = useRouter()
   const { data: inventoryData, error, isLoading } = useGetInventoryByIdQuery(id);
   const { data: categories, isLoading: loadingCategories } = useGetAllCategoriesQuery('');
   const [fetchSubCategories] = useGetSubCategoriesMutation();
@@ -32,10 +40,10 @@ const EditInventoryForm = () => {
   const [images, setImages] = useState<File[]>([]);
   const [existingFiles, setExistingFiles] = useState<{ id: number; url: string }[]>([]);
   const [removedExistingFiles, setRemovedExistingFiles] = useState<number[]>([]);
-
+const [isSubmitting, setIsSubmitting]  = useState(false)
   const formik = useFormik({
     initialValues: {
-      id: id,
+      inventory_id: id,
       category_id: "",
       subcategory_id: "",
       year: "",
@@ -72,11 +80,29 @@ const EditInventoryForm = () => {
       });
 
       try {
+        setIsSubmitting(true)
         await editInventory(formData).unwrap();
         toast.success("Inventory updated successfully!");
+router.push('/dashboard/inventory')
       } catch (error) {
-        toast.error("Failed to update inventory");
+     
+
+         const errorResponse = error as ErrorResponse;
+                        
+                        
+                                if (errorResponse?.data?.error) {
+                                  Object.values(errorResponse.data.error).forEach((errorMessage) => {
+                                    if (Array.isArray(errorMessage)) {
+                                      errorMessage.forEach((msg) => toast.error(msg)); // Handle array errors
+                                    } else {
+                                      toast.error(errorMessage); // Handle single string errors
+                                    }
+                                  });
+                                }
         console.error("Error submitting form:", error);
+      }
+      finally{
+        setIsSubmitting(false)
       }
     },
 
@@ -100,7 +126,7 @@ const EditInventoryForm = () => {
     if (inventoryData?.inventory) {
       const inv = inventoryData.inventory;
       formik.setValues({
-        id: id,
+        inventory_id: id,
         category_id: inv.category_id || "",
         subcategory_id: inv.subcategory_id || "",
         year: inv.year || "",
@@ -189,17 +215,41 @@ const EditInventoryForm = () => {
       {
         activeTab === "details" &&
         <>
+          <form onSubmit={formik.handleSubmit}>
 
 <div className="flex justify-between items-center mt-3">
-        <h1 className="text-[#000] text-[17px] font-family font-medium">Details</h1>
-        <button
-          className="bg-primary text-white px-4 py-2 rounded-sm flex items-center gap-1 text-sm"
-          onClick={() => setIsEditing(!isEditing)}
-        >
-          <FaEdit /> {isEditing ? "Cancel" : "Edit"}
-        </button>
+        <h1 className="text-[#000] text-[18px] font-family font-medium">Details</h1>
+     
+       <div className="flex gap-2 items-center">
+       {isEditing && (
+              <div className="col-span-3 flex justify-end">
+            
+
+                            <Button
+                    type="submit"
+                    variant="primary"
+                    className='font-semibold'
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? "Updating..." : "Update"}
+                </Button>
+              </div>
+            )}
+       <Button
+              onClick={() => setIsEditing(!isEditing)}
+                   
+                    variant="primary"
+                    className='font-semibold'
+                
+                >
+                    {/* <FaEdit /> */}
+                     {isEditing ? "Cancel" : "Edit"}
+                </Button>
+
+      
+       </div>
       </div>
-          <form onSubmit={formik.handleSubmit}>
+          {/* <form onSubmit={formik.handleSubmit}> */}
 
             <div className="mt-6 grid grid-cols-3 gap-4">
               <div>
@@ -252,7 +302,7 @@ const EditInventoryForm = () => {
                     value={formik.values[field as keyof typeof formik.values]}
                     onChange={formik.handleChange}
                     disabled={!isEditing}
-                    className="h-9 w-full rounded-sm border appearance-none px-4 py-1 text-sm shadow-theme-xs text-gray-500 placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+                    className="h-9 w-full rounded-sm border appearance-none px-4 py-1 text-sm shadow-theme-xs text-gray-500 placeholder:text-gray-400 focus:outline-hidden focus:ring-1"
                   />
                 </div>
               ))}
@@ -330,20 +380,14 @@ const EditInventoryForm = () => {
                 </div>
               </div>
             </div>
-            {isEditing && (
-              <div className="col-span-3 flex justify-end">
-                <button type="submit" className="bg-primary text-white px-6 py-2 rounded-md">
-                  Update
-                </button>
-              </div>
-            )}
+           
           </form>
-          <div>
+          {/* <div>
             <h1 className="text-[#000] text-[17px] font-medium font-family mt-10 mb-5">Inventory Stages</h1>
             <div className="flex justify-center">
               <Timeline />
             </div>
-          </div>
+          </div> */}
         </>
 
 

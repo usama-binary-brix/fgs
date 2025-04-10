@@ -73,9 +73,8 @@ const InventoryTable = () => {
   const [isInvReqModalOpen, setIsInvReqModalOpen] = useState(false);
   const [selectedInventoryId, setSelectedInventoryId] = useState<number | null>(null);
 
-  const handleOpenInvReqModal = (InventoryId: any) => {
-    console.log(InventoryId, 'select inventory id')
-
+  const handleOpenInvReqModal = (InventoryId: any, listingNumber:any) => {
+  setSelectedListingNumber(listingNumber)
     setSelectedInventoryId(InventoryId); // Save the Inventory ID
     setIsInvReqModalOpen(true);
   };
@@ -218,7 +217,7 @@ const InventoryTable = () => {
                         {lead.total_investors > 0 ? (
                           <>
                             <svg
-                              onClick={() => handleOpenInvReqModal(lead.id)}
+                              onClick={() => handleOpenInvReqModal(lead.id, lead.listing_number)}
                               xmlns="http://www.w3.org/2000/svg"
                               className="border cursor-pointer border-[#D1842880] bg-[#D184281A] rounded-md"
                             
@@ -367,7 +366,7 @@ const InventoryTable = () => {
           
       </div>
       <AddInventoryModal open={isModalOpen} onClose={handleCloseModal} />
-      <InvestorRequestModal open={isInvReqModalOpen} onClose={handleCloseInvReqModal} InventoryId={selectedInventoryId} />
+      <InvestorRequestModal open={isInvReqModalOpen} onClose={handleCloseInvReqModal} InventoryId={selectedInventoryId} listingNumber={selectedListingNumber}/>
       <TotalInvestorsModal open={isTotalInvModalOpen} onClose={handleCloseTotalInvModal} InventoryId={selectedId}/>
 
 

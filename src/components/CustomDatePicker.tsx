@@ -50,17 +50,20 @@ const MuiDatePicker: React.FC<MuiDatePickerProps> = ({
             size,
             fullWidth: !width,
             sx: {
-              width: width ? width : "100%", 
+              width: width ? width : "100%",
               borderColor: '#E8E8E8',
               "& .MuiOutlinedInput-root": {
+                height: size === "small" ? 38 : undefined, // Set height for small size
                 "& fieldset": {
-                  borderColor: '#E8E8E8', 
+                  borderColor: '#E8E8E8',
+                },
+                "& input": {
+                  fontSize: "14px",
+                  padding: "8px 14px", // Adjust padding if needed
                 },
               },
-              "& input": {
-                fontSize: "14px", // Set font size to 10px
-              },
             },
+            
             // sx: width ? { width } : undefined,
           } as any,
         }}

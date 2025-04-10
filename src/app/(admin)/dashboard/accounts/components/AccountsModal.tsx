@@ -95,7 +95,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
     city: userData?.city || '',
     zip_code: userData?.zip_code || '',
     // status: userData?.status?.toLowerCase() === 'active' ? '1' : '0',
-    status: userData?.status ? (userData?.status === 'active' ? '1' : '0') : '1',
+    status: userData?.status ? (userData?.status == 'Active' ? '1' : '0') : '1',
     company_name: userData?.company_name || '',
     communication_preference: userData?.communication_preference || '',
     reffer_by: userData?.reffer_by || '',
@@ -461,6 +461,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                 <Button
                   type="submit"
                   variant="primary"
+                  disabled={loading}
                 >
                  {loading ? 'Processing...' : userData ? 'Update Account' : 'Add Account'}
                 </Button>
