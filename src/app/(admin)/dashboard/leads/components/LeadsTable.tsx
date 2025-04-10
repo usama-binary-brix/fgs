@@ -264,20 +264,11 @@ const LeadsTable = () => {
                                                         Edit
                                                       </DropdownItem>
                                                     )}
-                        
-                          <DropdownItem
-                            onItemClick={() =>{
-                               lead.type === 'lead' &&
-                                handlePromoteClick(lead.id);
-                                closeDropdown();
-                            }}
-                            className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]"
+                            <DropdownItem
+                            onItemClick={() => {lead.type === 'lead' && handlePromoteClick(lead.id); closeDropdown();}}
+                            className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
                           >
-                            {isPromoteLoading && selectedId === lead.id
-                              ? 'Promoting...'
-                              : lead.type === 'lead'
-                                ? 'Promote to investor'
-                                : 'Already Promoted'}
+                            {isPromoteLoading && selectedId === lead.id ? "Promoting..." : (lead.type === 'lead' ? "Promote to investor" : "Already Promoted")}
                           </DropdownItem>
                           <DropdownItem
                             onItemClick={closeDropdown}
