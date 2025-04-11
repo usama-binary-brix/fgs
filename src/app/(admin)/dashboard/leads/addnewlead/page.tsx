@@ -127,8 +127,7 @@ const [isSubmitting, setIsSubmitting] = useState(false);
       quick_comment: "",
       comments: "",
       lead_created_by: "",
-      budget_min: '',
-      budget_max: '',
+   
     },
     validationSchema: Yup.object().shape({
       name: Yup.string().required("Name is required"),
