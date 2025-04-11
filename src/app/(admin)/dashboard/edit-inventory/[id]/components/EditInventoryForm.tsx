@@ -19,12 +19,20 @@ import MuiDatePicker from "@/components/CustomDatePicker";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import Button from "@/components/ui/button/Button";
+import * as Yup from 'yup';
 
 type ErrorResponse = {
   data: {
     error: Record<string, string>; // `error` contains field names as keys and error messages as values
   };
 };
+
+type SUbCategoriesErrorResponse = {
+  data: {
+    message: string | Record<string, string>;
+  };
+};
+
 
 const EditInventoryForm = () => {
   const { id } = useParams();
@@ -40,7 +48,36 @@ const EditInventoryForm = () => {
   const [images, setImages] = useState<File[]>([]);
   const [existingFiles, setExistingFiles] = useState<{ id: number; url: string }[]>([]);
   const [removedExistingFiles, setRemovedExistingFiles] = useState<number[]>([]);
-const [isSubmitting, setIsSubmitting]  = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const currentYear = new Date().getFullYear();
+
+   const validationSchema = Yup.object().shape({
+          category_id: Yup.string().required('Category is required'),
+          // subcategory_id: Yup.string().required('Subcategory is required'),
+  
+          year: Yup.number()
+              .required('Year is required')
+              .max(9999, 'Maximum 4 digits allowed')
+              .typeError('Year must be a number')
+              .max(currentYear, `Year cannot be greater than ${currentYear}`),
+  
+          make: Yup.number()
+              .required('Make is required')
+              .max(9999, 'Maximum 4 digits allowed')
+              .typeError('Year must be a number')
+              .max(currentYear, `Year cannot be greater than ${currentYear}`)
+          ,
+          model: Yup.string().required('Model is required'),
+          serial_no: Yup.string().required('Serial No is required'),
+          length: Yup.string().required('Length is required'),
+          height: Yup.string().required('Height is required'),
+          width: Yup.string().required('Width is required'),
+          weight: Yup.string().required('Weight is required'),
+          hours: Yup.string().required('Hours are required'),
+          price_paid: Yup.string().required('Price paid is required'),
+          date_purchased: Yup.date().required('Purchase date is required').typeError('Invalid date format'),
+  
+      });
   const formik = useFormik({
     initialValues: {
       inventory_id: id,
@@ -58,6 +95,7 @@ const [isSubmitting, setIsSubmitting]  = useState(false)
       price_paid: "",
       date_purchased: "",
     },
+    validationSchema,
     onSubmit: async (values) => {
       const formData = new FormData();
 
@@ -83,30 +121,64 @@ const [isSubmitting, setIsSubmitting]  = useState(false)
         setIsSubmitting(true)
         await editInventory(formData).unwrap();
         toast.success("Inventory updated successfully!");
-router.push('/dashboard/inventory')
+        router.push('/dashboard/inventory')
       } catch (error) {
-     
 
-         const errorResponse = error as ErrorResponse;
-                        
-                        
-                                if (errorResponse?.data?.error) {
-                                  Object.values(errorResponse.data.error).forEach((errorMessage) => {
-                                    if (Array.isArray(errorMessage)) {
-                                      errorMessage.forEach((msg) => toast.error(msg)); // Handle array errors
-                                    } else {
-                                      toast.error(errorMessage); // Handle single string errors
-                                    }
-                                  });
-                                }
+
+        const errorResponse = error as ErrorResponse;
+
+
+        if (errorResponse?.data?.error) {
+          Object.values(errorResponse.data.error).forEach((errorMessage) => {
+            if (Array.isArray(errorMessage)) {
+              errorMessage.forEach((msg) => toast.error(msg)); // Handle array errors
+            } else {
+              toast.error(errorMessage); // Handle single string errors
+            }
+          });
+        }
         console.error("Error submitting form:", error);
       }
-      finally{
+      finally {
         setIsSubmitting(false)
       }
     },
 
   });
+
+  const handleCategoryChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const categoryId = e.target.value;
+    formik.setFieldValue("category_id", categoryId);
+    formik.setFieldValue("subcategory_id", ""); // Reset subcategory when category changes
+    setSubCategories({ categories: [] }); // Clear existing subcategories
+
+    if (categoryId) {
+      try {
+        const response = await fetchSubCategories(categoryId).unwrap();
+        setSubCategories(response);
+
+        // If no subcategories available, show a toast
+        if (!response.categories || response.categories.length === 0) {
+          toast.info("No subcategories available for this category");
+        }
+      } catch (error) {
+        const errorResponse = error as SUbCategoriesErrorResponse;
+
+
+        if (errorResponse?.data?.message) {
+          const message = errorResponse.data.message;
+
+          if (typeof message === 'string') {
+            toast.error(message);
+          } else if (typeof message === 'object') {
+            const combined = Object.values(message).join(', ');
+            toast.error(combined);
+          }
+        }
+      }
+    }
+  };
+
 
   useEffect(() => {
     if (formik.values.category_id) {
@@ -157,9 +229,40 @@ router.push('/dashboard/inventory')
     setImages(images.filter((_, i) => i !== index));
   };
 
-  // const removeExistingFile = (index: number) => {
-  //   setExistingFiles(existingFiles.filter((_, i) => i !== index));
-  // };
+
+
+  const getFileTypeIcon = (fileUrl: string): string => {
+    if (!fileUrl) return '/images/filesicon/docss.png';
+
+    const lowerCaseFileUrl = fileUrl.toLowerCase();
+
+    if (lowerCaseFileUrl.endsWith('.pdf')) {
+      return '/images/filesicon/pdff.png';
+    }
+    if (lowerCaseFileUrl.endsWith('.doc') || lowerCaseFileUrl.endsWith('.docx')) {
+      return '/images/filesicon/docss.png';
+    }
+    if (lowerCaseFileUrl.endsWith('.xls') || lowerCaseFileUrl.endsWith('.xlsx')) {
+      return '/images/filesicon/xlsx.png';
+    }
+    if (lowerCaseFileUrl.match(/\.(jpg|jpeg|png|gif|svg|webp)$/)) {
+      return fileUrl; // Return original URL for images
+    }
+    return '/images/filesicon/docss.png';
+  };
+
+  const getFileNameFromUrl = (url: string): string => {
+    try {
+      const parsedUrl = new URL(url);
+      const pathParts = parsedUrl.pathname.split('/');
+      return pathParts[pathParts.length - 1];
+    } catch {
+      return url.split('/').pop() || 'file';
+    }
+  };
+
+
+
   const removeExistingFile = (index: number) => {
     const fileToRemove = existingFiles[index];
     setRemovedExistingFiles([...removedExistingFiles, fileToRemove.id]);
@@ -211,45 +314,45 @@ router.push('/dashboard/inventory')
         </button> */}
       </div>
 
-     
+
       {
         activeTab === "details" &&
         <>
           <form onSubmit={formik.handleSubmit}>
 
-<div className="flex justify-between items-center mt-3">
-        <h1 className="text-[#000] text-[18px] font-family font-medium">Details</h1>
-     
-       <div className="flex gap-2 items-center">
-       {isEditing && (
-              <div className="col-span-3 flex justify-end">
-            
+            <div className="flex justify-between items-center mt-3">
+              <h1 className="text-[#000] text-[18px] font-family font-medium">Details</h1>
 
-                            <Button
-                    type="submit"
-                    variant="primary"
-                    className='font-semibold'
-                    disabled={isSubmitting}
+              <div className="flex gap-2 items-center">
+                {isEditing && (
+                  <div className="col-span-3 flex justify-end">
+
+
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      className='font-semibold'
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Updating..." : "Update"}
+                    </Button>
+                  </div>
+                )}
+                <Button
+                  onClick={() => setIsEditing(!isEditing)}
+
+                  variant="primary"
+                  className='font-semibold'
+
                 >
-                    {isSubmitting ? "Updating..." : "Update"}
+                  {/* <FaEdit /> */}
+                  {isEditing ? "Cancel" : "Edit"}
                 </Button>
+
+
               </div>
-            )}
-       <Button
-              onClick={() => setIsEditing(!isEditing)}
-                   
-                    variant="primary"
-                    className='font-semibold'
-                
-                >
-                    {/* <FaEdit /> */}
-                     {isEditing ? "Cancel" : "Edit"}
-                </Button>
-
-      
-       </div>
-      </div>
-          {/* <form onSubmit={formik.handleSubmit}> */}
+            </div>
+            {/* <form onSubmit={formik.handleSubmit}> */}
 
             <div className="mt-6 grid grid-cols-3 gap-4">
               <div>
@@ -257,7 +360,7 @@ router.push('/dashboard/inventory')
                 <select
                   name="category_id"
                   value={formik.values.category_id}
-                  onChange={formik.handleChange}
+                  onChange={handleCategoryChange}
                   disabled={!isEditing}
                   className="w-full h-9 p-2  border border-gray-300 rounded-sm text-sm"
                 >
@@ -291,7 +394,12 @@ router.push('/dashboard/inventory')
                   onChange={formik.handleChange}
                   disabled={!isEditing}
                   className=""
+                  maxLength={4}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.year && formik.errors.year && (
+  <p className="text-red-500">{formik.errors.year}</p>
+)}
               </div>
               {["make", "model", "serial_no", "length", "height", "width", "weight", "hours", "price_paid"].map((field) => (
                 <div key={field}>
@@ -302,8 +410,13 @@ router.push('/dashboard/inventory')
                     value={formik.values[field as keyof typeof formik.values]}
                     onChange={formik.handleChange}
                     disabled={!isEditing}
+                    maxLength={["make"].includes(field) ? 4 : undefined}
+                    onBlur={formik.handleBlur}
                     className="h-9 w-full rounded-sm border appearance-none px-4 py-1 text-sm shadow-theme-xs text-gray-500 placeholder:text-gray-400 focus:outline-hidden focus:ring-1"
                   />
+                   {formik.touched[field as keyof typeof formik.values] && formik.errors[field as keyof typeof formik.errors] && (
+                                    <p className="text-red-500">{formik.errors[field as keyof typeof formik.errors]}</p>
+                                )}
                 </div>
               ))}
               <div>
@@ -315,72 +428,98 @@ router.push('/dashboard/inventory')
                     formik.setFieldValue("date_purchased", value);
                   }}
                 />
-                {/* <input
-                type="date"
-                name="date_purchased"
-                value={formik.values.date_purchased}
-                onChange={formik.handleChange}
-                disabled={!isEditing}
-                className="w-full border p-2 rounded-xs border-[#E8E8E8] text-[13px] font-medium font-family"
-              /> */}
+
               </div>
             </div>
             <div className="mt-6">
               <h1 className="font-semibold">Attached Files</h1>
-              <div className="flex mt-2 gap-5 items-center">
-                {existingFiles.map((file, index) => (
-                  <div key={file.id} className="relative h-30 w-40 rounded-lg">
-                    <img src={file.url} alt={`Existing File ${index}`} className="w-full h-full object-cover rounded-lg" />
-                    <button className="absolute top-1 right-1 bg-red-500 text-white rounded-lg p-1" onClick={() => removeExistingFile(index)}>
-                      <RxCross2 />
-                    </button>
-                  </div>
+              <div className="flex mt-2 gap-5 items-center flex-wrap">
+                {/* Existing files */}
+                {existingFiles.map((file, index) => {
+                  const fileTypeIcon = getFileTypeIcon(file.url);
+                  const isImage = fileTypeIcon === file.url; // If the icon is the same as URL, it's an image
+                  const fileName = getFileNameFromUrl(file.url);
 
-                ))}
+                  return (
+                    <div key={file.id} className="relative w-35">
+                      <div className="h-30 rounded-lg overflow-hidden">
+                        {isImage ? (
+                          <img
+                            src={fileTypeIcon}
+                            alt={`Existing File ${index}`}
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                        ) : (
+                          <img
+                            src={fileTypeIcon}
+                            alt="File type icon"
+                            className="w-full h-full object-contain rounded-lg bg-gray-100 p-2"
+                          />
+                        )}
+                        {isEditing && (
+                          <button
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                            onClick={() => removeExistingFile(index)}
+                          >
+                            <RxCross2 className="text-xs" />
+                          </button>
+                        )}
+                      </div>
+                      <p className="text-xs text-center mt-1 truncate w-full" title={fileName}>
+                        {fileName}
+                      </p>
+                    </div>
+                  );
+                })}
 
-                {images.length > 0 && (
-                  <div className="flex gap-4 flex-wrap">
-                    {images.map((img, index) => (
-                      <div key={index} className="relative h-30 w-40 rounded-lg">
+                {/* Newly uploaded files */}
+                {images.map((img, index) => {
+                  const isImage = img.type.startsWith('image/');
+                  const previewSrc = isImage ? URL.createObjectURL(img) : getFileTypeIcon(img.name);
+                  const fileName = img.name;
+
+                  return (
+                    <div key={index} className="relative w-35">
+                      <div className="h-30 rounded-lg overflow-hidden">
                         <img
-                          src={URL.createObjectURL(img)}
+                          src={previewSrc}
                           alt={`Uploaded preview ${index}`}
                           className="w-full h-full object-cover rounded-lg"
                         />
                         <button
-                          className="absolute top-1 right-1 bg-red-500 text-white rounded-lg p-1"
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
                           onClick={() => removeImage(index)}
                         >
-                          <RxCross2 />
+                          <RxCross2 className="text-xs" />
                         </button>
                       </div>
-                    ))}
-                  </div>
-
-
-                )}
-
-                <div>
-
-                  <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-lg cursor-pointer h-30 px-2 hover:bg-gray-100">
-                    <input
-                      type="file"
-                      accept="image/png, image/jpeg, application/pdf"
-                      multiple
-                      className="hidden"
-                      onChange={handleImageUpload}
-                    />
-                    <div className="text-center px-6">
-                      {/* <h1 className="text-sm text-black font-normal">Attach Files</h1>   */}
-                      {/* <p className="text-custom-lightGray text-xs">Only PDF, JPG & PNG formats are allowed</p> */}
-                      <p className="text-gray-700 font-semibold text-xs">Drop your files here,</p>
-                      <p className="text-blue-600 underline text-xs">or browse</p>
+                      <p className="text-xs text-center mt-1 truncate w-full" title={fileName}>
+                        {fileName}
+                      </p>
                     </div>
-                  </label>
-                </div>
+                  );
+                })}
+
+                {isEditing && (
+                  <div>
+                    <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-400 rounded-lg cursor-pointer h-34 w-40 hover:bg-gray-100">
+                      <input
+                        type="file"
+                        accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
+                        multiple
+                        className="hidden"
+                        onChange={handleImageUpload}
+                      />
+                      <div className="text-center p-4">
+                        <p className="text-gray-700 font-semibold text-xs">Drop your files here,</p>
+                        <p className="text-blue-600 underline text-xs">or browse</p>
+                      </div>
+                    </label>
+                  </div>
+                )}
               </div>
             </div>
-           
+
           </form>
           {/* <div>
             <h1 className="text-[#000] text-[17px] font-medium font-family mt-10 mb-5">Inventory Stages</h1>

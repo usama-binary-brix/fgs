@@ -51,6 +51,13 @@ type ErrorResponse = {
       error: Record<string, string>; // `error` contains field names as keys and error messages as values
     };
   };
+  
+  type SUbCategoriesErrorResponse = {
+    data: {
+      message: string | Record<string, string>;
+    };
+  };
+  
 
 const selectStyle = {
     ...inputStyle,
@@ -60,8 +67,8 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
     const [images, setImages] = useState<File[]>([]);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [subCategories, setSubCategories] = useState<any>([]);
-const [isSubmitting, setIsSubmitting] = useState(false);
-
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const currentYear = new Date().getFullYear();
     const { data: categories, isLoading: loadingCategories } = useGetAllCategoriesQuery(null, { skip: !open });
     const [fetchSubCategories] = useGetSubCategoriesMutation();
     const [addInventory] = useAddInventoryMutation();
@@ -89,28 +96,46 @@ const [isSubmitting, setIsSubmitting] = useState(false);
     const handleCategoryChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const categoryId = e.target.value;
         formik.setFieldValue("category_id", categoryId);
-
+        formik.setFieldValue("subcategory_id", ''); 
+        setSubCategories([]);
         if (categoryId) {
             try {
                 const response = await fetchSubCategories(categoryId).unwrap();
                 setSubCategories(response);
             } catch (error) {
-                console.error("Failed to fetch subcategories", error);
-            }
+                    const errorResponse = error as SUbCategoriesErrorResponse;
+                
+                
+                    if (errorResponse?.data?.message) {
+                        const message = errorResponse.data.message;
+                      
+                        if (typeof message === 'string') {
+                          toast.error(message);
+                        } else if (typeof message === 'object') {
+                          const combined = Object.values(message).join(', ');
+                          toast.error(combined);
+                        }
+                      }
+           }
         } else {
             setSubCategories([]);
         }
     };
     const validationSchema = Yup.object().shape({
         category_id: Yup.string().required('Category is required'),
-        subcategory_id: Yup.string().required('Subcategory is required'),
+        // subcategory_id: Yup.string().required('Subcategory is required'),
+
         year: Yup.number()
             .required('Year is required')
-            .max(9999, 'Maximum 4 digits allowed'),
+            .max(9999, 'Maximum 4 digits allowed')
+            .typeError('Year must be a number')
+            .max(currentYear, `Year cannot be greater than ${currentYear}`),
 
         make: Yup.number()
             .required('Make is required')
             .max(9999, 'Maximum 4 digits allowed')
+            .typeError('Year must be a number')
+            .max(currentYear, `Year cannot be greater than ${currentYear}`)
         ,
         model: Yup.string().required('Model is required'),
         serial_no: Yup.string().required('Serial No is required'),
@@ -156,20 +181,19 @@ const [isSubmitting, setIsSubmitting] = useState(false);
                 onClose();
             } catch (error) {
 
-                 const errorResponse = error as ErrorResponse;
-                
-                
-                        if (errorResponse?.data?.error) {
-                          Object.values(errorResponse.data.error).forEach((errorMessage) => {
-                            if (Array.isArray(errorMessage)) {
-                              errorMessage.forEach((msg) => toast.error(msg)); // Handle array errors
-                            } else {
-                              toast.error(errorMessage); // Handle single string errors
-                            }
-                          });
+                const errorResponse = error as ErrorResponse;
+
+
+                if (errorResponse?.data?.error) {
+                    Object.values(errorResponse.data.error).forEach((errorMessage) => {
+                        if (Array.isArray(errorMessage)) {
+                            errorMessage.forEach((msg) => toast.error(msg)); // Handle array errors
+                        } else {
+                            toast.error(errorMessage); // Handle single string errors
                         }
-                // toast.error('Failed to add inventory');
-                // console.error("Error submitting form:", error);
+                    });
+                }
+
             }
             finally {
                 setIsSubmitting(false); // stop processing
@@ -177,11 +201,48 @@ const [isSubmitting, setIsSubmitting] = useState(false);
         },
     });
 
+
+    const getFileTypeIcon = (fileUrl: string): string | undefined => {
+        if (!fileUrl) return undefined;
+
+        const lowerCaseFileUrl = fileUrl.toLowerCase();
+
+
+        if (lowerCaseFileUrl.endsWith('.pdf')) {
+            return '/images/filesicon/pdff.png';
+        }
+        if (
+            lowerCaseFileUrl.endsWith('.doc') ||
+            lowerCaseFileUrl.endsWith('.docx')
+        ) {
+            return '/images/filesicon/docss.png';
+        }
+        if (
+            lowerCaseFileUrl.endsWith('.xls') ||
+            lowerCaseFileUrl.endsWith('.xlsx')
+        ) {
+            return '/images/filesicon/xlsx.png';
+        }
+        if (
+            lowerCaseFileUrl.endsWith('.jpg') ||
+            lowerCaseFileUrl.endsWith('.jpeg') ||
+            lowerCaseFileUrl.endsWith('.png') ||
+            lowerCaseFileUrl.endsWith('.gif') ||
+            lowerCaseFileUrl.endsWith('.svg') ||
+            lowerCaseFileUrl.endsWith('.webp')
+        ) {
+            return '/images/fileupload.svg'; // Image preview
+        }
+
+        // default fallback
+        return '/images/filesicon/docss.png';
+    };
+
+
     return (
         <Modal open={open} onClose={onClose}>
             <Box sx={modalStyle}>
                 <div className=' border-b border-gray-400 mb-3 py-3'>
-
                     <div className='flex justify-between items-center px-4'>
                         <p className='text-xl font-semibold'>Add New Inventory</p>
                         <RxCross2 onClick={onClose} className='cursor-pointer text-3xl' />
@@ -266,53 +327,65 @@ const [isSubmitting, setIsSubmitting] = useState(false);
                                 <label className="flex flex-col items-center justify-center border-2 border-dashed border-[#B1BFD0] rounded-lg cursor-pointer h-30 w-35 hover:bg-gray-100">
                                     <input
                                         type="file"
-                                        accept="image/png, image/jpeg, application/pdf"
+                                        // accept="image/png, image/jpeg, application/pdf"
                                         multiple
                                         className="hidden"
                                         onChange={handleImageUpload}
                                     />
                                     <div className="text-center">
-                                    <p className="text-gray-700 font-semibold text-xs">Drop your files here,</p>
-                                    <p className="text-blue-600 underline text-xs">or browse</p>
+                                        <p className="text-gray-700 font-semibold text-xs">Drop your files here,</p>
+                                        <p className="text-blue-600 underline text-xs">or browse</p>
                                     </div>
                                 </label>
 
                                 {images.length > 0 && (
                                     <div className="flex gap-4 mt-0 flex-wrap">
-                                        {images.map((img, index) => (
-                                            <div key={index} className="relative h-30 w-35 rounded-lg">
-                                                <img
-                                                    src={URL.createObjectURL(img)}
-                                                    alt={`Uploaded preview ${index}`}
-                                                    className="w-full h-full object-cover rounded-lg"
-                                                />
-                                                <button
-                                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
-                                                    onClick={() => removeImage(index)}
-                                                >
-                                                    <RxCross2 className='text-xs'/>
-                                                </button>
-                                            </div>
-                                        ))}
+                                        {images.map((img, index) => {
+                                            const isImage = img.type.startsWith('image/');
+                                            const previewSrc = isImage ? URL.createObjectURL(img) : getFileTypeIcon(img.name);
+                                            const fileName = img.name;
+                                            return (
+                                                <div key={index} className="relative w-35">
+                                                    <div className="h-30 rounded-lg overflow-hidden">
+                                                        <img
+                                                            src={previewSrc}
+                                                            alt={`Uploaded preview ${index}`}
+                                                            className="w-full h-full object-cover rounded-lg"
+                                                        />
+                                                        <button
+                                                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                                                            onClick={() => removeImage(index)}
+                                                        >
+                                                            <RxCross2 className="text-xs" />
+                                                        </button>
+                                                    </div>
+                                                    <p className="text-xs text-center mt-1 truncate w-full" title={fileName}>
+                                                        {fileName}
+                                                    </p>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 )}
                             </div>
+
+                        
                         </Grid>
                         <Grid item xs={12} display="flex" justifyContent="flex-end">
                             <div className='flex items-center gap-4'>
                                 <Button onClick={onClose} variant="fgsoutline"
-                                className='font-semibold'
+                                    className='font-semibold'
                                 >
                                     Cancel
                                 </Button>
                                 <Button
-    type="submit"
-    variant="primary"
-    className='font-semibold'
-    disabled={isSubmitting}
->
-    {isSubmitting ? "Processing..." : "Add Inventory"}
-</Button>
+                                    type="submit"
+                                    variant="primary"
+                                    className='font-semibold'
+                                    disabled={isSubmitting}
+                                >
+                                    {isSubmitting ? "Processing..." : "Add Inventory"}
+                                </Button>
                             </div>
                         </Grid>
                     </Grid>

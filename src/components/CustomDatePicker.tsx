@@ -41,9 +41,9 @@ const MuiDatePicker: React.FC<MuiDatePickerProps> = ({
           const formattedDate = newValue ? newValue.format("YYYY-MM-DD") : null; 
           onChange?.(formattedDate); 
         }}
-        minDate={minDate}
-        maxDate={maxDate}
-        shouldDisableDate={(date) => minDate && date.isBefore(minDate, "day")}
+        // minDate={minDate}
+        // maxDate={maxDate}
+        // shouldDisableDate={(date) => minDate && date.isBefore(minDate, "day")}
         disabled={disabled}
         slotProps={{
           textField: {
