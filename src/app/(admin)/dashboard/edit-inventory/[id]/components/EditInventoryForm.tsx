@@ -428,7 +428,9 @@ const EditInventoryForm = () => {
                     formik.setFieldValue("date_purchased", value);
                   }}
                 />
-
+{formik.touched.date_purchased && formik.errors.date_purchased && (
+  <p className="text-red-500">{formik.errors.date_purchased}</p>
+)} 
               </div>
             </div>
             <div className="mt-6">

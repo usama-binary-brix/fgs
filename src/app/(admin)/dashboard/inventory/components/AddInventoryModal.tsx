@@ -316,8 +316,9 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                 }}
                             />
 
-                            {formik.errors.date_purchased && <p className="text-red-500">{formik.errors.date_purchased}</p>}
-                        </Grid>
+{formik.touched.date_purchased && formik.errors.date_purchased && (
+  <p className="text-red-500">{formik.errors.date_purchased}</p>
+)}                        </Grid>
                         <Grid xs={12} md={12} mt={2} ml={2}>
                             <div>
                                 <h1 className="text-sm text-[#414141] font-medium text-[13px] font-family">Attach Files</h1>
