@@ -127,11 +127,22 @@ const [isSubmitting, setIsSubmitting] = useState(false);
       quick_comment: "",
       comments: "",
       lead_created_by: "",
+      budget_min: '',
+      budget_max: '',
     },
     validationSchema: Yup.object().shape({
       name: Yup.string().required("Name is required"),
       phone: Yup.string().required("Phone is required"),
       email: Yup.string().email("Invalid email").required("Email is required"),
+    //   budget_min: Yup.number()
+    //   .typeError('Minimum budget must be a number')
+    //   .moreThan(0, 'Minimum budget must be greater than 0')
+    //   .required('Minimum budget is required'),
+  
+    // budget_max: Yup.number()
+    //   .typeError('Maximum budget must be a number')
+    //   .moreThan(Yup.ref('budget_min'), 'Maximum budget must be greater than minimum budget')
+    //   .required('Maximum budget is required'),
     }),
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       try {
@@ -210,6 +221,19 @@ const [isSubmitting, setIsSubmitting] = useState(false);
   const handleNavigate = () => {
     router.push('/dashboard/leads')
   }
+
+  // const handleMinChange = (e) => {
+  //   const value = e.target.value;
+  //   formik.setFieldValue('budget_min', value);
+  // };
+  
+  // const handleMaxChange = (e) => {
+  //   const value = e.target.value;
+  //   formik.setFieldValue('budget_max', value);
+  // };
+  
+  
+  
 
   return (
     <>
@@ -682,35 +706,38 @@ const [isSubmitting, setIsSubmitting] = useState(false);
                 <div className="mb-5 bg-white w-full p-3">
                   <h1 className="text-black font-family font-medium mb-2">Budget & Financing</h1>
                   <div className="">
-                    <label className="text-xs text-gray-500 font-family font-medium">Budget Range</label>
-                    <div className="flex gap-3 items-center">
-                      <input
-                        type="number"
-                        name="budget_min"
-                        value={formik.values.budget_min}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        placeholder="$ 1.00"
-                        className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs outline-none text-md"
-                      />
-                      {formik.touched.budget_min && formik.errors.budget_min && (
-                        <p className="text-red-500 text-xs mt-1">{formik.errors.budget_min}</p>
-                      )}
-                      -
-                      <input
-                        type="number"
-                        name="budget_max"
-                        value={formik.values.budget_max}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        placeholder="$ 100.00"
-                        className="w-full text-left  text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs mt-1 outline-none text-md"
-                      />
-                      {formik.touched.budget_max && formik.errors.budget_max && (
-                        <p className="text-red-500 text-xs mt-1">{formik.errors.budget_max}</p>
-                      )}
-                    </div>
-                  </div>
+<label className="text-xs text-gray-500 font-family font-medium">Budget Range</label>
+<div className="flex gap-3 items-center">
+<input
+type="number"
+name="budget_min"
+value={formik.values.budget_min}
+onChange={formik.handleChange}
+onBlur={formik.handleBlur}
+placeholder="$ 1.00"
+className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs outline-none text-md"
+/>
+{formik.touched.budget_min && formik.errors.budget_min && (
+<p className="text-red-500 text-xs mt-1">{formik.errors.budget_min}</p>
+)}
+-
+<input
+type="number"
+name="budget_max"
+value={formik.values.budget_max}
+onChange={formik.handleChange}
+onBlur={formik.handleBlur}
+placeholder="$ 100.00"
+className="w-full text-left text-[#666] placeholder-[#666] text-[12px] font-medium font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs mt-1 outline-none text-md"
+/>
+{formik.touched.budget_max && formik.errors.budget_max && (
+<p className="text-red-500 text-xs mt-1">{formik.errors.budget_max}</p>
+)}
+</div>
+</div>
+                  
+                  
+                 
                   <div className="">
                     <AddLeadInput
                       name="financing"
