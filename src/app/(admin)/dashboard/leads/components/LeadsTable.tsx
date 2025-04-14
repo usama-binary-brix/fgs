@@ -35,6 +35,8 @@ const LeadsTable = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const router = useRouter();
   const { data, isLoading, error } = useGetAllLeadsQuery("");
+  console.log("API data:", data);
+
  
 
   const toggleDropdown = (id: string) => {
@@ -203,7 +205,7 @@ const LeadsTable = () => {
               </TableRow>
             </TableHeader>
             <TableBody className="overflow-auto">
-              {data?.leads?.map((lead: any) => (
+              {data?.leads?.data?.map((lead: any) => (
                 <TableRow key={lead.id}>
                   <TableCell className="px-3 py-3.5 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{lead.listing_number}</TableCell>
 

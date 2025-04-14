@@ -202,7 +202,7 @@ const InventoryTable = () => {
               </TableHeader>
 
               <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                {data?.inventories?.map((lead: any) => (
+                {data?.inventories?.data?.map((lead: any) => (
                   <TableRow className='border-b-0' key={lead.id}>
                     <TableCell className="px-5 py-2 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.listing_number}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.make}</TableCell>

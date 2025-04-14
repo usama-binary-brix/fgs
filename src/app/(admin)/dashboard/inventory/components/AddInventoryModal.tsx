@@ -48,16 +48,16 @@ const inputStyle = {
 
 type ErrorResponse = {
     data: {
-      error: Record<string, string>; // `error` contains field names as keys and error messages as values
+        error: Record<string, string>; // `error` contains field names as keys and error messages as values
     };
-  };
-  
-  type SUbCategoriesErrorResponse = {
+};
+
+type SUbCategoriesErrorResponse = {
     data: {
-      message: string | Record<string, string>;
+        message: string | Record<string, string>;
     };
-  };
-  
+};
+
 
 const selectStyle = {
     ...inputStyle,
@@ -96,27 +96,27 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
     const handleCategoryChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const categoryId = e.target.value;
         formik.setFieldValue("category_id", categoryId);
-        formik.setFieldValue("subcategory_id", ''); 
+        formik.setFieldValue("subcategory_id", '');
         setSubCategories([]);
         if (categoryId) {
             try {
                 const response = await fetchSubCategories(categoryId).unwrap();
                 setSubCategories(response);
             } catch (error) {
-                    const errorResponse = error as SUbCategoriesErrorResponse;
-                
-                
-                    if (errorResponse?.data?.message) {
-                        const message = errorResponse.data.message;
-                      
-                        if (typeof message === 'string') {
-                          toast.error(message);
-                        } else if (typeof message === 'object') {
-                          const combined = Object.values(message).join(', ');
-                          toast.error(combined);
-                        }
-                      }
-           }
+                const errorResponse = error as SUbCategoriesErrorResponse;
+
+
+                if (errorResponse?.data?.message) {
+                    const message = errorResponse.data.message;
+
+                    if (typeof message === 'string') {
+                        toast.error(message);
+                    } else if (typeof message === 'object') {
+                        const combined = Object.values(message).join(', ');
+                        toast.error(combined);
+                    }
+                }
+            }
         } else {
             setSubCategories([]);
         }
@@ -316,9 +316,9 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                 }}
                             />
 
-{formik.touched.date_purchased && formik.errors.date_purchased && (
-  <p className="text-red-500">{formik.errors.date_purchased}</p>
-)}                        </Grid>
+                            {formik.touched.date_purchased && formik.errors.date_purchased && (
+                                <p className="text-red-500">{formik.errors.date_purchased}</p>
+                            )}                        </Grid>
                         <Grid xs={12} md={12} mt={2} ml={2}>
                             <div>
                                 <h1 className="text-sm text-[#414141] font-medium text-[13px] font-family">Attach Files</h1>
@@ -370,7 +370,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                 )}
                             </div>
 
-                        
+
                         </Grid>
                         <Grid item xs={12} display="flex" justifyContent="flex-end">
                             <div className='flex items-center gap-4'>
