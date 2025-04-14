@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import AddLeadInput from '@/app/(admin)/dashboard/leads/components/input/AddLeadInput';
 import { useFormik } from 'formik';
 import Pagination from '@/components/tables/Pagination';
+import { useDebounce } from 'use-debounce';
 
 
 
@@ -37,12 +38,19 @@ interface Lead {
 
 const MyInvestmentTable = () => {
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-    const { data, isLoading, error } = useGetAllUserInvestmentsQuery('');
     const router = useRouter()
     const [addInvestment] = useAddInvestmentMutation()
     const toggleDropdown = (id: string) => {
         setOpenDropdown(openDropdown === id ? null : id);
     };
+      const [searchText, setSearchText] = useState('');
+       const [debouncedSearchText] = useDebounce(searchText, 300);
+       const [currentPage, setCurrentPage] = useState(1);
+       const [perPage, setPerPage] = useState(10); 
+     
+       const { data, isLoading, error } = useGetAllUserInvestmentsQuery({ page: currentPage,
+         perPage: perPage,
+         search: debouncedSearchText});
 
     const closeDropdown = () => {
         setOpenDropdown(null);
@@ -52,10 +60,7 @@ const MyInvestmentTable = () => {
     };
 
     
-        const [currentPage, setCurrentPage] = useState(1);
-        const [totalPages, setTotalPages] = useState(10); // Example total pages
-        const [perPage, setPerPage] = useState(10); // Default items per page
-      
+
         const handlePageChange = (page: number) => {
           setCurrentPage(page);
         };
@@ -124,6 +129,8 @@ const MyInvestmentTable = () => {
                                     <input
                                         className="text-xs border bg-white rounded-lg pl-9 pr-2 h-9 w-64 border-[#DDD] font-family font-medium text-[12.5px] text-[#616161] focus:border-gray-400 focus:outline-none"
                                         placeholder="Search"
+                                        value={searchText}
+                                        onChange={(e) => setSearchText(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -160,7 +167,7 @@ const MyInvestmentTable = () => {
                             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                                 {data?.investments?.data?.map((lead: any) => (
                                     <TableRow key={lead.id}>
-                                        <TableCell className="px-5 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.inventory.id}</TableCell>
+                                        <TableCell className="px-5 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.inventory.listing_number}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.make}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.model}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.serial_no}</TableCell>

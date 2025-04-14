@@ -19,6 +19,7 @@ import { RxCross2 } from 'react-icons/rx';
 import Button from '@/components/ui/button/Button';
 import Label from '@/components/form/Label';
 import Pagination from '@/components/tables/Pagination';
+import { useDebounce } from 'use-debounce';
 
 type ErrorResponse = {
     data: {
@@ -46,7 +47,15 @@ interface Lead {
 
 const InvestmentOpportunityTable = () => {
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-    const { data, isLoading, error } = useGetAllInventoryQuery('');
+   const [searchText, setSearchText] = useState('');
+   const [debouncedSearchText] = useDebounce(searchText, 300);
+   const [currentPage, setCurrentPage] = useState(1);
+   const [totalPages, setTotalPages] = useState(10); // Example total pages
+   const [perPage, setPerPage] = useState(10); 
+ 
+   const { data, isLoading, error } = useGetAllInventoryQuery({ page: currentPage,
+     perPage: perPage,
+     search: debouncedSearchText});
     const router = useRouter()
     const [addInvestment] = useAddInvestmentMutation()
     const toggleDropdown = (id: string) => {
@@ -67,10 +76,7 @@ const InvestmentOpportunityTable = () => {
     const [selectedId, setSelectedId] = useState<string | number | null>(null);
     const [selectedListingNumber, setSelectedListingNumber] = useState<string | number | null>(null);
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(10); // Example total pages
-    const [perPage, setPerPage] = useState(10); // Default items per page
-  
+
     const handlePageChange = (page: number) => {
       setCurrentPage(page);
     };
@@ -147,6 +153,8 @@ const InvestmentOpportunityTable = () => {
                                     <input
                                         className="text-xs border bg-white rounded-lg pl-9 pr-2 h-9 w-64 border-[#DDD] font-family font-medium text-[12.5px] text-[#616161] focus:border-gray-400 focus:outline-none"
                                         placeholder="Search"
+                                        value={searchText}
+                                        onChange={(e) => setSearchText(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -183,7 +191,7 @@ const InvestmentOpportunityTable = () => {
                             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                                 {data?.inventories?.data?.map((lead: any) => (
                                     <TableRow key={lead.id}>
-                                        <TableCell className="px-5 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.id}</TableCell>
+                                        <TableCell className="px-5 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.listing_number}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.make}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.model}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.serial_no}</TableCell>
@@ -241,9 +249,9 @@ const InvestmentOpportunityTable = () => {
                     </div>
 
                     <div className='px-6 border-t'>
-          <Pagination
+                    <Pagination
             currentPage={currentPage}
-            totalPages={data?.totalPages || 1}
+            totalPages={data?.inventories?.last_page || 1}
             onPageChange={handlePageChange}
             perPage={perPage}
             onPerPageChange={handlePerPageChange}

@@ -34,14 +34,12 @@ export const api = createApi({
       invalidatesTags: ["Users"],
     }),
 
-    // ----------- GET ALL USERS ------------
     getAllUsers: builder.query({
-      query: () => ({
-        url: 'users',
+      query: ({ page = 1, perPage = 10 , search}) => ({
+        url: `users?per_page=${perPage}&page=${page}&search=${search}`,
         method: 'GET',
       }),
       providesTags: ["Users"],
-
     }),
 
     // ----------- DELETE USER API ------------
@@ -81,12 +79,14 @@ export const api = createApi({
 
     // ---------------------------------- Inventory APIs ---------------------------------
     getAllInventory: builder.query({
-      query: () => ({
-        url: 'get/inventories',
+      query: ({ page = 1, perPage = 10 , search}) => ({
+        url: `get/inventories?per_page=${perPage}&page=${page}&search=${search}`,
         method: 'GET',
       }),
       providesTags: ["Inventory"],
     }),
+
+  
     getAllCategories: builder.query({
       query: () => ({
         url: 'get/category',
@@ -146,17 +146,19 @@ export const api = createApi({
       invalidatesTags: ["leads", 'userLead'],
 
     }),
+   
+
     getAllLeads: builder.query({
-      query: () => ({
-        url: 'get/leads',
+      query: ({ page = 1, perPage = 10 , search}) => ({
+        url: `get/leads?per_page=${perPage}&page=${page}&search=${search}`,
         method: 'GET',
       }),
       providesTags: ["leads"],
-     
     }),
+
     getAllUserLeads: builder.query({
-      query: () => ({
-        url: 'get/lead',
+      query: ({ page = 1, perPage = 10 , search}) => ({
+        url: `get/lead?per_page=${perPage}&page=${page}&search=${search}`,
         method: 'GET',
       }),
       providesTags: ["userLead"],
@@ -219,8 +221,8 @@ export const api = createApi({
     }),
 
     getAllUserInvestments: builder.query({
-      query: (id) => ({
-        url: `get/investment`,
+      query: ({ page = 1, perPage = 10 , search}) => ({
+        url: `get/investment?per_page=${perPage}&page=${page}&search=${search}`,
         method: 'GET',
       }),
       providesTags: ["UserInvestment"],

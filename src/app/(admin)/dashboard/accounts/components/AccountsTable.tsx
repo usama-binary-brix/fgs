@@ -4,7 +4,7 @@ import { DropdownItem } from '@/components/ui/dropdown/DropdownItem';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { MoreDotIcon } from '@/icons';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { IoSearchOutline } from 'react-icons/io5';
 import AccountsModal from './AccountsModal';
 import { useDeleteUserMutation, useGetAllUsersQuery } from '@/store/services/api';
@@ -15,11 +15,21 @@ import ViewAccountDetailsModal from './ViewAcoountDetailsModal';
 import Pagination from '@/components/tables/Pagination';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import Button from '@/components/ui/button/Button';
-
+import { useDebounce } from 'use-debounce';
 
 const AccountsTable = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { data, isLoading, error } = useGetAllUsersQuery('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const [searchText, setSearchText] = useState('');
+  const [debouncedSearchText] = useDebounce(searchText, 300);
+
+  const { data, isLoading, error } = useGetAllUsersQuery({
+    page: currentPage,
+    perPage: perPage,
+    search: debouncedSearchText
+  });
+
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
   const [openDropdownId, setOpenDropdownId] = useState<string | number | null>();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -28,15 +38,11 @@ const AccountsTable = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedUserData, setSelectedUserData] = useState(null);
   const [selectedName, setSelectedName] = useState("");
+
   const handleEditUser = (user: any) => {
     setSelectedUserData(user);
     setIsEditModalOpen(true);
   };
-
- 
-
-  
-
 
   const toggleDropdown = (id: string | number | null) => {
     if (openDropdownId === id) {
@@ -45,10 +51,12 @@ const AccountsTable = () => {
       setOpenDropdownId(id);
     }
   };
+
   const handleViewMore = (userId: string | number) => {
     setSelectedUserId(userId);
     setIsViewMoreOpen(true);
   };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -70,18 +78,19 @@ const AccountsTable = () => {
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(10); // Example total pages
-  const [perPage, setPerPage] = useState(10); // Default items per page
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
   const handlePerPageChange = (newPerPage: number) => {
     setPerPage(newPerPage);
-    setCurrentPage(1); // Reset to first page on per-page change
+    setCurrentPage(1);
   };
+
+  // Reset to first page when search text changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearchText]);
 
   return (
     <>
@@ -90,33 +99,30 @@ const AccountsTable = () => {
           <div className="hidden sm:block">
             <div className="flex items-center space-x-2">
               <div className="relative">
-                <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+
+                <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#616161]" />
                 <input
-                  className="text-xs border rounded-sm pl-9 pr-2 h-9 w-64 border-gray-300 focus:border-gray-400 focus:outline-none"
+                  className="text-xs border placeholder-[#616161]  bg-white rounded-lg pl-9 pr-2 h-9 w-64 border-[#DDD] font-family font-medium text-[12.5px] text-[#616161] focus:border-gray-400 focus:outline-none"
                   placeholder="Search"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
                 />
               </div>
+
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <Button variant="outlined"
-            size='sm'
-          >
+          <Button variant="outlined" size='sm'>
             Edit Columns
           </Button>
 
-          <Button variant="outlined"
-            size='sm'
-          >
+          <Button variant="outlined" size='sm'>
             Filters
           </Button>
 
-          <Button variant="primary"
-            size='sm'
-            onClick={handleOpenModal}
-          >
+          <Button variant="primary" size='sm' onClick={handleOpenModal}>
             Add New Account
           </Button>
         </div>
@@ -160,7 +166,6 @@ const AccountsTable = () => {
                       {user.first_name} {user.last_name}
                     </span>
 
-                    {/* <span className="font-medium break-words ">{user.first_name} {user.last_name}</span> */}
                   </TableCell>
 
                   <TableCell className="px-5 py-2 text-sm text-[#616161]">{user.email}</TableCell>
@@ -182,25 +187,25 @@ const AccountsTable = () => {
 
                   <TableCell className="px-5 py-2 text-sm text-center text-[#616161]">
                     <div className="relative inline-block">
-                      <button onClick={() => toggleDropdown(user.id)}  className={`dropdown-toggle p-1 rounded ${ openDropdownId === user.id ? 'bg-gray-100' : ''}`}>
+                      <button onClick={() => toggleDropdown(user.id)} className={`dropdown-toggle p-1 rounded ${openDropdownId === user.id ? 'bg-gray-100' : ''}`}>
                         <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                       </button>
 
                       {openDropdownId === user.id && (
                         <div className="absolute right-9 top-[-7px] mt-2 z-50 w-30 bg-white shadow-md border rounded-sm">
                           <DropdownItem
-                           onItemClick={() => {                           
-                            handleViewMore(user.id);
-                            setOpenDropdownId(null);
-                          }}
-                             className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]">
+                            onItemClick={() => {
+                              handleViewMore(user.id);
+                              setOpenDropdownId(null);
+                            }}
+                            className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]">
                             View Details
                           </DropdownItem>
-                          <DropdownItem onItemClick={() =>{
-                           handleEditUser(user);
-                           setOpenDropdownId(null);
+                          <DropdownItem onItemClick={() => {
+                            handleEditUser(user);
+                            setOpenDropdownId(null);
                           }}
-                           className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]">
+                            className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]">
                             Edit
                           </DropdownItem>
                           <DropdownItem
@@ -229,12 +234,11 @@ const AccountsTable = () => {
         <div className='px-6 border-t'>
           <Pagination
             currentPage={currentPage}
-            totalPages={data?.totalPages || 1}
+            totalPages={data?.users?.last_page || 1}
             onPageChange={handlePageChange}
             perPage={perPage}
             onPerPageChange={handlePerPageChange}
           />
-
         </div>
 
       </div>

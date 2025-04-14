@@ -17,6 +17,7 @@ import TotalInvestorsModal from '../TotalInvestorsModal';
 import { useRouter } from 'next/navigation';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import Pagination from '@/components/tables/Pagination';
+import { useDebounce } from 'use-debounce';
 
 
 
@@ -37,16 +38,19 @@ interface Lead {
   profit: string;
 }
 
-const inventoryData: Lead[] = [
-  { id: 'EP-73921', elevatorManufacturer: 'Hoist', elevatorModel: 'C25L', elevatorSerial: 'C09701', purchaseDate: '02-26-2024', purchasePrice: '$ 2170.00', reconditioning: '45%', completionDate: '---', invRequests: 'Arcangelo', totalInvestors: '1', investmentAmount: '$ 2921.00', salePrice: '---', profitAmt: '---', profit: '---', },
-  { id: 'EP-74321', elevatorManufacturer: 'Hoist', elevatorModel: 'C25L', elevatorSerial: 'C09701', purchaseDate: '02-26-2024', purchasePrice: '$ 2170.00', reconditioning: '45%', completionDate: '---', invRequests: 'Arcangelo', totalInvestors: '1', investmentAmount: '$ 2921.00', salePrice: '---', profitAmt: '---', profit: '---', },
-  { id: 'EP-73451', elevatorManufacturer: 'Hoist', elevatorModel: 'C25L', elevatorSerial: 'C09701', purchaseDate: '02-26-2024', purchasePrice: '$ 2170.00', reconditioning: '45%', completionDate: '---', invRequests: 'Arcangelo', totalInvestors: '1', investmentAmount: '$ 2921.00', salePrice: '---', profitAmt: '---', profit: '---', },
 
-];
 
 const InventoryTable = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const { data, isLoading, error } = useGetAllInventoryQuery('');
+  const [searchText, setSearchText] = useState('');
+  const [debouncedSearchText] = useDebounce(searchText, 300);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(10); // Example total pages
+  const [perPage, setPerPage] = useState(10); 
+
+  const { data, isLoading, error } = useGetAllInventoryQuery({ page: currentPage,
+    perPage: perPage,
+    search: debouncedSearchText});
   const router = useRouter()
 
   const toggleDropdown = (id: string) => {
@@ -122,10 +126,6 @@ const InventoryTable = () => {
   };
 
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(10); // Example total pages
-  const [perPage, setPerPage] = useState(10); // Default items per page
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -149,6 +149,8 @@ const InventoryTable = () => {
                   <input
                     className="text-xs border placeholder-[#616161]  bg-white rounded-lg pl-9 pr-2 h-9 w-64 border-[#DDD] font-family font-medium text-[12.5px] text-[#616161] focus:border-gray-400 focus:outline-none"
                     placeholder="Search"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
                   />
                 </div>
               </div>
@@ -209,7 +211,7 @@ const InventoryTable = () => {
                     <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.model}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.serial_no}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.date_purchased}</TableCell>
-                    <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.price_paid || '---'}</TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">$ {lead.price_paid || '---'}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.reconditioning || '---'}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.completionDate || '---'}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap font-family text-start">
@@ -372,14 +374,14 @@ const InventoryTable = () => {
             </Table>
           </div>
           <div className='px-6 border-t'>
-            <Pagination
-              currentPage={currentPage}
-              totalPages={data?.totalPages || 1}
-              onPageChange={handlePageChange}
-              perPage={perPage}
-              onPerPageChange={handlePerPageChange}
-            />
 
+  <Pagination
+            currentPage={currentPage}
+            totalPages={data?.inventories?.last_page || 1}
+            onPageChange={handlePageChange}
+            perPage={perPage}
+            onPerPageChange={handlePerPageChange}
+          />
           </div>
         </div>
 

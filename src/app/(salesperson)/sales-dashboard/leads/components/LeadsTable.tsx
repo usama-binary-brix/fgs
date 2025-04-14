@@ -16,6 +16,7 @@ import Button from '@/components/ui/button/Button';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import Pagination from '@/components/tables/Pagination';
 import { format } from 'date-fns';
+import { useDebounce } from 'use-debounce';
 
 interface Lead {
   id: string;
@@ -33,8 +34,16 @@ interface Lead {
 const LeadsTable = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const router = useRouter();
-  const { data, isLoading, error } = useGetAllUserLeadsQuery("");
 
+    const [searchText, setSearchText] = useState('');
+     const [debouncedSearchText] = useDebounce(searchText, 300);
+     const [currentPage, setCurrentPage] = useState(1);
+     const [totalPages, setTotalPages] = useState(10); // Example total pages
+     const [perPage, setPerPage] = useState(10); 
+   
+     const { data, isLoading, error } = useGetAllUserLeadsQuery({ page: currentPage,
+       perPage: perPage,
+       search: debouncedSearchText});
   const toggleDropdown = (id: string) => {
     setOpenDropdown(openDropdown === id ? null : id);
   };
@@ -124,9 +133,6 @@ const LeadsTable = () => {
       setIsDeleteModalOpen(false);
     }
   };
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(10); // Example total pages
-  const [perPage, setPerPage] = useState(10); // Default items per page
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -151,6 +157,8 @@ const LeadsTable = () => {
                 <input
                   className="text-xs border text-[12.5px] text-[#616161] font-medium placeholder-[#616161] font-family pl-9 pr-2 h-9 w-64 border-[#DDD] rounded bg-[#fff] focus:border-[#DDD] focus:outline-none"
                   placeholder="Search"
+                  value={searchText}
+                                        onChange={(e) => setSearchText(e.target.value)}
                 />
               </div>
             </div>
@@ -201,7 +209,7 @@ const LeadsTable = () => {
             <TableBody className="overflow-auto">
               {data?.lead?.data?.map((lead: any) => (
                 <TableRow key={lead.id}>
-                  <TableCell className="px-3 py-3.5 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{lead.id}</TableCell>
+                  <TableCell className="px-3 py-3.5 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{lead.listing_number}</TableCell>
 
 
                   <TableCell className="px-3 py-5 text-[14px] flex items-center gap-2 font-family text-[#616161] font-normal">
@@ -307,9 +315,9 @@ const LeadsTable = () => {
         </div>
 
         <div className='px-6 border-t'>
-          <Pagination
+        <Pagination
             currentPage={currentPage}
-            totalPages={data?.totalPages || 1}
+            totalPages={data?.lead?.last_page || 1}
             onPageChange={handlePageChange}
             perPage={perPage}
             onPerPageChange={handlePerPageChange}
