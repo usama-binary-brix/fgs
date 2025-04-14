@@ -139,7 +139,7 @@ const AccountsTable = () => {
               </TableRow>
             </TableHeader>
             <TableBody className="">
-              {data?.users.map((user: any, index: any) => (
+              {data?.users?.data?.map((user: any, index: any) => (
                 <TableRow key={index}>
                   <TableCell className="px-5 py-2 text-sm flex items-center gap-3">
                     {user.image ? (

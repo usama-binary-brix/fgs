@@ -37,7 +37,7 @@ type SUbCategoriesErrorResponse = {
 const EditInventoryForm = () => {
   const { id } = useParams();
   const router = useRouter()
-  const { data: inventoryData, error, isLoading } = useGetInventoryByIdQuery(id);
+  const { data: inventoryData, error, isLoading, refetch } = useGetInventoryByIdQuery(id);
   const { data: categories, isLoading: loadingCategories } = useGetAllCategoriesQuery('');
   const [fetchSubCategories] = useGetSubCategoriesMutation();
   const [editInventory] = useEditInventoryMutation()
@@ -50,7 +50,9 @@ const EditInventoryForm = () => {
   const [removedExistingFiles, setRemovedExistingFiles] = useState<number[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false)
   const currentYear = new Date().getFullYear();
-
+useEffect(()=>{
+refetch()
+},[id])
    const validationSchema = Yup.object().shape({
           category_id: Yup.string().required('Category is required'),
           // subcategory_id: Yup.string().required('Subcategory is required'),

@@ -158,7 +158,7 @@ const MyInvestmentTable = () => {
                             </TableHeader>
 
                             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                                {data?.investment?.map((lead: any) => (
+                                {data?.investments?.data?.map((lead: any) => (
                                     <TableRow key={lead.id}>
                                         <TableCell className="px-5 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.inventory.id}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.make}</TableCell>

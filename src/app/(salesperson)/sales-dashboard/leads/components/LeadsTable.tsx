@@ -199,7 +199,7 @@ const LeadsTable = () => {
               </TableRow>
             </TableHeader>
             <TableBody className="overflow-auto">
-              {data?.lead?.map((lead: any) => (
+              {data?.lead?.data?.map((lead: any) => (
                 <TableRow key={lead.id}>
                   <TableCell className="px-3 py-3.5 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{lead.id}</TableCell>
 
