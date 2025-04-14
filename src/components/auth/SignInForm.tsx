@@ -9,6 +9,7 @@ import Label from "@/components/form/Label";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { useLoginMutation } from "@/store/services/api";
 import { setUser } from "@/store/services/userSlice";
+import Link from "next/link";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -95,12 +96,20 @@ export default function SignInForm() {
                     {showPassword ? <EyeIcon className="fill-gray-500 dark:fill-gray-400" /> : <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />}
                   </span>
                 </div>
+             <div className="flex  items-center justify-end mt-2">
+             <Link
+                    href="/reset-password"
+                    className="text-sm text-primary hover:text-primary dark:text-primary"
+                  >
+                    Forgot password?
+                  </Link>
+             </div>
+              
                 {formik.touched.password && formik.errors.password && (
                   <p className="text-error-500 text-sm">{formik.errors.password}</p>
                 )}
-              </div>
-
-              <div>
+           
+           <div className="mt-4">
                 <button
                   type="submit"
                   className="w-full bg-primary hover:bg-primary py-2 text-white rounded-lg"
@@ -109,6 +118,12 @@ export default function SignInForm() {
                   {isLoading || formik.isSubmitting ? "Signing in..." : "Sign in"}
                 </button>
               </div>
+
+              </div>
+
+           
+            
+           
             </div>
           </form>
         </div>

@@ -314,6 +314,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                 onChange={(value) => {
                                     formik.setFieldValue("date_purchased", value);
                                 }}
+                                disableFuture={true}    
                             />
 
                             {formik.touched.date_purchased && formik.errors.date_purchased && (

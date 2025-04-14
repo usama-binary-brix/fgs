@@ -37,7 +37,7 @@ type SUbCategoriesErrorResponse = {
 const EditInventoryForm = () => {
   const { id } = useParams();
   const router = useRouter()
-  const { data: inventoryData, error, isLoading } = useGetInventoryByIdQuery(id);
+  const { data: inventoryData, error, isLoading, refetch } = useGetInventoryByIdQuery(id);
   const { data: categories, isLoading: loadingCategories } = useGetAllCategoriesQuery('');
   const [fetchSubCategories] = useGetSubCategoriesMutation();
   const [editInventory] = useEditInventoryMutation()
@@ -50,34 +50,36 @@ const EditInventoryForm = () => {
   const [removedExistingFiles, setRemovedExistingFiles] = useState<number[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false)
   const currentYear = new Date().getFullYear();
+  useEffect(() => {
+    refetch()
+  }, [id])
+  const validationSchema = Yup.object().shape({
+    category_id: Yup.string().required('Category is required'),
+    // subcategory_id: Yup.string().required('Subcategory is required'),
 
-   const validationSchema = Yup.object().shape({
-          category_id: Yup.string().required('Category is required'),
-          // subcategory_id: Yup.string().required('Subcategory is required'),
-  
-          year: Yup.number()
-              .required('Year is required')
-              .max(9999, 'Maximum 4 digits allowed')
-              .typeError('Year must be a number')
-              .max(currentYear, `Year cannot be greater than ${currentYear}`),
-  
-          make: Yup.number()
-              .required('Make is required')
-              .max(9999, 'Maximum 4 digits allowed')
-              .typeError('Year must be a number')
-              .max(currentYear, `Year cannot be greater than ${currentYear}`)
-          ,
-          model: Yup.string().required('Model is required'),
-          serial_no: Yup.string().required('Serial No is required'),
-          length: Yup.string().required('Length is required'),
-          height: Yup.string().required('Height is required'),
-          width: Yup.string().required('Width is required'),
-          weight: Yup.string().required('Weight is required'),
-          hours: Yup.string().required('Hours are required'),
-          price_paid: Yup.string().required('Price paid is required'),
-          date_purchased: Yup.date().required('Purchase date is required').typeError('Invalid date format'),
-  
-      });
+    year: Yup.number()
+      .required('Year is required')
+      .max(9999, 'Maximum 4 digits allowed')
+      .typeError('Year must be a number')
+      .max(currentYear, `Year cannot be greater than ${currentYear}`),
+
+    make: Yup.number()
+      .required('Make is required')
+      .max(9999, 'Maximum 4 digits allowed')
+      .typeError('Year must be a number')
+      .max(currentYear, `Year cannot be greater than ${currentYear}`)
+    ,
+    model: Yup.string().required('Model is required'),
+    serial_no: Yup.string().required('Serial No is required'),
+    length: Yup.string().required('Length is required'),
+    height: Yup.string().required('Height is required'),
+    width: Yup.string().required('Width is required'),
+    weight: Yup.string().required('Weight is required'),
+    hours: Yup.string().required('Hours are required'),
+    price_paid: Yup.string().required('Price paid is required'),
+    date_purchased: Yup.date().required('Purchase date is required').typeError('Invalid date format'),
+
+  });
   const formik = useFormik({
     initialValues: {
       inventory_id: id,
@@ -108,7 +110,7 @@ const EditInventoryForm = () => {
 
       existingFiles.forEach((file) => {
         if (!removedExistingFiles.includes(file.id)) {
-          formData.append("existing_files[]", file.url);
+          formData.append("existing_images[]", file.url);
         }
       });
 
@@ -233,7 +235,7 @@ const EditInventoryForm = () => {
 
   const getFileTypeIcon = (fileUrl: string): string => {
     if (!fileUrl) return '/images/filesicon/docss.png';
-
+console.log(fileUrl, 'file url')
     const lowerCaseFileUrl = fileUrl.toLowerCase();
 
     if (lowerCaseFileUrl.endsWith('.pdf')) {
@@ -245,8 +247,8 @@ const EditInventoryForm = () => {
     if (lowerCaseFileUrl.endsWith('.xls') || lowerCaseFileUrl.endsWith('.xlsx')) {
       return '/images/filesicon/xlsx.png';
     }
-    if (lowerCaseFileUrl.match(/\.(jpg|jpeg|png|gif|svg|webp)$/)) {
-      return fileUrl; // Return original URL for images
+    if (lowerCaseFileUrl.match(/\.(jpg|jpeg|png|gif|svg|webp|JPG|jfif)$/)) {
+      return fileUrl;
     }
     return '/images/filesicon/docss.png';
   };
@@ -398,8 +400,8 @@ const EditInventoryForm = () => {
                   onBlur={formik.handleBlur}
                 />
                 {formik.touched.year && formik.errors.year && (
-  <p className="text-red-500">{formik.errors.year}</p>
-)}
+                  <p className="text-red-500">{formik.errors.year}</p>
+                )}
               </div>
               {["make", "model", "serial_no", "length", "height", "width", "weight", "hours", "price_paid"].map((field) => (
                 <div key={field}>
@@ -414,24 +416,25 @@ const EditInventoryForm = () => {
                     onBlur={formik.handleBlur}
                     className="h-9 w-full rounded-sm border appearance-none px-4 py-1 text-sm shadow-theme-xs text-gray-500 placeholder:text-gray-400 focus:outline-hidden focus:ring-1"
                   />
-                   {formik.touched[field as keyof typeof formik.values] && formik.errors[field as keyof typeof formik.errors] && (
-                                    <p className="text-red-500">{formik.errors[field as keyof typeof formik.errors]}</p>
-                                )}
+                  {formik.touched[field as keyof typeof formik.values] && formik.errors[field as keyof typeof formik.errors] && (
+                    <p className="text-red-500">{formik.errors[field as keyof typeof formik.errors]}</p>
+                  )}
                 </div>
               ))}
-              <div>
-                <Label>Date Purchased <span className="text-red-500">*</span></Label>
-                <MuiDatePicker
-                  name="date_purchased"
-                  value={formik.values.date_purchased}
-                  onChange={(value: any) => {
-                    formik.setFieldValue("date_purchased", value);
-                  }}
-                />
-{formik.touched.date_purchased && formik.errors.date_purchased && (
-  <p className="text-red-500">{formik.errors.date_purchased}</p>
-)} 
-              </div>
+             <div>
+  <Label>Date Purchased <span className="text-red-500">*</span></Label>
+  <MuiDatePicker
+    name="date_purchased"
+    value={formik.values.date_purchased}
+    onChange={(value: any) => {
+      formik.setFieldValue("date_purchased", value);
+    }}
+    disableFuture={true} // This will disable all future dates
+  />
+  {formik.touched.date_purchased && formik.errors.date_purchased && (
+    <p className="text-red-500">{formik.errors.date_purchased}</p>
+  )}
+</div>
             </div>
             <div className="mt-6">
               <h1 className="font-semibold">Attached Files</h1>
@@ -447,12 +450,15 @@ const EditInventoryForm = () => {
                       <div className="h-30 rounded-lg overflow-hidden">
                         {isImage ? (
                           <img
+                          onClick={()=>window.open(file.url)}
                             src={fileTypeIcon}
                             alt={`Existing File ${index}`}
                             className="w-full h-full object-cover rounded-lg"
                           />
                         ) : (
                           <img
+                          onClick={()=>window.open(file.url)}
+
                             src={fileTypeIcon}
                             alt="File type icon"
                             className="w-full h-full object-contain rounded-lg bg-gray-100 p-2"
