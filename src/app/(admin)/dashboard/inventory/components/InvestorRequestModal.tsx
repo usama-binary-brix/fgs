@@ -13,6 +13,7 @@ import { TableHeader } from '@/components/ui/table';
 import { FiX, FiCheck } from "react-icons/fi";
 import { useGetAllAdminInvestmentsQuery, useUpdateInvestorStatusMutation } from '@/store/services/api';
 import { toast } from 'react-toastify';
+import Button from '@/components/ui/button/Button';
 type ErrorResponse = {
   data: {
     error: Record<string, string>; // `error` contains field names as keys and error messages as values
@@ -133,22 +134,39 @@ const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId, lis
         <TableCell className="px-5 py-4 text-[13px] !border-b-0">
           {lead.status === 'pending' ? (
             <div className="flex items-center gap-3">
-              <span
-                className={`border border-[#D1842880] bg-[#D184281A] rounded p-1 ${
-                  loadingStatus[lead.id] ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                }`}
-                onClick={() => !loadingStatus[lead.id] && handleStatusUpdate(lead.id, 'rejected')}
-              >
-                <FiX size={19} color="#D18428" />
-              </span>
-              <span
+
+
+<Button variant="outlined"
+size='sm'
+          disabled={loadingStatus[lead.id]}
+
+            onClick={() => !loadingStatus[lead.id] && handleStatusUpdate(lead.id, 'rejected')}
+            >
+           Reject
+          </Button>
+          <Button variant="primary"
+size='sm'
+
+          disabled={loadingStatus[lead.id]}
+                onClick={() => !loadingStatus[lead.id] && handleStatusUpdate(lead.id, 'approved')}
+                >
+           Approve
+          </Button>
+           
+
+
+
+              {/* <span
                 className={`border border-[#D1842880] rounded p-1 bg-[#D18428] ${
                   loadingStatus[lead.id] ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                 }`}
                 onClick={() => !loadingStatus[lead.id] && handleStatusUpdate(lead.id, 'approved')}
               >
                 <FiCheck size={19} color="#fff" />
-              </span>
+                Approve
+              </span> */}
+
+
             </div>
           ) : (
             <span className={`px-3 items-center py-2 rounded text-white ${lead.status === 'approved' ? 'bg-green-500' : 'bg-red-500'}`}>

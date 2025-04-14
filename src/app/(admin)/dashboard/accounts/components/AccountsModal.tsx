@@ -39,7 +39,7 @@ interface Props {
 
 type ErrorResponse = {
   data: {
-    error: Record<string, string>; // `error` contains field names as keys and error messages as values
+    error: Record<string, string>;
   };
 };
 
@@ -54,7 +54,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
       formik.resetForm();
     }
   }, [open, userData]);
-  
+
   const options = [
     { value: "admin", label: "Admin" },
     { value: "investor", label: "Investor" },
@@ -94,7 +94,6 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
     region: userData?.region || '',
     city: userData?.city || '',
     zip_code: userData?.zip_code || '',
-    // status: userData?.status?.toLowerCase() === 'active' ? '1' : '0',
     status: userData?.status ? (userData?.status == 'Active' ? '1' : '0') : '1',
     company_name: userData?.company_name || '',
     communication_preference: userData?.communication_preference || '',
@@ -114,9 +113,9 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
         .max(15, 'Must be 15 characters or less'),
       email: Yup.string().email('Invalid email').required('Required'),
       phone_number: Yup.string()
-        .matches(/^[0-9]+$/, 'Only numbers are allowed')
-        .required('Required'),
-
+      .matches(/^[+\d\s]+$/, 'Only numbers, +, and spaces are allowed')
+      .max(18, 'Phone number must be at least 15 digits')
+      .required('Required'),
       country: Yup.string(),
       address: Yup.string(),
       region: Yup.string(),
@@ -133,10 +132,10 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
       try {
         let response;
         if (userData?.id) {
-      
+
           response = await register({ id: userData.id, ...values }).unwrap();
         } else {
-         
+
           response = await register(values).unwrap();
         }
 
@@ -145,7 +144,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
         resetForm();
         onClose();
       } catch (error) {
-          const errorResponse = error as ErrorResponse;
+        const errorResponse = error as ErrorResponse;
 
 
         if (errorResponse?.data?.error) {
@@ -157,13 +156,6 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
             }
           });
         }
-          // const errorResponse = error as ErrorResponse;
-          //       console.log(errorResponse, 'error response')
-          //       if (errorResponse.data.error) {
-          //         Object.values(errorResponse.data.error).forEach((errorMessage) => {
-          //           toast.error(errorMessage);
-          //         });
-          //       }
 
         setLoading(false);
       }
@@ -185,7 +177,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
 
           <div className='flex justify-between items-center px-4'>
             <p className='text-xl font-semibold'>{userData ? 'Edit Account' : 'Add New Account'}</p>
-           
+
             <RxCross2 onClick={onClose} className='cursor-pointer text-3xl' />
 
           </div>
@@ -273,7 +265,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                 <Label>Password</Label>
                 <div className="relative">
                   <Input
-                  
+
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter password"
                     {...formik.getFieldProps("password")}
@@ -463,7 +455,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                   variant="primary"
                   disabled={loading}
                 >
-                 {loading ? 'Processing...' : userData ? 'Update Account' : 'Add Account'}
+                  {loading ? 'Processing...' : userData ? 'Update Account' : 'Add Account'}
                 </Button>
               </div>
             </Grid>
