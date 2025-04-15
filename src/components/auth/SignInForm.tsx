@@ -45,7 +45,7 @@ export default function SignInForm() {
 
         if (res.user.account_type === "investor") {
           router.push("/investor-dashboard");
-        } else if (res.user.account_type === "admin") {
+        } else if (res.user.account_type === "admin" || res.user.account_type === "super_admin") {
           router.push("/dashboard");
         } else if (res.user.account_type === "salesperson") {
           router.push("/sales-dashboard");
