@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TopButtons from '@/components/Buttons/TopButtons';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { DropdownItem } from '@/components/ui/dropdown/DropdownItem';
@@ -48,13 +48,15 @@ const InventoryTable = () => {
   const [totalPages, setTotalPages] = useState(10); // Example total pages
   const [perPage, setPerPage] = useState(10);
 
-  const { data, isLoading, error } = useGetAllInventoryQuery({
+  const { data, isLoading, error, refetch } = useGetAllInventoryQuery({
     page: currentPage,
     perPage: perPage,
     search: debouncedSearchText
   });
   const router = useRouter()
-
+useEffect(()=>{
+refetch()
+},[refetch])
   // Function to handle row click
   const handleRowClick = (id: string) => {
     router.push(`/dashboard/edit-inventory/${id}`);
