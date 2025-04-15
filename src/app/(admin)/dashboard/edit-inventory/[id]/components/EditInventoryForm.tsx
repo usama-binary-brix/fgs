@@ -235,7 +235,6 @@ const EditInventoryForm = () => {
 
   const getFileTypeIcon = (fileUrl: string): string => {
     if (!fileUrl) return '/images/filesicon/docss.png';
-    console.log(fileUrl, 'file url')
     const lowerCaseFileUrl = fileUrl.toLowerCase();
 
     if (lowerCaseFileUrl.endsWith('.pdf')) {
@@ -532,7 +531,7 @@ const EditInventoryForm = () => {
           <div>
             <h1 className="text-[#000] text-[17px] font-semibold font-family mt-10 mb-5">Inventory Stages</h1>
             <div className="flex justify-center">
-              <Timeline />
+              {/* <Timeline /> */}
             </div>
           </div>
         </>

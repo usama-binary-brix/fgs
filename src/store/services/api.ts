@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment"],
+  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -250,9 +250,36 @@ export const api = createApi({
       invalidatesTags: ["Investment"],
 
     }),
+    addNewTimeline: builder.mutation({
+      query: (timelineData) => ({
+        url: 'add/timeline', 
+        method: 'POST',
+        body: timelineData,
+      }),
+      invalidatesTags: ["InventoryTimeline"],
+
+    }),
+
+    ReorderTimeline: builder.mutation({
+      query: (reorderData) => ({
+        url: 'reorder/timeline', 
+        method: 'POST',
+        body: reorderData,
+      }),
+      invalidatesTags: ["InventoryTimeline"],
+
+    }),
+    getAllTimeline: builder.query({
+      query: (inventory_id) => ({
+        url: `get/timeline/${inventory_id}`,
+        method: 'GET', 
+      }),
+      providesTags: ["InventoryTimeline"],
+    }),
+
+
 
   }),
-
 });
 
 
@@ -283,4 +310,7 @@ export const { useLoginMutation,
   useGetAllUserInvestmentsQuery,
   useForgetPasswordMutation,
   useResetPasswordMutation,
+  useGetAllTimelineQuery,
+  useAddNewTimelineMutation,
+  useReorderTimelineMutation,
 } = api;

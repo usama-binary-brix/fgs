@@ -1,215 +1,4 @@
-// import React, { useCallback, useState } from 'react';
-// import { Box, Modal, IconButton } from '@mui/material';
-// import { RxCross2 } from 'react-icons/rx';
-// import { FaTrash, FaEdit, FaGripVertical } from 'react-icons/fa';
-// import { DndProvider, useDrag, useDrop } from 'react-dnd';
-// import { HTML5Backend } from 'react-dnd-html5-backend';
-// import Input from '@/components/form/input/InputField';
-// import Button from '@/components/ui/button/Button';
-
-// interface Props {
-//   open: boolean;
-//   onClose: () => void;
-// }
-
-// interface DraggableStageProps {
-//   stage: string;
-//   index: number;
-//   moveStage: (fromIndex: number, toIndex: number) => void;
-//   handleDeleteStage: (index: number) => void;
-// }
-
-// const ItemTypes = {
-//   STAGE: 'stage',
-// };
-
-// const DraggableStage: React.FC<DraggableStageProps> = ({ stage, index, moveStage, handleDeleteStage }) => {
-//   const ref = React.useRef<HTMLDivElement>(null);
-
-//   const [{ isDragging }, drag] = useDrag({
-//     type: ItemTypes.STAGE,
-//     item: { index },
-//     collect: (monitor) => ({
-//       isDragging: monitor.isDragging(),
-//     }),
-//   });
-
-//   const [, drop] = useDrop({
-//     accept: ItemTypes.STAGE,
-//     hover(item: { index: number }, monitor) {
-//       if (!ref.current) return;
-//       const dragIndex = item.index;
-//       const hoverIndex = index;
-
-//       if (dragIndex === hoverIndex) return;
-
-//       const hoverBoundingRect = ref.current?.getBoundingClientRect();
-//       const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-//       const clientOffset = monitor.getClientOffset();
-//       const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
-
-//       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) return;
-//       if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) return;
-
-//       moveStage(dragIndex, hoverIndex);
-//       item.index = hoverIndex;
-//     },
-//   });
-
-//   const setRefs = useCallback(
-//     (node: HTMLDivElement) => {
-//       (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
-//       drag(node);
-//       drop(node);
-//     },
-//     [drag, drop]
-//   );
-
-//   return (
-//     <div
-//       ref={setRefs}
-//       style={{ opacity: isDragging ? 0.5 : 1 }}
-//       className="flex justify-between items-center bg-gray-100 px-3 py-2 rounded-md"
-//     >
-//       <div className="flex items-center gap-2">
-//         <div>
-//           <FaGripVertical className="text-gray-500 cursor-move" />
-//         </div>
-//         <span>{stage}</span>
-//       </div>
-//       <div className="flex gap-2">
-//         <IconButton size="small">
-//           <FaEdit className="text-gray-600" />
-//         </IconButton>
-//         <IconButton 
-//           size="small" 
-//           onClick={() => handleDeleteStage(index)}
-//         >
-//           <FaTrash className="text-gray-600" />
-//         </IconButton>
-//       </div>
-//     </div>
-//   );
-// };
-
-// const modalStyle = {
-//   position: 'absolute' as const,
-//   top: '50%',
-//   left: '50%',
-//   transform: 'translate(-50%, -50%)',
-//   width: '50%',
-//   maxHeight: '90vh',
-//   bgcolor: 'background.paper',
-//   boxShadow: 24,
-//   paddingY: '10px',
-//   overflowY: 'auto',
-//   borderRadius: 2,
-// };
-
-// const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
-//   const [stages, setStages] = useState<string[]>([
-//     'Motor Installation',
-//     'Cabel Replacement',
-//     'Control System Installation',
-//     'Interior Cabin Lighting'
-//   ]);
-//   const [newStage, setNewStage] = useState('');
-
-//   const handleAddStage = () => {
-//     if (newStage.trim()) {
-//       setStages([...stages, newStage.trim()]);
-//       setNewStage('');
-//     }
-//   };
-
-//   const handleDeleteStage = (index: number) => {
-//     const updatedStages = [...stages];
-//     updatedStages.splice(index, 1);
-//     setStages(updatedStages);
-//   };
-
-//   const moveStage = (fromIndex: number, toIndex: number) => {
-//     const updatedStages = [...stages];
-//     const [movedStage] = updatedStages.splice(fromIndex, 1);
-//     updatedStages.splice(toIndex, 0, movedStage);
-//     setStages(updatedStages);
-//   };
-
-//   const handleUpdate = () => {
-//     console.log("Updated stages array:", stages);
-//     onClose();
-//   };
-
-//   return (
-//     <Modal open={open} onClose={onClose} sx={{ zIndex: 9999 }}>
-//       <Box sx={modalStyle}>
-//         <div className="border-b border-gray-400 mb-2 py-2">
-//           <div className="flex justify-between items-center px-4">
-//             <p className="text-lg font-semibold">Edit Timeline</p>
-//             <RxCross2 onClick={onClose} className="cursor-pointer text-2xl" />
-//           </div>
-//         </div>
-
-//         {/* Add New Stage */}
-//         <div className="px-4 mb-4">
-//           <p className="text-sm font-medium mb-1">Add New Stage</p>
-//           <div className="flex gap-2">
-//             <div className='w-[84%]'>
-//               <Input
-//                 placeholder="Stage Name Here"
-//                 className='w-full'
-//                 value={newStage}
-//                 onChange={(e) => setNewStage(e.target.value)}
-//               />
-//             </div>
-//             <Button
-//               className='h-9'
-//               variant="primary"
-//               onClick={handleAddStage}
-//             >
-//               Add Stage
-//             </Button>
-//           </div>
-//         </div>
-
-//         {/* Current Stages */}
-//         <div className="px-4 mb-4">
-//           <p className="text-sm font-medium mb-2">Current Stages</p>
-//           <DndProvider backend={HTML5Backend}>
-//             <div className="flex flex-col gap-2">
-//               {stages.map((stage, index) => (
-//                 <DraggableStage
-//                   key={index}
-//                   index={index}
-//                   stage={stage}
-//                   moveStage={moveStage}
-//                   handleDeleteStage={handleDeleteStage}
-//                 />
-//               ))}
-//             </div>
-//           </DndProvider>
-//         </div>
-
-//         {/* Buttons */}
-//         <div className="flex justify-end gap-2 px-4 pb-4">
-//           <Button variant="fgsoutline" onClick={onClose}>
-//             Cancel
-//           </Button>
-//           <Button
-//             variant="primary"
-//             onClick={handleUpdate}
-//           >
-//             Update
-//           </Button>
-//         </div>
-//       </Box>
-//     </Modal>
-//   );
-// };
-
-// export default EditTimelineModal;
-
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Box, Modal, IconButton } from '@mui/material';
 import { RxCross2 } from 'react-icons/rx';
 import { FaTrash, FaEdit, FaGripVertical } from 'react-icons/fa';
@@ -217,14 +6,26 @@ import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Input from '@/components/form/input/InputField';
 import Button from '@/components/ui/button/Button';
+import { useParams } from 'next/navigation';
+import { useAddNewTimelineMutation, useGetAllTimelineQuery, useReorderTimelineMutation } from '@/store/services/api';
+import { toast } from 'react-toastify';
 
 interface Props {
   open: boolean;
   onClose: () => void;
 }
 
+interface TimelineStage {
+  id: number;
+  name: string;
+  inventory_id: number;
+  order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 interface DraggableStageProps {
-  stage: string;
+  stage: TimelineStage;
   index: number;
   moveStage: (fromIndex: number, toIndex: number) => void;
   handleDeleteStage: (index: number) => void;
@@ -293,7 +94,7 @@ const DraggableStage: React.FC<DraggableStageProps> = ({
         <div>
           <FaGripVertical className="text-gray-500 cursor-move" />
         </div>
-        <span>{stage}</span>
+        <span>{stage.name}</span>
       </div>
       <div className="flex gap-2">
         <IconButton 
@@ -328,27 +129,77 @@ const modalStyle = {
 };
 
 const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
-  const [stages, setStages] = useState<string[]>([
-    'Motor Installation',
-    'Cabel Replacement',
-    'Control System Installation',
-    'Interior Cabin Lighting'
-  ]);
+  const { id } = useParams();
+  const [addNewTimeline, { isLoading }] = useAddNewTimelineMutation();
+  const [reorderTimeline] = useReorderTimelineMutation();
+
+  const handleReorderSubmit = async () => {
+    const reorderedStages = stages.map(stage => ({ id: stage.id }));
+    try {
+      await reorderTimeline({ stages: reorderedStages }).unwrap();
+      toast.success("Stages reordered successfully");
+      onClose(); // or refetch() if you want to refresh the data
+    } catch (error) {
+      console.error("Reorder failed:", error);
+      toast.error("Failed to reorder stages");
+    }
+  };
+
+  
+
+  const { data: timelineData, error, isLoading: allTimelineLoading, refetch } = useGetAllTimelineQuery(id, {
+    skip: !open
+  });
+
+  const [stages, setStages] = useState<TimelineStage[]>([]);
   const [newStage, setNewStage] = useState('');
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editStageValue, setEditStageValue] = useState('');
+  const [isAdding, setIsAdding] = useState(false);
 
-  const handleAddStage = () => {
-    if (newStage.trim()) {
-      setStages([...stages, newStage.trim()]);
+  // Update stages when data loads
+  useEffect(() => {
+    if (timelineData && timelineData.timeLine.length > 0) {
+      setStages(timelineData.timeLine);
+    }
+  }, [timelineData]);
+
+  const handleAddStage = async () => {
+    if (!newStage.trim()) return;
+    
+    setIsAdding(true);
+    try {
+      const response = await addNewTimeline({
+        name: newStage.trim(),
+        inventory_id: Number(id)
+      }).unwrap();
+
+      setStages([...stages, {
+        id: response.id,
+        name: newStage.trim(),
+        inventory_id: Number(id),
+        order: stages.length + 1,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }]);
       setNewStage('');
+      toast.success('Stage added successfully');
+    } catch (error) {
+      toast.error('Failed to add stage');
+      console.error('Error adding stage:', error);
+    } finally {
+      setIsAdding(false);
     }
   };
 
   const handleUpdateStage = () => {
     if (editingIndex !== null && editStageValue.trim()) {
       const updatedStages = [...stages];
-      updatedStages[editingIndex] = editStageValue.trim();
+      updatedStages[editingIndex] = {
+        ...updatedStages[editingIndex],
+        name: editStageValue.trim(),
+        updated_at: new Date().toISOString()
+      };
       setStages(updatedStages);
       setEditingIndex(null);
       setEditStageValue('');
@@ -359,7 +210,6 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
     const updatedStages = [...stages];
     updatedStages.splice(index, 1);
     setStages(updatedStages);
-    // If we're deleting the stage being edited, reset edit mode
     if (editingIndex === index) {
       setEditingIndex(null);
       setEditStageValue('');
@@ -368,7 +218,7 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
 
   const handleEditStage = (index: number) => {
     setEditingIndex(index);
-    setEditStageValue(stages[index]);
+    setEditStageValue(stages[index].name);
   };
 
   const moveStage = (fromIndex: number, toIndex: number) => {
@@ -376,7 +226,6 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
     const [movedStage] = updatedStages.splice(fromIndex, 1);
     updatedStages.splice(toIndex, 0, movedStage);
     setStages(updatedStages);
-    // Update editingIndex if we're moving the stage being edited
     if (editingIndex !== null) {
       if (fromIndex === editingIndex) {
         setEditingIndex(toIndex);
@@ -386,11 +235,6 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
         setEditingIndex(editingIndex + 1);
       }
     }
-  };
-
-  const handleUpdate = () => {
-    console.log("Updated stages array:", stages);
-    onClose();
   };
 
   const handleCancelEdit = () => {
@@ -448,6 +292,7 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
                 className='h-9'
                 variant="primary"
                 onClick={handleAddStage}
+                // loading={isAdding}
               >
                 Add Stage
               </Button>
@@ -462,7 +307,7 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
             <div className="flex flex-col gap-2">
               {stages.map((stage, index) => (
                 <DraggableStage
-                  key={index}
+                  key={stage.id}
                   index={index}
                   stage={stage}
                   moveStage={moveStage}
@@ -481,9 +326,9 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
           </Button>
           <Button
             variant="primary"
-            onClick={handleUpdate}
+onClick={handleReorderSubmit}
           >
-           Update
+            Update
           </Button>
         </div>
       </Box>
