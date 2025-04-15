@@ -59,7 +59,20 @@ export const api = createApi({
       providesTags: ["Users"],
     }),
 
-
+    forgetPassword: builder.mutation({
+      query: (formData) => ({
+        url: "forgot-password",
+        method: "POST",
+        body: formData,
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: (formData) => ({
+        url: "reset-password",
+        method: "POST",
+        body: formData,
+      }),
+    }),
     // ----------- LOGOUT API ------------
     logout: builder.mutation({
       query: () => ({
@@ -268,4 +281,6 @@ export const { useLoginMutation,
   useUpdateInvestorStatusMutation,
   useGetAllUserLeadsQuery,
   useGetAllUserInvestmentsQuery,
+  useForgetPasswordMutation,
+  useResetPasswordMutation,
 } = api;

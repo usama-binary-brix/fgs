@@ -1,59 +1,82 @@
 "use client";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
-import { EyeCloseIcon, EyeIcon } from "@/icons";
-import { useLoginMutation } from "@/store/services/api";
-import { setUser } from "@/store/services/userSlice";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import { EyeCloseIcon, EyeIcon } from "@/icons";
+import { useResetPasswordMutation } from "@/store/services/api";
 
-export default function AddEmail() {
+
+export default function ResetPassword() {
     const [showPassword, setShowPassword] = useState(false);
-    const dispatch = useDispatch();
-    const router = useRouter();
-    const [login, { isLoading }] = useLoginMutation();
+    const searchParams = useSearchParams();
+    const token = searchParams.get("token");
+    const email = searchParams.get("email");
+
+const router = useRouter()
+    const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
     const formik = useFormik({
         initialValues: {
-            email: "",
             password: "",
+            password_confirmation: "",
         },
         validationSchema: Yup.object({
-            email: Yup.string()
-                .email("Please enter a valid email.")
-                .required("Email is required."),
-            password: Yup.string().required("Password is required."),
+            password: Yup.string()
+                .min(8, "Password must be at least 8 characters")
+                .required("Password is required"),
+            password_confirmation: Yup.string()
+                .oneOf([Yup.ref("password")], "Passwords must match")
+                .required("Please confirm your password"),
         }),
         onSubmit: async (values, { setSubmitting, setFieldError }) => {
-            try {
-                const res = await login(values).unwrap();
-                dispatch(setUser({ user: res.user, token: res.token }));
-
-                if (res.user.account_type === "investor") {
-                    router.push("/investor-dashboard");
-                } else if (res.user.account_type === "admin") {
-                    router.push("/dashboard");
-                } else if (res.user.account_type === "salesperson") {
-                    router.push("/sales-dashboard");
-                } else if (res.user.account_type === "employee") {
-                    router.push("/employee-dashboard");
-                } else if (res.user.account_type === "broker") {
-                    router.push("/broker-dashboard");
-                } else {
-                    router.push("/");
-                }
+            if (!token || !email) {
+                toast.error("Invalid reset link");
+                return;
             }
-            catch (err: any) {
-                setFieldError("password", err?.data?.message || err?.data?.error || "Login failed");
 
+            try {
+                const res = await resetPassword({
+                    token,
+                    email,
+                    password: values.password,
+                    password_confirmation: values.password_confirmation
+                }).unwrap();
+                toast.success(res.message);
+                router.push('/signin')
+            } catch (err: any) {
+                const errorMessage = err?.data?.message || err?.error || "Failed to reset password";
+                toast.error(errorMessage);
+                
+                if (err?.data?.errors) {
+                    // Handle field-specific errors if your API returns them
+                    Object.entries(err.data.errors).forEach(([field, message]) => {
+                        setFieldError(field, Array.isArray(message) ? message[0] : message);
+                    });
+                }
             }
             setSubmitting(false);
         },
     });
+
+    if (!token || !email) {
+        return (
+            <div className="flex flex-col flex-1 lg:w-1/2 w-full">
+                <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
+                    <div className="p-4 text-error-500">
+                        Invalid password reset link. Please make sure you're using the correct link from your email.
+                    </div>
+                    <Link href="/forgot-password" className="text-primary hover:underline">
+                        Request a new reset link
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col flex-1 lg:w-1/2 w-full">
@@ -61,30 +84,62 @@ export default function AddEmail() {
                 <div>
                     <div className="mb-5 sm:mb-8">
                         <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-                            Forget Password
+                            Reset Password
                         </h1>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                            Enter your new password for {email}
+                        </p>
                     </div>
                     <form onSubmit={formik.handleSubmit}>
                         <div className="space-y-6">
                             <div>
-                                <Label>Email <span className="text-error-500">*</span></Label>
-                                <Input
-                                    placeholder="info@gmail.com"
-                                    type="email"
-                                    {...formik.getFieldProps("email")}
-                                />
-                                {formik.touched.email && formik.errors.email && (
-                                    <p className="text-error-500 text-sm">{formik.errors.email}</p>
+                                <Label>Password <span className="text-error-500">*</span></Label>
+                                <div className="relative">
+                                    <Input
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="Enter your password"
+                                        {...formik.getFieldProps("password")}
+                                        // error={formik.touched.password && formik.errors.password}
+                                    />
+                                    <span
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                                    >
+                                        {showPassword ? <EyeIcon className="fill-gray-500 dark:fill-gray-400" /> : <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />}
+                                    </span>
+                                </div>
+                                {formik.touched.password && formik.errors.password && (
+                                    <div className="mt-1 text-sm text-error-500">{formik.errors.password}</div>
+                                )}
+                            </div>
+                            <div>
+                                <Label>Password Confirmation <span className="text-error-500">*</span></Label>
+                                <div className="relative">
+                                    <Input
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="Confirm your password"
+                                        {...formik.getFieldProps("password_confirmation")}
+                                        // error={formik.touched.password_confirmation && formik.errors.password_confirmation}
+                                    />
+                                    <span
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                                    >
+                                        {showPassword ? <EyeIcon className="fill-gray-500 dark:fill-gray-400" /> : <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />}
+                                    </span>
+                                </div>
+                                {formik.touched.password_confirmation && formik.errors.password_confirmation && (
+                                    <div className="mt-1 text-sm text-error-500">{formik.errors.password_confirmation}</div>
                                 )}
                             </div>
                             <div>
                                 <div className="mt-4">
                                     <button
                                         type="submit"
-                                        className="w-full bg-primary hover:bg-primary py-2 text-white rounded-lg"
+                                        className="w-full bg-primary hover:bg-primary py-2 text-white rounded-lg disabled:opacity-50"
                                         disabled={isLoading || formik.isSubmitting}
                                     >
-                                        {isLoading || formik.isSubmitting ? "Sumitting" : "Reset Password"}
+                                        {isLoading || formik.isSubmitting ? "Submitting..." : "Reset Password"}
                                     </button>
                                 </div>
                             </div>
