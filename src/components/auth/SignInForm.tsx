@@ -10,17 +10,25 @@ import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { useLoginMutation } from "@/store/services/api";
 import { setUser } from "@/store/services/userSlice";
 import Link from "next/link";
+import Select from "../form/Select";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
   const [login, { isLoading }] = useLoginMutation();
-
+  const options = [
+    { value: "admin", label: "Admin" },
+    { value: "investor", label: "Investor" },
+    { value: "salesperson", label: "Sales Person" },
+    { value: "employee", label: "Employee" },
+    { value: "broker", label: "Broker" },
+  ];
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
+      account_type:''
     },
     validationSchema: Yup.object({
       email: Yup.string()
@@ -69,6 +77,18 @@ export default function SignInForm() {
           </div>
           <form onSubmit={formik.handleSubmit}>
             <div className="space-y-6">
+            <div>
+              <Label>Account Type <span className="text-error-500">*</span></Label>
+              <Select
+                name="account_type"
+                value={formik.values.account_type}
+                options={options}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.account_type ? formik.errors.account_type : undefined}
+                required
+              />
+            </div>
               <div>
                 <Label>Email <span className="text-error-500">*</span></Label>
                 <Input

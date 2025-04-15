@@ -61,9 +61,9 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
             Assigned to:
           </span>
           <AvatarGroup>
-            {assignedUsers.map((user:any, index:any) => (
-              <Avatar key={index} alt={user.name} src={user.avatar} />
-            ))}
+            {/* {assignedUsers.map((user:any, index:any) => ( */}
+              <Avatar  alt='' src='' />
+             {/* ))} */}
           </AvatarGroup>
         </div>
       </div>
