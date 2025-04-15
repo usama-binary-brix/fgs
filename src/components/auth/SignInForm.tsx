@@ -82,7 +82,7 @@ export default function SignInForm() {
             <div>
               <Label>Account Type <span className="text-error-500">*</span></Label>
               <Select
-                name="type"
+                name="account_type"
                 value={formik.values.account_type}
                 options={options}
                 onChange={formik.handleChange}
