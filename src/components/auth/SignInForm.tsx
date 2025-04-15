@@ -30,7 +30,7 @@ export default function SignInForm() {
     initialValues: {
       email: "",
       password: "",
-      type:''
+      account_type:''
     },
     validationSchema: Yup.object({
       email: Yup.string()
@@ -83,11 +83,11 @@ export default function SignInForm() {
               <Label>Account Type <span className="text-error-500">*</span></Label>
               <Select
                 name="type"
-                value={formik.values.type}
+                value={formik.values.account_type}
                 options={options}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.type ? formik.errors.type : undefined}
+                error={formik.touched.account_type ? formik.errors.account_type : undefined}
                 required
               />
             </div>
