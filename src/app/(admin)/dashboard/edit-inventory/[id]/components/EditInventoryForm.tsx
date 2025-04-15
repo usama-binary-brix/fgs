@@ -235,7 +235,7 @@ const EditInventoryForm = () => {
 
   const getFileTypeIcon = (fileUrl: string): string => {
     if (!fileUrl) return '/images/filesicon/docss.png';
-console.log(fileUrl, 'file url')
+    console.log(fileUrl, 'file url')
     const lowerCaseFileUrl = fileUrl.toLowerCase();
 
     if (lowerCaseFileUrl.endsWith('.pdf')) {
@@ -414,27 +414,27 @@ console.log(fileUrl, 'file url')
                     disabled={!isEditing}
                     maxLength={["make"].includes(field) ? 4 : undefined}
                     onBlur={formik.handleBlur}
-                    className="h-9 w-full rounded-sm border appearance-none px-4 py-1 text-sm shadow-theme-xs text-gray-500 placeholder:text-gray-400 focus:outline-hidden focus:ring-1"
+                    className="h-9 w-full rounded-sm border appearance-none px-4 py-1 text-sm shadow-theme-xs text-black placeholder:text-gray-400 focus:outline-hidden focus:ring-1"
                   />
                   {formik.touched[field as keyof typeof formik.values] && formik.errors[field as keyof typeof formik.errors] && (
                     <p className="text-red-500">{formik.errors[field as keyof typeof formik.errors]}</p>
                   )}
                 </div>
               ))}
-             <div>
-  <Label>Date Purchased <span className="text-red-500">*</span></Label>
-  <MuiDatePicker
-    name="date_purchased"
-    value={formik.values.date_purchased}
-    onChange={(value: any) => {
-      formik.setFieldValue("date_purchased", value);
-    }}
-    disableFuture={true} // This will disable all future dates
-  />
-  {formik.touched.date_purchased && formik.errors.date_purchased && (
-    <p className="text-red-500">{formik.errors.date_purchased}</p>
-  )}
-</div>
+              <div>
+                <Label>Date Purchased <span className="text-red-500">*</span></Label>
+                <MuiDatePicker
+                  name="date_purchased"
+                  value={formik.values.date_purchased}
+                  onChange={(value: any) => {
+                    formik.setFieldValue("date_purchased", value);
+                  }}
+                  disableFuture={true}
+                />
+                {formik.touched.date_purchased && formik.errors.date_purchased && (
+                  <p className="text-red-500">{formik.errors.date_purchased}</p>
+                )}
+              </div>
             </div>
             <div className="mt-6">
               <h1 className="font-semibold">Attached Files</h1>
@@ -450,14 +450,14 @@ console.log(fileUrl, 'file url')
                       <div className="h-30 rounded-lg overflow-hidden">
                         {isImage ? (
                           <img
-                          onClick={()=>window.open(file.url)}
+                            onClick={() => window.open(file.url)}
                             src={fileTypeIcon}
                             alt={`Existing File ${index}`}
                             className="w-full h-full object-cover rounded-lg"
                           />
                         ) : (
                           <img
-                          onClick={()=>window.open(file.url)}
+                            onClick={() => window.open(file.url)}
 
                             src={fileTypeIcon}
                             alt="File type icon"
@@ -529,12 +529,12 @@ console.log(fileUrl, 'file url')
             </div>
 
           </form>
-          {/* <div>
-            <h1 className="text-[#000] text-[17px] font-medium font-family mt-10 mb-5">Inventory Stages</h1>
+          <div>
+            <h1 className="text-[#000] text-[17px] font-semibold font-family mt-10 mb-5">Inventory Stages</h1>
             <div className="flex justify-center">
               <Timeline />
             </div>
-          </div> */}
+          </div>
         </>
 
 

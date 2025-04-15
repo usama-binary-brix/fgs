@@ -114,13 +114,7 @@ const AccountsTable = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button variant="outlined" size='sm'>
-            Edit Columns
-          </Button>
-
-          <Button variant="outlined" size='sm'>
-            Filters
-          </Button>
+         
 
           <Button variant="primary" size='sm' onClick={handleOpenModal}>
             Add New Account
