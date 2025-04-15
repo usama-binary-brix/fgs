@@ -18,6 +18,8 @@ export default function SignInForm() {
   const router = useRouter();
   const [login, { isLoading }] = useLoginMutation();
   const options = [
+    { value: "super_admin", label: "Super Admin" },
+
     { value: "admin", label: "Admin" },
     { value: "investor", label: "Investor" },
     { value: "salesperson", label: "Sales Person" },
