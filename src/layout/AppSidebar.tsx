@@ -19,14 +19,14 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  { icon: <GridIcon />, name: "Dashboard", path: "/dashboard", roles: ["admin"] },
-  { icon: <GridIcon />, name: "All Leads", path: "/dashboard/leads", roles: ["admin"] },
-  { icon: <GridIcon />, name: "Accounts", path: "/dashboard/accounts", roles: ["admin"] },
+  { icon: <GridIcon />, name: "Dashboard", path: "/dashboard", roles: ["admin", 'super_admin'] },
+  { icon: <GridIcon />, name: "All Leads", path: "/dashboard/leads", roles: ["admin", 'super_admin'] },
+  { icon: <GridIcon />, name: "Accounts", path: "/dashboard/accounts", roles: ["admin", 'super_admin'] },
   {
     icon: <GridIcon />,
     name: "Inventory",
     subItems: [{ name: "All Inventory", path: "/dashboard/inventory" }],
-    roles: ["admin"],
+    roles: ["admin", 'super_admin'],
   },
 
   { icon: <GridIcon />, name: "Dashboard", path: "/investor-dashboard", roles: ["investor"] },
