@@ -13,13 +13,14 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 interface AssignedUser {
-  name: string;
+
+  first_name: string;
   avatar: string;
 }
 
 interface TaskAccordionProps {
   title: string;
-  assignedUsers: AssignedUser[];
+  assignedUsers: any;
   startDate: string;
   dueDate: string;
   status: string;
@@ -36,6 +37,7 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
   status,
   priority,
   initialDetails = "",
+
   onSubmitTask,
 }) => {
 
@@ -52,6 +54,7 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
     },
   });
 
+  console.log(assignedUsers, 'assigned user')
   return (
     <div className="bg-white mb-2 rounded-md shadow-sm">
       <div className="flex items-center justify-between px-4 pt-3">
@@ -60,11 +63,15 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
           <span className="text-[14px] text-[#616161] font-medium mr-1">
             Assigned to:
           </span>
-          <AvatarGroup>
+        <div>
+        <AvatarGroup>
             {/* {assignedUsers.map((user:any, index:any) => ( */}
-              <Avatar  alt='' src='' />
+              <Avatar  alt={`${assignedUsers.first_name}`} src='' />
              {/* ))} */}
           </AvatarGroup>
+          <p className="text-xs text-gray-500">{assignedUsers.first_name}</p>
+
+        </div>
         </div>
       </div>
 

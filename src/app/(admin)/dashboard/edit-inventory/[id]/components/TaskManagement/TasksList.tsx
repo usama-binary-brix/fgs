@@ -106,7 +106,7 @@ console.log(data, 'data')
         <TaskAccordion
           key={task.id}
           title={task.task_name}
-          assignedUsers={task.assignedUsers}
+          assignedUsers={task.employee}
           startDate={task.start_date}
           dueDate={task.due_date}
           status={task.status}
