@@ -7,7 +7,8 @@ import {
   useGetInventoryByIdQuery,
   useGetAllCategoriesQuery,
   useGetSubCategoriesMutation,
-  useEditInventoryMutation
+  useEditInventoryMutation,
+  useGetAllTimelineQuery
 } from "@/store/services/api";
 import { RxCross2 } from "react-icons/rx";
 import { toast } from "react-toastify";
@@ -20,6 +21,7 @@ import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import Button from "@/components/ui/button/Button";
 import * as Yup from 'yup';
+import CustomizedTimeline from "./CustomizedTimeline";
 
 type ErrorResponse = {
   data: {
@@ -42,6 +44,8 @@ const EditInventoryForm = () => {
   const [fetchSubCategories] = useGetSubCategoriesMutation();
   const [editInventory] = useEditInventoryMutation()
   const [activeTab, setActiveTab] = useState("details");
+   const { data: timelineData, error:timelineError, isLoading: allTimelineLoading, refetch:timelineRefetch } = useGetAllTimelineQuery(id);
+  
 
   const [isEditing, setIsEditing] = useState(false);
   const [subCategories, setSubCategories] = useState<{ categories: any[] }>({ categories: [] });
@@ -531,7 +535,7 @@ const EditInventoryForm = () => {
           <div>
             <h1 className="text-[#000] text-[17px] font-semibold font-family mt-10 mb-5">Inventory Stages</h1>
             <div className="flex justify-center">
-              {/* <Timeline /> */}
+    <CustomizedTimeline steps={timelineData?.timeLine}/>
             </div>
           </div>
         </>

@@ -5,12 +5,13 @@ import {
   Avatar,
   AvatarGroup,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import TextArea from "./form/input/TextArea";
 import Button from "./ui/button/Button";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import UpdateTaskStatusModal from "./UpdateTaskStatusModal";
 
 interface AssignedUser {
 
@@ -54,8 +55,19 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
     },
   });
 
-  console.log(assignedUsers, 'assigned user')
+  
+    const [isModalOpen, setIsModalOpen] = useState(false);
+  
+    const handleOpenModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    const handleCloseModal = () => {
+      setIsModalOpen(false);
+    };
+  
   return (
+   <>
     <div className="bg-white mb-2 rounded-md shadow-sm">
       <div className="flex items-center justify-between px-4 pt-3">
         <p className="text-base font-semibold mb-1">{title}</p>
@@ -147,13 +159,19 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
                 disabled={formik.isSubmitting}
               />
               <div className="flex items-end justify-end">
-                <Button type="submit">Update Task</Button>
+                <Button 
+                // type="submit"
+              onClick={handleOpenModal}
+                
+                >Update Task</Button>
               </div>
             </AccordionDetails>
           </Accordion>
         </form>
       </div>
     </div>
+<UpdateTaskStatusModal open={isModalOpen} onClose={handleCloseModal} taskName={title}/>
+   </>
   );
 };
 
