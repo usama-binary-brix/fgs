@@ -3,11 +3,15 @@ import Input from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
 import Button from '@/components/ui/button/Button';
 import { Box, Grid, Modal, Autocomplete, TextField } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { RxCross2 } from 'react-icons/rx';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Select from '@/components/form/Select';
+import { useParams } from 'next/navigation';
+import { useAddNewTaskMutation, useGetAllEmployeesQuery } from '@/store/services/api';
+import { ErrorResponse } from '@/app/(admin)/dashboard/accounts/components/AccountsModal';
+import { toast } from 'react-toastify';
 
 interface Props {
     open: boolean;
@@ -46,27 +50,56 @@ const priorityOptions = [
     { label: 'Low', value: 'low' },
 ];
 
-// Dummy users data - in a real app, this would come from your backend
-const dummyUsers: User[] = [
-    { id: '1', name: 'John Doe', email: 'john@example.com' },
-    { id: '2', name: 'Jane Smith', email: 'jane@example.com' },
-    { id: '3', name: 'Bob Johnson', email: 'bob@example.com' },
-    { id: '4', name: 'Alice Williams', email: 'alice@example.com' },
-];
+
 
 const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
+    const { id } = useParams()
     const [userInput, setUserInput] = React.useState('');
     const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
+    const [addTask] = useAddNewTaskMutation();
 
-    const filteredUsers = dummyUsers.filter(user =>
-        user.name.toLowerCase().includes(userInput.toLowerCase()) ||
-        user.email.toLowerCase().includes(userInput.toLowerCase())
-    );
+    const { data, error, isFetching, refetch } = useGetAllEmployeesQuery(undefined, {
+        skip: !open,
+        refetchOnMountOrArgChange: true,
+    });
+
+    React.useEffect(() => {
+        if (open) {
+            refetch();
+        }
+    }, [open, refetch]);
+
+    const backendUsers = React.useMemo(() => {
+        return data?.employee?.map((emp: any) => ({
+            id: emp.id,
+            name: `${emp?.first_name || ''}${emp?.last_name ? ' ' + emp.last_name : ''}`.trim(),
+            email: emp?.email || ''
+        })) || [];
+    }, [data?.employee]);
+
+    const filteredUsers = React.useMemo(() => {
+        return backendUsers.filter((user: any) =>
+            user.name.toLowerCase().includes(userInput.toLowerCase())
+        );
+    }, [backendUsers, userInput]);
+
+    // const {data, error} = useGetAllEmployeesQuery('')
+    // const backendUsers = data?.employee?.map((emp: any) => ({
+    //     id: emp.id,
+    //     name: `${emp?.first_name || ''}${emp?.last_name ? ' ' + emp.last_name : ''}`.trim(),
+    //     email: emp?.email || ''
+    // })) || [];
+
+    // const filteredUsers = backendUsers.filter((user:any) =>
+    //     user.name.toLowerCase().includes(userInput.toLowerCase())
+    //     // user.email.toLowerCase().includes(userInput.toLowerCase())
+    // );
+
 
     const formik = useFormik({
         initialValues: {
             task_name: '',
-            assigned_to: '',
+            employee_id: '',
             start_date: null,
             due_date: null,
             status: '',
@@ -74,7 +107,7 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
         },
         validationSchema: Yup.object({
             task_name: Yup.string().required('Task Name is required'),
-            assigned_to: Yup.string().required('Assigned To is required'),
+            employee_id: Yup.string().required('Assigned To is required'),
             start_date: Yup.date().required('Start Date is required'),
             due_date: Yup.date()
                 .required('Due Date is required')
@@ -82,13 +115,43 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
             status: Yup.string().required('Status is required'),
             priority: Yup.string().required('Priority is required'),
         }),
-        onSubmit: (values) => {
+        onSubmit: async (values, { resetForm }) => {
             const submittedData = {
                 ...values,
-                assigned_to: selectedUser?.id || '', // Send user ID instead of name
+                employee_id: selectedUser?.id || '',
+                inventory_id: id
             };
-            console.log('Submitted Task Data:', submittedData);
-            handleClose();
+            try {
+                //  let response;
+                //  if (userData?.id) {
+
+                //    response = await register({ id: userData.id, ...values }).unwrap();
+                //  } else {
+
+                //    response = await register(values).unwrap();
+                //  }
+                const response = await addTask(submittedData).unwrap();
+                toast.success(response.message || 'Success');
+                //  setLoading(false);
+                resetForm();
+                onClose();
+            } catch (error) {
+                const errorResponse = error as ErrorResponse;
+
+
+                if (errorResponse?.data?.error) {
+                    Object.values(errorResponse.data.error).forEach((errorMessage) => {
+                        if (Array.isArray(errorMessage)) {
+                            errorMessage.forEach((msg) => toast.error(msg)); // Handle array errors
+                        } else {
+                            toast.error(errorMessage); // Handle single string errors
+                        }
+                    });
+                }
+                handleClose();
+
+                //  setLoading(false);
+            }
         },
     });
 
@@ -127,47 +190,47 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
                         </Grid>
 
                         <Grid item xs={12} md={6}>
-  <Label>
-    Assigned To <span className="text-error-500">*</span>
-  </Label>
-  <Autocomplete
-    options={filteredUsers}
-    getOptionLabel={(user) => `${user.name}`}
-    inputValue={userInput}
-    onInputChange={(_, newInputValue) => {
-      setUserInput(newInputValue);
-    }}
-    onChange={(_, newValue) => {
-      setSelectedUser(newValue);
-      formik.setFieldValue('assigned_to', newValue?.id || '');
-    }}
-    renderInput={(params) => (
-      <TextField
-        {...params}
-        placeholder="Search user by name or email"
-        error={formik.touched.assigned_to && Boolean(formik.errors.assigned_to)}
-        helperText={formik.touched.assigned_to && formik.errors.assigned_to}
-        size="small"
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            height: '36px', 
-            paddingTop: '6px',
-            paddingBottom: '6px',
-          },
-          '& .MuiInputBase-input': {
-            padding: '6px 12px',
-          },
-        }}
-      />
-    )}
-    value={selectedUser}
-    sx={{
-      '& .MuiAutocomplete-inputRoot': {
-        padding: '0px 9px', 
-      },
-    }}
-  />
-</Grid>
+                            <Label>
+                                Assigned To <span className="text-error-500">*</span>
+                            </Label>
+                            <Autocomplete
+                                options={filteredUsers}
+                                getOptionLabel={(user) => `${user.name}`}
+                                inputValue={userInput}
+                                onInputChange={(_, newInputValue) => {
+                                    setUserInput(newInputValue);
+                                }}
+                                onChange={(_, newValue) => {
+                                    setSelectedUser(newValue);
+                                    formik.setFieldValue('employee_id', newValue?.id || '');
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        placeholder="Search Employee by name"
+                                        error={formik.touched.employee_id && Boolean(formik.errors.employee_id)}
+                                        helperText={formik.touched.employee_id && formik.errors.employee_id}
+                                        size="small"
+                                        sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                                height: '36px',
+                                                paddingTop: '6px',
+                                                paddingBottom: '6px',
+                                            },
+                                            '& .MuiInputBase-input': {
+                                                padding: '6px 12px',
+                                            },
+                                        }}
+                                    />
+                                )}
+                                value={selectedUser}
+                                sx={{
+                                    '& .MuiAutocomplete-inputRoot': {
+                                        padding: '0px 9px',
+                                    },
+                                }}
+                            />
+                        </Grid>
 
                         <Grid item xs={6} md={6}>
                             <Label>Start Date <span className="text-error-500">*</span></Label>
@@ -225,7 +288,8 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
 
                         <Grid item xs={12} display="flex" justifyContent="flex-end">
                             <div className='flex items-center gap-4'>
-                                <Button onClick={onClose} variant="fgsoutline">Cancel</Button>
+
+                                <Button onClick={handleClose} variant="fgsoutline">Cancel</Button>
                                 <Button type="submit" variant="primary">Add Task</Button>
                             </div>
                         </Grid>

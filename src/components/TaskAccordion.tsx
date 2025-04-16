@@ -43,9 +43,9 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
     initialValues: {
       task_details: initialDetails,
     },
-    validationSchema: Yup.object({
-      task_details: Yup.string().required("Task Details is required"),
-    }),
+    // validationSchema: Yup.object({
+    //   task_details: Yup.string().required("Task Details is required"),
+    // }),
     onSubmit: (values, { resetForm }) => {
       onSubmitTask(values.task_details);
       resetForm();

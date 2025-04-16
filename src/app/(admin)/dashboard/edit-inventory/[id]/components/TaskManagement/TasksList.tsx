@@ -3,8 +3,11 @@ import Button from '@/components/ui/button/Button'
 import React, { useState } from 'react'
 import { IoSearchOutline } from 'react-icons/io5'
 import AddTaskModal from './AddTaskModal'
+import { useGetAllAdminEmployeeTasksQuery } from '@/store/services/api'
+import { useParams } from 'next/navigation'
 
 const TasksList = () => {
+const {id} = useParams()
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -15,6 +18,9 @@ const TasksList = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+const {data} = useGetAllAdminEmployeeTasksQuery(id)
+console.log(data, 'data')
 
   const tasks = [
     {
@@ -96,13 +102,13 @@ const TasksList = () => {
       
       
       <div>
-      {tasks.map((task) => (
+      {data?.task?.map((task:any) => (
         <TaskAccordion
           key={task.id}
-          title={task.title}
+          title={task.task_name}
           assignedUsers={task.assignedUsers}
-          startDate={task.startDate}
-          dueDate={task.dueDate}
+          startDate={task.start_date}
+          dueDate={task.due_date}
           status={task.status}
           priority={task.priority}
           initialDetails={task.task_details}

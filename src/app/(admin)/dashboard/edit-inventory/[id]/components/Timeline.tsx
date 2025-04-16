@@ -12,7 +12,7 @@ import { IoMdRadioButtonOn } from 'react-icons/io';
 export interface TimelineStep {
   name: string;
   status: "completed" | "active" | "pending";
-  description: string;
+  description?: string;
 }
 
 interface CustomizedTimelineProps {
@@ -71,20 +71,20 @@ export default function CustomizedTimeline({ steps = [] }: CustomizedTimelinePro
             </TimelineSeparator>
 
             <TimelineContent sx={{ py: '0px' }}>
-              <Typography 
-                variant="h1" 
-                component="span"
-                sx={{
+              <span 
+              className='capitalize'
+                style={{
                   color: isActive ? 'black' : isCompleted ? '#414141' : 'gray',
                   fontWeight: isActive || isCompleted ? 550 : 550,
-                  fontSize: isActive ? '18px' : '18px'
+                  fontSize: isActive ? '18px' : '18px',
+                  
                 }}
               >
                 {step.name || ''}
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'grey' }}>
+              </span>
+              <p style={{ color: 'grey' }}>
                 {step.description}
-              </Typography>
+              </p>
             </TimelineContent>
           </TimelineItem>
         );

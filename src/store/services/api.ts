@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline"],
+  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -73,6 +73,14 @@ export const api = createApi({
         body: formData,
       }),
     }),
+    getAllEmployees: builder.query({
+      query: () => ({
+        url: `get/employee`,
+        method: 'GET',
+      }),
+      providesTags: ["allEmployees"],
+    }),
+
     // ----------- LOGOUT API ------------
     logout: builder.mutation({
       query: () => ({
@@ -277,6 +285,22 @@ export const api = createApi({
       providesTags: ["InventoryTimeline"],
     }),
 
+    addNewTask: builder.mutation({
+      query: (taskData) => ({
+        url: 'add/employee/task', 
+        method: 'POST',
+        body: taskData,
+      }),
+      invalidatesTags: ["AllAdminTasks"],
+    }),
+
+    getAllAdminEmployeeTasks: builder.query({
+      query: (id) => ({
+        url: `get/employee/${id}`,
+        method: 'GET', 
+      }),
+      providesTags: ["AllAdminTasks"],
+    }),
 
 
   }),
@@ -313,4 +337,8 @@ export const { useLoginMutation,
   useGetAllTimelineQuery,
   useAddNewTimelineMutation,
   useReorderTimelineMutation,
+  useGetAllEmployeesQuery,
+  useAddNewTaskMutation,
+  useGetAllAdminEmployeeTasksQuery,
+  
 } = api;

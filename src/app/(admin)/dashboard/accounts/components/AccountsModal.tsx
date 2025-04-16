@@ -37,7 +37,7 @@ interface Props {
   userData?: any;
 }
 
-type ErrorResponse = {
+export type ErrorResponse = {
   data: {
     error: Record<string, string>;
   };
