@@ -8,26 +8,10 @@ import { useSelector } from 'react-redux'
 
 const EmployeeTaskList = () => {
 const {id} = useParams()
-const user = useSelector((state:any)=>state.user.user.account_type)
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
 const {data} = useGetAllAdminEmployeeTasksQuery(id)
-
- 
 
     const handleUpdate = (taskId:any, updatedDetails:any) => {
       console.log(`Task ${taskId} updated with:`, updatedDetails);
-
-
-
     }
   return (
     <>
@@ -39,7 +23,7 @@ const {data} = useGetAllAdminEmployeeTasksQuery(id)
       
       
       <div>
-      {data?.task?.map((task:any) => (
+      {/* {data?.task?.map((task:any) => (
         <TaskAccordion
           key={task.id}
           title={task.task_name}
@@ -51,7 +35,7 @@ const {data} = useGetAllAdminEmployeeTasksQuery(id)
           initialDetails={task.task_details}
           onSubmitTask={(details) => handleUpdate(task.id, details)}
         />
-      ))}
+      ))} */}
     </div>
     </>
   )

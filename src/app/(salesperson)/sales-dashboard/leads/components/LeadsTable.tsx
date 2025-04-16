@@ -179,7 +179,7 @@ const LeadsTable = () => {
       <div className="overflow-auto rounded border  border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full h-[30rem] overflow-x-auto">
           <Table>
-            <TableHeader className="border-b border-gray-100 overflow-auto bg-[#F7F7F7] dark:border-white/[0.05]">
+            <TableHeader className="sticky top-0 z-50 border-b border-gray-100 overflow-auto bg-[#F7F7F7] dark:border-white/[0.05]">
               <TableRow>
                 {['ID', 'Name', 'Email', 'Company', 'Source', 'Reminder Date', 'Budget', 'Condition', 'Created by', 'Action'].map((heading) => (
                   <TableCell key={heading} isHeader className="px-3  py-3 font-family whitespace-nowrap overflow-hidden font-medium text-[#616161] text-start text-[14px] dark:text-gray-400">

@@ -141,7 +141,7 @@ const InventoryTable = () => {
         <div className="rounded-xl border  border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
           <div className=" overflow-auto">
             <Table className='table-auto'>
-              <TableHeader className="border-b bg-[#F5F5F5] text-[#616161] font-family font-medium text-[12.5px] border-gray-100 dark:border-white/[0.05]">
+              <TableHeader className="sticky top-0 z-50 border-b bg-[#F5F5F5] text-[#616161] font-family font-medium text-[12.5px] border-gray-100 dark:border-white/[0.05]">
                 <TableRow>
                   {[
                     'ID', 'ELEVATOR MANUFACTURER', 'ELEVATOR MODEL', 'ELEVATOR SERIAL', 'PURCHASE DATE',

@@ -144,7 +144,7 @@ const MyInvestmentTable = () => {
                 <div className="rounded-xl border  border-[#DDD] bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
                 <div className="max-w-full h-[30rem] overflow-x-auto">
                         <Table className='table-auto'>
-                            <TableHeader className="border-b bg-[#F7F7F7] text-[#616161] font-family font-medium text-[12.5px] border-gray-100 dark:border-white/[0.05]">
+                            <TableHeader className="sticky top-0 z-50 border-b bg-[#F7F7F7] text-[#616161] font-family font-medium text-[12.5px] border-gray-100 dark:border-white/[0.05]">
                                 <TableRow>
                                     {[
                                         'ID', 'ELEVATOR MANUFACTURER', 'ELEVATOR MODEL', 'ELEVATOR SERIAL', 'PURCHASE DATE',
