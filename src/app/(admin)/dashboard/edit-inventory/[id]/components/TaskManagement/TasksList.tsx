@@ -5,10 +5,11 @@ import { IoSearchOutline } from 'react-icons/io5'
 import AddTaskModal from './AddTaskModal'
 import { useGetAllAdminEmployeeTasksQuery } from '@/store/services/api'
 import { useParams } from 'next/navigation'
+import { useSelector } from 'react-redux'
 
 const TasksList = () => {
-const {id} = useParams()
-
+  const { id } = useParams()
+  const user = useSelector((state: any) => state.user.user.account_type)
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -19,57 +20,16 @@ const {id} = useParams()
     setIsModalOpen(false);
   };
 
-const {data} = useGetAllAdminEmployeeTasksQuery(id)
-console.log(data, 'data')
-
-  const tasks = [
-    {
-      id: 1,
-      title: "Excavator Overhaul",
-      assignedUsers: [
-        { name: "User 1", avatar: "/user1.jpg" },
-        { name: "User 2", avatar: "/user2.jpg" },
-      ],
-      startDate: "02-26-2024",
-      dueDate: "03-15-2024",
-      status: "Completed",
-      priority: "High",
-      task_details: "Check engine, hydraulics and repaint.",
-    },
-    {
-      id: 2,
-      title: "Crane Inspection",
-      assignedUsers: [
-        { name: "User 3", avatar: "/user3.jpg" },
-        { name: "User 4", avatar: "/user4.jpg" },
-      ],
-      startDate: "03-01-2024",
-      dueDate: "03-10-2024",
-      status: "Pending",
-      priority: "Medium",
-      task_details: "Safety inspection scheduled.",
-    },
-    {
-      id: 3,
-      title: "Bulldozer Maintenance",
-      assignedUsers: [
-        { name: "User 5", avatar: "/user5.jpg" },
-      ],
-      startDate: "03-05-2024",
-      dueDate: "03-20-2024",
-      status: "In Progress",
-      priority: "Low",
-      task_details: "Oil change and track inspection.",
-    },
-  ];
-  
-
-    const handleUpdate = (taskId:any, updatedDetails:any) => {
-      console.log(`Task ${taskId} updated with:`, updatedDetails);
+  const { data } = useGetAllAdminEmployeeTasksQuery(id)
 
 
 
-    }
+  const handleUpdate = (taskId: any, updatedDetails: any) => {
+    console.log(`Task ${taskId} updated with:`, updatedDetails);
+
+
+
+  }
   return (
     <>
       <div className='flex justify-between items-center mb-4'>
@@ -78,7 +38,6 @@ console.log(data, 'data')
           <div className="inline-flex items-center gap-3">
             <div className="hidden sm:block">
               <div className="flex items-center space-x-2">
-
                 <div className="relative">
 
                   <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#616161]" />
@@ -87,6 +46,7 @@ console.log(data, 'data')
                     placeholder="Search"
                   />
                 </div>
+
               </div>
             </div>
           </div>
@@ -96,26 +56,27 @@ console.log(data, 'data')
           >
             Add New Task
           </Button>
+
         </div>
       </div>
-      
-      
-      
+
+
+
       <div>
-      {data?.task?.map((task:any) => (
-        <TaskAccordion
-          key={task.id}
-          title={task.task_name}
-          assignedUsers={task.employee}
-          startDate={task.start_date}
-          dueDate={task.due_date}
-          status={task.status}
-          priority={task.priority}
-          initialDetails={task.task_details}
-          onSubmitTask={(details) => handleUpdate(task.id, details)}
-        />
-      ))}
-    </div>
+        {data?.task?.map((task: any) => (
+          <TaskAccordion
+            key={task.id}
+            title={task.task_name}
+            assignedUsers={task.employee}
+            startDate={task.start_date}
+            dueDate={task.due_date}
+            status={task.status}
+            priority={task.priority}
+            initialDetails={task.task_details}
+            onSubmitTask={(details) => handleUpdate(task.id, details)}
+          />
+        ))}
+      </div>
 
 
 

@@ -14,6 +14,8 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import AddLeadInput from '@/app/(admin)/dashboard/leads/components/input/AddLeadInput';
 import { useFormik } from 'formik';
+import { useDebounce } from 'use-debounce';
+import Pagination from '@/components/tables/Pagination';
 
 
 
@@ -36,7 +38,19 @@ interface Lead {
 
 const EmployeeInventoryTasksTable = () => {
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-    const { data, isLoading, error } = useGetAllInventoryQuery('');
+    const [searchText, setSearchText] = useState('');
+    const [debouncedSearchText] = useDebounce(searchText, 300);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(10); // Example total pages
+    const [perPage, setPerPage] = useState(10);
+
+    const { data, isLoading, error, refetch } = useGetAllInventoryQuery({
+        page: currentPage,
+        perPage: perPage,
+        search: debouncedSearchText
+    });
+
+    // const { data, isLoading, error } = useGetAllInventoryQuery('');
     const router = useRouter()
     const [addInvestment] = useAddInvestmentMutation()
     const toggleDropdown = (id: string) => {
@@ -54,9 +68,9 @@ const EmployeeInventoryTasksTable = () => {
     const [openDropdownId, setOpenDropdownId] = useState<string | number | null>();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedId, setSelectedId] = useState<string | number | null>(null);
-const handleNavigate = (id:any)=>{
-    router.push(`my-investment/view-project/${id}`)
-}
+    const handleNavigate = (id: any) => {
+        router.push(`view-tasks/${id}`)
+    }
     const formik = useFormik({
         initialValues: {
             investmentAmount: '',
@@ -94,6 +108,17 @@ const handleNavigate = (id:any)=>{
         },
     });
 
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
+
+    const handlePerPageChange = (newPerPage: number) => {
+        setPerPage(newPerPage);
+        setCurrentPage(1); // Reset to first page on per-page change
+    };
+
+
     return (
         <>
             <div className=''>
@@ -101,25 +126,23 @@ const handleNavigate = (id:any)=>{
                     <div className="inline-flex items-center gap-3">
                         <div className="hidden sm:block">
                             <div className="flex items-center space-x-2">
-
                                 <div className="relative">
-
                                     <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#616161]" />
                                     <input
                                         className="text-xs border bg-white rounded-lg pl-9 pr-2 h-9 w-64 border-[#DDD] font-family font-medium text-[12.5px] text-[#616161] focus:border-gray-400 focus:outline-none"
                                         placeholder="Search"
+                                        value={searchText}
+                                        onChange={(e) => setSearchText(e.target.value)}
                                     />
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
+                    <div className="flex items-center gap-3">
+                    </div>
                 </div>
-
-
-                <div className="rounded-xl border  border-[#DDD] bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-                    <div className=" overflow-auto">
+                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div className="max-w-full h-[30rem] overflow-x-auto">
                         <Table className='table-auto'>
                             <TableHeader className="border-b bg-[#F7F7F7] text-[#616161] font-family font-medium text-[12.5px] border-gray-100 dark:border-white/[0.05]">
                                 <TableRow>
@@ -141,9 +164,9 @@ const handleNavigate = (id:any)=>{
                             </TableHeader>
 
                             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                                {data?.inventories?.map((lead: any) => (
+                                {data?.inventories?.data?.map((lead: any) => (
                                     <TableRow key={lead.id}>
-                                        <TableCell className="px-5 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.id}</TableCell>
+                                        <TableCell className="px-5 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.listing_number}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.make}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.model}</TableCell>
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.serial_no}</TableCell>
@@ -181,7 +204,7 @@ const handleNavigate = (id:any)=>{
                                                     <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                                                 </button>
                                                 <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="w-40 p-2">
-                                                    <DropdownItem onItemClick={()=>handleNavigate(lead.id)} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                                                    <DropdownItem onItemClick={() => handleNavigate(lead.id)} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                                                         View Details
                                                     </DropdownItem>
 
@@ -193,6 +216,16 @@ const handleNavigate = (id:any)=>{
                                 ))}
                             </TableBody>
                         </Table>
+                    </div>
+                    <div className='px-6 border-t'>
+
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={data?.inventories?.last_page || 1}
+                            onPageChange={handlePageChange}
+                            perPage={perPage}
+                            onPerPageChange={handlePerPageChange}
+                        />
                     </div>
                 </div>
             </div>

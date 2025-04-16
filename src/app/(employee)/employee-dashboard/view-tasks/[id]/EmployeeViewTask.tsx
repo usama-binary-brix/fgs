@@ -1,13 +1,12 @@
+'use client'
 import Button from '@/components/ui/button/Button'
-import React, { useEffect, useState } from 'react'
-import EditTimelineModal from './EditTimelineModal'
-import TaskAccordion from '@/components/TaskAccordion'
-import TasksList from './TaskManagement/TasksList'
+import React, { useState } from 'react'
 import { useGetAllTimelineQuery } from '@/store/services/api'
+import CustomizedTimeline from '@/app/(admin)/dashboard/edit-inventory/[id]/components/CustomizedTimeline'
 import { useParams } from 'next/navigation'
-import CustomizedTimeline from './CustomizedTimeline'
+import EmployeeTaskList from './EmployeeTaskList'
 
-const Reconditioning = () => {
+const EmployeeViewTask = () => {
   const [openTimelineModal, setOpenEditTimelineModal] = useState(false)
   const handleOpenEditTimeline = ()=>{
     setOpenEditTimelineModal(true)
@@ -24,18 +23,12 @@ const {id} = useParams()
         {/* <h1 className="text-[#000] text-[17px] font-family font-semibold">Timeline</h1> */}
         <p className='text-lg font-semibold'>Timeline</p>
      
-        <Button variant="primary"
-            size='sm'
-            onClick={handleOpenEditTimeline}
-          >
-            Edit Timeline
-          </Button>
+        
       </div>
     <CustomizedTimeline steps={timelineData?.timeLine}/>
-<TasksList/>
-    <EditTimelineModal open={openTimelineModal} onClose={handleCloseModal}/>
+<EmployeeTaskList/>
     </>
   )
 }
 
-export default Reconditioning
+export default EmployeeViewTask

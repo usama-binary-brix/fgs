@@ -13,7 +13,7 @@ import { RxCross2 } from "react-icons/rx";
 import { toast } from "react-toastify";
 import Shipment from "./Shipment";
 import Reconditioning from "./Reconditioning";
-import Timeline from "./Timeline";
+import Timeline from "./CustomizedTimeline";
 import { QRCodeCanvas } from "qrcode.react";
 import MuiDatePicker from "@/components/CustomDatePicker";
 import Label from "@/components/form/Label";
