@@ -301,7 +301,13 @@ export const api = createApi({
       }),
       providesTags: ["AllAdminTasks"],
     }),
-
+    deleteTimeline: builder.mutation({
+      query: (id) => ({
+        url: `timeline/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ["InventoryTimeline"],
+    }),
 
   }),
 });
@@ -340,5 +346,6 @@ export const { useLoginMutation,
   useGetAllEmployeesQuery,
   useAddNewTaskMutation,
   useGetAllAdminEmployeeTasksQuery,
-  
+  useDeleteTimelineMutation,
+
 } = api;

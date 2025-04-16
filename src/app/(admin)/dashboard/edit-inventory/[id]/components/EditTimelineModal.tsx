@@ -7,7 +7,12 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import Input from '@/components/form/input/InputField';
 import Button from '@/components/ui/button/Button';
 import { useParams } from 'next/navigation';
-import { useAddNewTimelineMutation, useGetAllTimelineQuery, useReorderTimelineMutation } from '@/store/services/api';
+import { 
+  useAddNewTimelineMutation, 
+  useDeleteTimelineMutation, 
+  useGetAllTimelineQuery, 
+  useReorderTimelineMutation,
+} from '@/store/services/api';
 import { toast } from 'react-toastify';
 
 interface Props {
@@ -130,7 +135,7 @@ const modalStyle = {
 
 const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
   const { id } = useParams();
-  const [addNewTimeline, { isLoading }] = useAddNewTimelineMutation();
+  const [addNewTimeline, { isLoading: isAdding }] = useAddNewTimelineMutation();
   const [reorderTimeline] = useReorderTimelineMutation();
 
   const handleReorderSubmit = async () => {
@@ -145,8 +150,6 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
     }
   };
 
-  
-
   const { data: timelineData, error, isLoading: allTimelineLoading, refetch } = useGetAllTimelineQuery(id, {
     skip: !open
   });
@@ -155,7 +158,6 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
   const [newStage, setNewStage] = useState('');
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editStageValue, setEditStageValue] = useState('');
-  const [isAdding, setIsAdding] = useState(false);
 
   // Update stages when data loads
   useEffect(() => {
@@ -167,7 +169,6 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
   const handleAddStage = async () => {
     if (!newStage.trim()) return;
     
-    setIsAdding(true);
     try {
       const response = await addNewTimeline({
         name: newStage.trim(),
@@ -183,17 +184,25 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
         updated_at: new Date().toISOString()
       }]);
       setNewStage('');
-      toast.success('Stage added successfully');
+      toast.success(response.message);
     } catch (error) {
       toast.error('Failed to add stage');
       console.error('Error adding stage:', error);
-    } finally {
-      setIsAdding(false);
     }
   };
 
-  const handleUpdateStage = () => {
-    if (editingIndex !== null && editStageValue.trim()) {
+  const handleUpdateStage = async () => {
+    if (editingIndex === null || !editStageValue.trim()) return;
+    
+    const stageToUpdate = stages[editingIndex];
+    
+    try {
+    const response = await addNewTimeline({
+        timeline_id: stageToUpdate.id,
+        name: editStageValue.trim(),
+        inventory_id: Number(id)
+      }).unwrap();
+
       const updatedStages = [...stages];
       updatedStages[editingIndex] = {
         ...updatedStages[editingIndex],
@@ -203,18 +212,48 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
       setStages(updatedStages);
       setEditingIndex(null);
       setEditStageValue('');
+      toast.success(response.message);
+    } catch (error) {
+      toast.error('Failed to update stage');
+      console.error('Error updating stage:', error);
     }
   };
 
-  const handleDeleteStage = (index: number) => {
-    const updatedStages = [...stages];
-    updatedStages.splice(index, 1);
-    setStages(updatedStages);
-    if (editingIndex === index) {
-      setEditingIndex(null);
-      setEditStageValue('');
-    }
-  };
+    const [deleteTimeline, { isLoading: isDeleting }] = useDeleteTimelineMutation();
+
+    const handleDeleteStage = async (index: number) => {
+      const stageToDelete = stages[index];
+      
+      try {
+        const response = await deleteTimeline(stageToDelete.id).unwrap();
+        
+        // Only remove from local state if API call succeeds
+        const updatedStages = [...stages];
+        updatedStages.splice(index, 1);
+        setStages(updatedStages);
+        
+        // Reset editing if deleting the currently edited item
+        if (editingIndex === index) {
+          setEditingIndex(null);
+          setEditStageValue('');
+        }
+        
+        toast.success(response.message || "Stage deleted successfully");
+      } catch (error) {
+        toast.error('Failed to delete stage');
+        console.error('Error deleting stage:', error);
+      }
+    };
+    
+  // const handleDeleteStage = (index: number) => {
+  //   const updatedStages = [...stages];
+  //   updatedStages.splice(index, 1);
+  //   setStages(updatedStages);
+  //   if (editingIndex === index) {
+  //     setEditingIndex(null);
+  //     setEditStageValue('');
+  //   }
+  // };
 
   const handleEditStage = (index: number) => {
     setEditingIndex(index);
@@ -276,6 +315,7 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
                   className='h-9'
                   variant="primary"
                   onClick={handleUpdateStage}
+                  // loading={isUpdating}
                 >
                   Update
                 </Button>
@@ -326,9 +366,9 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
           </Button>
           <Button
             variant="primary"
-onClick={handleReorderSubmit}
+            onClick={handleReorderSubmit}
           >
-            Update
+            Update Order
           </Button>
         </div>
       </Box>
