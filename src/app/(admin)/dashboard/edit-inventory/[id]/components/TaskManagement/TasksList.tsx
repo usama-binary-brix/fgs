@@ -33,7 +33,7 @@ const TasksList = () => {
   return (
     <>
       <div className='flex justify-between items-center mb-4'>
-        <p className='text-lg font-semibold'>Task:List</p>
+        <p className='text-lg font-semibold'>Task List</p>
         <div className='flex gap-3 items-center'>
           <div className="inline-flex items-center gap-3">
             <div className="hidden sm:block">

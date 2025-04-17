@@ -115,10 +115,10 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
             >
               <div className="flex gap-4 flex-wrap">
                 <span className="text-sm text-[#616161]">
-                  Start Date:{startDate}
+                  Start Date: {startDate}
                 </span>
                 <span className="text-sm text-[#616161]">
-                  Due Date:{dueDate}
+                  Due Date: {dueDate}
                 </span>
                 <span className="flex items-center gap-1 text-sm text-[#616161]">
                   Status:

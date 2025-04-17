@@ -299,7 +299,7 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
           <div className="flex gap-2">
             <div className='w-[84%]'>
               <Input
-                placeholder="Stage Name Here"
+                placeholder="Enter Stage Name"
                 className='w-full'
                 value={editingIndex !== null ? editStageValue : newStage}
                 onChange={(e) => 

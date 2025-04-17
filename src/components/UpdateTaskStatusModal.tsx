@@ -238,12 +238,13 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName }) => 
                                     Cancel
                                 </Button>
                                 <Button
-                                    type="submit"
+                                    // type="submit"
                                     variant="primary"
                                     className='font-semibold'
-                                    disabled={isSubmitting}
+                                    // disabled={isSubmitting}
                                 >
-                                    {isSubmitting ? "Processing..." : "Update"}
+                                    {/* {isSubmitting ? "Processing..." : "Update"} */}
+                                Update
                                 </Button>
                             </div>
                         </Grid>

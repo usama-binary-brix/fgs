@@ -532,12 +532,12 @@ const EditInventoryForm = () => {
             </div>
 
           </form>
-          <div>
+          {/* <div>
             <h1 className="text-[#000] text-[17px] font-semibold font-family mt-10 mb-5">Inventory Stages</h1>
             <div className="flex justify-center">
     <CustomizedTimeline steps={timelineData?.timeLine}/>
             </div>
-          </div>
+          </div> */}
         </>
 
 
