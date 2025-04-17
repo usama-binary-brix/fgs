@@ -69,7 +69,7 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
   return (
    <>
     <div className="bg-white mb-2 rounded-md shadow-sm">
-      <div className="flex items-center justify-between px-4 pt-3">
+      <div className="flex items-center justify-between px-4">
         <p className="text-base font-semibold mb-1">{title}</p>
         <div className="flex items-center gap-1">
           <span className="text-[14px] text-[#616161] font-medium mr-1">
@@ -78,7 +78,7 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
         <div>
         <AvatarGroup>
             {/* {assignedUsers.map((user:any, index:any) => ( */}
-              <Avatar  alt={`${assignedUsers.first_name}`} src='' />
+              <Avatar  alt={`${assignedUsers.first_name}`} src='' sx={{height:'2rem', width:'2rem'}} />
              {/* ))} */}
           </AvatarGroup>
           <p className="text-xs text-gray-500">{assignedUsers.first_name}</p>
@@ -107,13 +107,23 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
               sx={{
                 paddingX: 0,
                 paddingY: 0,
-                minHeight: "auto",
-                "&.Mui-expanded": {
-                  minHeight: "auto",
+                marginY:0,
+                margin:0,
+                minHeight: 'auto !important',
+                '& .MuiAccordionSummary-content': {
+                  margin: '0 !important',
+                  marginBottom:'10px !important',
+                },
+                '& .MuiAccordionSummary-content.Mui-expanded': {
+                  margin: '0 !important',
+                },
+                '&.Mui-expanded': {
+                  minHeight: 'auto !important',
+                  margin: 0,
                 },
               }}
             >
-              <div className="flex gap-4 flex-wrap">
+              <div className="flex gap-4 flex-wrap my-0">
                 <span className="text-sm text-[#616161]">
                   Start Date: {startDate}
                 </span>

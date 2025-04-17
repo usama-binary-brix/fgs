@@ -32,52 +32,53 @@ export default function CustomizedTimeline({ steps = [] }: CustomizedTimelinePro
         return (
           <TimelineItem key={index}>
             <TimelineSeparator>
-              <TimelineConnector 
-                sx={{ 
+              <TimelineConnector
+                sx={{
                   backgroundColor: index <= lastCompletedIndex ? '#d49149' : 'grey.300',
                   height: index === 0 ? '10%' : '10%',
                   alignSelf: index === 0 ? 'flex-end' : 'unset',
                   margin: 0,
                   padding: 0,
                   maxHeight: '0px'
-                }} 
+                }}
               />
-              <TimelineDot sx={{ 
-                backgroundColor: 'transparent', 
+              <TimelineDot sx={{
+                backgroundColor: 'transparent',
                 boxShadow: 'none',
                 p: 0,
                 m: 0,
                 my: 0
               }}>
                 {isActive ? (
-                  <IoMdRadioButtonOn className='text-[#d49149] text-lg'/>
+                  <IoMdRadioButtonOn className='text-[#d49149] text-lg' />
                 ) : (
-                  <CheckCircleIcon sx={{ 
-                    color: isCompleted ? '#d49149' : 'grey.400',
-                    fontSize: '1.125rem'
-                  }} />
+                  // <CheckCircleIcon sx={{ 
+                  //   color: isCompleted ? '#d49149' : 'grey.400',
+                  //   fontSize: '1.125rem'
+                  // }} />
+                  <IoMdRadioButtonOn className={`text-lg ${isCompleted ? 'text-[#d49149]' : 'text-gray-400'}`} />
                 )}
               </TimelineDot>
               {!isLast && (
-                <TimelineConnector 
-                  sx={{ 
+                <TimelineConnector
+                  sx={{
                     backgroundColor: (index == lastCompletedIndex || index < lastCompletedIndex) ? '#d49149' : 'grey.300',
                     height: '100%',
                     margin: 0,
-                    minHeight: '20px'
-                  }} 
+                    minHeight: '10px'
+                  }}
                 />
               )}
             </TimelineSeparator>
 
-            <TimelineContent sx={{ py: '0px' }}>
-              <span 
-              className='capitalize'
+            <TimelineContent sx={{ py: '0px', }}>
+              <span
+                className='capitalize'
                 style={{
                   color: isActive ? 'black' : isCompleted ? '#414141' : 'gray',
                   fontWeight: isActive || isCompleted ? 550 : 550,
                   fontSize: isActive ? '18px' : '18px',
-                  
+
                 }}
               >
                 {step.name || ''}

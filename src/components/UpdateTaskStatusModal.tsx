@@ -78,6 +78,7 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName }) => 
         },
         validationSchema,
         onSubmit: async (values) => {
+            console.log(values, 'values')
             setIsSubmitting(true);
             const formData = new FormData();
             Object.entries(values).forEach(([key, value]) => {
@@ -238,13 +239,12 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName }) => 
                                     Cancel
                                 </Button>
                                 <Button
-                                    // type="submit"
+                                    type="submit"
                                     variant="primary"
                                     className='font-semibold'
-                                    // disabled={isSubmitting}
+                                    disabled={isSubmitting}
                                 >
-                                    {/* {isSubmitting ? "Processing..." : "Update"} */}
-                                Update
+                                    {isSubmitting ? "Processing..." : "Update"}
                                 </Button>
                             </div>
                         </Grid>
