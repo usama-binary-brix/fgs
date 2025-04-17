@@ -127,7 +127,7 @@ const EditInventoryForm = () => {
         setIsSubmitting(true)
         await editInventory(formData).unwrap();
         toast.success("Inventory updated successfully!");
-        router.push('/dashboard/inventory')
+        // router.push('/dashboard/inventory')
       } catch (error) {
 
 
