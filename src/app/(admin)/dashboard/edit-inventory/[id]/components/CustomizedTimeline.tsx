@@ -7,7 +7,7 @@ import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
 import Typography from '@mui/material/Typography';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { IoMdRadioButtonOn } from 'react-icons/io';
+import { IoIosCheckmarkCircle, IoMdRadioButtonOn } from 'react-icons/io';
 
 export interface TimelineStep {
   name: string;
@@ -52,7 +52,7 @@ export default function CustomizedTimeline({ steps = [] }: CustomizedTimelinePro
                 {isActive ? (
                   <IoMdRadioButtonOn className='text-[#d49149] text-lg' />
                 ) : isCompleted ? (
-  <CheckCircleIcon className='text-[#d49149] text-lg' />
+                  <IoIosCheckmarkCircle className='text-[#d49149] text-lg' />
 ) : (
   <IoMdRadioButtonOn className={`text-lg ${isCompleted ? 'text-[#d49149]' : 'text-gray-400'}`} />
 )}
