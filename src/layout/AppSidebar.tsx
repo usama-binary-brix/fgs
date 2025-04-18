@@ -57,8 +57,8 @@ const navItems: NavItem[] = [
     name: "Inventory Tasks",
     subItems: [
       { name: "All Inventory Tasks", path: "/employee-dashboard/inventory-tasks" },
-      {name: "With Active Tasks", path: "/employee-dashboard/active-tasks"},
-      {name: "With Completed Tasks", path: "/employee-dashboard/completed-tasks"},
+      // {name: "With Active Tasks", path: "/employee-dashboard/active-tasks"},
+      // {name: "With Completed Tasks", path: "/employee-dashboard/completed-tasks"},
     ],
     roles: ["employee"],
   },
