@@ -354,8 +354,8 @@ export const api = createApi({
     }),
 
     getAllEmployeesTasks: builder.query({
-      query: () => ({
-        url: `get/employee/task`,
+      query: (id) => ({
+        url: `get/employee/task/${id}`,
         method: 'GET', 
       }),
       providesTags: ["AllEmployeeTasks"],

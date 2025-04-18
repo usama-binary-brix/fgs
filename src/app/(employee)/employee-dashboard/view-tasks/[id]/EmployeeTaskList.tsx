@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux'
 
 const EmployeeTaskList = () => {
 const {id} = useParams()
-const {data} = useGetAllEmployeesTasksQuery('')
+const {data} = useGetAllEmployeesTasksQuery(id)
 console.log(data, 'data')
     const handleUpdate = (taskId:any, updatedDetails:any) => {
       console.log(`Task ${taskId} updated with:`, updatedDetails);
