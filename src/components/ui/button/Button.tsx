@@ -3,7 +3,7 @@ import React, { ReactNode } from "react";
 interface ButtonProps {
   children: ReactNode;
   size?: "sm" | "md";
-  variant?: "primary" | "outline" | "fgsoutline" | "outlined";
+  variant?: "primary" | "outline" | "fgsoutline" | "outlined" | "danger";
   startIcon?: ReactNode;
   endIcon?: ReactNode;
   onClick?: () => void;
@@ -31,6 +31,8 @@ const Button: React.FC<ButtonProps> = ({
   const variantClasses = {
     primary:
       "border bg-primary text-white shadow-theme-xs hover:bg-primary/90 disabled:bg-primary/40",
+      danger:
+      "border bg-[#E93216] text-white shadow-theme-xs hover:bg-[#E93216]/90 disabled:bg-[#E93216]/40",
     outline:
       "bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03] dark:hover:text-gray-300",
     fgsoutline:

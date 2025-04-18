@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components
 import { MoreDotIcon } from '@/icons';
 import { IoSearchOutline } from 'react-icons/io5'
 
-import { useAddInvestmentMutation, useDeleteInventoryMutation, useGetAllInventoryQuery } from '@/store/services/api';
+import { useAddInvestmentMutation, useDeleteInventoryMutation, useGetAllEmployeeInventoryQuery, useGetAllInventoryQuery } from '@/store/services/api';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 
@@ -44,7 +44,7 @@ const EmployeeInventoryTasksTable = () => {
     const [totalPages, setTotalPages] = useState(10); // Example total pages
     const [perPage, setPerPage] = useState(10);
 
-    const { data, isLoading, error, refetch } = useGetAllInventoryQuery({
+    const { data, isLoading, error, refetch } = useGetAllEmployeeInventoryQuery({
         page: currentPage,
         perPage: perPage,
         search: debouncedSearchText
@@ -172,19 +172,19 @@ const EmployeeInventoryTasksTable = () => {
                                         <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.serial_no}</TableCell>
 
 
-                                        {lead.status ? (
+                                        {lead?.task_status ? (
                                             <TableCell className="px-5 py-4 text-xs">
                                                 <span
-                                                    className={`px-3 py-1 rounded-md text-sm font-medium ${lead.status === 'in progress'
+                                                    className={`px-3 py-2 rounded-md text-sm font-medium ${lead?.task_status === 'active'
                                                         ? 'bg-orange-100 text-orange-500'
-                                                        : lead.status === 'sold'
+                                                        : lead?.task_status === 'completed'
                                                             ? 'bg-green-100 text-green-600'
-                                                            : lead.status === 'pending'
+                                                            : lead?.task_status === 'pending'
                                                                 ? 'bg-[#8E7F9C1F] text-[#8E7F9C]'
                                                                 : ''
                                                         }`}
                                                 >
-                                                    {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)} {/* Capitalize */}
+                                                    {lead?.task_status.charAt(0).toUpperCase() + lead.task_status.slice(1)} {/* Capitalize */}
                                                 </span>
                                             </TableCell>
                                         ) : (

@@ -9,7 +9,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Select from '@/components/form/Select';
 import { useParams } from 'next/navigation';
-import { useAddNewTaskMutation, useGetAllEmployeesQuery, useGetAllTimelineQuery } from '@/store/services/api';
+import { useAddNewTaskMutation, useGetAllEmployeesQuery, useGetAllTimelineQuery, useGetTaskByIdQuery, useUpdateTaskMutation } from '@/store/services/api';
 import { ErrorResponse } from '@/app/(admin)/dashboard/accounts/components/AccountsModal';
 import { toast } from 'react-toastify';
 import TextArea from '@/components/form/input/TextArea';
@@ -17,6 +17,7 @@ import TextArea from '@/components/form/input/TextArea';
 interface Props {
     open: boolean;
     onClose: () => void;
+    taskId?: string | null;
 }
 
 interface User {
@@ -28,7 +29,6 @@ interface User {
 interface Timeline {
     id: string;
     name: string;
-    // Add other timeline properties as needed
 }
 
 const modalStyle = {
@@ -47,7 +47,7 @@ const modalStyle = {
 
 const statusOptions = [
     { label: 'Pending', value: 'pending' },
-    { label: 'In Progress', value: 'in_progress' },
+    { label: 'Active', value: 'active' },
     { label: 'Completed', value: 'completed' },
 ];
 
@@ -57,12 +57,17 @@ const priorityOptions = [
     { label: 'Low', value: 'low' },
 ];
 
-const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
-    const { id } = useParams()
+const AddTaskModal: React.FC<Props> = ({ open, onClose, taskId }) => {
+    const { id } = useParams();
+    const [isEditMode, setIsEditMode] = React.useState(false);
     const [userInput, setUserInput] = React.useState('');
     const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
     const [selectedTimeline, setSelectedTimeline] = React.useState<Timeline | null>(null);
+
+    // API hooks
     const [addTask] = useAddNewTaskMutation();
+    const [editTask] = useUpdateTaskMutation();
+    const { data: taskData, error: taskError, isLoading: taskLoading, refetch: taskRefetch } = useGetTaskByIdQuery(taskId, { skip: !taskId });
     const { data: timelineData, error: timelineError, isLoading: allTimelineLoading, refetch: timelineRefetch } = useGetAllTimelineQuery(id);
     const { data, error, isFetching, refetch } = useGetAllEmployeesQuery(undefined, {
         skip: !open,
@@ -73,8 +78,42 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
         if (open) {
             refetch();
             timelineRefetch();
+            if (taskId) {
+                setIsEditMode(true);
+                taskRefetch();
+            } else {
+                setSelectedUser(null);
+                setSelectedTimeline(null);
+                formik.resetForm();
+                setIsEditMode(false);
+            }
         }
-    }, [open, refetch, timelineRefetch]);
+    }, [open, refetch, timelineRefetch, taskId, taskRefetch]);
+
+    // Set form data when taskData changes (edit mode)
+    React.useEffect(() => {
+        if (taskData?.task && isEditMode) {
+            const task = taskData.task;
+            formik.setValues({
+                task_name: task.task_name || '',
+                employee_id: task.employee_id || '',
+                timeline_id: task.timeline_id || '',
+                start_date: task.start_date || null,
+                due_date: task.due_date || null,
+                status: task.status || '',
+                priority: task.priority || '',
+                task_description: task.task_description || '',
+            });
+
+            // Find and set the selected user
+            const user = backendUsers.find((u: User) => u.id === task.employee_id);
+            if (user) setSelectedUser(user);
+
+            // Find and set the selected timeline
+            const timeline = timelineOptions.find((t: Timeline) => t.id === task.timeline_id);
+            if (timeline) setSelectedTimeline(timeline);
+        }
+    }, [taskData, isEditMode]);
 
     const backendUsers = React.useMemo(() => {
         return data?.employee?.map((emp: any) => ({
@@ -87,7 +126,7 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
     const timelineOptions = React.useMemo(() => {
         return timelineData?.timeLine?.map((timeline: any) => ({
             id: timeline.id,
-            name: timeline.name || `Timeline ${timeline.id}` // Fallback name if not provided
+            name: timeline.name || `Timeline ${timeline.id}`
         })) || [];
     }, [timelineData?.timeLine]);
 
@@ -127,9 +166,18 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
                 timeline_id: selectedTimeline?.id || '',
                 inventory_id: id
             };
+
             try {
-                const response = await addTask(submittedData).unwrap();
-                toast.success(response.message || 'Task created successfully');
+                let response;
+                if (isEditMode && taskId) {
+                    // Edit existing task
+                    response = await editTask({ task_id: taskId, ...submittedData }).unwrap();
+                    toast.success(response.message || 'Task updated successfully');
+                } else {
+                    // Add new task
+                    response = await addTask(submittedData).unwrap();
+                    toast.success(response.message || 'Task created successfully');
+                }
                 resetForm();
                 onClose();
             } catch (error) {
@@ -152,6 +200,7 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
         formik.resetForm();
         setUserInput('');
         setSelectedUser(null);
+        setIsEditMode(false);
         setSelectedTimeline(null);
         onClose();
     };
@@ -161,7 +210,9 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
             <Box sx={modalStyle}>
                 <div className='border-b border-gray-400 mb-3 py-3'>
                     <div className='flex justify-between items-center px-4'>
-                        <p className='text-xl font-semibold'>Add New Task</p>
+                        <p className='text-xl font-semibold'>
+                            {isEditMode ? 'Edit Task' : 'Add New Task'}
+                        </p>
                         <RxCross2 onClick={onClose} className='cursor-pointer text-3xl' />
                     </div>
                 </div>
@@ -179,6 +230,7 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
                                     setSelectedTimeline(newValue);
                                     formik.setFieldValue('timeline_id', newValue?.id || '');
                                 }}
+                                value={selectedTimeline}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -198,7 +250,6 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
                                         }}
                                     />
                                 )}
-                                value={selectedTimeline}
                                 sx={{
                                     '& .MuiAutocomplete-inputRoot': {
                                         padding: '0px 9px',
@@ -236,6 +287,7 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
                                     setSelectedUser(newValue);
                                     formik.setFieldValue('employee_id', newValue?.id || '');
                                 }}
+                                value={selectedUser}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -255,7 +307,6 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
                                         }}
                                     />
                                 )}
-                                value={selectedUser}
                                 sx={{
                                     '& .MuiAutocomplete-inputRoot': {
                                         padding: '0px 9px',
@@ -330,13 +381,14 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose }) => {
                                 hint={formik.touched.task_description ? formik.errors.task_description : ""}
                                 disabled={formik.isSubmitting}
                             />
-
                         </Grid>
 
                         <Grid item xs={12} display="flex" justifyContent="flex-end">
                             <div className='flex items-center gap-4'>
                                 <Button onClick={handleClose} variant="fgsoutline">Cancel</Button>
-                                <Button type="submit" variant="primary">Add Task</Button>
+                                <Button type="submit" variant="primary">
+                                    {isEditMode ? 'Update Task' : 'Add Task'}
+                                </Button>
                             </div>
                         </Grid>
                     </Grid>

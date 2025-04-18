@@ -2,14 +2,14 @@ import TaskAccordion from '@/components/TaskAccordion'
 import Button from '@/components/ui/button/Button'
 import React, { useState } from 'react'
 import { IoSearchOutline } from 'react-icons/io5'
-import { useGetAllAdminEmployeeTasksQuery } from '@/store/services/api'
+import { useGetAllAdminEmployeeTasksQuery, useGetAllEmployeesTasksQuery } from '@/store/services/api'
 import { useParams } from 'next/navigation'
 import { useSelector } from 'react-redux'
 
 const EmployeeTaskList = () => {
 const {id} = useParams()
-const {data} = useGetAllAdminEmployeeTasksQuery(id)
-
+const {data} = useGetAllEmployeesTasksQuery('')
+console.log(data, 'data')
     const handleUpdate = (taskId:any, updatedDetails:any) => {
       console.log(`Task ${taskId} updated with:`, updatedDetails);
     }
@@ -23,8 +23,9 @@ const {data} = useGetAllAdminEmployeeTasksQuery(id)
       
       
       <div>
-      {/* {data?.task?.map((task:any) => (
+      {data?.task?.map((task:any) => (
         <TaskAccordion
+        id={task.id}
           key={task.id}
           title={task.task_name}
           assignedUsers={task.employee}
@@ -35,7 +36,7 @@ const {data} = useGetAllAdminEmployeeTasksQuery(id)
           initialDetails={task.task_details}
           onSubmitTask={(details) => handleUpdate(task.id, details)}
         />
-      ))} */}
+      ))}
     </div>
     </>
   )

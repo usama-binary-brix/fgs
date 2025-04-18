@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks"],
+  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks","EmployeeInventory","AllEmployeeTasks"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -291,12 +291,12 @@ export const api = createApi({
         method: 'POST',
         body: taskData,
       }),
-      invalidatesTags: ["AllAdminTasks"],
+      invalidatesTags: ["AllAdminTasks","InventoryTimeline"],
     }),
 
     getAllAdminEmployeeTasks: builder.query({
       query: (id) => ({
-        url: `get/employee/${id}`,
+        url: `get/inventory/task/${id}`,
         method: 'GET', 
       }),
       providesTags: ["AllAdminTasks"],
@@ -308,6 +308,59 @@ export const api = createApi({
       }),
       invalidatesTags: ["InventoryTimeline"],
     }),
+
+    deleteTask: builder.mutation({
+      query: (id) => ({
+        url: `employee/task/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ["AllAdminTasks"],
+    }),
+    getTaskById: builder.query({
+      query: (id) => ({
+        url: `get/task/${id}`,
+        method: 'GET',
+      }),
+      providesTags: ["AllAdminTasks"], 
+
+    }),
+
+    updateTask: builder.mutation({
+      query: (taskData) => ({
+        url: 'add/employee/task', 
+        method: 'POST',
+        body: taskData,
+      }),
+      invalidatesTags: ["AllAdminTasks", "InventoryTimeline"],
+    }),
+
+    addTaskStatus: builder.mutation({
+      query: (taskStatusData) => ({
+        url: 'employee/task/status', 
+        method: 'POST',
+        body: taskStatusData,
+      }),
+      invalidatesTags: ["AllAdminTasks", "InventoryTimeline", "AllEmployeeTasks","EmployeeInventory"],
+
+    }),
+
+
+    getAllEmployeeInventory: builder.query({
+      query: ({ page = 1, perPage = 10 , search}) => ({
+        url: `task/inventory?per_page=${perPage}&page=${page}&search=${search}`,
+        method: 'GET',
+      }),
+      providesTags: ["EmployeeInventory"],
+    }),
+
+    getAllEmployeesTasks: builder.query({
+      query: () => ({
+        url: `get/employee/task`,
+        method: 'GET', 
+      }),
+      providesTags: ["AllEmployeeTasks"],
+    }),
+
 
   }),
 });
@@ -347,5 +400,13 @@ export const { useLoginMutation,
   useAddNewTaskMutation,
   useGetAllAdminEmployeeTasksQuery,
   useDeleteTimelineMutation,
+useDeleteTaskMutation,
+useGetTaskByIdQuery,
+useUpdateTaskMutation,
+useAddTaskStatusMutation,
+useGetAllEmployeeInventoryQuery,
+useGetAllEmployeesTasksQuery,
+
+
 
 } = api;

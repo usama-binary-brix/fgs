@@ -20,16 +20,16 @@ const TasksList = () => {
     setIsModalOpen(false);
   };
 
-  const { data } = useGetAllAdminEmployeeTasksQuery(id)
-
-
-
+  const { data, isError, } = useGetAllAdminEmployeeTasksQuery(id)
+  console.log(isError, 'error')
   const handleUpdate = (taskId: any, updatedDetails: any) => {
     console.log(`Task ${taskId} updated with:`, updatedDetails);
-
-
-
   }
+
+
+
+
+
   return (
     <>
       <div className='flex justify-between items-center mb-4'>
@@ -60,25 +60,33 @@ const TasksList = () => {
         </div>
       </div>
 
+      {isError ? (
+        <>
+          <div className="flex flex-col items-center justify-center py-8">
+            <div className="text-gray-500 text-lg mb-4">
+              No tasks available
+            </div>
+          </div>
+        </>
+      ) : (
+        <div>
+          {data?.task?.map((task: any) => (
+            <TaskAccordion
+              id={task.id}
+              key={task.id}
+              title={task.task_name}
+              assignedUsers={task.employee}
+              startDate={task.start_date}
+              dueDate={task.due_date}
+              status={task.status}
+              priority={task.priority}
+              initialDetails={task.task_description}
+              onSubmitTask={(details) => handleUpdate(task.id, details)}
+            />
+          ))}
+        </div>
 
-
-      <div>
-        {data?.task?.map((task: any) => (
-          <TaskAccordion
-            key={task.id}
-            title={task.task_name}
-            assignedUsers={task.employee}
-            startDate={task.start_date}
-            dueDate={task.due_date}
-            status={task.status}
-            priority={task.priority}
-            initialDetails={task.task_details}
-            onSubmitTask={(details) => handleUpdate(task.id, details)}
-          />
-        ))}
-      </div>
-
-
+      )}
 
 
       <AddTaskModal open={isModalOpen} onClose={handleCloseModal} />

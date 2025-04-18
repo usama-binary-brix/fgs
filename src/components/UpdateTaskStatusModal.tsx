@@ -5,7 +5,7 @@ import { RxCross2 } from "react-icons/rx";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import { useAddInventoryMutation } from '@/store/services/api';
+import { useAddInventoryMutation, useAddTaskStatusMutation, useGetTaskByIdQuery } from '@/store/services/api';
 import Label from '@/components/form/Label';
 import TextArea from './form/input/TextArea';
 import Button from '@/components/ui/button/Button';
@@ -28,6 +28,7 @@ interface Props {
     open: boolean;
     onClose: () => void;
     taskName?:any
+    taskId?:any
 }
 
 type ErrorResponse = {
@@ -38,15 +39,17 @@ type ErrorResponse = {
 
 const statusOptions = [
     { value: 'pending', label: 'Pending' },
-    { value: 'not_started', label: 'Not Started' },
-    { value: 'in_progress', label: 'In Progress' },
+    { value: 'active', label: 'Active' },
     { value: 'completed', label: 'Completed' },
 ];
 
-const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName }) => {
+const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName, taskId }) => {
     const [images, setImages] = useState<File[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [updateStatus] = useAddInventoryMutation();
+    const [addStatus] = useAddTaskStatusMutation();
+
+
+    const { data: taskData, error: taskError, isLoading: taskLoading, refetch: taskRefetch } = useGetTaskByIdQuery(taskId, { skip: !taskId });
 
     useEffect(() => {
         if (!open) {
@@ -68,19 +71,21 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName }) => 
 
     const validationSchema = Yup.object().shape({
         status: Yup.string().required('Status is required'),
-        note: Yup.string().required('Note is required'),
+        // note: Yup.string().required('Description is required'),
     });
 
     const formik = useFormik({
         initialValues: {
             status: '',
-            note: '',
+            description: '',
         },
         validationSchema,
         onSubmit: async (values) => {
             console.log(values, 'values')
             setIsSubmitting(true);
             const formData = new FormData();
+            formData.append('task_id', taskId);
+        
             Object.entries(values).forEach(([key, value]) => {
                 formData.append(key, value as string);
             });
@@ -89,7 +94,7 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName }) => 
             });
             
             try {
-               const response = await updateStatus(formData).unwrap();
+               const response = await addStatus(formData).unwrap();
                 toast.success(response.message || 'Task status updated successfully!');
                 onClose();
             } catch (error) {
@@ -168,15 +173,15 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName }) => 
                         </Grid>
                         
                         <Grid item xs={12}>
-                            <Label>Notes <span className="text-error-500">*</span></Label>
+                            <Label>Note</Label>
                             <TextArea
                                 placeholder="Enter your note"
                                 rows={3}
-                                value={formik.values.note}
-                                onChange={(value) => formik.setFieldValue("note", value)}
-                                onBlur={() => formik.setFieldTouched("note", true)}
-                                error={formik.touched.note && Boolean(formik.errors.note)}
-                                hint={formik.touched.note ? formik.errors.note : ""}
+                                value={formik.values.description}
+                                onChange={(value) => formik.setFieldValue("description", value)}
+                                onBlur={() => formik.setFieldTouched("description", true)}
+                                error={formik.touched.description && Boolean(formik.errors.description)}
+                                hint={formik.touched.description ? formik.errors.description : ""}
                                 disabled={formik.isSubmitting}
                             />
                         </Grid>
