@@ -196,7 +196,7 @@ const userType = useSelector((state:any)=>state?.user?.user?.account_type)
 
               <AccordionDetails sx={{ paddingX: 0 }}>
                 <TextArea
-                  // placeholder="Enter your task_details"
+                  placeholder="---"
                   rows={2}
                   value={initialDetails}
 
