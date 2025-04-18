@@ -33,7 +33,7 @@ console.log(data, 'data')
           dueDate={task.due_date}
           status={task.status}
           priority={task.priority}
-          initialDetails={task.task_details}
+          initialDetails={task.task_description}
           onSubmitTask={(details) => handleUpdate(task.id, details)}
         />
       ))}
