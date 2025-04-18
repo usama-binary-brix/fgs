@@ -24,7 +24,7 @@ export default function EmployeeDashboard() {
    
      {/* Wrap in a Flex Grid for Large Screens */}
      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-  <EmployeeTaskList/>
+  {/* <EmployeeTaskList/> */}
      </div>
    
      {/* <RecentOrders /> */}
