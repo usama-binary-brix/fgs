@@ -17,7 +17,7 @@ import Select from '@/components/form/Select';
 import { EyeCloseIcon, EyeIcon } from '@/icons';
 import TextArea from '@/components/form/input/TextArea';
 import Button from '@/components/ui/button/Button';
-const modalStyle = {
+export const modalStyle = {
   position: 'absolute' as const,
   top: '50%',
   left: '50%',

@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks","EmployeeInventory","AllEmployeeTasks"],
+  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks","EmployeeInventory","AllEmployeeTasks", "AllShipments"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -360,7 +360,14 @@ export const api = createApi({
       }),
       providesTags: ["AllEmployeeTasks"],
     }),
-
+    addNewShipment: builder.mutation({
+      query: (shipmentData) => ({
+        url: 'add/shipment', 
+        method: 'POST',
+        body: shipmentData,
+      }),
+      invalidatesTags: ["AllShipments",],
+    }),
 
   }),
 });
@@ -406,6 +413,7 @@ useUpdateTaskMutation,
 useAddTaskStatusMutation,
 useGetAllEmployeeInventoryQuery,
 useGetAllEmployeesTasksQuery,
+useAddNewShipmentMutation,
 
 
 

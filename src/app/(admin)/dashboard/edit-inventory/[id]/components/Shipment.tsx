@@ -136,7 +136,7 @@ const Shipment = () => {
                 ${activeTab === "details" ? 'bg-[#D18428] opacity-100 text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
               onClick={() => setActiveTab("details")}
             >
-              Shipments
+              Details
             </button>
             <button
               className={`border border-[#D184281A] text-[13px] opacity-50 font-family py-2 px-4 font-semibold rounded transition-all duration-300
@@ -178,7 +178,7 @@ const Shipment = () => {
 
                   </div>
                   <div>
-                    <Accordion defaultExpanded>
+                    <Accordion>
                       <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1-content"

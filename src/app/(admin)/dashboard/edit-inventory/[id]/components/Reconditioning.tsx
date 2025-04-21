@@ -23,7 +23,7 @@ const {id} = useParams()
      <div className="flex justify-between items-center mt-3">
         {/* <h1 className="text-[#000] text-[17px] font-family font-semibold">Timeline</h1> */}
         <p className='text-lg font-semibold'>Reconditioning Timeline:</p>
-     
+      
         <Button variant="primary"
             size='sm'
             onClick={handleOpenEditTimeline}
