@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks","EmployeeInventory","AllEmployeeTasks", "AllShipments"],
+  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks","EmployeeInventory","AllEmployeeTasks", "AllShipments", "InventoryCost"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -369,6 +369,34 @@ export const api = createApi({
       invalidatesTags: ["AllShipments",],
     }),
 
+
+    addInventoryCost: builder.mutation({
+      query: (costData) => ({
+        url: 'add/timeline/price', 
+        method: 'POST',
+        body: costData,
+      }),
+      invalidatesTags: ["InventoryCost","InventoryTimeline"],
+    }),
+
+    calculateProfit: builder.mutation({
+      query: (sellingPrice) => ({
+        url: 'calculate/inventory/profit', 
+        method: 'POST',
+        body: sellingPrice,
+      }),
+      // invalidatesTags: ["InventoryCost",]
+    }),
+
+    addSellingPrice: builder.mutation({
+      query: (sellingPrice) => ({
+        url: 'add/inventory/selling/price', 
+        method: 'POST',
+        body: sellingPrice,
+      }),
+      // invalidatesTags: ["InventoryCost",]
+    }),
+
   }),
 });
 
@@ -414,6 +442,9 @@ useAddTaskStatusMutation,
 useGetAllEmployeeInventoryQuery,
 useGetAllEmployeesTasksQuery,
 useAddNewShipmentMutation,
+useAddInventoryCostMutation,
+useCalculateProfitMutation,
+useAddSellingPriceMutation,
 
 
 
