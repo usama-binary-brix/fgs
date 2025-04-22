@@ -17,6 +17,10 @@ const Reconditioning = () => {
   }
 const {id} = useParams()
  const { data: timelineData, error, isLoading: allTimelineLoading, refetch } = useGetAllTimelineQuery(id);
+ const steps =
+  (error as any)?.status === 404
+    ? []
+    : timelineData?.timeLine || [];
 
   return (
     <>
@@ -31,7 +35,7 @@ const {id} = useParams()
             Edit Timeline
           </Button>
       </div>
-    <CustomizedTimeline steps={timelineData?.timeLine}/>
+    <CustomizedTimeline steps={steps}/>
 <TasksList/>
     <EditTimelineModal open={openTimelineModal} onClose={handleCloseModal}/>
     </>

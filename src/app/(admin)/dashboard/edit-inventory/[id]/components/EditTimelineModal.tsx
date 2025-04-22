@@ -227,12 +227,10 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
       try {
         const response = await deleteTimeline(stageToDelete.id).unwrap();
         
-        // Only remove from local state if API call succeeds
         const updatedStages = [...stages];
         updatedStages.splice(index, 1);
         setStages(updatedStages);
         
-        // Reset editing if deleting the currently edited item
         if (editingIndex === index) {
           setEditingIndex(null);
           setEditStageValue('');
@@ -245,15 +243,7 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
       }
     };
     
-  // const handleDeleteStage = (index: number) => {
-  //   const updatedStages = [...stages];
-  //   updatedStages.splice(index, 1);
-  //   setStages(updatedStages);
-  //   if (editingIndex === index) {
-  //     setEditingIndex(null);
-  //     setEditStageValue('');
-  //   }
-  // };
+  
 
   const handleEditStage = (index: number) => {
     setEditingIndex(index);
