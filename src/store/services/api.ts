@@ -314,7 +314,7 @@ export const api = createApi({
         url: `employee/task/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ["AllAdminTasks"],
+      invalidatesTags: ["AllAdminTasks", "InventoryTimeline"],
     }),
     getTaskById: builder.query({
       query: (id) => ({
