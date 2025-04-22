@@ -21,7 +21,6 @@ const TasksList = () => {
   };
 
   const { data, isError, } = useGetAllAdminEmployeeTasksQuery(id)
-  console.log(isError, 'error')
   const handleUpdate = (taskId: any, updatedDetails: any) => {
     console.log(`Task ${taskId} updated with:`, updatedDetails);
   }

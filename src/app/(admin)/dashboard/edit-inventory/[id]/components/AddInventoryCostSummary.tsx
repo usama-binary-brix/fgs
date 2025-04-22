@@ -223,7 +223,7 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                             <TableBody>
                                 {timelineData?.timeLine?.map((stage: any, index: number) => (
                                     <TableRow key={stage.id}>
-                                        <TableCell className=' px-4 text-sm text-[#616161]'>{stage.name}</TableCell>
+                                        <TableCell className=' px-4 text-sm text-[#616161] w-110'>{stage.name}</TableCell>
                                         <TableCell className='px-3 py-2'>
                                             <Input
                                                 name={`stages[${index}].price`}

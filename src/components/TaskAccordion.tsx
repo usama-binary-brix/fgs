@@ -98,7 +98,6 @@ const userType = useSelector((state:any)=>state?.user?.user?.account_type)
   };
 
 
-  console.log(userType, 'user type')
   return (
     <>
       <div className="bg-white mb-2 rounded-md shadow-sm">
