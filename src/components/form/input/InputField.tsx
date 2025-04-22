@@ -69,6 +69,11 @@ const Input: FC<InputProps> = ({
         value={value}
         maxLength={maxLength}
         autoComplete="off"
+        onKeyDown={(e:any) => {
+          if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+              e.preventDefault();
+          }
+      }}
       />
       {hint && (
         <p

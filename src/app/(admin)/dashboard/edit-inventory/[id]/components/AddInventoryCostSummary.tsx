@@ -1,10 +1,11 @@
+
 import React, { useEffect } from 'react';
 import {
     Modal,
     Box,
 } from '@mui/material';
 import { useParams } from 'next/navigation';
-import { useAddInventoryCostMutation, useAddSellingPriceMutation, useCalculateProfitMutation, useGetAllTimelineQuery } from '@/store/services/api';
+import { useAddInventoryCostMutation, useAddSellingPriceMutation, useCalculateProfitMutation, useGetAllTimelineQuery, useGetInventorySellingPriceQuery } from '@/store/services/api';
 import Input from '@/components/form/input/InputField';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import Button from '@/components/ui/button/Button';
@@ -54,16 +55,26 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
     } = useGetAllTimelineQuery(id, {
         skip: !open,
     });
+    const {
+        data: sellingPrice,
+        error: sellingPriceError,
+        isLoading: sellingPriceLoading,
+        refetch: sellingPriceRefetch,
+    } = useGetInventorySellingPriceQuery(id, {
+        skip: !open,
+    });
 
     useEffect(() => {
         if (open) {
             refetch();
+            sellingPriceRefetch()
         }
-    }, [open, refetch]);
+    }, [open, refetch, sellingPriceRefetch]);
 
     const [inventoryCost] = useAddInventoryCostMutation();
     const [calculateProfit] = useCalculateProfitMutation();
-    const [addSellingPrice] = useAddSellingPriceMutation()
+    const [addSellingPrice] = useAddSellingPriceMutation();
+
 
     const formik = useFormik({
         initialValues: {
@@ -71,8 +82,8 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                 stage_id: stage.id,
                 price: stage.price || ''
             })) || [],
-            sellingPrice: '',
-            profit: ''
+            sellingPrice: sellingPrice?.data?.selling_price || '',
+            profit: sellingPrice?.data?.profit || ''
         },
         enableReinitialize: true,
         onSubmit: async (values, { resetForm }) => {
@@ -133,7 +144,6 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
         debouncedCalculateProfit(sellingPrice);
     };
 
-    // Add this handler function inside your component, before the return statement
     const handleSellingPriceSubmit = async () => {
         try {
             const sellingPrice = parseFloat(formik.values.sellingPrice);
@@ -149,8 +159,8 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
 
             toast.success(response.message || 'Selling price added successfully');
             onClose();
-            formik.setFieldValue('profit', ''); // Optional: reset profit field
-            formik.setFieldValue('sellingPrice', ''); // Optional: reset selling price field
+            formik.setFieldValue('profit', '');
+            formik.setFieldValue('sellingPrice', '');
         } catch (error) {
             const errorResponse = error as ErrorResponse;
             if (errorResponse?.data?.error) {
@@ -167,14 +177,21 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
         }
     };
 
-
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error loading data</div>;
 
     const handlePriceChange = (index: number, value: string) => {
-        const numValue = parseFloat(value) || 0;
-        formik.setFieldValue(`stages[${index}].price`, numValue);
+        const numValue = parseFloat(value);
+        // Prevent negative values by setting to 0 if input is negative
+        const finalValue = isNaN(numValue) || numValue < 0 ? 0 : numValue;
+        formik.setFieldValue(`stages[${index}].price`, finalValue);
     };
+
+    // Check if any stage has price greater than 0
+    const hasPositiveStagePrice = timelineData?.timeLine?.some((stage: any) =>
+        stage.price && parseFloat(stage.price as unknown as string) > 0
+    );
+
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -211,11 +228,7 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                                             <Input
                                                 name={`stages[${index}].price`}
                                                 placeholder='$ 0.00'
-                                                // value={formik.values.stages[index]?.price || ''}
-
                                                 value={formik.values.stages[index]?.price || ''}
-
-
                                                 onChange={(e) => handlePriceChange(index, e.target.value)}
                                                 type="number"
 
@@ -238,53 +251,50 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                     </div>
                 </form>
 
-                <div className=''>
-                    <div className='px-4 mb-2'>
-                        <p className='text-md text-[#414141] font-medium'>Final Cost & Profit</p>
-                    </div>
-
-                    <div className='grid grid-cols-2 gap-4 px-4'>
-                        <div>
-                        <Label>Selling Price <span className="text-error-500">*</span></Label>
-
-
-                            <Input
-                                name="sellingPrice"
-                                placeholder='$ 0.00'
-                                value={formik.values.sellingPrice}
-                                onChange={handleSellingPriceChange}
-                                type="number"
-                                min="0"
-                            />
-                        </div>
-                        <div>
-                                          <Label>Profit (Auto calculated)</Label>
-                            
-                            <Input
-                                name="profit"
-                                placeholder='$ 0.00'
-                                value={formik.values.profit}
-
-                                type="number"
-                            />
+                {hasPositiveStagePrice && (
+                    <div className='mt-6'>
+                        <div className='px-4 mb-2'>
+                            <p className='text-md text-[#414141] font-medium'>Final Cost & Profit</p>
                         </div>
 
-                    </div>
+                        <div className='grid grid-cols-2 gap-4 px-4'>
+                            <div>
+                                <Label>Selling Price <span className="text-error-500">*</span></Label>
+                                <Input
+                                    name="sellingPrice"
+                                    placeholder='$ 0.00'
+                                    value={formik.values.sellingPrice}
+                                    onChange={handleSellingPriceChange}
+                                    type="number"
+                                    min="0"
 
-                    <div className='flex items-center gap-3 justify-end mt-4 pr-4'>
-                    <Button onClick={onClose} variant="fgsoutline"
-                >
-                  Cancel
-                </Button>
-                        <Button
-                            variant="primary"
-                            onClick={handleSellingPriceSubmit}  // Changed from type="submit" to onClick
-                        // disabled={!formik.values.sellingPrice || isNaN(parseFloat(formik.values.sellingPrice)) || formik.isSubmitting}
-                        >
-                            Submit
-                        </Button>
+                                />
+                            </div>
+                            <div>
+                                <Label>Profit (Auto calculated)</Label>
+                                <Input
+                                    name="profit"
+                                    placeholder='$ 0.00'
+                                    value={formik.values.profit}
+                                    type="number"
+                                />
+                            </div>
+                        </div>
+
+                        <div className='flex items-center gap-3 justify-end mt-4 pr-4'>
+                            <Button onClick={onClose} variant="fgsoutline">
+                                Cancel
+                            </Button>
+                            <Button
+                                variant="primary"
+                                onClick={handleSellingPriceSubmit}
+                                disabled={!formik.values.sellingPrice || parseFloat(formik.values.sellingPrice) <= 0}
+                            >
+                                Add Final Cost
+                            </Button>
+                        </div>
                     </div>
-                </div>
+                )}
             </Box>
         </Modal>
     );

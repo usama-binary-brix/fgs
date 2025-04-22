@@ -397,6 +397,13 @@ export const api = createApi({
       // invalidatesTags: ["InventoryCost",]
     }),
 
+    getInventorySellingPrice: builder.query({
+      query: (id) => ({
+        url: `inventory/profit/${id}`,
+        method: 'GET', 
+      }),
+      // providesTags: ["AllEmployeeTasks"],
+    }),
   }),
 });
 
@@ -445,6 +452,7 @@ useAddNewShipmentMutation,
 useAddInventoryCostMutation,
 useCalculateProfitMutation,
 useAddSellingPriceMutation,
+useGetInventorySellingPriceQuery,
 
 
 
