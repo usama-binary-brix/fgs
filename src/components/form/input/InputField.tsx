@@ -70,7 +70,7 @@ const Input: FC<InputProps> = ({
         maxLength={maxLength}
         autoComplete="off"
         onKeyDown={(e:any) => {
-          if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+          if (e.key === '-') {
               e.preventDefault();
           }
       }}
