@@ -94,6 +94,10 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
 
                 const response = await inventoryCost(payload).unwrap();
                 toast.success(response.message || 'Success');
+                if (sellingPrice?.data?.selling_price) {
+                    await debouncedCalculateProfit(parseFloat(values.sellingPrice));
+                }
+
                 resetForm();
             } catch (error) {
                 const errorResponse = error as ErrorResponse;
@@ -182,15 +186,16 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
 
     const handlePriceChange = (index: number, value: string) => {
         const numValue = parseFloat(value);
-        // Prevent negative values by setting to 0 if input is negative
+
         const finalValue = isNaN(numValue) || numValue < 0 ? 0 : numValue;
         formik.setFieldValue(`stages[${index}].price`, finalValue);
     };
 
-    // Check if any stage has price greater than 0
-    const hasPositiveStagePrice = timelineData?.timeLine?.some((stage: any) =>
+
+    const hasPositiveStagePrice = timelineData?.timeLine?.every((stage: any) =>
         stage.price && parseFloat(stage.price as unknown as string) > 0
     );
+
 
 
     return (

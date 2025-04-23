@@ -85,34 +85,49 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
             city: "",
             zipCode: "",
             destinationAddress: "",
+            destinationCountry:"",
             destinationState: "",
             destinationCity: "",
             destinationZipCode: "",
             expectedArrivalDate: "",
             shippingNotes: "",
+            pickupWareHouse:"",
+
         },
         onSubmit: async (values, { resetForm }) => {
             try {
                 const payload = {
-                    inventoryId: id, // Send inventory ID instead of full details
-                    shipmentType: values.shipmentType,
-                    shipmentProvider: values.shipmentProvider,
-                    pickupAddress: {
-                        address: values.address,
-                        country: values.country,
-                        state: values.state,
-                        city: values.city,
-                        zipCode: values.zipCode,
-                        coordinates: mapPosition, // Include map coordinates
-                    },
-                    destinationAddress: {
-                        address: values.destinationAddress,
-                        state: values.destinationState,
-                        city: values.destinationCity,
-                        zipCode: values.destinationZipCode,
-                    },
-                    expectedArrivalDate: values.expectedArrivalDate,
-                    shippingNotes: values.shippingNotes,
+                    inventory_id: id, // Send inventory ID instead of full details
+                    shipment: values.shipmentType,
+                    pickup_shipment_provider: values.shipmentProvider,
+                    pickup_warehouse_name:values.pickupWareHouse,
+                    pickup_address: values.address,
+                        pickup_country: values.country,
+                        pickup_state: values.state,
+                        pickup_city: values.city,
+                        pickup_zip_code: values.zipCode,
+                    destination_address: values.destinationAddress,
+                    destination_country: values.destinationCountry,
+
+                    destination_state: values.destinationState,
+                    destination_city: values.destinationCity,
+                    destination_zip_code: values.destinationZipCode,
+                    // pickupAddress: {
+                    //     address: values.address,
+                    //     country: values.country,
+                    //     state: values.state,
+                    //     city: values.city,
+                    //     zipCode: values.zipCode,
+                    //     coordinates: mapPosition, // Include map coordinates
+                    // },
+                    // destinationAddress: {
+                    //     address: values.destinationAddress,
+                    //     state: values.destinationState,
+                    //     city: values.destinationCity,
+                    //     zipCode: values.destinationZipCode,
+                    // },
+                    expected_arrival_date: values.expectedArrivalDate,
+                   shipment_note: values.shippingNotes,
                 };
 
                 // Assuming you have a mutation hook called 'createShipment' defined in your API slice
@@ -404,6 +419,20 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
                                         )}
                                     </div>
 
+                                
+                                    <div className='mb-3'>
+                                        <AddLeadInput
+                                            label="Pickup Warehouse"
+                                            name="pickupWareHouse"
+                                            value={formik.values.pickupWareHouse}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            error={formik.touched.pickupWareHouse && formik.errors.pickupWareHouse}
+                                            isRequired={true}
+                                            placeholder="---"
+                                        />
+                                    </div>
+
                                     <div className='mb-3'>
                                         <AddLeadInput
                                             label="Address"
@@ -466,7 +495,7 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
                                         />
                                     </div>
 
-                                    {showMap && (
+                                    {/* {showMap && (
                                         <div className="mb-3 h-36 w-full">
                                             <MapContainer
                                                 center={mapPosition as [number, number]}
@@ -495,7 +524,7 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
 
                                             </MapContainer>
                                         </div>
-                                    )}
+                                    )} */}
                                 </div>
 
                                 {/* Destination Address */}
@@ -519,11 +548,11 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
                                     <div className='mb-3'>
                                         <AddLeadInput
                                             label="Country"
-                                            name="country"
-                                            value={formik.values.destinationCity}
+                                            name="destinationCountry"
+                                            value={formik.values.destinationCountry}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
-                                            error={formik.touched.destinationCity && formik.errors.destinationCity}
+                                            error={formik.touched.destinationCountry && formik.errors.destinationCountry}
                                             isRequired={true}
                                             placeholder="---"
                                         />

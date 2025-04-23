@@ -360,14 +360,6 @@ export const api = createApi({
       }),
       providesTags: ["AllEmployeeTasks"],
     }),
-    addNewShipment: builder.mutation({
-      query: (shipmentData) => ({
-        url: 'add/shipment', 
-        method: 'POST',
-        body: shipmentData,
-      }),
-      invalidatesTags: ["AllShipments",],
-    }),
 
 
     addInventoryCost: builder.mutation({
@@ -412,6 +404,28 @@ export const api = createApi({
       }),
       // providesTags: ["AllEmployeeTasks"],
     }),
+
+
+    addNewShipment: builder.mutation({
+      query: (shipmentData) => ({
+        url: 'add/shipment', 
+        method: 'POST',
+        body: shipmentData,
+      }),
+      invalidatesTags: ["AllShipments",],
+    }),
+
+    getAllShipments: builder.query({
+      query: ({ id, shipmentType }) => ({
+        url: `all/shipment/${id}?shipment=${shipmentType}`,
+        method: 'GET',
+      }),
+      providesTags: ["AllShipments"],
+    }),
+    
+
+
+
   }),
 });
 
@@ -462,6 +476,7 @@ useCalculateProfitMutation,
 useAddSellingPriceMutation,
 useGetInventorySellingPriceQuery,
 useEmployeeTaskStatusQuery,
+useGetAllShipmentsQuery,
 
 
 

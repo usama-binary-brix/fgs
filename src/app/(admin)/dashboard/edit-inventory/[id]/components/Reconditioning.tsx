@@ -35,7 +35,7 @@ const {id} = useParams()
             Edit Timeline
           </Button>
       </div>
-    <CustomizedTimeline steps={steps}/>
+    <CustomizedTimeline steps={steps} timelineData={timelineData}/>
 <TasksList/>
     <EditTimelineModal open={openTimelineModal} onClose={handleCloseModal}/>
     </>
