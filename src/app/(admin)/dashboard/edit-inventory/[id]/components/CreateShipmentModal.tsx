@@ -112,20 +112,7 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
                     destination_state: values.destinationState,
                     destination_city: values.destinationCity,
                     destination_zip_code: values.destinationZipCode,
-                    // pickupAddress: {
-                    //     address: values.address,
-                    //     country: values.country,
-                    //     state: values.state,
-                    //     city: values.city,
-                    //     zipCode: values.zipCode,
-                    //     coordinates: mapPosition, // Include map coordinates
-                    // },
-                    // destinationAddress: {
-                    //     address: values.destinationAddress,
-                    //     state: values.destinationState,
-                    //     city: values.destinationCity,
-                    //     zipCode: values.destinationZipCode,
-                    // },
+              
                     expected_arrival_date: values.expectedArrivalDate,
                    shipment_note: values.shippingNotes,
                 };

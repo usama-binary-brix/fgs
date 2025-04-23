@@ -17,9 +17,10 @@ import { TableHeader } from '@/components/ui/table';
 import { MoreDotIcon } from '@/icons';
 import { DropdownItem } from '@/components/ui/dropdown/DropdownItem';
 import { useParams, useRouter } from 'next/navigation';
-import { useDeleteShipmentMutation, useGetAllShipmentsQuery } from '@/store/services/api';
+import { useAddNewShipmentMutation, useDeleteShipmentMutation, useGetAllShipmentsQuery } from '@/store/services/api';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import { toast } from 'react-toastify';
+import { ErrorResponse } from '../../../accounts/components/AccountsModal';
 
 // Shipment Provider 
 const shipmentProvider = [
@@ -77,6 +78,8 @@ const Shipment = () => {
 
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [activeRowId, setActiveRowId] = useState<string | null>(null);
+  const [editingShipmentId, setEditingShipmentId] = useState<string | null>(null);
+  const [updateShipment] = useAddNewShipmentMutation();
 
   const router = useRouter()
 
@@ -96,6 +99,7 @@ const Shipment = () => {
 
   const formik = useFormik({
     initialValues: {
+      inventoryId: id || '',
       year: '',
       make: '',
       model: '',
@@ -119,18 +123,66 @@ const Shipment = () => {
       destinationZipCode: "",
       expectedArrivalDate: "",
       shippingNotes: "",
+      pickupWareHouse: "",
+
     },
-    onSubmit: values => {
-      console.log('Form Values:', values);
-      // handle API submit here
-    }
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const payload = {
+
+          inventory_id: id, // Send inventory ID instead of full details
+          shipment: values.shipmentType,
+          pickup_shipment_provider: values.shipmentProvider,
+          pickup_warehouse_name: values.pickupWareHouse,
+          pickup_address: values.address,
+          pickup_country: values.country,
+          pickup_state: values.state,
+          pickup_city: values.city,
+          pickup_zip_code: values.zipCode,
+          destination_address: values.destinationAddress,
+          destination_country: values.destinationCountry,
+
+          destination_state: values.destinationState,
+          destination_city: values.destinationCity,
+          destination_zip_code: values.destinationZipCode,
+
+          expected_arrival_date: values.expectedArrivalDate,
+          shipment_note: values.shippingNotes,
+        };
+
+        // Assuming you have a mutation hook called 'createShipment' defined in your API slice
+        const response = await updateShipment({
+          shipment_id: editingShipmentId,
+          ...payload
+        }).unwrap();
+        toast.success(response.message || 'Shipment updated successfully');
+        
+      } catch (error) {
+        const errorResponse = error as ErrorResponse;
+
+        if (errorResponse?.data?.error) {
+          Object.values(errorResponse.data.error).forEach((errorMessage) => {
+            if (Array.isArray(errorMessage)) {
+              errorMessage.forEach((msg) => toast.error(msg)); // Handle array errors
+            } else {
+              toast.error(errorMessage); // Handle single string errors
+            }
+          });
+        } else {
+          toast.error('Failed to create shipment');
+        }
+      }
+    },
+    enableReinitialize: false,
   });
+
 
 
 
   // Function to populate formik values when accordion is expanded
   const populateFormikValues = (shipment: any) => {
     formik.setValues({
+      shipment:shipment.shipment || '',
       year: shipment.inventory.year || '',
       make: shipment.inventory.make || '',
       model: shipment.inventory.model || '',
@@ -269,11 +321,26 @@ const Shipment = () => {
                                 >
                                   {'Delete'}
                                 </Button>
-                                <Button
-                                // onClick={() => handleCreateShipmentOpenModal(id)}
-                                >
-                                  Edit
-                                </Button>
+                                {editingShipmentId === shipment.id ? (
+                                  <Button
+                                    variant="primary"
+                                    onClick={() => {
+                                      formik.handleSubmit(); // This will trigger the formik onSubmit
+                                      setEditingShipmentId(null); // Exit edit mode
+                                    }}
+                                  >
+                                    Update
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    onClick={() => {
+                                      populateFormikValues(shipment);
+                                      setEditingShipmentId(shipment.id);
+                                    }}
+                                  >
+                                    Edit
+                                  </Button>
+                                )}
 
                               </div>
                             </div>
@@ -674,7 +741,6 @@ const Shipment = () => {
                                   {'Delete'}
                                 </Button>
                                 <Button
-                                // onClick={() => handleCreateShipmentOpenModal(id)}
                                 >
                                   Edit
                                 </Button>
