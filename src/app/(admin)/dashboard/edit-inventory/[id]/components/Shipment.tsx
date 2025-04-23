@@ -124,13 +124,7 @@ const Shipment = () => {
     }
   });
 
-  const handleCreateShipmentOpenModal = () => {
-    setCreateShipmentModal(true);
-  }
 
-  const handleCreateShipmentCloseModal = () => {
-    setCreateShipmentModal(false);
-  }
 
   // Function to populate formik values when accordion is expanded
   const populateFormikValues = (shipment: any) => {
@@ -160,6 +154,23 @@ const Shipment = () => {
       shippingNotes: shipment.shipment_note || "",
     });
   };
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedShipmentId, setSelectedShipmentId] = useState<any>(null);
+
+  const handleOpenDeleteModal = (Id: any) => {
+    setSelectedShipmentId(Id);
+    // setSelectedTaskName(taskName);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCreateShipmentOpenModal = () => {
+    setCreateShipmentModal(true);
+  }
+
+  const handleCreateShipmentCloseModal = () => {
+    setCreateShipmentModal(false);
+  }
+
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading shipments</div>;
@@ -219,15 +230,33 @@ const Shipment = () => {
                   ) : (
                     <div>
                       {shipments.map((shipment: any) => (
-                        <Accordion key={shipment.id} onChange={() => populateFormikValues(shipment)} defaultExpanded>
+                        <Accordion key={shipment.id} onChange={() => populateFormikValues(shipment)}>
                           <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel1-content"
                             id="panel1-header"
                           >
+                            <div className='flex items-center justify-between w-full'>
                             <p className='text-[17px] text-[#000] font-medium font-family'>
                               {shipment.shipment === 'inbound' ? 'Inbound' : 'Outbound'} Shipment # {shipment.id}
                             </p>
+
+                        <div className='flex items-center gap-3'>
+                        <Button
+                    variant="danger"
+                    onClick={() => handleOpenDeleteModal(id)}
+                    // disabled={isDeleting}
+                  >
+                    {'Delete'}
+                  </Button>
+                  <Button
+                    // onClick={() => handleCreateShipmentOpenModal(id)}
+                  >
+                    Edit
+                  </Button>
+
+                        </div>
+                            </div>
                           </AccordionSummary>
                           <AccordionDetails>
                             <Typography>
@@ -605,7 +634,7 @@ const Shipment = () => {
                   ) : (
                     <div>
                       {shipments.map((shipment: any) => (
-                        <Accordion key={shipment.id} onChange={() => populateFormikValues(shipment)} defaultExpanded>
+                        <Accordion key={shipment.id} onChange={() => populateFormikValues(shipment)}>
                           <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel1-content"
