@@ -17,7 +17,9 @@ import { TableHeader } from '@/components/ui/table';
 import { MoreDotIcon } from '@/icons';
 import { DropdownItem } from '@/components/ui/dropdown/DropdownItem';
 import { useParams, useRouter } from 'next/navigation';
-import { useGetAllShipmentsQuery } from '@/store/services/api';
+import { useDeleteShipmentMutation, useGetAllShipmentsQuery } from '@/store/services/api';
+import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
+import { toast } from 'react-toastify';
 
 // Shipment Provider 
 const shipmentProvider = [
@@ -170,6 +172,24 @@ const Shipment = () => {
   const handleCreateShipmentCloseModal = () => {
     setCreateShipmentModal(false);
   }
+  const [deleteShipment, { isLoading: isDeleting }] = useDeleteShipmentMutation();
+
+  const handleDeleteShipment = async () => {
+    try {
+      await deleteShipment(selectedShipmentId).unwrap();
+      toast.success('Shipment deleted successfully!');
+      // if (onTaskDeleted) {
+      //   onTaskDeleted(selectedShipmentId); // Notify parent component about deletion
+      // }
+    } catch (error) {
+      toast.error('Failed to delete Task!');
+    } finally {
+      setIsDeleteModalOpen(false);
+      setSelectedShipmentId(null);
+      // setSelectedTaskName("");
+    }
+  };
+
 
 
   if (isLoading) return <div>Loading...</div>;
@@ -223,7 +243,7 @@ const Shipment = () => {
               {activeBoundTab === "inbound" && (
                 <>
                   {shipments.length === 0 ? (
-                    <div className='bg-[#F7F7F7] p-3 gap-2 mt-5 rounded-lg flex justify-center flex-col items-center cursor-pointer'  onClick={handleCreateShipmentOpenModal}>
+                    <div className='bg-[#F7F7F7] p-3 gap-2 mt-5 rounded-lg flex justify-center flex-col items-center cursor-pointer' onClick={handleCreateShipmentOpenModal}>
                       <FiPlusCircle size={60} strokeWidth={1.5} color='#616161' />
                       <p className='text-[16px] font-normal font-family text-[#616161]'>No Shipments Found! To create one click the button</p>
                     </div>
@@ -237,25 +257,25 @@ const Shipment = () => {
                             id="panel1-header"
                           >
                             <div className='flex items-center justify-between w-full'>
-                            <p className='text-[17px] text-[#000] font-medium font-family'>
-                              {shipment.shipment === 'inbound' ? 'Inbound' : 'Outbound'} Shipment # {shipment.id}
-                            </p>
+                              <p className='text-[17px] text-[#000] font-medium font-family'>
+                                {shipment.shipment === 'inbound' ? 'Inbound' : 'Outbound'} Shipment # {shipment.id}
+                              </p>
 
-                        <div className='flex items-center gap-3'>
-                        <Button
-                    variant="danger"
-                    onClick={() => handleOpenDeleteModal(id)}
-                    // disabled={isDeleting}
-                  >
-                    {'Delete'}
-                  </Button>
-                  <Button
-                    // onClick={() => handleCreateShipmentOpenModal(id)}
-                  >
-                    Edit
-                  </Button>
+                              <div className='flex items-center gap-3'>
+                                <Button
+                                  variant="danger"
+                                  onClick={() => handleOpenDeleteModal(shipment.id)}
+                                // disabled={isDeleting}
+                                >
+                                  {'Delete'}
+                                </Button>
+                                <Button
+                                // onClick={() => handleCreateShipmentOpenModal(id)}
+                                >
+                                  Edit
+                                </Button>
 
-                        </div>
+                              </div>
                             </div>
                           </AccordionSummary>
                           <AccordionDetails>
@@ -640,26 +660,26 @@ const Shipment = () => {
                             aria-controls="panel1-content"
                             id="panel1-header"
                           >
-                                   <div className='flex items-center justify-between w-full'>
-                            <p className='text-[17px] text-[#000] font-medium font-family'>
-                              {shipment.shipment === 'inbound' ? 'Inbound' : 'Outbound'} Shipment # {shipment.id}
-                            </p>
+                            <div className='flex items-center justify-between w-full'>
+                              <p className='text-[17px] text-[#000] font-medium font-family'>
+                                {shipment.shipment === 'inbound' ? 'Inbound' : 'Outbound'} Shipment # {shipment.id}
+                              </p>
 
-                        <div className='flex items-center gap-3'>
-                        <Button
-                    variant="danger"
-                    onClick={() => handleOpenDeleteModal(id)}
-                    // disabled={isDeleting}
-                  >
-                    {'Delete'}
-                  </Button>
-                  <Button
-                    // onClick={() => handleCreateShipmentOpenModal(id)}
-                  >
-                    Edit
-                  </Button>
+                              <div className='flex items-center gap-3'>
+                                <Button
+                                  variant="danger"
+                                  onClick={() => handleOpenDeleteModal(shipment.id)}
+                                // disabled={isDeleting}
+                                >
+                                  {'Delete'}
+                                </Button>
+                                <Button
+                                // onClick={() => handleCreateShipmentOpenModal(id)}
+                                >
+                                  Edit
+                                </Button>
 
-                        </div>
+                              </div>
                             </div>
                           </AccordionSummary>
                           <AccordionDetails>
@@ -1102,6 +1122,15 @@ const Shipment = () => {
           )}
         </div>
       </div>
+
+
+      <DeleteConfirmationModal
+        title="Shipment"
+        open={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteShipment}
+        name='Shipment'
+      />
     </>
   )
 }

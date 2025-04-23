@@ -423,7 +423,13 @@ export const api = createApi({
       providesTags: ["AllShipments"],
     }),
     
-
+    deleteShipment: builder.mutation({
+      query: (id) => ({
+        url: `shipment/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ["AllShipments"],
+    }),
 
 
   }),
@@ -477,6 +483,7 @@ useAddSellingPriceMutation,
 useGetInventorySellingPriceQuery,
 useEmployeeTaskStatusQuery,
 useGetAllShipmentsQuery,
+useDeleteShipmentMutation,
 
 
 
