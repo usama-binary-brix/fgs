@@ -5,7 +5,7 @@ import { RxCross2 } from "react-icons/rx";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import { useAddInventoryMutation, useAddTaskStatusMutation, useGetTaskByIdQuery } from '@/store/services/api';
+import { useAddInventoryMutation, useAddTaskStatusMutation, useEmployeeTaskStatusQuery, useGetTaskByIdQuery } from '@/store/services/api';
 import Label from '@/components/form/Label';
 import TextArea from './form/input/TextArea';
 import Button from '@/components/ui/button/Button';
@@ -27,8 +27,8 @@ const modalStyle = {
 interface Props {
     open: boolean;
     onClose: () => void;
-    taskName?:any
-    taskId?:any
+    taskName?: any
+    taskId?: any
 }
 
 type ErrorResponse = {
@@ -45,18 +45,46 @@ const statusOptions = [
 
 const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName, taskId }) => {
     const [images, setImages] = useState<File[]>([]);
+    const [existingFiles, setExistingFiles] = useState<any[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [addStatus] = useAddTaskStatusMutation();
+    const { data: taskStatusData, error: taskStatusError, isLoading: taskStatusLoading, refetch: taskStatusRefetch } = useEmployeeTaskStatusQuery(taskId, { skip: !taskId || !open });
+  
+    // Reset all local state when modal closes
+    const resetFormState = () => {
+        setImages([]);
+        setExistingFiles([]);
+        formik.resetForm();
+    };
 
-
-    const { data: taskData, error: taskError, isLoading: taskLoading, refetch: taskRefetch } = useGetTaskByIdQuery(taskId, { skip: !taskId });
-
+    // Fetch data when modal opens or taskId changes
     useEffect(() => {
-        if (!open) {
-            setImages([]);
-            formik.resetForm();
+        if (open) {
+            taskStatusRefetch();
         }
-    }, [open]);
+    }, [open, taskId]);
+
+    // Update form with API data when it's available
+    useEffect(() => {
+        if (taskStatusData?.employee_task_status) {
+            const statusData = taskStatusData.employee_task_status;
+            formik.setValues({
+                status: statusData.status || '',
+                description: statusData.description || ''
+            });
+            if (statusData.files && statusData.files.length > 0) {
+                setExistingFiles(statusData.files.map((file: any) => file.file));
+            } else {
+                setExistingFiles([]);
+            }
+            setImages([]); // Clear any uploaded images when loading new data
+        } else if (!taskStatusData) {
+            // If no data found, reset to empty state
+            formik.resetForm();
+            setExistingFiles([]);
+            setImages([]);
+        }
+    }, [taskStatusData, taskStatusLoading, open]);
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
@@ -69,10 +97,18 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName, taskI
         setImages(images.filter((_, i) => i !== index));
     };
 
+    const removeExistingFile = (index: number) => {
+        setExistingFiles(existingFiles.filter((_, i) => i !== index));
+    };
+
     const validationSchema = Yup.object().shape({
         status: Yup.string().required('Status is required'),
-        // note: Yup.string().required('Description is required'),
     });
+
+    const handleClose = () => {
+        resetFormState();
+        onClose();
+    };
 
     const formik = useFormik({
         initialValues: {
@@ -81,21 +117,31 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName, taskI
         },
         validationSchema,
         onSubmit: async (values) => {
-            console.log(values, 'values')
             setIsSubmitting(true);
             const formData = new FormData();
             formData.append('task_id', taskId);
-        
+
+            // Append existing file URLs that haven't been removed
+            existingFiles.forEach((fileUrl) => {
+                formData.append("existing_images[]", fileUrl);
+            });
+
             Object.entries(values).forEach(([key, value]) => {
                 formData.append(key, value as string);
             });
+            
             images.forEach((image) => {
                 formData.append("files[]", image);
             });
-            
+
+            if (taskStatusData?.employee_task_status) {
+                formData.append('status_id', `${taskStatusData.employee_task_status.id}`);
+            }
+
             try {
-               const response = await addStatus(formData).unwrap();
+                const response = await addStatus(formData).unwrap();
                 toast.success(response.message || 'Task status updated successfully!');
+                resetFormState();
                 onClose();
             } catch (error) {
                 const errorResponse = error as ErrorResponse;
@@ -127,26 +173,19 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName, taskI
         if (lowerCaseFileUrl.endsWith('.xls') || lowerCaseFileUrl.endsWith('.xlsx')) {
             return '/images/filesicon/xlsx.png';
         }
-        if (
-            lowerCaseFileUrl.endsWith('.jpg') ||
-            lowerCaseFileUrl.endsWith('.jpeg') ||
-            lowerCaseFileUrl.endsWith('.png') ||
-            lowerCaseFileUrl.endsWith('.gif') ||
-            lowerCaseFileUrl.endsWith('.svg') ||
-            lowerCaseFileUrl.endsWith('.webp')
-        ) {
-            return '/images/fileupload.svg';
+        if (lowerCaseFileUrl.match(/\.(jpg|jpeg|png|gif|svg|webp|JPG|jfif)$/)) {
+            return fileUrl;
         }
         return '/images/filesicon/docss.png';
     };
 
     return (
-        <Modal open={open} onClose={onClose}>
+        <Modal open={open} onClose={handleClose}>
             <Box sx={modalStyle}>
                 <div className='border-b border-gray-400 mb-3 py-3'>
                     <div className='flex justify-between items-center px-4'>
                         <p className='text-xl font-semibold'>{taskName}</p>
-                        <RxCross2 onClick={onClose} className='cursor-pointer text-3xl' />
+                        <RxCross2 onClick={handleClose} className='cursor-pointer text-3xl' />
                     </div>
                 </div>
                 <form onSubmit={formik.handleSubmit} className='p-[15px]' autoComplete='off'>
@@ -171,9 +210,9 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName, taskI
                                 <div className="text-red-500 text-xs mt-1">{formik.errors.status}</div>
                             )}
                         </Grid>
-                        
+
                         <Grid item xs={12}>
-                            <Label>Note</Label>
+                            <Label>Notes</Label>
                             <TextArea
                                 placeholder="Enter your note"
                                 rows={3}
@@ -188,8 +227,7 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName, taskI
 
                         <Grid item xs={12}>
                             <div className="w-full">
-                                <h1 className="text-sm text-[#414141] font-medium text-[13px] font-family">Attach Files</h1>
-                                <p className="text-[#818181] text-[10px] font-family font-normal">Only PDF, JPG & PNG formats are allowed</p>
+                            <Label>Attach Files</Label>
                                 <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#B1BFD0] rounded-lg cursor-pointer mt-3 hover:bg-gray-100">
                                     <input
                                         type="file"
@@ -203,14 +241,45 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName, taskI
                                     </div>
                                 </label>
 
-                                {images.length > 0 && (
+                                {(images.length > 0 || existingFiles.length > 0) && (
                                     <div className="flex gap-4 mt-4 flex-wrap">
+                                        {/* Render existing files */}
+                                        {existingFiles.map((fileUrl, index) => {
+                                            const previewSrc = getFileTypeIcon(fileUrl);
+                                            const fileName = fileUrl.split('/').pop();
+                                            return (
+                                                <div key={`existing-${index}`} className="relative w-24 h-24">
+                                                    <div className="h-full rounded-lg overflow-hidden border border-gray-200">
+                                                        <img
+                                                            src={previewSrc}
+                                                            alt={`Existing file ${index}`}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                removeExistingFile(index);
+                                                            }}
+                                                        >
+                                                            <RxCross2 className="text-xs" />
+                                                        </button>
+                                                    </div>
+                                                    <p className="text-xs text-center mt-1 truncate w-full" title={fileName}>
+                                                        {fileName}
+                                                    </p>
+                                                </div>
+                                            );
+                                        })}
+
+                                        {/* Render newly uploaded files */}
                                         {images.map((img, index) => {
                                             const isImage = img.type.startsWith('image/');
                                             const previewSrc = isImage ? URL.createObjectURL(img) : getFileTypeIcon(img.name);
                                             const fileName = img.name;
                                             return (
-                                                <div key={index} className="relative w-24 h-24">
+                                                <div key={`new-${index}`} className="relative w-24 h-24">
                                                     <div className="h-full rounded-lg overflow-hidden border border-gray-200">
                                                         <img
                                                             src={previewSrc}
@@ -218,6 +287,7 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName, taskI
                                                             className="w-full h-full object-cover"
                                                         />
                                                         <button
+                                                            type="button"
                                                             className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
                                                             onClick={(e) => {
                                                                 e.preventDefault();
@@ -238,9 +308,9 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName, taskI
                             </div>
                         </Grid>
 
-                        <Grid item xs={12} display="flex" justifyContent="flex-end">
+                        <Grid item xs={12} display="flex" justifyContent="flex-end" marginTop={'1rem'}>
                             <div className='flex items-center gap-4'>
-                                <Button onClick={onClose} variant="fgsoutline" className='font-semibold'>
+                                <Button type="button" onClick={handleClose} variant="fgsoutline" className='font-semibold'>
                                     Cancel
                                 </Button>
                                 <Button

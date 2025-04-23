@@ -73,6 +73,7 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose, taskId }) => {
         skip: !open,
         refetchOnMountOrArgChange: true,
     });
+    
 
     React.useEffect(() => {
         if (open) {

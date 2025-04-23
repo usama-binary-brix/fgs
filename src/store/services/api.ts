@@ -404,6 +404,14 @@ export const api = createApi({
       }),
       // providesTags: ["AllEmployeeTasks"],
     }),
+
+    employeeTaskStatus: builder.query({
+      query: (id) => ({
+        url: `get/task/status/${id}`,
+        method: 'GET', 
+      }),
+      // providesTags: ["AllEmployeeTasks"],
+    }),
   }),
 });
 
@@ -453,6 +461,7 @@ useAddInventoryCostMutation,
 useCalculateProfitMutation,
 useAddSellingPriceMutation,
 useGetInventorySellingPriceQuery,
+useEmployeeTaskStatusQuery,
 
 
 
