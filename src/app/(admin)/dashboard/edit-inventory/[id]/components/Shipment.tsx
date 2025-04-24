@@ -21,6 +21,7 @@ import { useAddNewShipmentMutation, useDeleteShipmentMutation, useGetAllShipment
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import { toast } from 'react-toastify';
 import { ErrorResponse } from '../../../accounts/components/AccountsModal';
+import RadioButton from '../../../leads/components/radiobutton/RadioButton';
 
 // Shipment Provider 
 const shipmentProvider = [
@@ -32,11 +33,14 @@ const shipmentProvider = [
 
 // Address 
 const addressValues = [
-  { value: "Warehouse 1 Houston" },
-  { value: "Warehouse 1 Houston" },
-  { value: "Warehouse 1 Houston" },
-  { value: "Warehouse 1 Houston" },
+  { value: "Warehouse A" },
+  { value: "Warehouse B" },
+  { value: "Warehouse C" },
+  { value: "Warehouse D" },
 ];
+
+const warehouseOptions = ["Warehouse A", "Warehouse B", "Warehouse C"];
+
 
 interface Lead {
   companyName: string;
@@ -57,12 +61,12 @@ const shipmentQuotesData = [
 const Shipment = () => {
   const [activeTab, setActiveTab] = useState("details");
   const { id } = useParams()
-
+  const [isEditMode, setIsEditMode] = useState(false)
   const [activeBoundTab, setActiveBoundTab] = useState("inbound");
   const [createShipmentModal, setCreateShipmentModal] = useState(false);
   const [dropdownStates, setDropdownStates] = useState({
     shipmentProvider: false,
-    selectAddress: false,
+    pickupWareHouse: false,
   });
 
   const { data, error, isLoading, refetch } = useGetAllShipmentsQuery({
@@ -81,6 +85,7 @@ const Shipment = () => {
   const [editingShipmentId, setEditingShipmentId] = useState<string | null>(null);
   const [updateShipment] = useAddNewShipmentMutation();
 
+  console.log(editingShipmentId, 'edit shipment id')
   const router = useRouter()
 
   const toggleDropdown = (id: string) => {
@@ -108,7 +113,7 @@ const Shipment = () => {
       height: '',
       width: '',
       weight: '',
-      shipmentType: '',
+      shipment: '',
       shipmentProvider: "",
       selectAddress: "",
       address: "",
@@ -125,15 +130,16 @@ const Shipment = () => {
       shippingNotes: "",
       pickupWareHouse: "",
 
+
     },
     onSubmit: async (values, { resetForm }) => {
       try {
         const payload = {
 
           inventory_id: id, // Send inventory ID instead of full details
-          shipment: values.shipmentType,
-          pickup_shipment_provider: values.shipmentProvider,
-          pickup_warehouse_name: values.pickupWareHouse,
+          shipment: values.shipment,
+          // pickup_shipment_provider: values.shipmentProvider,
+          warehouse_name: values.pickupWareHouse,
           pickup_address: values.address,
           pickup_country: values.country,
           pickup_state: values.state,
@@ -150,13 +156,15 @@ const Shipment = () => {
           shipment_note: values.shippingNotes,
         };
 
-        // Assuming you have a mutation hook called 'createShipment' defined in your API slice
+
+
         const response = await updateShipment({
           shipment_id: editingShipmentId,
           ...payload
         }).unwrap();
         toast.success(response.message || 'Shipment updated successfully');
-        
+        setEditingShipmentId(null);
+        setIsEditMode(false);;
       } catch (error) {
         const errorResponse = error as ErrorResponse;
 
@@ -175,14 +183,10 @@ const Shipment = () => {
     },
     enableReinitialize: false,
   });
-
-
-
-
-  // Function to populate formik values when accordion is expanded
   const populateFormikValues = (shipment: any) => {
     formik.setValues({
-      shipment:shipment.shipment || '',
+      inventoryId: shipment.inventory.id || '',
+      shipment: shipment.shipment || '',
       year: shipment.inventory.year || '',
       make: shipment.inventory.make || '',
       model: shipment.inventory.model || '',
@@ -191,9 +195,9 @@ const Shipment = () => {
       height: shipment.inventory.height || '',
       width: shipment.inventory.width || '',
       weight: shipment.inventory.weight || '',
-      shipmentType: shipment.shipment || '',
       shipmentProvider: shipment.pickup_shipment_provider || "",
       selectAddress: shipment.pickup_warehouse_name || "",
+      pickupWareHouse: shipment.warehouse_name || "", // this was missing
       address: shipment.pickup_address || "",
       country: shipment.pickup_country || "",
       state: shipment.pickup_state || "",
@@ -208,6 +212,7 @@ const Shipment = () => {
       shippingNotes: shipment.shipment_note || "",
     });
   };
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedShipmentId, setSelectedShipmentId] = useState<any>(null);
 
@@ -230,15 +235,12 @@ const Shipment = () => {
     try {
       await deleteShipment(selectedShipmentId).unwrap();
       toast.success('Shipment deleted successfully!');
-      // if (onTaskDeleted) {
-      //   onTaskDeleted(selectedShipmentId); // Notify parent component about deletion
-      // }
+
     } catch (error) {
       toast.error('Failed to delete Task!');
     } finally {
       setIsDeleteModalOpen(false);
       setSelectedShipmentId(null);
-      // setSelectedTaskName("");
     }
   };
 
@@ -304,7 +306,7 @@ const Shipment = () => {
                       {shipments.map((shipment: any) => (
                         <Accordion key={shipment.id} onChange={() => populateFormikValues(shipment)}>
                           <AccordionSummary
-                            // expandIcon={<ExpandMoreIcon />}
+                            expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel1-content"
                             id="panel1-header"
                           >
@@ -312,37 +314,6 @@ const Shipment = () => {
                               <p className='text-[17px] text-[#000] font-medium font-family'>
                                 {shipment.shipment === 'inbound' ? 'Inbound' : 'Outbound'} Shipment # {shipment.id}
                               </p>
-
-                              <div className='flex items-center gap-3'>
-                                <Button
-                                  variant="danger"
-                                  onClick={() => handleOpenDeleteModal(shipment.id)}
-                                // disabled={isDeleting}
-                                >
-                                  {'Delete'}
-                                </Button>
-                                {editingShipmentId === shipment.id ? (
-                                  <Button
-                                    variant="primary"
-                                    onClick={() => {
-                                      formik.handleSubmit(); // This will trigger the formik onSubmit
-                                      setEditingShipmentId(null); // Exit edit mode
-                                    }}
-                                  >
-                                    Update
-                                  </Button>
-                                ) : (
-                                  <Button
-                                    onClick={() => {
-                                      populateFormikValues(shipment);
-                                      setEditingShipmentId(shipment.id);
-                                    }}
-                                  >
-                                    Edit
-                                  </Button>
-                                )}
-
-                              </div>
                             </div>
                           </AccordionSummary>
                           <AccordionDetails>
@@ -350,6 +321,36 @@ const Shipment = () => {
                               <form onSubmit={formik.handleSubmit} >
                                 <div className="container">
                                   <div className="row mx-3">
+                                    {isEditMode && (
+                                      <>
+
+                                        <div className="p-4">
+                                          <label className='text-[12.5px] font-normal font-family text-[#818181] mb-4'>
+                                            Shipment <span className='text-red-500'>*</span>
+                                          </label>
+                                          <div className='flex gap-5 mt-1'>
+                                            <div className='flex gap-2'>
+                                              <RadioButton
+                                                isSelected={formik.values.shipment === 'inbound'}
+                                                onSelect={() => formik.setFieldValue('shipment', 'inbound')}
+                                              />
+                                              <span className='text-[13px] text-[#414141] font-medium font-family'>InBound</span>
+                                            </div>
+                                            <div className='flex gap-2'>
+                                              <RadioButton
+                                                isSelected={formik.values.shipment === 'outbound'}
+                                                onSelect={() => formik.setFieldValue('shipment', 'outbound')}
+                                              />
+                                              <span className='text-[13px] text-[#414141] font-medium font-family'>OutBound</span>
+                                            </div>
+                                          </div>
+                                        </div>
+
+
+
+
+                                      </>
+                                    )}
                                     <div className='grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 gap-4'>
                                       {/* Inventory Details */}
                                       <div className="bg-white w-full border-1 border-[#EFEFEF] rounded-[5px] p-2">
@@ -462,79 +463,48 @@ const Shipment = () => {
                                           Pickup Address
                                         </h1>
 
-                                        {/* Shipment Provider dropdown */}
-                                        <div className="relative w-full">
-                                          <label className="text-xs text-gray-500 font-family font-medium">Shipment Provider <span className='text-red-500'>*</span></label>
-                                          <button
-                                            type="button"
-                                            className="w-full text-left mt-1 text-[#414141] placeholder-[#666] text-[12px] font-medium font-family border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
-                                            onClick={() =>
-                                              setDropdownStates(prev => ({ ...prev, shipmentProvider: !prev.shipmentProvider }))
-                                            }
-                                          >
-                                            {formik.values.shipmentProvider || "Select an option"}
-                                            <FiChevronDown
-                                              className={`text-lg transition-transform duration-300 ${dropdownStates.shipmentProvider ? "rotate-180" : "rotate-0"}`}
-                                            />
-                                          </button>
 
-                                          {dropdownStates.shipmentProvider && (
-                                            <ul className="absolute w-full bg-white border z-10 border-gray-300 rounded-md shadow-md mt-1">
-                                              {shipmentProvider.map((option, index) => (
-                                                <li
-                                                  key={index}
-                                                  className="px-3 py-2 text-darkGray font-family hover:bg-[#81818140] hover:text-yellow text-xs cursor-pointer"
-                                                  onClick={() => {
-                                                    formik.setFieldValue("shipmentProvider", option.value);
-                                                    setDropdownStates(prev => ({ ...prev, shipmentProvider: false }));
-                                                  }}
-                                                >
-                                                  {option.value}
-                                                </li>
-                                              ))}
-                                            </ul>
-                                          )}
-                                          {formik.touched.shipmentProvider && formik.errors.shipmentProvider && (
-                                            <p className="text-red-500 text-xs mt-1">{formik.errors.shipmentProvider}</p>
-                                          )}
-                                        </div>
 
                                         {/* Select Address Dropdown */}
-                                        <div className="relative w-full">
-                                          <label className="text-xs text-gray-500 font-family font-medium">Select Address <span className='text-red-500'>*</span></label>
+                                        <div className="relative w-full mb-3">
+                                          <label className="text-xs text-gray-500 font-family font-medium">
+                                            Select Warehouse <span className="text-red-500">*</span>
+                                          </label>
                                           <button
                                             type="button"
                                             className="w-full text-left mt-1 text-[#414141] placeholder-[#666] text-[12px] font-medium font-family border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
                                             onClick={() =>
-                                              setDropdownStates(prev => ({ ...prev, selectAddress: !prev.selectAddress }))
+                                              setDropdownStates(prev => ({ ...prev, pickupWareHouse: !prev.pickupWareHouse }))
                                             }
                                           >
-                                            {formik.values.selectAddress || "Select an option"}
+                                            {formik.values.pickupWareHouse || "Select an option"}
                                             <FiChevronDown
-                                              className={`text-lg transition-transform duration-300 ${dropdownStates.selectAddress ? "rotate-180" : "rotate-0"}`}
+                                              className={`text-lg transition-transform duration-300 ${dropdownStates.pickupWareHouse ? "rotate-180" : "rotate-0"
+                                                }`}
                                             />
                                           </button>
 
-                                          {dropdownStates.selectAddress && (
+                                          {dropdownStates.pickupWareHouse && (
                                             <ul className="absolute w-full bg-white border z-10 border-gray-300 rounded-md shadow-md mt-1">
-                                              {addressValues.map((option, index) => (
+                                              {warehouseOptions.map((option, index) => (
                                                 <li
                                                   key={index}
                                                   className="px-3 py-2 text-darkGray font-family hover:bg-[#81818140] hover:text-yellow text-xs cursor-pointer"
                                                   onClick={() => {
-                                                    formik.setFieldValue("selectAddress", option.value);
-                                                    setDropdownStates(prev => ({ ...prev, selectAddress: false }));
+                                                    formik.setFieldValue("pickupWareHouse", option);
+                                                    setDropdownStates(prev => ({ ...prev, pickupWareHouse: false }));
                                                   }}
                                                 >
-                                                  {option.value}
+                                                  {option}
                                                 </li>
                                               ))}
                                             </ul>
                                           )}
-                                          {formik.touched.selectAddress && formik.errors.selectAddress && (
-                                            <p className="text-red-500 text-xs mt-1">{formik.errors.selectAddress}</p>
+                                          {formik.touched.pickupWareHouse && formik.errors.pickupWareHouse && (
+                                            <p className="text-red-500 text-xs mt-1">{formik.errors.pickupWareHouse}</p>
                                           )}
                                         </div>
+
                                         <div className='mb-3'>
                                           <AddLeadInput
                                             label="Address"
@@ -702,6 +672,49 @@ const Shipment = () => {
                                   </div>
                                 </div>
                               </form>
+
+                              <div className='flex items-center justify-end gap-3'>
+                                <Button
+                                  variant="danger"
+                                  onClick={() => handleOpenDeleteModal(shipment.id)}
+                                // disabled={isDeleting}
+                                >
+                                  {'Delete'}
+                                </Button>
+                                {editingShipmentId === shipment.id ? (
+                                  <div className='flex gap-3 items-center'>
+                                    <Button
+                                      variant="primary"
+                                      onClick={() => {
+                                        formik.handleSubmit();
+                                      }}
+                                    >
+                                      Update
+                                    </Button>
+                                    <Button
+                                      variant="outlined"
+                                      onClick={() => {
+                                        setEditingShipmentId(null);
+                                        setIsEditMode(false)
+                                      }}
+                                    >
+                                      Cancel
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  <Button
+                                    onClick={() => {
+                                      populateFormikValues(shipment);
+                                      setEditingShipmentId(shipment.id);
+                                      setIsEditMode(true)
+                                    }}
+                                  >
+                                    Edit
+                                  </Button>
+                                )}
+
+                              </div>
+
                             </Typography>
                           </AccordionDetails>
                         </Accordion>
@@ -721,9 +734,11 @@ const Shipment = () => {
                   ) : (
                     <div>
                       {shipments.map((shipment: any) => (
-                        <Accordion key={shipment.id} onChange={() => populateFormikValues(shipment)}>
+                        <Accordion key={shipment.id} onChange={() => populateFormikValues(shipment)}
+                        // sx={{marginBottom:'0.1rem'}}
+                        >
                           <AccordionSummary
-                            // expandIcon={<ExpandMoreIcon />}
+                            expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel1-content"
                             id="panel1-header"
                           >
@@ -732,20 +747,7 @@ const Shipment = () => {
                                 {shipment.shipment === 'inbound' ? 'Inbound' : 'Outbound'} Shipment # {shipment.id}
                               </p>
 
-                              <div className='flex items-center gap-3'>
-                                <Button
-                                  variant="danger"
-                                  onClick={() => handleOpenDeleteModal(shipment.id)}
-                                // disabled={isDeleting}
-                                >
-                                  {'Delete'}
-                                </Button>
-                                <Button
-                                >
-                                  Edit
-                                </Button>
 
-                              </div>
                             </div>
                           </AccordionSummary>
                           <AccordionDetails>
@@ -753,6 +755,35 @@ const Shipment = () => {
                               <form onSubmit={formik.handleSubmit}>
                                 <div className="container">
                                   <div className="row mx-3">
+                                    {isEditMode && (
+                                      <>
+
+                                        <div className="">
+
+                                          <div className='flex gap-5 mb-2'>
+                                            <div className='flex gap-2'>
+                                              <RadioButton
+                                                isSelected={formik.values.shipment === 'inbound'}
+                                                onSelect={() => formik.setFieldValue('shipment', 'inbound')}
+                                              />
+                                              <span className='text-[13px] text-[#414141] font-medium font-family'>InBound</span>
+                                            </div>
+                                            <div className='flex gap-2'>
+                                              <RadioButton
+                                                isSelected={formik.values.shipment === 'outbound'}
+                                                onSelect={() => formik.setFieldValue('shipment', 'outbound')}
+                                              />
+                                              <span className='text-[13px] text-[#414141] font-medium font-family'>OutBound</span>
+                                            </div>
+                                          </div>
+                                        </div>
+
+
+
+
+                                      </>
+                                    )}
+
                                     <div className='grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 gap-4'>
                                       {/* Inventory Details */}
                                       <div className="bg-white w-full border-1 border-[#EFEFEF] rounded-[5px] p-2">
@@ -859,151 +890,12 @@ const Shipment = () => {
                                         </div>
                                       </div>
 
-                                      {/* PickUp Address */}
-                                      <div className="bg-white w-full border-1 border-[#EFEFEF] rounded-[5px] p-2">
-                                        <h1 className="text-[#000] flex gap-3 items-center text-[14px] font-family font-medium mb-2">
-                                          Pickup Address
-                                        </h1>
 
-                                        {/* Shipment Provider dropdown */}
-                                        <div className="relative w-full">
-                                          <label className="text-xs text-gray-500 font-family font-medium">Shipment Provider <span className='text-red-500'>*</span></label>
-                                          <button
-                                            type="button"
-                                            className="w-full text-left mt-1 text-[#414141] placeholder-[#666] text-[12px] font-medium font-family border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
-                                            onClick={() =>
-                                              setDropdownStates(prev => ({ ...prev, shipmentProvider: !prev.shipmentProvider }))
-                                            }
-                                          >
-                                            {formik.values.shipmentProvider || "Select an option"}
-                                            <FiChevronDown
-                                              className={`text-lg transition-transform duration-300 ${dropdownStates.shipmentProvider ? "rotate-180" : "rotate-0"}`}
-                                            />
-                                          </button>
-
-                                          {dropdownStates.shipmentProvider && (
-                                            <ul className="absolute w-full bg-white border z-10 border-gray-300 rounded-md shadow-md mt-1">
-                                              {shipmentProvider.map((option, index) => (
-                                                <li
-                                                  key={index}
-                                                  className="px-3 py-2 text-darkGray font-family hover:bg-[#81818140] hover:text-yellow text-xs cursor-pointer"
-                                                  onClick={() => {
-                                                    formik.setFieldValue("shipmentProvider", option.value);
-                                                    setDropdownStates(prev => ({ ...prev, shipmentProvider: false }));
-                                                  }}
-                                                >
-                                                  {option.value}
-                                                </li>
-                                              ))}
-                                            </ul>
-                                          )}
-                                          {formik.touched.shipmentProvider && formik.errors.shipmentProvider && (
-                                            <p className="text-red-500 text-xs mt-1">{formik.errors.shipmentProvider}</p>
-                                          )}
-                                        </div>
-
-                                        {/* Select Address Dropdown */}
-                                        <div className="relative w-full">
-                                          <label className="text-xs text-gray-500 font-family font-medium">Select Address <span className='text-red-500'>*</span></label>
-                                          <button
-                                            type="button"
-                                            className="w-full text-left mt-1 text-[#414141] placeholder-[#666] text-[12px] font-medium font-family border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
-                                            onClick={() =>
-                                              setDropdownStates(prev => ({ ...prev, selectAddress: !prev.selectAddress }))
-                                            }
-                                          >
-                                            {formik.values.selectAddress || "Select an option"}
-                                            <FiChevronDown
-                                              className={`text-lg transition-transform duration-300 ${dropdownStates.selectAddress ? "rotate-180" : "rotate-0"}`}
-                                            />
-                                          </button>
-
-                                          {dropdownStates.selectAddress && (
-                                            <ul className="absolute w-full bg-white border z-10 border-gray-300 rounded-md shadow-md mt-1">
-                                              {addressValues.map((option, index) => (
-                                                <li
-                                                  key={index}
-                                                  className="px-3 py-2 text-darkGray font-family hover:bg-[#81818140] hover:text-yellow text-xs cursor-pointer"
-                                                  onClick={() => {
-                                                    formik.setFieldValue("selectAddress", option.value);
-                                                    setDropdownStates(prev => ({ ...prev, selectAddress: false }));
-                                                  }}
-                                                >
-                                                  {option.value}
-                                                </li>
-                                              ))}
-                                            </ul>
-                                          )}
-                                          {formik.touched.selectAddress && formik.errors.selectAddress && (
-                                            <p className="text-red-500 text-xs mt-1">{formik.errors.selectAddress}</p>
-                                          )}
-                                        </div>
-                                        <div className='mb-3'>
-                                          <AddLeadInput
-                                            label="Address"
-                                            name="address"
-                                            value={formik.values.address}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.address && formik.errors.address}
-                                            isRequired={true}
-                                            placeholder="---"
-                                          />
-                                        </div>
-                                        <div className='mb-3'>
-                                          <AddLeadInput
-                                            label="Country"
-                                            name="country"
-                                            value={formik.values.country}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.country && formik.errors.country}
-                                            isRequired={true}
-                                            placeholder="---"
-                                          />
-                                        </div>
-                                        <div className='mb-3'>
-                                          <AddLeadInput
-                                            label="State/Region"
-                                            name="state"
-                                            value={formik.values.state}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.state && formik.errors.state}
-                                            isRequired={true}
-                                            placeholder="---"
-                                          />
-                                        </div>
-                                        <div className='mb-3'>
-                                          <AddLeadInput
-                                            label="City"
-                                            name="city"
-                                            value={formik.values.city}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.city && formik.errors.city}
-                                            isRequired={true}
-                                            placeholder="---"
-                                          />
-                                        </div>
-                                        <div className='mb-3'>
-                                          <AddLeadInput
-                                            label="Zip code"
-                                            name="zipCode"
-                                            value={formik.values.zipCode}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.zipCode && formik.errors.zipCode}
-                                            isRequired={true}
-                                            placeholder="---"
-                                          />
-                                        </div>
-                                      </div>
 
                                       {/* Destination Address */}
                                       <div className="bg-white w-full border-1 border-[#EFEFEF] rounded-[5px] p-2">
                                         <h1 className="text-[#000] flex gap-3 items-center text-[14px] font-family font-medium mb-2">
-                                          Destination Address
+                                          Pickup Address
                                         </h1>
 
                                         <div className='mb-3'>
@@ -1068,6 +960,118 @@ const Shipment = () => {
                                         </div>
                                       </div>
 
+
+                                      {/* PickUp Address */}
+                                      <div className="bg-white w-full border-1 border-[#EFEFEF] rounded-[5px] p-2">
+                                        <h1 className="text-[#000] flex gap-3 items-center text-[14px] font-family font-medium mb-2">
+                                          Destination Address
+                                        </h1>
+
+
+                                        {/* Select Address Dropdown */}
+                                        <div className="relative w-full mb-3">
+                                          <label className="text-xs text-gray-500 font-family font-medium">
+                                            Select Warehouse <span className="text-red-500">*</span>
+                                          </label>
+                                          <button
+                                            type="button"
+                                            className="w-full text-left mt-1 text-[#414141] placeholder-[#666] text-[12px] font-medium font-family border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
+                                            onClick={() =>
+                                              setDropdownStates(prev => ({ ...prev, pickupWareHouse: !prev.pickupWareHouse }))
+                                            }
+                                          >
+                                            {formik.values.pickupWareHouse || "Select an option"}
+                                            <FiChevronDown
+                                              className={`text-lg transition-transform duration-300 ${dropdownStates.pickupWareHouse ? "rotate-180" : "rotate-0"
+                                                }`}
+                                            />
+                                          </button>
+
+                                          {dropdownStates.pickupWareHouse && (
+                                            <ul className="absolute w-full bg-white border z-10 border-gray-300 rounded-md shadow-md mt-1">
+                                              {warehouseOptions.map((option, index) => (
+                                                <li
+                                                  key={index}
+                                                  className="px-3 py-2 text-darkGray font-family hover:bg-[#81818140] hover:text-yellow text-xs cursor-pointer"
+                                                  onClick={() => {
+                                                    formik.setFieldValue("pickupWareHouse", option);
+                                                    setDropdownStates(prev => ({ ...prev, pickupWareHouse: false }));
+                                                  }}
+                                                >
+                                                  {option}
+                                                </li>
+                                              ))}
+                                            </ul>
+                                          )}
+                                          {formik.touched.pickupWareHouse && formik.errors.pickupWareHouse && (
+                                            <p className="text-red-500 text-xs mt-1">{formik.errors.pickupWareHouse}</p>
+                                          )}
+                                        </div>
+
+                                        <div className='mb-3'>
+                                          <AddLeadInput
+                                            label="Address"
+                                            name="address"
+                                            value={formik.values.address}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            error={formik.touched.address && formik.errors.address}
+                                            isRequired={true}
+                                            placeholder="---"
+                                          />
+                                        </div>
+                                        <div className='mb-3'>
+                                          <AddLeadInput
+                                            label="Country"
+                                            name="country"
+                                            value={formik.values.country}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            error={formik.touched.country && formik.errors.country}
+                                            isRequired={true}
+                                            placeholder="---"
+                                          />
+                                        </div>
+                                        <div className='mb-3'>
+                                          <AddLeadInput
+                                            label="State/Region"
+                                            name="state"
+                                            value={formik.values.state}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            error={formik.touched.state && formik.errors.state}
+                                            isRequired={true}
+                                            placeholder="---"
+                                          />
+                                        </div>
+                                        <div className='mb-3'>
+                                          <AddLeadInput
+                                            label="City"
+                                            name="city"
+                                            value={formik.values.city}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            error={formik.touched.city && formik.errors.city}
+                                            isRequired={true}
+                                            placeholder="---"
+                                          />
+                                        </div>
+                                        <div className='mb-3'>
+                                          <AddLeadInput
+                                            label="Zip code"
+                                            name="zipCode"
+                                            value={formik.values.zipCode}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            error={formik.touched.zipCode && formik.errors.zipCode}
+                                            isRequired={true}
+                                            placeholder="---"
+                                          />
+                                        </div>
+                                      </div>
+
+
+
                                       {/* Shipment Details */}
                                       <div className='flex flex-col gap-3'>
                                         <div className="bg-white w-full border-1 h-[120px] border-[#EFEFEF] rounded-[5px] p-2">
@@ -1105,6 +1109,48 @@ const Shipment = () => {
                                   </div>
                                 </div>
                               </form>
+
+                              <div className='flex items-center justify-end gap-3'>
+                                <Button
+                                  variant="danger"
+                                  onClick={() => handleOpenDeleteModal(shipment.id)}
+                                // disabled={isDeleting}
+                                >
+                                  {'Delete'}
+                                </Button>
+                                {editingShipmentId === shipment.id ? (
+                                  <div className='flex gap-3 items-center'>
+                                    <Button
+                                      variant="primary"
+                                      onClick={() => {
+                                        formik.handleSubmit();
+                                      }}
+                                    >
+                                      Update
+                                    </Button>
+                                    <Button
+                                      variant="outlined"
+                                      onClick={() => {
+                                        setEditingShipmentId(null);
+                                        setIsEditMode(false)
+                                      }}
+                                    >
+                                      Cancel
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  <Button
+                                    onClick={() => {
+                                      populateFormikValues(shipment);
+                                      setEditingShipmentId(shipment.id);
+                                      setIsEditMode(true)
+                                    }}
+                                  >
+                                    Edit
+                                  </Button>
+                                )}
+
+                              </div>
                             </Typography>
                           </AccordionDetails>
                         </Accordion>
@@ -1114,7 +1160,7 @@ const Shipment = () => {
                 </>
               )}
 
-              <CreateShipmentModal open={createShipmentModal} onClose={handleCreateShipmentCloseModal} />
+              <CreateShipmentModal open={createShipmentModal} onClose={handleCreateShipmentCloseModal} defaultShipmentType={activeBoundTab === 'inbound' ? 'inbound' : 'outbound'} />
             </>
           )}
 

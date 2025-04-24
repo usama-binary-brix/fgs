@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks","EmployeeInventory","AllEmployeeTasks", "AllShipments", "InventoryCost"],
+  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks", "EmployeeInventory", "AllEmployeeTasks", "AllShipments", "InventoryCost", "AllShipmentOpportunities"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -35,7 +35,7 @@ export const api = createApi({
     }),
 
     getAllUsers: builder.query({
-      query: ({ page = 1, perPage = 10 , search}) => ({
+      query: ({ page = 1, perPage = 10, search }) => ({
         url: `users?per_page=${perPage}&page=${page}&search=${search}`,
         method: 'GET',
       }),
@@ -100,14 +100,14 @@ export const api = createApi({
 
     // ---------------------------------- Inventory APIs ---------------------------------
     getAllInventory: builder.query({
-      query: ({ page = 1, perPage = 10 , search}) => ({
+      query: ({ page = 1, perPage = 10, search }) => ({
         url: `get/inventories?per_page=${perPage}&page=${page}&search=${search}`,
         method: 'GET',
       }),
       providesTags: ["Inventory"],
     }),
 
-  
+
     getAllCategories: builder.query({
       query: () => ({
         url: 'get/category',
@@ -133,7 +133,7 @@ export const api = createApi({
     }),
     editInventory: builder.mutation({
       query: (inventoryData) => ({
-        url: 'add/inventory', 
+        url: 'add/inventory',
         method: 'POST',
         body: inventoryData,
       }),
@@ -145,10 +145,10 @@ export const api = createApi({
         url: `get/inventory/${id}`,
         method: 'GET',
       }),
-      providesTags: ["Inventory"], 
+      providesTags: ["Inventory"],
 
-    }), 
- 
+    }),
+
     deleteInventory: builder.mutation({
       query: (id) => ({
         url: `delete/inventory/${id}`,
@@ -167,10 +167,10 @@ export const api = createApi({
       invalidatesTags: ["leads", 'userLead'],
 
     }),
-   
+
 
     getAllLeads: builder.query({
-      query: ({ page = 1, perPage = 10 , search}) => ({
+      query: ({ page = 1, perPage = 10, search }) => ({
         url: `get/leads?per_page=${perPage}&page=${page}&search=${search}`,
         method: 'GET',
       }),
@@ -178,12 +178,12 @@ export const api = createApi({
     }),
 
     getAllUserLeads: builder.query({
-      query: ({ page = 1, perPage = 10 , search}) => ({
+      query: ({ page = 1, perPage = 10, search }) => ({
         url: `get/lead?per_page=${perPage}&page=${page}&search=${search}`,
         method: 'GET',
       }),
       providesTags: ["userLead"],
-     
+
     }),
     deleteLead: builder.mutation({
       query: (id) => ({
@@ -195,7 +195,7 @@ export const api = createApi({
     }),
     promoteToInvestor: builder.mutation({
       query: (promoteData) => ({
-        url: 'promote/investor', 
+        url: 'promote/investor',
         method: 'POST',
         body: promoteData,
       }),
@@ -207,13 +207,13 @@ export const api = createApi({
         url: `get/lead/${id}`,
         method: 'GET',
       }),
-      providesTags: ["leads"], 
+      providesTags: ["leads"],
 
     }),
 
     editLead: builder.mutation({
       query: (leadData) => ({
-        url: 'add/lead', 
+        url: 'add/lead',
         method: 'POST',
         body: leadData,
       }),
@@ -225,7 +225,7 @@ export const api = createApi({
     // ----------------------------------------- Investors API -------------------
     addInvestment: builder.mutation({
       query: (lnvestmentData) => ({
-        url: 'add/investment', 
+        url: 'add/investment',
         method: 'POST',
         body: lnvestmentData,
       }),
@@ -238,20 +238,20 @@ export const api = createApi({
         method: 'GET',
       }),
       providesTags: ["Investment"],
-     
+
     }),
 
     getAllUserInvestments: builder.query({
-      query: ({ page = 1, perPage = 10 , search}) => ({
+      query: ({ page = 1, perPage = 10, search }) => ({
         url: `get/investment?per_page=${perPage}&page=${page}&search=${search}`,
         method: 'GET',
       }),
       providesTags: ["UserInvestment"],
-     
+
     }),
     updateInvestorStatus: builder.mutation({
       query: (lnvestorData) => ({
-        url: 'investment/update-status', 
+        url: 'investment/update-status',
         method: 'POST',
         body: lnvestorData,
       }),
@@ -260,7 +260,7 @@ export const api = createApi({
     }),
     addNewTimeline: builder.mutation({
       query: (timelineData) => ({
-        url: 'add/timeline', 
+        url: 'add/timeline',
         method: 'POST',
         body: timelineData,
       }),
@@ -270,7 +270,7 @@ export const api = createApi({
 
     ReorderTimeline: builder.mutation({
       query: (reorderData) => ({
-        url: 'reorder/timeline', 
+        url: 'reorder/timeline',
         method: 'POST',
         body: reorderData,
       }),
@@ -280,24 +280,24 @@ export const api = createApi({
     getAllTimeline: builder.query({
       query: (inventory_id) => ({
         url: `get/timeline/${inventory_id}`,
-        method: 'GET', 
+        method: 'GET',
       }),
       providesTags: ["InventoryTimeline"],
     }),
 
     addNewTask: builder.mutation({
       query: (taskData) => ({
-        url: 'add/employee/task', 
+        url: 'add/employee/task',
         method: 'POST',
         body: taskData,
       }),
-      invalidatesTags: ["AllAdminTasks","InventoryTimeline"],
+      invalidatesTags: ["AllAdminTasks", "InventoryTimeline"],
     }),
 
     getAllAdminEmployeeTasks: builder.query({
       query: (id) => ({
         url: `get/inventory/task/${id}`,
-        method: 'GET', 
+        method: 'GET',
       }),
       providesTags: ["AllAdminTasks"],
     }),
@@ -321,13 +321,13 @@ export const api = createApi({
         url: `get/task/${id}`,
         method: 'GET',
       }),
-      providesTags: ["AllAdminTasks"], 
+      providesTags: ["AllAdminTasks"],
 
     }),
 
     updateTask: builder.mutation({
       query: (taskData) => ({
-        url: 'add/employee/task', 
+        url: 'add/employee/task',
         method: 'POST',
         body: taskData,
       }),
@@ -336,17 +336,17 @@ export const api = createApi({
 
     addTaskStatus: builder.mutation({
       query: (taskStatusData) => ({
-        url: 'employee/task/status', 
+        url: 'employee/task/status',
         method: 'POST',
         body: taskStatusData,
       }),
-      invalidatesTags: ["AllAdminTasks", "InventoryTimeline", "AllEmployeeTasks","EmployeeInventory"],
+      invalidatesTags: ["AllAdminTasks", "InventoryTimeline", "AllEmployeeTasks", "EmployeeInventory"],
 
     }),
 
 
     getAllEmployeeInventory: builder.query({
-      query: ({ page = 1, perPage = 10 , search}) => ({
+      query: ({ page = 1, perPage = 10, search }) => ({
         url: `task/inventory?per_page=${perPage}&page=${page}&search=${search}`,
         method: 'GET',
       }),
@@ -356,7 +356,7 @@ export const api = createApi({
     getAllEmployeesTasks: builder.query({
       query: (id) => ({
         url: `get/employee/task/${id}`,
-        method: 'GET', 
+        method: 'GET',
       }),
       providesTags: ["AllEmployeeTasks"],
     }),
@@ -364,16 +364,16 @@ export const api = createApi({
 
     addInventoryCost: builder.mutation({
       query: (costData) => ({
-        url: 'add/timeline/price', 
+        url: 'add/timeline/price',
         method: 'POST',
         body: costData,
       }),
-      invalidatesTags: ["InventoryCost","InventoryTimeline"],
+      invalidatesTags: ["InventoryCost", "InventoryTimeline"],
     }),
 
     calculateProfit: builder.mutation({
       query: (sellingPrice) => ({
-        url: 'calculate/inventory/profit', 
+        url: 'calculate/inventory/profit',
         method: 'POST',
         body: sellingPrice,
       }),
@@ -382,7 +382,7 @@ export const api = createApi({
 
     addSellingPrice: builder.mutation({
       query: (sellingPrice) => ({
-        url: 'add/inventory/selling/price', 
+        url: 'add/inventory/selling/price',
         method: 'POST',
         body: sellingPrice,
       }),
@@ -392,7 +392,7 @@ export const api = createApi({
     getInventorySellingPrice: builder.query({
       query: (id) => ({
         url: `inventory/profit/${id}`,
-        method: 'GET', 
+        method: 'GET',
       }),
       // providesTags: ["AllEmployeeTasks"],
     }),
@@ -400,7 +400,7 @@ export const api = createApi({
     employeeTaskStatus: builder.query({
       query: (id) => ({
         url: `get/task/status/${id}`,
-        method: 'GET', 
+        method: 'GET',
       }),
       // providesTags: ["AllEmployeeTasks"],
     }),
@@ -408,7 +408,7 @@ export const api = createApi({
 
     addNewShipment: builder.mutation({
       query: (shipmentData) => ({
-        url: 'add/shipment', 
+        url: 'add/shipment',
         method: 'POST',
         body: shipmentData,
       }),
@@ -422,7 +422,7 @@ export const api = createApi({
       }),
       providesTags: ["AllShipments"],
     }),
-    
+
     deleteShipment: builder.mutation({
       query: (id) => ({
         url: `shipment/${id}`,
@@ -431,6 +431,21 @@ export const api = createApi({
       invalidatesTags: ["AllShipments"],
     }),
 
+    getAllShipmentOpportunities: builder.query({
+      query: ({ page = 1, perPage = 10, search }) => ({
+        url: `get/shipment?per_page=${perPage}&page=${page}&search=${search}`,
+        method: 'GET',
+      }),
+      providesTags: ["AllShipmentOpportunities"],
+    }),
+    getShipmentById: builder.query({
+      query: (id) => ({
+        url: `get/shipment/${id}`,
+        method: 'GET',
+      }),
+      providesTags: ["AllShipmentOpportunities"],
+
+    }),
 
   }),
 });
@@ -470,20 +485,22 @@ export const { useLoginMutation,
   useAddNewTaskMutation,
   useGetAllAdminEmployeeTasksQuery,
   useDeleteTimelineMutation,
-useDeleteTaskMutation,
-useGetTaskByIdQuery,
-useUpdateTaskMutation,
-useAddTaskStatusMutation,
-useGetAllEmployeeInventoryQuery,
-useGetAllEmployeesTasksQuery,
-useAddNewShipmentMutation,
-useAddInventoryCostMutation,
-useCalculateProfitMutation,
-useAddSellingPriceMutation,
-useGetInventorySellingPriceQuery,
-useEmployeeTaskStatusQuery,
-useGetAllShipmentsQuery,
-useDeleteShipmentMutation,
+  useDeleteTaskMutation,
+  useGetTaskByIdQuery,
+  useUpdateTaskMutation,
+  useAddTaskStatusMutation,
+  useGetAllEmployeeInventoryQuery,
+  useGetAllEmployeesTasksQuery,
+  useAddNewShipmentMutation,
+  useAddInventoryCostMutation,
+  useCalculateProfitMutation,
+  useAddSellingPriceMutation,
+  useGetInventorySellingPriceQuery,
+  useEmployeeTaskStatusQuery,
+  useGetAllShipmentsQuery,
+  useDeleteShipmentMutation,
+  useGetAllShipmentOpportunitiesQuery,
+  useGetShipmentByIdQuery,
 
 
 

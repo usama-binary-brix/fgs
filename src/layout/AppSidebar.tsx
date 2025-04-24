@@ -43,9 +43,9 @@ const navItems: NavItem[] = [
     name: "Shipment Opportunities",
     subItems: [
       { name: "All Shipments", path: "/broker-dashboard/shipments-opportunities/all-shipments" },
-      {name: "New Shipments", path: "/dashborad/inventory"},
-      {name: "Accepted/InProgress Shipments", path: "/dashborad/inventory"},
-      {name: "Archived Shipments", path: "/dashborad/inventory"},
+      // {name: "New Shipments", path: "/dashborad/inventory"},
+      // {name: "Accepted/InProgress Shipments", path: "/dashborad/inventory"},
+      // {name: "Archived Shipments", path: "/dashborad/inventory"},
     ],
     roles: ["broker"],
   },

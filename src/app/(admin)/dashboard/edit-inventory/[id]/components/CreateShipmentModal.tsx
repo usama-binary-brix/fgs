@@ -36,7 +36,8 @@ const modalStyle = {
 interface Props {
     open: boolean;
     onClose: () => void;
-    inventoryId?: string; // Changed from userData to inventoryId
+    inventoryId?: string;
+    defaultShipmentType?: 'inbound' | 'outbound';
 }
 
 // Shipment Provider 
@@ -44,20 +45,16 @@ const shipmentProvider = [
     { value: "CJ Shipping Experts" },
 ];
 
-const addressValues = [
-    {
-        value: "Warehouse 1 Houston",
-        address: "1234 Maple Street, Houston, TX"
-    },
-];
+const warehouseOptions = ["Warehouse A", "Warehouse B", "Warehouse C"];
 
-const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
+
+const CreateShipmentModal: React.FC<Props> = ({ open, onClose, defaultShipmentType }) => {
     const [dropdownStates, setDropdownStates] = useState({
         shipmentProvider: false,
-        selectAddress: false,
+        pickupWareHouse: false,
     });
     const { id } = useParams()
-    const [mapPosition, setMapPosition] = useState<[number, number]>([29.7604, -95.3698]); // Default to Houston
+    const [mapPosition, setMapPosition] = useState<[number, number]>([29.7604, -95.3698]);
     const [showMap, setShowMap] = useState(false);
     const [loadingMap, setLoadingMap] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -65,6 +62,39 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
 
     const { data: inventory, error, isLoading, refetch } = useGetInventoryByIdQuery(id);
     const inventoryData = inventory?.inventory
+
+
+    // useEffect(() => {
+    //     const geocodeAddress = async () => {
+    //         if (!formik.values.selectAddress) return;
+
+    //         const selectedAddress = addressValues.find(
+    //             addr => addr.value === formik.values.selectAddress
+    //         )?.address;
+
+    //         if (!selectedAddress) return;
+
+    //         setLoadingMap(true);
+    //         try {
+    //             const response = await axios.get(
+    //                 `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(selectedAddress)}`
+    //             );
+
+    //             if (response.data && response.data.length > 0) {
+    //                 const { lat, lon } = response.data[0];
+    //                 setMapPosition([parseFloat(lat), parseFloat(lon)]);
+    //                 setShowMap(true);
+    //             }
+    //         } catch (error) {
+    //             console.error("Geocoding error:", error);
+    //         } finally {
+    //             setLoadingMap(false);
+    //         }
+    //     };
+
+    //     geocodeAddress();
+    // }, [formik.values.selectAddress]);
+
     const formik = useFormik({
         initialValues: {
             inventoryId: id || '',
@@ -76,63 +106,78 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
             height: '',
             width: '',
             weight: '',
-            shipmentType: '',
+            shipmentType: defaultShipmentType,
             shipmentProvider: "",
             selectAddress: "",
-            address: "",
-            country: "",
-            state: "",
-            city: "",
-            zipCode: "",
+            pickupAddress: "",
+            pickupCountry: "",
+            pickupState: "",
+            pickupCity: "",
+            pickupZipCode: "",
             destinationAddress: "",
-            destinationCountry:"",
+            destinationCountry: "",
             destinationState: "",
             destinationCity: "",
             destinationZipCode: "",
             expectedArrivalDate: "",
             shippingNotes: "",
-            pickupWareHouse:"",
-
+            pickupWareHouse: "",
         },
+        enableReinitialize: true,
         onSubmit: async (values, { resetForm }) => {
             try {
-                const payload = {
-                    inventory_id: id, // Send inventory ID instead of full details
-                    shipment: values.shipmentType,
-                    pickup_shipment_provider: values.shipmentProvider,
-                    pickup_warehouse_name:values.pickupWareHouse,
-                    pickup_address: values.address,
-                        pickup_country: values.country,
-                        pickup_state: values.state,
-                        pickup_city: values.city,
-                        pickup_zip_code: values.zipCode,
+                const pickupAddress = values.shipmentType === 'inbound' ? {
+                    pickup_address: values.pickupAddress,
+                    pickup_country: values.pickupCountry,
+                    pickup_state: values.pickupState,
+                    pickup_city: values.pickupCity,
+                    pickup_zip_code: values.pickupZipCode,
+                } : {
+                    pickup_address: values.destinationAddress,
+                    pickup_country: values.destinationCountry,
+                    pickup_state: values.destinationState,
+                    pickup_city: values.destinationCity,
+                    pickup_zip_code: values.destinationZipCode,
+                };
+
+                const destinationAddress = values.shipmentType === 'inbound' ? {
                     destination_address: values.destinationAddress,
                     destination_country: values.destinationCountry,
-
                     destination_state: values.destinationState,
                     destination_city: values.destinationCity,
                     destination_zip_code: values.destinationZipCode,
-              
-                    expected_arrival_date: values.expectedArrivalDate,
-                   shipment_note: values.shippingNotes,
+                } : {
+                    destination_address: values.pickupAddress,
+                    destination_country: values.pickupCountry,
+                    destination_state: values.pickupState,
+                    destination_city: values.pickupCity,
+                    destination_zip_code: values.pickupZipCode,
                 };
 
-                // Assuming you have a mutation hook called 'createShipment' defined in your API slice
-                const response = await createShipment(payload).unwrap();
+                const payload = {
+                    inventory_id: id,
+                    shipment: values.shipmentType,
+                    // pickup_shipment_provider: values.shipmentProvider,
+                    warehouse_name: values.pickupWareHouse,
+                    ...pickupAddress,
+                    ...destinationAddress,
+                    expected_arrival_date: values.expectedArrivalDate,
+                    shipment_note: values.shippingNotes,
+                };
 
+                const response = await createShipment(payload).unwrap();
                 console.log('Shipment created:', response);
                 toast.success(response.message || 'Shipment created successfully');
                 resetForm();
-                onClose(); // Close modal on success
+                onClose();
             } catch (error) {
                 const errorResponse = error as ErrorResponse;
-
                 if (errorResponse?.data?.error) {
                     Object.values(errorResponse.data.error).forEach((errorMessage) => {
                         if (Array.isArray(errorMessage)) {
-                            errorMessage.forEach((msg) => toast.error(msg)); // Handle array errors
+                            errorMessage.forEach((msg) => toast.error(msg));
                         } else {
-                            toast.error(errorMessage); // Handle single string errors
+                            toast.error(errorMessage);
                         }
                     });
                 } else {
@@ -140,41 +185,173 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
                 }
             }
         },
-        enableReinitialize: false,
     });
 
 
+    const renderAddressFields = (type: 'pickup' | 'destination') => {
+        const isInbound = formik.values.shipmentType === 'inbound';
+        const isPickup = (type === 'pickup' && isInbound) || (type === 'destination' && !isInbound);
 
-    useEffect(() => {
-        const geocodeAddress = async () => {
-            if (!formik.values.selectAddress) return;
+        const fieldPrefix = isPickup ? '' : 'destination';
+        const title = isPickup ? 'Pickup Address' : 'Destination Address';
 
-            const selectedAddress = addressValues.find(
-                addr => addr.value === formik.values.selectAddress
-            )?.address;
 
-            if (!selectedAddress) return;
+        // Determine which fields to use based on shipment type and section type
+        const prefix = (type === 'pickup' && isInbound) || (type === 'destination' && !isInbound) ? 'pickup' : 'destination';
 
-            setLoadingMap(true);
-            try {
-                const response = await axios.get(
-                    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(selectedAddress)}`
-                );
+        return (
+            <div className="bg-white w-full border-1 border-[#EFEFEF] rounded-[5px] p-2">
+                <h1 className="text-[#000] flex gap-3 items-center text-[14px] font-family font-medium mb-2">
+                    {type === 'pickup' ? 'Pickup Address' : "Destination Address"}
+                </h1>
 
-                if (response.data && response.data.length > 0) {
-                    const { lat, lon } = response.data[0];
-                    setMapPosition([parseFloat(lat), parseFloat(lon)]);
-                    setShowMap(true);
-                }
-            } catch (error) {
-                console.error("Geocoding error:", error);
-            } finally {
-                setLoadingMap(false);
-            }
-        };
+                {isPickup && (
+                    <>
+                        {/* Shipment Provider dropdown */}
+                        {/* <div className="relative w-full mb-3">
+                            <label className="text-xs text-gray-500 font-family font-medium">Shipment Provider <span className='text-red-500'>*</span></label>
+                            <button
+                                type="button"
+                                className="w-full text-left mt-1 text-[#414141] placeholder-[#666] text-[12px] font-medium font-family border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
+                                onClick={() =>
+                                    setDropdownStates(prev => ({ ...prev, shipmentProvider: !prev.shipmentProvider }))
+                                }
+                            >
+                                {formik.values.shipmentProvider || "Select an option"}
+                                <FiChevronDown
+                                    className={`text-lg transition-transform duration-300 ${dropdownStates.shipmentProvider ? "rotate-180" : "rotate-0"}`}
+                                />
+                            </button>
 
-        geocodeAddress();
-    }, [formik.values.selectAddress]);
+                            {dropdownStates.shipmentProvider && (
+                                <ul className="absolute w-full bg-white border z-10 border-gray-300 rounded-md shadow-md mt-1">
+                                    {shipmentProvider.map((option, index) => (
+                                        <li
+                                            key={index}
+                                            className="px-3 py-2 text-darkGray font-family hover:bg-[#81818140] hover:text-yellow text-xs cursor-pointer"
+                                            onClick={() => {
+                                                formik.setFieldValue("shipmentProvider", option.value);
+                                                setDropdownStates(prev => ({ ...prev, shipmentProvider: false }));
+                                            }}
+                                        >
+                                            {option.value}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                            {formik.touched.shipmentProvider && formik.errors.shipmentProvider && (
+                                <p className="text-red-500 text-xs mt-1">{formik.errors.shipmentProvider}</p>
+                            )}
+                        </div> */}
+
+                        {/* Select Address Dropdown */}
+                        <div className="relative w-full mb-3">
+                            <label className="text-xs text-gray-500 font-family font-medium">
+                                Select Warehouse <span className="text-red-500">*</span>
+                            </label>
+                            <button
+                                type="button"
+                                className="w-full text-left mt-1 text-[#414141] placeholder-[#666] text-[12px] font-medium font-family border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
+                                onClick={() =>
+                                    setDropdownStates(prev => ({ ...prev, pickupWareHouse: !prev.pickupWareHouse }))
+                                }
+                            >
+                                {formik.values.pickupWareHouse || "Select an option"}
+                                <FiChevronDown
+                                    className={`text-lg transition-transform duration-300 ${dropdownStates.pickupWareHouse ? "rotate-180" : "rotate-0"
+                                        }`}
+                                />
+                            </button>
+
+                            {dropdownStates.pickupWareHouse && (
+                                <ul className="absolute w-full bg-white border z-10 border-gray-300 rounded-md shadow-md mt-1">
+                                    {warehouseOptions.map((option, index) => (
+                                        <li
+                                            key={index}
+                                            className="px-3 py-2 text-darkGray font-family hover:bg-[#81818140] hover:text-yellow text-xs cursor-pointer"
+                                            onClick={() => {
+                                                formik.setFieldValue("pickupWareHouse", option);
+                                                setDropdownStates(prev => ({ ...prev, pickupWareHouse: false }));
+                                            }}
+                                        >
+                                            {option}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                            {formik.touched.pickupWareHouse && formik.errors.pickupWareHouse && (
+                                <p className="text-red-500 text-xs mt-1">{formik.errors.pickupWareHouse}</p>
+                            )}
+                        </div>
+
+
+                    </>
+                )}
+
+                <div className='mb-3'>
+                    <AddLeadInput
+                        label="Address"
+                        name={`${prefix}Address`}
+                        value={formik.values[`${prefix}Address` as keyof typeof formik.values]}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched[`${prefix}Address` as keyof typeof formik.touched] && formik.errors[`${prefix}Address` as keyof typeof formik.errors]}
+                        isRequired={true}
+                        placeholder="---"
+                    />
+                </div>
+
+                <div className='mb-3'>
+                    <AddLeadInput
+                        label="Country"
+                        name={`${prefix}Country`}
+                        value={formik.values[`${prefix}Country` as keyof typeof formik.values]}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched[`${prefix}Country` as keyof typeof formik.touched] && formik.errors[`${prefix}Country` as keyof typeof formik.errors]}
+                        isRequired={true}
+                        placeholder="---"
+                    />
+                </div>
+                <div className='mb-3'>
+                    <AddLeadInput
+                        label="State/Region"
+                        name={`${prefix}State`}
+                        value={formik.values[`${prefix}State` as keyof typeof formik.values]}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched[`${prefix}State` as keyof typeof formik.touched] && formik.errors[`${prefix}State` as keyof typeof formik.errors]}
+                        isRequired={true}
+                        placeholder="---"
+                    />
+                </div>
+                <div className='mb-3'>
+                    <AddLeadInput
+                        label="City"
+                        name={`${prefix}City`}
+                        value={formik.values[`${prefix}City` as keyof typeof formik.values]}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched[`${prefix}City` as keyof typeof formik.touched] && formik.errors[`${prefix}City` as keyof typeof formik.errors]}
+                        isRequired={true}
+                        placeholder="---"
+                    />
+                </div>
+                <div className='mb-3'>
+                    <AddLeadInput
+                        label="Zip code"
+                        name={`${prefix}ZipCode`}
+                        value={formik.values[`${prefix}ZipCode` as keyof typeof formik.values]}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched[`${prefix}ZipCode` as keyof typeof formik.touched] && formik.errors[`${prefix}ZipCode` as keyof typeof formik.errors]}
+                        isRequired={true}
+                        placeholder="---"
+                    />
+                </div>
+            </div>
+        );
+    };
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -223,20 +400,20 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
                                         <AddLeadInput
                                             label="Year"
                                             name="year"
-                                            value={inventoryData.year}
+                                            value={inventoryData?.year || ''}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             error={formik.touched.year && formik.errors.year}
                                             isRequired={false}
                                             placeholder="---"
-                                            disabled={true} // Make field read-only
+                                            disabled={true}
                                         />
                                     </div>
                                     <div className='mb-3'>
                                         <AddLeadInput
                                             label="Make"
                                             name="make"
-                                            value={inventoryData.make}
+                                            value={inventoryData?.make || ''}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             error={formik.touched.make && formik.errors.make}
@@ -249,7 +426,7 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
                                         <AddLeadInput
                                             label="Model"
                                             name="model"
-                                            value={inventoryData.model}
+                                            value={inventoryData?.model || ''}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             error={formik.touched.model && formik.errors.model}
@@ -262,7 +439,7 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
                                         <AddLeadInput
                                             label="Serial No."
                                             name="serialNo"
-                                            value={inventoryData.serial_no}
+                                            value={inventoryData?.serial_no || ''}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             error={formik.touched.serialNo && formik.errors.serialNo}
@@ -275,7 +452,7 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
                                         <AddLeadInput
                                             label="Length"
                                             name="length"
-                                            value={inventoryData.length}
+                                            value={inventoryData?.length || ''}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             error={formik.touched.length && formik.errors.length}
@@ -288,7 +465,7 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
                                         <AddLeadInput
                                             label="Height"
                                             name="height"
-                                            value={inventoryData.height}
+                                            value={inventoryData?.height || ''}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             error={formik.touched.height && formik.errors.height}
@@ -301,7 +478,7 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
                                         <AddLeadInput
                                             label="Width"
                                             name="width"
-                                            value={inventoryData.width}
+                                            value={inventoryData?.width || ''}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             error={formik.touched.width && formik.errors.width}
@@ -314,7 +491,7 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
                                         <AddLeadInput
                                             label="Weight"
                                             name="weight"
-                                            value={inventoryData.weight}
+                                            value={inventoryData?.weight || ''}
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             error={formik.touched.weight && formik.errors.weight}
@@ -325,262 +502,9 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose }) => {
                                     </div>
                                 </div>
 
-                                {/* PickUp Address */}
-                                <div className="bg-white w-full border-1 border-[#EFEFEF] rounded-[5px] p-2">
-                                    <h1 className="text-[#000] flex gap-3 items-center text-[14px] font-family font-medium mb-2">
-                                        Pickup Address
-                                    </h1>
-
-                                    {/* Shipment Provider dropdown */}
-                                    <div className="relative w-full mb-3">
-                                        <label className="text-xs text-gray-500 font-family font-medium">Shipment Provider <span className='text-red-500'>*</span></label>
-                                        <button
-                                            type="button"
-                                            className="w-full text-left mt-1 text-[#414141] placeholder-[#666] text-[12px] font-medium font-family border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
-                                            onClick={() =>
-                                                setDropdownStates(prev => ({ ...prev, shipmentProvider: !prev.shipmentProvider }))
-                                            }
-                                        >
-                                            {formik.values.shipmentProvider || "Select an option"}
-                                            <FiChevronDown
-                                                className={`text-lg transition-transform duration-300 ${dropdownStates.shipmentProvider ? "rotate-180" : "rotate-0"}`}
-                                            />
-                                        </button>
-
-                                        {dropdownStates.shipmentProvider && (
-                                            <ul className="absolute w-full bg-white border z-10 border-gray-300 rounded-md shadow-md mt-1">
-                                                {shipmentProvider.map((option, index) => (
-                                                    <li
-                                                        key={index}
-                                                        className="px-3 py-2 text-darkGray font-family hover:bg-[#81818140] hover:text-yellow text-xs cursor-pointer"
-                                                        onClick={() => {
-                                                            formik.setFieldValue("shipmentProvider", option.value);
-                                                            setDropdownStates(prev => ({ ...prev, shipmentProvider: false }));
-                                                        }}
-                                                    >
-                                                        {option.value}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        )}
-                                        {formik.touched.shipmentProvider && formik.errors.shipmentProvider && (
-                                            <p className="text-red-500 text-xs mt-1">{formik.errors.shipmentProvider}</p>
-                                        )}
-                                    </div>
-
-                                    {/* Select Address Dropdown */}
-                                    <div className="relative w-full mb-3">
-                                        <label className="text-xs text-gray-500 font-family font-medium">Select Address <span className='text-red-500'>*</span></label>
-                                        <button
-                                            type="button"
-                                            className="w-full text-left mt-1 text-[#414141] placeholder-[#666] text-[12px] font-medium font-family border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
-                                            onClick={() =>
-                                                setDropdownStates(prev => ({ ...prev, selectAddress: !prev.selectAddress }))
-                                            }
-                                        >
-                                            {formik.values.selectAddress || "Select an option"}
-                                            <FiChevronDown
-                                                className={`text-lg transition-transform duration-300 ${dropdownStates.selectAddress ? "rotate-180" : "rotate-0"}`}
-                                            />
-                                        </button>
-
-                                        {dropdownStates.selectAddress && (
-                                            <ul className="absolute w-full bg-white border z-10 border-gray-300 rounded-md shadow-md mt-1">
-                                                {addressValues.map((option, index) => (
-                                                    <li
-                                                        key={index}
-                                                        className="px-3 py-2 text-darkGray font-family hover:bg-[#81818140] hover:text-yellow text-xs cursor-pointer"
-                                                        onClick={() => {
-                                                            formik.setFieldValue("selectAddress", option.value);
-                                                            formik.setFieldValue("address", option.address);
-                                                            setDropdownStates(prev => ({ ...prev, selectAddress: false }));
-                                                        }}
-                                                    >
-                                                        {option.value}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        )}
-                                        {formik.touched.selectAddress && formik.errors.selectAddress && (
-                                            <p className="text-red-500 text-xs mt-1">{formik.errors.selectAddress}</p>
-                                        )}
-                                    </div>
-
-                                
-                                    <div className='mb-3'>
-                                        <AddLeadInput
-                                            label="Pickup Warehouse"
-                                            name="pickupWareHouse"
-                                            value={formik.values.pickupWareHouse}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.pickupWareHouse && formik.errors.pickupWareHouse}
-                                            isRequired={true}
-                                            placeholder="---"
-                                        />
-                                    </div>
-
-                                    <div className='mb-3'>
-                                        <AddLeadInput
-                                            label="Address"
-                                            name="address"
-                                            value={formik.values.address}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.address && formik.errors.address}
-                                            isRequired={true}
-                                            placeholder="---"
-                                        />
-                                    </div>
-
-                                    <div className='mb-3'>
-                                        <AddLeadInput
-                                            label="Country"
-                                            name="country"
-                                            value={formik.values.country}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.country && formik.errors.country}
-                                            isRequired={true}
-                                            placeholder="---"
-                                        />
-                                    </div>
-                                    <div className='mb-3'>
-                                        <AddLeadInput
-                                            label="State/Region"
-                                            name="state"
-                                            value={formik.values.state}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.state && formik.errors.state}
-                                            isRequired={true}
-                                            placeholder="---"
-                                        />
-                                    </div>
-                                    <div className='mb-3'>
-                                        <AddLeadInput
-                                            label="City"
-                                            name="city"
-                                            value={formik.values.city}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.city && formik.errors.city}
-                                            isRequired={true}
-                                            placeholder="---"
-                                        />
-                                    </div>
-                                    <div className='mb-3'>
-                                        <AddLeadInput
-                                            label="Zip code"
-                                            name="zipCode"
-                                            value={formik.values.zipCode}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.zipCode && formik.errors.zipCode}
-                                            isRequired={true}
-                                            placeholder="---"
-                                        />
-                                    </div>
-
-                                    {/* {showMap && (
-                                        <div className="mb-3 h-36 w-full">
-                                            <MapContainer
-                                                center={mapPosition as [number, number]}
-                                                {...{
-                                                    attribution: ''
-                                                } as any}
-                                                zoom={15}
-                                                style={{ height: '100%', width: '100%', borderRadius: '4px' }}
-                                                zoomControl={false} // This disables the zoom controls
-                                                attributionControl={false}
-
-                                            >
-
-                                                <TileLayer
-                                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                                    {...{
-                                                        attribution: ''
-                                                    } as any}
-                                                />
-
-                                                <Marker position={mapPosition}>
-                                                    <Popup>
-                                                        {formik.values.address}
-                                                    </Popup>
-                                                </Marker>
-
-                                            </MapContainer>
-                                        </div>
-                                    )} */}
-                                </div>
-
-                                {/* Destination Address */}
-                                <div className="bg-white w-full border-1 border-[#EFEFEF] rounded-[5px] p-2">
-                                    <h1 className="text-[#000] flex gap-3 items-center text-[14px] font-family font-medium mb-2">
-                                        Destination Address
-                                    </h1>
-
-                                    <div className='mb-3'>
-                                        <AddLeadInput
-                                            label="Address"
-                                            name="destinationAddress"
-                                            value={formik.values.destinationAddress}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.destinationAddress && formik.errors.destinationAddress}
-                                            isRequired={true}
-                                            placeholder="---"
-                                        />
-                                    </div>
-                                    <div className='mb-3'>
-                                        <AddLeadInput
-                                            label="Country"
-                                            name="destinationCountry"
-                                            value={formik.values.destinationCountry}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.destinationCountry && formik.errors.destinationCountry}
-                                            isRequired={true}
-                                            placeholder="---"
-                                        />
-                                    </div>
-                                    <div className='mb-3'>
-                                        <AddLeadInput
-                                            label="State/Region"
-                                            name="destinationState"
-                                            value={formik.values.destinationState}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.destinationState && formik.errors.destinationState}
-                                            isRequired={true}
-                                            placeholder="---"
-                                        />
-                                    </div>
-                                    <div className='mb-3'>
-                                        <AddLeadInput
-                                            label="City"
-                                            name="destinationCity"
-                                            value={formik.values.destinationCity}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.destinationCity && formik.errors.destinationCity}
-                                            isRequired={true}
-                                            placeholder="---"
-                                        />
-                                    </div>
-                                    <div className='mb-3'>
-                                        <AddLeadInput
-                                            label="Zip code"
-                                            name="destinationZipCode"
-                                            value={formik.values.destinationZipCode}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.destinationZipCode && formik.errors.destinationZipCode}
-                                            isRequired={true}
-                                            placeholder="---"
-                                        />
-                                    </div>
-                                </div>
+                                {/* Render address fields based on shipment type */}
+                                {renderAddressFields('pickup')}
+                                {renderAddressFields('destination')}
 
                                 {/* Shipment Details */}
                                 <div className='flex flex-col gap-3'>
