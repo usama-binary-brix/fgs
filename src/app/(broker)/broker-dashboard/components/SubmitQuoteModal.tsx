@@ -8,7 +8,7 @@ import { ErrorResponse } from '@/app/(admin)/dashboard/accounts/components/Accou
 import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useAddShipmentQuoteMutation, useGetShipmentByIdQuery } from '@/store/services/api';
+import { useAddShipmentQuoteMutation, useGetBrokerShipmentByIdQuery, useGetShipmentByIdQuery } from '@/store/services/api';
 
 const modalStyle = {
   position: 'absolute' as const,
@@ -33,7 +33,7 @@ interface Props {
 const SubmitQuoteModal: React.FC<Props> = ({ open, onClose, InventoryId }) => {
   const { id } = useParams();
   const [addQuote] = useAddShipmentQuoteMutation();
-  const { refetch: refetchShipment } = useGetShipmentByIdQuery(id); // Add this line
+  const { refetch: refetchShipment } = useGetBrokerShipmentByIdQuery(id); 
 
 
   const formik = useFormik({

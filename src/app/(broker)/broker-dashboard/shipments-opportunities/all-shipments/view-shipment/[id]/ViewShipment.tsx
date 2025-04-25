@@ -4,11 +4,12 @@ import Button from '@/components/ui/button/Button';
 import React, { useState } from 'react'
 import SubmitQuoteModal from '../../../../components/SubmitQuoteModal';
 import { useParams } from 'next/navigation';
-import { useGetShipmentByIdQuery } from '@/store/services/api';
+import { useGetBrokerShipmentByIdQuery, useGetShipmentByIdQuery } from '@/store/services/api';
 
 const ViewShipment = () => {
     const { id } = useParams();
-    const { data: shipmentData, error, isLoading } = useGetShipmentByIdQuery(id);
+    // const { data: shipmentDatas } = useGetBrokerShipmentByIdQuery(id);
+    const { data: shipmentData, error, isLoading } = useGetBrokerShipmentByIdQuery(id);
     const [isOpen, setIsOpen] = useState(false);
     const [inventoryId, setInventoryId] = useState(null);
 
@@ -36,7 +37,7 @@ const ViewShipment = () => {
             <div className="row mb-5">
                 <div className="col-span-12">
                     <div className='bg-white p-3 rounded'>
-                        <h1 className='text-[#414141] text-[27px] font-extrabold font-family'>{shipment.listing_number}</h1>
+                        <h1 className='text-[#414141] text-[27px] font-extrabold font-family'>{shipment?.listing_number}</h1>
                         <p className='text-[#555] text-[14px] font-normal font-family mb-2'>Shipment</p>
                         <Button
                             type="submit"
@@ -68,53 +69,59 @@ const ViewShipment = () => {
                     </div>
                 </div>
             </div>
+            {shipment?.shipment_quotes?.length == 0 && (
+                <>
+                    <div className="row">
+                        <div className="col-span-12">
+                            <div className='flex justify-end mb-4'>
+                                <Button
+                                    type="submit"
+                                    variant="primary"
+                                    size='sm'
+                                    onClick={() => handleQuoteModal(inventory.id)}
+                                >
+                                    Submit Qoute
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
+
+            {shipment?.shipment_quotes?.length > 0 && (
+                <>
+                    <div className='bg-white px-3 mb-3'>
+                        <h1 className="text-[#000] text-[17px] font-family font-medium pt-3 flex items-center gap-2">
+                            My Quotes
+
+                        </h1>
+
+                        <div className='grid grid-cols-1 xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-2 gap-4 '>
+                            <div className='col-span-1 mb-3'>
+                                <label className="text-[12.5px] text-[#818181] font-normal font-family">Shipping Cost</label>
+                                <input
+                                    disabled
+                                    value={shipment?.shipment_quotes[0]?.shipping_cost}
+                                    type='text'
+                                    className="w-full px-2 py-1.5 text-[#414141] placeholder-[#666] text-[13px] font-medium rounded-xs border border-[#E8E8E8] mt-1 outline-none text-md"
+                                />
+                            </div>
+                            <div className='col-span-1'>
+                                <label className="text-[12.5px] text-[#818181] font-normal font-family">
+                                    Expected Arrival Date  <span className='text-red-500'>*</span>
+                                </label>
+                                <MuiDatePicker
+                                    name="expected_arrival_date"
+                                    value={shipment?.shipment_quotes[0]?.estimate_arrival_time}
+                                    className='hover:border-0 outline-0 focus:outline-0 focus:border-0'
+                                    disabled
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </>)}
 
             <div className="row">
-                <div className="col-span-12">
-                    <div className='flex justify-end mb-4'>
-                        <Button
-                            type="submit"
-                            variant="primary"
-                            size='sm'
-                            onClick={() => handleQuoteModal(inventory.id)}
-                        >
-                            Submit Qoute
-                        </Button>
-                    </div>
-                </div>
-            </div>
-
-            <div className='bg-white px-3 mb-3'>
-                    <h1 className="text-[#000] text-[17px] font-family font-medium pt-3 flex items-center gap-2">
-                        My Quotes
-
-                    </h1>
-
-                    <div className='grid grid-cols-1 xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-2 gap-4 '>
-                        <div className='col-span-1 mb-3'>
-                            <label className="text-[12.5px] text-[#818181] font-normal font-family">Shipping Cost</label>
-                            <input
-                                disabled
-                                value={inventory.year}
-                                type='text'
-                                className="w-full px-2 py-1.5 text-[#414141] placeholder-[#666] text-[13px] font-medium rounded-xs border border-[#E8E8E8] mt-1 outline-none text-md"
-                            />
-                        </div>
-                        <div className='col-span-1'>
-                            <label className="text-[12.5px] text-[#818181] font-normal font-family">
-                                Expected Arrival Date  <span className='text-red-500'>*</span>
-                            </label>
-                            <MuiDatePicker
-                                name="expected_arrival_date"
-                                value={shipment.expected_arrival_date}
-                                className='hover:border-0 outline-0 focus:outline-0 focus:border-0'
-                                disabled
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="row">
 
                 <div className='grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 gap-4'>
                     {/* Inventory Details */}

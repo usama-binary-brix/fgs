@@ -474,6 +474,19 @@ export const api = createApi({
       invalidatesTags: ["AllShipmentQuotes"],
 
     }),
+
+    getBrokerShipmentById: builder.query({
+      query: (id) => ({
+        url: `get/shipment/qoute/${id}`,
+        method: 'GET',
+      }),
+      // providesTags: ["AllShipmentOpportunities"],
+
+    }),
+
+
+
+
   }),
 });
 
@@ -530,7 +543,8 @@ export const { useLoginMutation,
   useGetShipmentByIdQuery,
   useAddShipmentQuoteMutation,
   useGetAllShipmentQuotesQuery,
-useUpdateShipmentQuotesStatusMutation,
+  useUpdateShipmentQuotesStatusMutation,
+  useGetBrokerShipmentByIdQuery,
 
 
 
