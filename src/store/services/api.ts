@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks", "EmployeeInventory", "AllEmployeeTasks", "AllShipments", "InventoryCost", "AllShipmentOpportunities"],
+  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks", "EmployeeInventory", "AllEmployeeTasks", "AllShipments", "InventoryCost", "AllShipmentOpportunities", "AllShipmentQuotes"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -456,6 +456,24 @@ export const api = createApi({
       invalidatesTags: ["AllShipmentOpportunities",],
     }),
 
+    getAllShipmentQuotes: builder.query({
+      query: ({ id, page = 1, perPage = 10 }) => ({
+        url: `get/inventory/shipment/qoute/${id}?per_page=${perPage}&page=${page}`,
+
+        method: 'GET',
+      }),
+      providesTags: ["AllShipmentQuotes"],
+    }),
+
+    updateShipmentQuotesStatus: builder.mutation({
+      query: (statusData) => ({
+        url: 'shipment/qoute/status',
+        method: 'POST',
+        body: statusData,
+      }),
+      invalidatesTags: ["AllShipmentQuotes"],
+
+    }),
   }),
 });
 
@@ -510,7 +528,9 @@ export const { useLoginMutation,
   useDeleteShipmentMutation,
   useGetAllShipmentOpportunitiesQuery,
   useGetShipmentByIdQuery,
-useAddShipmentQuoteMutation,
+  useAddShipmentQuoteMutation,
+  useGetAllShipmentQuotesQuery,
+useUpdateShipmentQuotesStatusMutation,
 
 
 
