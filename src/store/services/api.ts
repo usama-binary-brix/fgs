@@ -447,6 +447,15 @@ export const api = createApi({
 
     }),
 
+    addShipmentQuote: builder.mutation({
+      query: (data) => ({
+        url: 'add/shipment/qoute',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ["AllShipmentOpportunities",],
+    }),
+
   }),
 });
 
@@ -501,6 +510,7 @@ export const { useLoginMutation,
   useDeleteShipmentMutation,
   useGetAllShipmentOpportunitiesQuery,
   useGetShipmentByIdQuery,
+useAddShipmentQuoteMutation,
 
 
 
