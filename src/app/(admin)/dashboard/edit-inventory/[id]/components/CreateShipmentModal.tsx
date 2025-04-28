@@ -17,7 +17,7 @@ import 'leaflet/dist/leaflet.css';
 import { useParams } from 'next/navigation';
 import { useAddNewShipmentMutation, useGetInventoryByIdQuery } from '@/store/services/api';
 import { toast } from 'react-toastify';
-import { ErrorResponse } from '../../../accounts/components/AccountsModal';
+import { ErrorResponse, modalStyles } from '../../../accounts/components/AccountsModal';
 
 const modalStyle = {
     position: 'absolute' as const,
@@ -355,7 +355,7 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose, defaultShipmentTy
 
     return (
         <Modal open={open} onClose={onClose}>
-            <Box sx={modalStyle}>
+       <Box className={`${modalStyles.base} ${modalStyles.sizes.default}`}>
                 <form onSubmit={formik.handleSubmit}>
                     <div>
                         <div className='flex justify-between items-center px-4 py-2 border-b'>

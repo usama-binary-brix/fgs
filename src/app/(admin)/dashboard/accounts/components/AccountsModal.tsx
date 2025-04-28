@@ -21,7 +21,7 @@ export const modalStyle = {
   position: 'absolute' as const,
   top: '50%',
   left: '50%',
-  transform: 'translate(-50%, -50%)',
+  transform: 'translate(-50%, -45%)',
   width: '70%',
   maxHeight: '90vh',
   bgcolor: 'background.paper',
@@ -30,6 +30,21 @@ export const modalStyle = {
   overflowY: 'auto',
   borderRadius: 2,
 };
+
+
+export const modalStyles = {
+  base: "absolute pb-5 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white shadow-xl rounded-lg overflow-y-auto",
+  sizes: {
+    default: "w-[85%] sm:w-[80%] md:w-[80%] lg:w-[70%] max-h-[80vh] md:max-h-[90vh]",
+    small: "w-[70%] sm:w-[60%] md:w-[70%] lg:w-[60%] max-h-[70vh]",
+    large: "w-[78%] sm:w-[65%] md:w-[90%] lg:w-[85%] max-h-[90vh]"
+  },
+  header: "sticky top-0 z-10 bg-white border-b border-gray-400 py-3 px-4",
+  content: "px-4 py-4 overflow-y-auto",
+  title: "text-lg sm:text-xl font-semibold",
+  closeButton: "cursor-pointer text-2xl sm:text-3xl text-gray-600 hover:text-gray-900"
+} as const;
+
 
 interface Props {
   open: boolean;
@@ -172,7 +187,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <Box sx={modalStyle}>
+       <Box className={`${modalStyles.base} ${modalStyles.sizes.default}`}>
         <div className=' border-b border-gray-400 mb-3 py-3'>
 
           <div className='flex justify-between items-center px-4'>

@@ -30,6 +30,8 @@ const AccountsTable = () => {
     search: debouncedSearchText
   });
 
+  
+
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
   const [openDropdownId, setOpenDropdownId] = useState<string | number | null>();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);

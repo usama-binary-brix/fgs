@@ -261,21 +261,21 @@ const InvestmentOpportunityTable = () => {
                 </div>
             </div>
             <Dialog
-                sx={{ minWidth: '30rem' }}
+                // sx={{ minWidth: '30rem' }}
                 open={isOpen}
                 onClose={handleCloseModal}
             >
                 <form onSubmit={formik.handleSubmit}>
                     <div className=' border-b border-gray-400 mb-3 py-3'>
 
-                        <div className='flex justify-between items-center px-4'>
-                            <p className='text-xl font-semibold'>Request Investment for {selectedListingNumber}</p>
+                        <div className='flex justify-between items-center px-4  md:gap-20'>
+                            <p className=' md:text-xl font-semibold'>Request Investment for {selectedListingNumber}</p>
 
                             <RxCross2 onClick={handleCloseModal} className='cursor-pointer text-3xl' />
 
                         </div>
                     </div>
-                    <div className='min-w-[30rem] px-5'>
+                    <div className=' px-5'>
                         <div className="mb-2">
                             <label className="text-[13px] text-[#818181] font-normal font-family" htmlFor='InvestmentAmount'>
                                 Investment Amount $ <span className="text-red-500">*</span>

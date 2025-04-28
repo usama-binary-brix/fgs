@@ -55,12 +55,12 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedTaskId, setSelectedTaskId] = useState<any>(null);
   const [selectedUpdateTaskId, setSelectedUpdateTaskId] = useState<any>(null);
-const userType = useSelector((state:any)=>state?.user?.user?.account_type)
+  const userType = useSelector((state: any) => state?.user?.user?.account_type)
   const [selectedTaskName, setSelectedTaskName] = useState("");
 
   const [deleteTask, { isLoading: isDeleting }] = useDeleteTaskMutation();
 
-  const handleOpenModal = (id:any) => {
+  const handleOpenModal = (id: any) => {
     setIsModalOpen(true);
     setSelectedUpdateTaskId(id)
   };
@@ -166,30 +166,30 @@ const userType = useSelector((state:any)=>state?.user?.user?.account_type)
                   <span className="flex items-center gap-1 text-sm text-[#616161]">
                     Status:
                     <span className={`px-2 py-0.5 capitalize rounded-full text-[11px] font-medium flex items-center gap-1 ${status === 'pending' ? 'bg-[#ECECEC] text-[#818181]' :
-                        status === 'active' ? 'bg-[#F8EDDF] text-[#D18428]' :
-                          'bg-green-100 text-green-600'
+                      status === 'active' ? 'bg-[#F8EDDF] text-[#D18428]' :
+                        'bg-green-100 text-green-600'
                       }`}>
                       <span className={`w-2 h-2 rounded-full ${status === 'pending' ? 'bg-[#818181]' :
-                          status === 'active' ? 'bg-[#D18428]' :
-                            'bg-green-500'
+                        status === 'active' ? 'bg-[#D18428]' :
+                          'bg-green-500'
                         }`}></span> {status}
                     </span>
                   </span>
                   <span className="flex items-center gap-1 text-sm text-[#616161]">
                     Priority:
                     <span className={`px-2 py-0.5 capitalize rounded-full text-[11px] font-medium flex items-center gap-1 ${priority === 'high' ? 'bg-red-100 text-red-600' :
-                        priority === 'medium' ? 'bg-[#F8EDDF] text-[#D18428]' :
-                          priority === 'low' ? 'bg-green-100 text-green-600' :
-                            'bg-gray-100 text-gray-600' // default case if needed
+                      priority === 'medium' ? 'bg-[#F8EDDF] text-[#D18428]' :
+                        priority === 'low' ? 'bg-green-100 text-green-600' :
+                          'bg-gray-100 text-gray-600' // default case if needed
                       }`}>
                       <span className={`w-2 h-2 rounded-full ${priority === 'high' ? 'bg-red-500' :
-                          priority === 'medium' ? 'bg-[#D18428]' :
-                            priority === 'low' ? 'bg-green-500' :
-                              'bg-gray-500' // default case if needed
+                        priority === 'medium' ? 'bg-[#D18428]' :
+                          priority === 'low' ? 'bg-green-500' :
+                            'bg-gray-500' // default case if needed
                         }`}></span> {priority}
                     </span>
                   </span>
-               
+
                 </div>
               </AccordionSummary>
 
@@ -198,36 +198,27 @@ const userType = useSelector((state:any)=>state?.user?.user?.account_type)
                   placeholder="---"
                   rows={2}
                   value={initialDetails}
-
-
                 />
-                <div className="flex items-end justify-end">
-                 
-                 {(userType == "super_admin" || userType == "admin") && (
-                  <>
-                  
-                  <Button
-                    variant="danger"
-                    onClick={() => handleOpenDeleteModal(id, title)}
-                    disabled={isDeleting}
-                  >
-                    {isDeleting ? 'Deleting...' : 'Delete Task'}
-                  </Button>
-                  <Button
-                    onClick={() => handleOpenTaskModal(id)}
-                  >
-                    Update Task
-                  </Button>
+                <div className="flex items-end justify-end flex-wrap">
+                  {(userType == "super_admin" || userType == "admin") && (
+                    <>
+                      <Button
+                        variant="danger"
 
-                  </>
-                 )}
-                 
-              
-
-
+                        onClick={() => handleOpenDeleteModal(id, title)}
+                        disabled={isDeleting}
+                      >
+                        {isDeleting ? 'Deleting...' : 'Delete Task'}
+                      </Button>
+                      <Button
+                        onClick={() => handleOpenTaskModal(id)}
+                      >
+                        Update Task
+                      </Button>
+                    </>
+                  )}
                   <Button
                     onClick={() => handleOpenModal(id)}
-
                   >
                     Update Task Status
                   </Button>

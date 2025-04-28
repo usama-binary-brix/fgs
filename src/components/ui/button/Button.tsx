@@ -24,7 +24,7 @@ const Button: React.FC<ButtonProps> = ({
   type = "button", 
 }) => {
   const sizeClasses = {
-    sm: "px-[16px] py-2 text-[13px] font-semibold",
+    sm: "px-[8px] py-2 text-[13px] font-semibold",
     md: "px-[16px] py-2.5 text-sm",
   };
 

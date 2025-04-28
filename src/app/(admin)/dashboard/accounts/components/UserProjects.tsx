@@ -1,6 +1,9 @@
 import React from 'react'
 
-const UserProjects = () => {
+const UserProjects = (user: any) => {
+
+  console.log(user?.user, 'user data ')
+
   const projects = [
     { name: "ThyssenKrupp Evolution", investment_amount: 500, profits: 250.75, status: "Sold" },
     { name: "KONE MiniSpace", investment_amount: 300, profits: null, status: "Sold" },

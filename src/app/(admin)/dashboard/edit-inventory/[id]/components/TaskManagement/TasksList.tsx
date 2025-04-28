@@ -1,17 +1,29 @@
 import TaskAccordion from '@/components/TaskAccordion'
 import Button from '@/components/ui/button/Button'
 import React, { useState } from 'react'
-import { IoSearchOutline } from 'react-icons/io5'
+import { IoCalendarOutline, IoSearchOutline } from 'react-icons/io5'
 import AddTaskModal from './AddTaskModal'
 import { useGetAllAdminEmployeeTasksQuery } from '@/store/services/api'
 import { useParams } from 'next/navigation'
 import { useSelector } from 'react-redux'
+import { MdKeyboardArrowDown } from 'react-icons/md'
 
 const TasksList = () => {
   const { id } = useParams()
   const user = useSelector((state: any) => state.user.user.account_type)
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const userRole = useSelector((state:any)=>state?.user?.user?.account_type)
+  const userRole = useSelector((state: any) => state?.user?.user?.account_type)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [selectedFilter, setSelectedFilter] = useState('All Tasks')
+
+
+
+
+
+  const handleSelect = (option: string) => {
+    setSelectedFilter(option)
+    setIsDropdownOpen(false)
+  }
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -34,35 +46,66 @@ const TasksList = () => {
     <>
       <div className='flex justify-between items-center mb-4'>
         <p className='text-lg font-semibold'>Task List</p>
+
+
         {(userRole === 'super_admin' || userRole === 'admin') && (
-    <div className='flex gap-3 items-center'>
-    <div className="inline-flex items-center gap-3">
-      <div className="hidden sm:block">
-        <div className="flex items-center space-x-2">
-          <div className="relative">
+          <div className='flex gap-3 items-center'>
+            <div className="inline-flex items-center gap-3">
+              <div className="hidden sm:block">
+                <div className="flex items-center space-x-2">
+                  <div className="relative">
 
-            <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#616161]" />
-            <input
-              className="text-xs border placeholder-[#616161]  bg-white rounded-lg pl-9 pr-2 h-9 w-64 border-[#DDD] font-family font-medium text-[12.5px] text-[#616161] focus:border-gray-400 focus:outline-none"
-              placeholder="Search"
-            />
+                    <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#616161]" />
+                    <input
+                      className="text-xs border placeholder-[#616161]  bg-white rounded-lg pl-9 pr-2 h-9 w-64 border-[#DDD] font-family font-medium text-[12.5px] text-[#616161] focus:border-gray-400 focus:outline-none"
+                      placeholder="Search"
+                    />
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsDropdownOpen((prev) => !prev)}
+                className="flex items-center gap-1 border rounded-lg px-2 py-2 bg-white text-gray-700 text-sm shadow-sm hover:bg-gray-100 transition"
+              >
+                <IoCalendarOutline className="text-xl" />
+                <span className="font-medium">{selectedFilter}</span>
+                <MdKeyboardArrowDown className="text-xl" />
+              </button>
+
+              {/* Dropdown Options */}
+              {isDropdownOpen && (
+                <div className="absolute right-0 w-48 bg-white border rounded-lg shadow-lg z-10">
+                  {['All Tasks', 'Pending Tasks','Active Tasks', 'Completed Tasks'].map((option) => (
+                    <div
+                      key={option}
+                      onClick={() => handleSelect(option)}
+                      className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                    >
+                      {option}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+
+            <Button variant="primary"
+              size='sm'
+              onClick={handleOpenModal}
+            >
+              Add New Task
+            </Button>
+
           </div>
+        )}
 
-        </div>
-      </div>
-    </div>
-    <Button variant="primary"
-      size='sm'
-      onClick={handleOpenModal}
-    >
-      Add New Task
-    </Button>
 
-  </div>
-) }
-  
-       
-      
+
       </div>
 
       {isError ? (

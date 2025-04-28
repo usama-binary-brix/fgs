@@ -133,6 +133,19 @@ const modalStyle = {
   borderRadius: 2,
 };
 
+export const timelineModalStyles = {
+  base: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white shadow-xl rounded-lg overflow-y-auto",
+  sizes: {
+    default: "w-[85%] sm:w-[50%] md:w-[50%] lg:w-[50%] max-h-[80vh] md:max-h-[90vh]",
+    small: "w-[70%] sm:w-[60%] md:w-[70%] lg:w-[60%] max-h-[70vh]",
+    large: "w-[78%] sm:w-[65%] md:w-[90%] lg:w-[85%] max-h-[90vh]"
+  },
+  header: "sticky top-0 z-10 bg-white border-b border-gray-400 py-3 px-4",
+  content: "px-4 py-4 overflow-y-auto",
+  title: "text-lg sm:text-xl font-semibold",
+  closeButton: "cursor-pointer text-2xl sm:text-3xl text-gray-600 hover:text-gray-900"
+} as const;
+
 const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
   const { id } = useParams();
   const [addNewTimeline, { isLoading: isAdding }] = useAddNewTimelineMutation();
@@ -273,7 +286,7 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
 
   return (
     <Modal open={open} onClose={onClose} sx={{ zIndex: 9999 }}>
-      <Box sx={modalStyle}>
+       <Box className={`${timelineModalStyles.base} ${timelineModalStyles.sizes.default}`}>
         <div className="border-b border-gray-400 mb-2 py-2">
           <div className="flex justify-between items-center px-4">
             <p className="text-lg font-semibold">Edit Timeline</p>
@@ -286,8 +299,8 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
           <p className="text-sm font-medium mb-1">
             {editingIndex !== null ? 'Edit Stage' : 'Add New Stage'}
           </p>
-          <div className="flex gap-2">
-            <div className='w-[84%]'>
+          <div className="flex gap-2 w-full">
+            <div className='w-full'>
               <Input
                 placeholder="Enter Stage Name"
                 className='w-full'
@@ -319,7 +332,7 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
               </>
             ) : (
               <Button
-                className='h-9'
+                className='h-9 w-40 md:w-30'
                 variant="primary"
                 onClick={handleAddStage}
                 // loading={isAdding}

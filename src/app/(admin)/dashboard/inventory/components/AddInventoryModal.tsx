@@ -17,6 +17,7 @@ import CustomDatePicker from '@/components/CustomDatePicker';
 import MuiDatePicker from '@/components/CustomDatePicker';
 import { PageTitle } from '@/components/PageTitle';
 import Button from '@/components/ui/button/Button';
+import { modalStyles } from '../../accounts/components/AccountsModal';
 
 const modalStyle = {
     position: 'absolute' as const,
@@ -241,7 +242,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
 
     return (
         <Modal open={open} onClose={onClose}>
-            <Box sx={modalStyle}>
+       <Box className={`${modalStyles.base} ${modalStyles.sizes.default}`}>
                 <div className=' border-b border-gray-400 mb-3 py-3'>
                     <div className='flex justify-between items-center px-4'>
                         <p className='text-xl font-semibold'>Add New Inventory</p>
@@ -251,7 +252,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                 </div>
                 <form onSubmit={formik.handleSubmit} className='p-[15px]' autoComplete='off'>
                     <Grid container spacing={2}>
-                        <Grid item xs={6} md={4}>
+                        <Grid item xs={12} md={4}>
 
                             <Label>Category <span className="text-error-500">*</span></Label>
 
@@ -267,7 +268,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                             </select>
                         </Grid>
 
-                        <Grid item xs={6} md={4}>
+                        <Grid item xs={12} md={4}>
                             <Label> Sub Category <span className="text-error-500">*</span></Label>
                             <Select
                                 name="subcategory_id"
@@ -286,7 +287,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                         </Grid>
 
                         {["year", "make", "model", "serial_no", "length", "height", "width", "weight", "hours", "price_paid",].map((field) => (
-                            <Grid item xs={6} md={4} key={field}>
+                            <Grid item xs={12} md={4} key={field}>
                                 <Label className='capitalize'>
                                     {field.replace("_", " ")}
                                     <span className='text-red-500'> *</span>
@@ -306,7 +307,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                             </Grid>
                         ))}
 
-                        <Grid item xs={6} md={4}>
+                        <Grid item xs={12} md={4}>
                             <Label>Date Purchased <span className="text-red-500">*</span></Label>
                             <MuiDatePicker
                                 name="date_purchased"

@@ -45,6 +45,22 @@ const modalStyle = {
     borderRadius: 2,
 };
 
+export const taskModalStyles = {
+    base: "absolute pb-5 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white shadow-xl rounded-lg overflow-y-auto",
+    sizes: {
+        default: "w-[85%] sm:w-[60%] md:w-[60%] lg:w-[50%] max-h-[80vh] md:max-h-[90vh]",
+
+    },
+    header: "sticky top-0 z-10 bg-white border-b border-gray-400 py-3 px-4",
+    content: "px-4 py-4 overflow-y-auto",
+    title: "text-lg sm:text-xl font-semibold",
+    closeButton: "cursor-pointer text-2xl sm:text-3xl text-gray-600 hover:text-gray-900"
+} as const;
+
+
+
+
+
 const statusOptions = [
     { label: 'Pending', value: 'pending' },
     { label: 'Active', value: 'active' },
@@ -73,7 +89,7 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose, taskId }) => {
         skip: !open,
         refetchOnMountOrArgChange: true,
     });
-    
+
 
     React.useEffect(() => {
         if (open) {
@@ -208,7 +224,7 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose, taskId }) => {
 
     return (
         <Modal open={open} onClose={onClose}>
-            <Box sx={modalStyle}>
+            <Box className={`${taskModalStyles.base} ${taskModalStyles.sizes.default}`}>
                 <div className='border-b border-gray-400 mb-3 py-3'>
                     <div className='flex justify-between items-center px-4'>
                         <p className='text-xl font-semibold'>

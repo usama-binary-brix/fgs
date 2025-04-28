@@ -6,6 +6,7 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Dialog,
 } from '@mui/material';
 import { RxCross2 } from 'react-icons/rx';
 import { TableHeader } from '@/components/ui/table';
@@ -56,8 +57,8 @@ const TotalInvestorsModal: React.FC<Props> = ({ open, onClose, InventoryId }) =>
   console.log(approvedInvestments, 'approved investment ')
   return (
     <>
-      <Modal open={open} onClose={onClose}>
-        <Box sx={modalStyle}>
+      <Dialog open={open} onClose={onClose}>
+        <Box>
     <div className='w-full flex p-[15px] justify-between items-center mb-6 border-b border-[#DDD] pb-3'>
           <p className='text-[18px] font-family text-black font-semibold'>Total Investors</p>
           <RxCross2 onClick={onClose} className='cursor-pointer text-[#818181] text-3xl' />
@@ -100,7 +101,7 @@ const TotalInvestorsModal: React.FC<Props> = ({ open, onClose, InventoryId }) =>
        
 
         </Box>
-      </Modal>
+      </Dialog>
     </>
   )
 }

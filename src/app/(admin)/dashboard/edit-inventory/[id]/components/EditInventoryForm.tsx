@@ -44,8 +44,8 @@ const EditInventoryForm = () => {
   const [fetchSubCategories] = useGetSubCategoriesMutation();
   const [editInventory] = useEditInventoryMutation()
   const [activeTab, setActiveTab] = useState("details");
-   const { data: timelineData, error:timelineError, isLoading: allTimelineLoading, refetch:timelineRefetch } = useGetAllTimelineQuery(id);
-  
+  const { data: timelineData, error: timelineError, isLoading: allTimelineLoading, refetch: timelineRefetch } = useGetAllTimelineQuery(id);
+
 
   const [isEditing, setIsEditing] = useState(false);
   const [subCategories, setSubCategories] = useState<{ categories: any[] }>({ categories: [] });
@@ -279,10 +279,65 @@ const EditInventoryForm = () => {
 
   return (
     <div className=" rounded-md">
-      <div className="flex justify-between bg-white rounded shadow-md p-3 items-center">
-        <div>
-          <h1 className="text-2xl font-bold">{inventoryData?.inventory?.listing_number}  </h1>
-          <p className="text-gray-600">Inventory</p>
+      <div className="hidden md:block">
+
+        <div className="flex justify-between bg-white rounded shadow-md p-3 items-center">
+          <div>
+            <h1 className="text-2xl font-bold">{inventoryData?.inventory?.listing_number}  </h1>
+            <p className="text-gray-600">Inventory</p>
+            <div className="flex gap-2 mt-2">
+              <button
+                className={`border border-[#D184281A] text-[13px] font-family py-2 px-4 font-semibold rounded transition-all duration-300
+                ${activeTab === "details" ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
+                onClick={() => setActiveTab("details")}
+              >
+                Details
+              </button>
+              <button
+                className={`border border-[#D184281A] text-[13px] font-family py-2 px-4 font-semibold rounded transition-all duration-300
+                ${activeTab === "shipment" ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
+                onClick={() => setActiveTab("shipment")}
+              >
+                Shipments
+              </button>
+              <button
+                className={`border border-[#D184281A] text-[13px] font-family py-2 px-4 font-semibold rounded transition-all duration-300
+                ${activeTab === "reconditioning" ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
+                onClick={() => setActiveTab("reconditioning")}
+              >
+                Reconditioning
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-col items-cetner">
+            <QRCodeCanvas value="https://yourwebsite.com" size={76} />
+            <h1 className="text-[#818181] text-[9.5px] font-normal font-family text-center mt-1">QR-Code</h1>
+          </div>
+          {/* <button
+          className="bg-primary text-white px-4 py-2 rounded-md flex items-center gap-2"
+          onClick={() => setIsEditing(!isEditing)}
+        >
+          <FaEdit /> {isEditing ? "Cancel" : "Edit"}
+        </button> */}
+        </div>
+      </div>
+
+      <div className="block md:hidden">
+
+        <div className=" bg-white rounded shadow-md p-3 items-center">
+          <div>
+            <div className="flex justify-between items-start">
+              <div>
+                <h1 className="text-2xl font-bold">{inventoryData?.inventory?.listing_number}  </h1>
+                <p className="text-gray-600">Inventory</p>
+              </div>
+              <div className="flex flex-col items-cetner">
+                <QRCodeCanvas value="https://yourwebsite.com" size={76} />
+                <h1 className="text-[#818181] text-[9.5px] font-normal font-family text-center mt-1">QR-Code</h1>
+              </div>
+            </div>
+
+          </div>
           <div className="flex gap-2 mt-2">
             <button
               className={`border border-[#D184281A] text-[13px] font-family py-2 px-4 font-semibold rounded transition-all duration-300
@@ -306,17 +361,13 @@ const EditInventoryForm = () => {
               Reconditioning
             </button>
           </div>
-        </div>
-        <div className="flex flex-col items-cetner">
-          <QRCodeCanvas value="https://yourwebsite.com" size={76} />
-          <h1 className="text-[#818181] text-[9.5px] font-normal font-family text-center mt-1">QR-Code</h1>
-        </div>
-        {/* <button
+          {/* <button
           className="bg-primary text-white px-4 py-2 rounded-md flex items-center gap-2"
           onClick={() => setIsEditing(!isEditing)}
         >
           <FaEdit /> {isEditing ? "Cancel" : "Edit"}
         </button> */}
+        </div>
       </div>
 
 
@@ -350,16 +401,15 @@ const EditInventoryForm = () => {
                   className='font-semibold'
 
                 >
-                  {/* <FaEdit /> */}
                   {isEditing ? "Cancel" : "Edit"}
                 </Button>
 
 
               </div>
             </div>
-            {/* <form onSubmit={formik.handleSubmit}> */}
 
-            <div className="mt-6 grid grid-cols-3 gap-4">
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+
               <div>
                 <Label className="">Category <span className="text-red-600">*</span></Label>
                 <select

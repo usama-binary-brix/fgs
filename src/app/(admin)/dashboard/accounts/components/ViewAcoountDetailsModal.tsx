@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions,  Typography } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@mui/material';
 import { FaUserCircle } from "react-icons/fa";
 import Image from 'next/image';
 import { useSingleUserQuery } from '@/store/services/api';
@@ -7,6 +7,7 @@ import { useState } from 'react';
 import UserProjects from './UserProjects';
 import AccountsModal from './AccountsModal';
 import Button from '@/components/ui/button/Button';
+import { useSelector } from 'react-redux';
 
 interface ViewMoreModalProps {
   open: boolean;
@@ -19,7 +20,7 @@ const ViewAccountDetailsModal: React.FC<ViewMoreModalProps> = ({ open, onClose, 
 
   const [selectedUserData, setSelectedUserData] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
+const userRole = useSelector((state:any)=>state?.user?.user?.account_type)
 
   const handleEditUser = (user: any) => {
     setSelectedUserData(user);
@@ -35,8 +36,8 @@ const ViewAccountDetailsModal: React.FC<ViewMoreModalProps> = ({ open, onClose, 
         <DialogTitle sx={{ borderBottom: '1px solid gray' }}>
           <div className='flex justify-between items-center'>
             <p className='text-xl font-semibold'>Accounts Details</p>
-           
-           <div>
+
+            <div>
               <RxCross2 onClick={onClose} className='cursor-pointer text-3xl' />
 
             </div>
@@ -84,19 +85,26 @@ const ViewAccountDetailsModal: React.FC<ViewMoreModalProps> = ({ open, onClose, 
               </div>
             )
           )}
-<div className='mt-4'>
-<UserProjects/>
-  
-  </div>        </DialogContent>
-        <DialogActions sx={{paddingBottom:'1rem', paddingRight:'1rem'}}>
-       
+
+          {user?.user?.account_type === 'investor' && (
+            <>
+          <div className='mt-4'>
+            <UserProjects user={user}/>
+
+          </div>        
+            
+            </>
+          )}
+          </DialogContent>
+        <DialogActions sx={{ paddingBottom: '1rem', paddingRight: '1rem' }}>
 
 
-           <Button onClick={onClose} variant="fgsoutline"
-                          
-                        >
-                          Close
-                        </Button>
+
+          <Button onClick={onClose} variant="fgsoutline"
+
+          >
+            Close
+          </Button>
           <Button
             onClick={() => handleEditUser(user?.user)}
             // type="submit"
@@ -106,8 +114,8 @@ const ViewAccountDetailsModal: React.FC<ViewMoreModalProps> = ({ open, onClose, 
           </Button>
         </DialogActions>
       </Dialog>
-     
-<AccountsModal open={isEditModalOpen}
+
+      <AccountsModal open={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         userData={selectedUserData} />
 

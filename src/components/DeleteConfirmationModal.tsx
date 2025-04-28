@@ -25,9 +25,9 @@ const modalStyle = {
 };
 const DeleteConfirmationModal = ({ open, onClose, onConfirm, name, title }: DeleteConfirmationModalProps) => {
   return (
-    <Dialog open={open} onClose={onClose} sx={{ minWidth: '50rem' }}>
+    <Dialog open={open} onClose={onClose}>
 
-      <Box sx={{ minWidth: '30rem' }}>
+      <Box>
         <div className=' border-b border-gray-400 mb-3 py-3 '>
 
           <div className='flex justify-between items-center px-4'>
