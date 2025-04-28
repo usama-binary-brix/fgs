@@ -296,8 +296,8 @@ refetch()
                         </div>
                       </TableCell>
                       <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family  text-center"><span onClick={() => handleOpenTotalInvModal(lead.id)} className='border-b cursor-pointer  border-gray-400'>{lead.total_investors}</span></TableCell>
-                      <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.investmentAmount || '---'}</TableCell>
-                      <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.salePrice || '---'}</TableCell>
+                      <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead?.total_investment || '---'}</TableCell>
+                      <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead?.selling_price || '---'}</TableCell>
                       <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.profitAmt || '---'}</TableCell>
                       <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.profit || '---'}</TableCell>
                       {lead.status ? (

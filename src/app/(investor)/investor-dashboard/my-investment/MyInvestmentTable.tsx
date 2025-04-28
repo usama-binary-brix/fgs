@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { DropdownItem } from '@/components/ui/dropdown/DropdownItem';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
@@ -48,7 +48,7 @@ const MyInvestmentTable = () => {
        const [currentPage, setCurrentPage] = useState(1);
        const [perPage, setPerPage] = useState(10); 
      
-       const { data, isLoading, error } = useGetAllUserInvestmentsQuery({ page: currentPage,
+       const { data, isLoading, error, refetch } = useGetAllUserInvestmentsQuery({ page: currentPage,
          perPage: perPage,
          search: debouncedSearchText});
 
@@ -59,7 +59,9 @@ const MyInvestmentTable = () => {
         setIsOpen(false);
     };
 
-    
+    useEffect(()=>{
+refetch()
+},[])
 
         const handlePageChange = (page: number) => {
           setCurrentPage(page);

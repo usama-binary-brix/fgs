@@ -16,6 +16,7 @@ type NavItem = {
   path?: string;
   subItems?: { name: string; path: string }[];
   roles?: string[];
+  count?:any;
 };
 
 const navItems: NavItem[] = [
@@ -27,6 +28,14 @@ const navItems: NavItem[] = [
     name: "Inventory",
     subItems: [{ name: "All Inventory", path: "/dashboard/inventory" }],
     roles: ["admin", 'super_admin'],
+  },
+  // { icon: <GridIcon />, name: "Notifications", path: "/dashboard/admin-notifications", roles: ["admin", 'super_admin'] },
+  { 
+    icon: <GridIcon />, 
+    name: "Notifications", 
+    path: "/dashboard/admin-notifications", 
+    roles: ["admin", 'super_admin'],
+    count: 5 
   },
 
   { icon: <GridIcon />, name: "Dashboard", path: "/investor-dashboard", roles: ["investor"] },
@@ -122,9 +131,13 @@ const AppSidebar: React.FC = () => {
                 {nav.path ? (
                   <Link
                     href={nav.path}
-                    className={`menu-item pl-[25px] ${isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"}`}
+                    className={`menu-item pl-[25px] flex items-center justify-between ${isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"}`}
                   >
-                    <span className="menu-item-text font-medium">{nav.name}</span>
+                    <span className="menu-item-text font-medium">{nav.name}</span>  {nav.count && (
+        <span className="ml-2 bg-primary text-white text-xs rounded-full px-2 py-0.5">
+          {nav.count}
+        </span>
+      )}
                   </Link>
                 ) : (
                   <>

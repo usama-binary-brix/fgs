@@ -11,6 +11,7 @@ const TasksList = () => {
   const { id } = useParams()
   const user = useSelector((state: any) => state.user.user.account_type)
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const userRole = useSelector((state:any)=>state?.user?.user?.account_type)
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -33,30 +34,35 @@ const TasksList = () => {
     <>
       <div className='flex justify-between items-center mb-4'>
         <p className='text-lg font-semibold'>Task List</p>
-        <div className='flex gap-3 items-center'>
-          <div className="inline-flex items-center gap-3">
-            <div className="hidden sm:block">
-              <div className="flex items-center space-x-2">
-                <div className="relative">
+        {(userRole === 'super_admin' || userRole === 'admin') && (
+    <div className='flex gap-3 items-center'>
+    <div className="inline-flex items-center gap-3">
+      <div className="hidden sm:block">
+        <div className="flex items-center space-x-2">
+          <div className="relative">
 
-                  <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#616161]" />
-                  <input
-                    className="text-xs border placeholder-[#616161]  bg-white rounded-lg pl-9 pr-2 h-9 w-64 border-[#DDD] font-family font-medium text-[12.5px] text-[#616161] focus:border-gray-400 focus:outline-none"
-                    placeholder="Search"
-                  />
-                </div>
-
-              </div>
-            </div>
+            <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#616161]" />
+            <input
+              className="text-xs border placeholder-[#616161]  bg-white rounded-lg pl-9 pr-2 h-9 w-64 border-[#DDD] font-family font-medium text-[12.5px] text-[#616161] focus:border-gray-400 focus:outline-none"
+              placeholder="Search"
+            />
           </div>
-          <Button variant="primary"
-            size='sm'
-            onClick={handleOpenModal}
-          >
-            Add New Task
-          </Button>
 
         </div>
+      </div>
+    </div>
+    <Button variant="primary"
+      size='sm'
+      onClick={handleOpenModal}
+    >
+      Add New Task
+    </Button>
+
+  </div>
+) }
+  
+       
+      
       </div>
 
       {isError ? (
