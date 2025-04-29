@@ -54,9 +54,9 @@ const InventoryTable = () => {
     search: debouncedSearchText
   });
   const router = useRouter()
-useEffect(()=>{
-refetch()
-},[refetch])
+  useEffect(() => {
+    refetch()
+  }, [refetch])
   // Function to handle row click
   const handleRowClick = (id: string) => {
     router.push(`/dashboard/edit-inventory/${id}`);
@@ -166,7 +166,7 @@ refetch()
             </div>
           </div>
           <div className="flex items-center gap-3">
-       
+
 
             <Button variant="primary"
               size='sm'
@@ -178,10 +178,18 @@ refetch()
 
         </div>
 
+{isLoading ? (
+  <>
+          <div className="py-6 flex items-center justify-center h-96">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        </div>
 
-        <div className="overflow-auto rounded border  border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-        <div className="max-w-full h-[30rem] overflow-x-auto">
-         
+  </>
+):(
+  <>
+    <div className="overflow-auto rounded border  border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+          <div className="max-w-full h-[30rem] overflow-x-auto">
+
             <Table className='table-auto'>
               <TableHeader className="sticky top-0 z-50 border-b bg-[#F7F7F7] text-[#616161] font-family font-medium text-[12.5px] border-gray-100 dark:border-white/[0.05]">
                 <TableRow>
@@ -211,62 +219,25 @@ refetch()
                       className="contents cursor-pointer hover:bg-gray-50"
                       onClick={() => handleRowClick(lead.id)}
                     > */}
-                      <TableCell className="px-5 py-2 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.listing_number}</TableCell>
-                      <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.make}</TableCell>
-                      <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.model}</TableCell>
-                      <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.serial_no}</TableCell>
-                      <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.date_purchased}</TableCell>
-                      <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">$ {lead.price_paid || '---'}</TableCell>
-                      <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.reconditioning || '---'}</TableCell>
-                      <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.completionDate || '---'}</TableCell>
-                      <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap font-family text-start">
-                        <div className="flex justify-center relative">
-                          {lead.total_investors > 0 ? (
-                            <>
-                              <svg
-                                onClick={() => handleOpenInvReqModal(lead.id, lead.listing_number)}
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="border cursor-pointer border-[#D1842880] bg-[#D184281A] rounded-md"
-
-                                width="26"
-                                height="26"
-                                viewBox="0 0 21 20"
-                                fill="none"
-                              >
-                                <path
-                                  d="M10.5001 2.1998V17.7998"
-                                  stroke="#D18428"
-                                  strokeWidth="1.3"
-                                  strokeMiterlimit="10"
-                                  strokeLinecap="round"
-                                />
-                                <path
-                                  d="M9.63345 10.0002H11.3668C12.8027 10.0002 13.9668 11.1643 13.9668 12.6002C13.9668 14.0361 12.8027 15.2002 11.3668 15.2002H9.63345C8.19751 15.2002 7.03345 14.0361 7.03345 12.6002"
-                                  stroke="#D18428"
-                                  strokeWidth="1.3"
-                                  strokeMiterlimit="10"
-                                  strokeLinecap="round"
-                                />
-                                <path
-                                  d="M11.3668 10H9.63345C8.19751 10 7.03345 8.83594 7.03345 7.4C7.03345 5.96406 8.19751 4.8 9.63345 4.8H11.3668C12.8027 4.8 13.9668 5.96406 13.9668 7.4"
-                                  stroke="#D18428"
-                                  strokeWidth="1.3"
-                                  strokeMiterlimit="10"
-                                  strokeLinecap="round"
-                                />
-                              </svg>
-
-                              <div className="absolute top-[-9px] border border-[#D18428] bg-[#D18428] rounded-full px-1 right-12">
-                                <h1 className="text-xs text-white">{lead.total_investors}</h1>
-                              </div>
-                            </>
-                          ) : (
+                    <TableCell className="px-5 py-2 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.listing_number}</TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.make}</TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.model}</TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.serial_no}</TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.date_purchased}</TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">$ {lead.price_paid || '---'}</TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.reconditioning || '---'}</TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.completionDate || '---'}</TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap font-family text-start">
+                      <div className="flex justify-center relative">
+                        {lead.total_investors > 0 ? (
+                          <>
                             <svg
-                              onClick={() => toast.warning("No investment available")}
+                              onClick={() => handleOpenInvReqModal(lead.id, lead.listing_number)}
                               xmlns="http://www.w3.org/2000/svg"
-                              className="border cursor-pointer border-[#D1842880] bg-[#D184281A] rounded"
-                              width="25"
-                              height="25"
+                              className="border cursor-pointer border-[#D1842880] bg-[#D184281A] rounded-md"
+
+                              width="26"
+                              height="26"
                               viewBox="0 0 21 20"
                               fill="none"
                             >
@@ -292,87 +263,124 @@ refetch()
                                 strokeLinecap="round"
                               />
                             </svg>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family  text-center"><span onClick={() => handleOpenTotalInvModal(lead.id)} className='border-b cursor-pointer  border-gray-400'>{lead.total_investors}</span></TableCell>
-                      <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead?.total_investment || '---'}</TableCell>
-                      <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead?.selling_price || '---'}</TableCell>
-                      <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.profitAmt || '---'}</TableCell>
-                      <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.profit || '---'}</TableCell>
-                      {lead.status ? (
-                        <TableCell className="px-5 py-2 text-xs">
-                          <span
-                            className={`px-3 py-2 rounded-md text-sm font-medium ${lead.status === 'in progress'
-                              ? 'bg-orange-100 text-orange-500'
-                              : lead.status === 'sold'
-                                ? 'bg-green-100 text-green-600'
-                                : lead.status === 'pending'
-                                  ? 'bg-[#8e7f9c1f] font-family text-[14px] font-medium  text-[#8E7F9C]'
-                                  : ''
-                              }`}
-                          >
-                            {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)} {/* Capitalize */}
-                          </span>
-                        </TableCell>
-                      ) : (
-                        <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-familytext-start">
-                          <span
-                            className={`px-3 py-2 rounded-md text-sm font-medium bg-[#8E7F9C1F] text-[#8E7F9C]`}
-                          >
-                            Pending
-                          </span>
-                        </TableCell>
-                      )}
-                      <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-center relative">
-                        <div className="relative inline-block">
-                          <button
-                            onClick={() => toggleDropdown(lead.id)}
-                            className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : 'hover:bg-gray-50'
-                              }`}
-                          >
-                            <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
-                          </button>
 
-                          {openDropdown === lead.id && (
-                            <div className="absolute right-9 top-[-7px] mt-2 z-[999] w-40 bg-white p-2 shadow-md border rounded-sm">
-                              <DropdownItem
-                                onItemClick={() => {
-                                  router.push(`/dashboard/edit-inventory/${lead.id}`);
-                                  closeDropdown();
-                                }}
-                                className="flex w-full text-left text-[12px] font-family text-[#414141] font-normal border-b border-[#E9E9E9] rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-                              >
-                                View Details
-                              </DropdownItem>
-
-                              <DropdownItem
-                                onItemClick={() => {
-
-                                  router.push(`/dashboard/edit-inventory/${lead.id}`);
-                                  closeDropdown();
-                                }}
-                                className="flex w-full text-left text-[12px] font-family text-[#414141] font-normal border-b border-[#E9E9E9] rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-                              >
-                                Edit
-                              </DropdownItem>
-
-                              <DropdownItem
-                                onItemClick={() => {
-                                  setOpenDropdownId(null);
-                                  setSelectedId(lead.id);
-                                  setSelectedListingNumber(lead.listing_number);
-                                  setIsDeleteModalOpen(true);
-                                  closeDropdown();
-                                }}
-                                className="flex w-full text-left text-[12px] font-family text-[#414141] font-normal rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-                              >
-                                Delete
-                              </DropdownItem>
+                            <div className="absolute top-[-9px] border border-[#D18428] bg-[#D18428] rounded-full px-1 right-12">
+                              <h1 className="text-xs text-white">{lead.total_investors}</h1>
                             </div>
-                          )}
-                        </div>
+                          </>
+                        ) : (
+                          <svg
+                            onClick={() => toast.warning("No investment available")}
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="border cursor-pointer border-[#D1842880] bg-[#D184281A] rounded"
+                            width="25"
+                            height="25"
+                            viewBox="0 0 21 20"
+                            fill="none"
+                          >
+                            <path
+                              d="M10.5001 2.1998V17.7998"
+                              stroke="#D18428"
+                              strokeWidth="1.3"
+                              strokeMiterlimit="10"
+                              strokeLinecap="round"
+                            />
+                            <path
+                              d="M9.63345 10.0002H11.3668C12.8027 10.0002 13.9668 11.1643 13.9668 12.6002C13.9668 14.0361 12.8027 15.2002 11.3668 15.2002H9.63345C8.19751 15.2002 7.03345 14.0361 7.03345 12.6002"
+                              stroke="#D18428"
+                              strokeWidth="1.3"
+                              strokeMiterlimit="10"
+                              strokeLinecap="round"
+                            />
+                            <path
+                              d="M11.3668 10H9.63345C8.19751 10 7.03345 8.83594 7.03345 7.4C7.03345 5.96406 8.19751 4.8 9.63345 4.8H11.3668C12.8027 4.8 13.9668 5.96406 13.9668 7.4"
+                              stroke="#D18428"
+                              strokeWidth="1.3"
+                              strokeMiterlimit="10"
+                              strokeLinecap="round"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family  text-center"><span onClick={() => handleOpenTotalInvModal(lead.id)} className='border-b cursor-pointer  border-gray-400'>{lead.total_investors}</span></TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead?.total_investment || '---'}</TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead?.selling_price || '---'}</TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.profitAmt || '---'}</TableCell>
+                    <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.profit || '---'}</TableCell>
+                    {lead.status ? (
+                      <TableCell className="px-5 py-2 text-xs">
+                        <span
+                          className={`px-3 py-2 rounded-md text-sm font-medium ${lead.status === 'in progress'
+                            ? 'bg-orange-100 text-orange-500'
+                            : lead.status === 'sold'
+                              ? 'bg-green-100 text-green-600'
+                              : lead.status === 'pending'
+                                ? 'bg-[#8e7f9c1f] font-family text-[14px] font-medium  text-[#8E7F9C]'
+                                : ''
+                            }`}
+                        >
+                          {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)} {/* Capitalize */}
+                        </span>
                       </TableCell>
+                    ) : (
+                      <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-familytext-start">
+                        <span
+                          className={`px-3 py-2 rounded-md text-sm font-medium bg-[#8E7F9C1F] text-[#8E7F9C]`}
+                        >
+                          Pending
+                        </span>
+                      </TableCell>
+                    )}
+                    <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-center relative">
+                      <div className="relative inline-block">
+                        <button
+                          onClick={() => toggleDropdown(lead.id)}
+                          className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : 'hover:bg-gray-50'
+                            }`}
+                        >
+                          <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
+                        </button>
+
+                        {openDropdown === lead.id && (
+                          <div className="absolute right-9 top-[-7px] mt-2 z-[999] w-40 bg-white p-2 shadow-md border rounded-sm">
+                            <DropdownItem
+                              onItemClick={() => {
+                                router.push(`/dashboard/edit-inventory/${lead.id}`);
+                                closeDropdown();
+                              }}
+                              className="flex w-full text-left text-[12px] font-family text-[#414141] font-normal border-b border-[#E9E9E9] rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                            >
+                              View Details
+                            </DropdownItem>
+
+                            <DropdownItem
+                              onItemClick={() => {
+
+                                router.push(`/dashboard/edit-inventory/${lead.id}`);
+                                closeDropdown();
+                              }}
+                              className="flex w-full text-left text-[12px] font-family text-[#414141] font-normal border-b border-[#E9E9E9] rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                            >
+                              Edit
+                            </DropdownItem>
+
+                            <DropdownItem
+                              onItemClick={() => {
+                                setOpenDropdownId(null);
+                                setSelectedId(lead.id);
+                                setSelectedListingNumber(lead.listing_number);
+                                setIsDeleteModalOpen(true);
+                                closeDropdown();
+                              }}
+                              className="flex w-full text-left text-[12px] font-family text-[#414141] font-normal rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                            >
+                              Delete
+                            </DropdownItem>
+                          </div>
+                        )}
+                      </div>
+                    </TableCell>
 
                     {/* </div> */}
                   </TableRow>
@@ -391,6 +399,9 @@ refetch()
             />
           </div>
         </div>
+  </>
+)}
+      
 
       </div>
       <AddInventoryModal open={isModalOpen} onClose={handleCloseModal} />
