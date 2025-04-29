@@ -217,11 +217,17 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
                       </Button>
                     </>
                   )}
-                  <Button
-                    onClick={() => handleOpenModal(id)}
-                  >
-                    Update Task Status
-                  </Button>
+
+                  {(userType == "super_admin" || userType == "admin" || userType == "employee") && (
+                    <>
+                      <Button
+                        onClick={() => handleOpenModal(id)}
+                      >
+                        Update Task Status
+                      </Button>
+
+                    </>
+                  )}
                 </div>
               </AccordionDetails>
             </Accordion>
