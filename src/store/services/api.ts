@@ -484,6 +484,15 @@ export const api = createApi({
 
     }),
 
+    getAdminDashboardStates: builder.query({
+      query: () => ({
+        url: `admin/dashboard`,
+        method: 'GET',
+      }),
+      // providesTags: ["AllShipmentOpportunities"],
+
+    }),
+
 
 
 
@@ -545,7 +554,7 @@ export const { useLoginMutation,
   useGetAllShipmentQuotesQuery,
   useUpdateShipmentQuotesStatusMutation,
   useGetBrokerShipmentByIdQuery,
-
+  useGetAdminDashboardStatesQuery
 
 
 } = api;
