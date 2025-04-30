@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks", "EmployeeInventory", "AllEmployeeTasks", "AllShipments", "InventoryCost", "AllShipmentOpportunities", "AllShipmentQuotes"],
+  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks", "EmployeeInventory", "AllEmployeeTasks", "AllShipments", "InventoryCost", "AllShipmentOpportunities", "AllShipmentQuotes", "EmployeeAdminDashboard"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -340,7 +340,7 @@ export const api = createApi({
         method: 'POST',
         body: taskStatusData,
       }),
-      invalidatesTags: ["AllAdminTasks", "InventoryTimeline", "AllEmployeeTasks", "EmployeeInventory"],
+      invalidatesTags: ["AllAdminTasks", "InventoryTimeline", "AllEmployeeTasks", "EmployeeInventory", "EmployeeAdminDashboard"],
 
     }),
 
@@ -492,7 +492,17 @@ export const api = createApi({
       // providesTags: ["AllShipmentOpportunities"],
 
     }),
+    getEmployeeDashboard: builder.query({
+      query: () => ({
+        url: `employee/dashboard`,
+        method: 'GET',
+      }),
+      providesTags: ["EmployeeAdminDashboard"],
 
+    }),
+
+
+   
 
 
 
@@ -554,7 +564,7 @@ export const { useLoginMutation,
   useGetAllShipmentQuotesQuery,
   useUpdateShipmentQuotesStatusMutation,
   useGetBrokerShipmentByIdQuery,
-  useGetAdminDashboardStatesQuery
-
+  useGetAdminDashboardStatesQuery,
+  useGetEmployeeDashboardQuery,
 
 } = api;

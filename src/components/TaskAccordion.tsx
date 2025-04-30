@@ -26,13 +26,13 @@ interface AssignedUser {
 interface TaskAccordionProps {
   id?: any;
   title: string;
-  assignedUsers: any;
+  assignedUsers?: any;
   startDate: string;
   dueDate: string;
   status: string;
   priority: string;
   initialDetails?: string;
-  onSubmitTask: (details: string) => void;
+  onSubmitTask?: (details: string) => void;
   onTaskDeleted?: (taskId: any) => void;
 }
 
@@ -103,7 +103,9 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
       <div className="bg-white mb-2 rounded-md shadow-sm">
         <div className="flex items-center justify-between px-4 pt-1">
           <p className="text-base font-semibold mb-1">{title}</p>
-          <div className="flex items-center gap-1">
+          {assignedUsers && (
+            <>
+            <div className="flex items-center gap-1">
             <span className="text-[14px] text-[#616161] font-medium mr-1">
               Assigned to:
             </span>
@@ -118,6 +120,9 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
               <p className="text-xs text-gray-500">{assignedUsers.first_name}</p>
             </div>
           </div>
+            </>
+          )}
+          
         </div>
 
         <div className="px-4">

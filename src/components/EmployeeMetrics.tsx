@@ -2,28 +2,29 @@
 import React from "react";
 import { MdInfoOutline } from "react-icons/md";
 
-export const EmployeeMetrics = () => {
+export const EmployeeMetrics = (data:any) => {
+
   const metricsData = [
     {
       title: "Pending Tasks",
-      value: "10",
+      value: data?.data?.pending_task,
       icon: <MdInfoOutline />,
     },
     {
       title: "In-Progress Tasks",
-      value: "5",
+      value: data?.data?.active_task,
       icon: <MdInfoOutline />,
     },
     {
       title: "Completed Tasks",
-      value: "50",
+      value: data?.data?.completed_task,
       icon: <MdInfoOutline />,
     },
 
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-3">
+    <div className=" flex flex-col gap-4">
       {metricsData.map((item, index) => (
         <div
           key={index}

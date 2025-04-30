@@ -121,6 +121,9 @@ const EmployeeInventoryTasksTable = () => {
 
     return (
         <>
+
+
+
             <div className=''>
                 <div className="flex justify-between items-center mb-3">
                     <div className="inline-flex items-center gap-3">
@@ -141,8 +144,16 @@ const EmployeeInventoryTasksTable = () => {
                     <div className="flex items-center gap-3">
                     </div>
                 </div>
-                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-        <div className="max-w-full h-[30rem] overflow-x-auto">
+                {isLoading ? (
+        <>
+          <div className="py-6 flex items-center justify-center h-96">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          </div>
+
+        </>
+      ) : (<>
+       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+                    <div className="max-w-full h-[30rem] overflow-x-auto">
                         <Table className='table-auto'>
                             <TableHeader className="sticky top-0 z-50 border-b bg-[#F7F7F7] text-[#616161] font-family font-medium text-[12.5px] border-gray-100 dark:border-white/[0.05]">
                                 <TableRow>
@@ -228,7 +239,11 @@ const EmployeeInventoryTasksTable = () => {
                         />
                     </div>
                 </div>
+      </>)}
+               
             </div>
+
+
             <Dialog
                 open={isOpen}
                 onClose={handleCloseModal}

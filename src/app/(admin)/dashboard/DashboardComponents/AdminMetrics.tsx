@@ -7,13 +7,13 @@ export const AdminMatrics = (data?: any) => {
     {
       title: "Total Investors",
       value: data?.data?.total_investors || "0",
-      tooltip: "Number of investors in the platform",
+      tooltip: "Number of investors in the FGS",
       icon: <MdInfoOutline />,
     },
     {
       title: "Total Employees",
       value: data?.data?.total_employees || "0",
-      tooltip: "Number of employees in the company",
+      tooltip: "Number of employees in the FGS",
       icon: <MdInfoOutline />,
     },
     {

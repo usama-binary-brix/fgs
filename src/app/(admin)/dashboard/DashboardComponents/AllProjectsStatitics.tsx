@@ -38,13 +38,13 @@ interface ApiData {
         show: false,
       },
     },
-    colors: ["#1E90FF", "#FFA500"], // Orange for In Progress, Blue for Sold
+    colors: ["#1E90FF", "#FFA500"],
     stroke: {
       curve: "smooth",
       width: 2,
     },
     markers: {
-      size: 5,
+      size: 0,
       strokeColors: "#fff",
       strokeWidth: 2,
       hover: {
@@ -102,16 +102,13 @@ interface ApiData {
         formatter: (value) => `${value}%`,
       },
       title: {
-        text: "Percentage",
-        style: {
-          fontSize: "12px",
-        },
+        text: undefined,
       },
     },
     legend: {
       show: true,
       position: "bottom",
-      horizontalAlign: "right",
+      horizontalAlign: "center",
       itemMargin: {
         horizontal: 10,
         vertical: 5,
@@ -150,7 +147,7 @@ interface ApiData {
             options={options}
             series={series}
             type="line"
-            height={250}
+            height={300}
           />
         </div>
       </div>
