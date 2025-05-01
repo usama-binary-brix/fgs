@@ -32,7 +32,7 @@ interface ApiData {
   const options: ApexOptions = {
     chart: {
       fontFamily: "Outfit, sans-serif",
-      height: 310,
+      height: 400,
       type: "line",
       toolbar: {
         show: false,
@@ -110,7 +110,7 @@ interface ApiData {
       position: "bottom",
       horizontalAlign: "center",
       itemMargin: {
-        horizontal: 10,
+        horizontal: 15,
         vertical: 5,
       },
     },
@@ -147,7 +147,7 @@ interface ApiData {
             options={options}
             series={series}
             type="line"
-            height={300}
+            height={430}
           />
         </div>
       </div>

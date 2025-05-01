@@ -117,7 +117,7 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
                   sx={{ height: '2rem', width: '2rem' }}
                 />
               </AvatarGroup>
-              <p className="text-xs text-gray-500">{assignedUsers.first_name}</p>
+              <p className="text-xs text-gray-500 text-center">{assignedUsers.first_name}</p>
             </div>
           </div>
             </>

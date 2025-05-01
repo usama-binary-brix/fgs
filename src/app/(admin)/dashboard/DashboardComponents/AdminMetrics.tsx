@@ -38,7 +38,7 @@ export const AdminMatrics = (data?: any) => {
           className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-3"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[14px] font-medium text-black dark:text-gray-400">
+            <span className="text-[15px] font-medium text-black dark:text-gray-400">
               {item.title}
             </span>
             <div className="relative group">
@@ -50,9 +50,9 @@ export const AdminMatrics = (data?: any) => {
             </div>
           </div>
 
-          <div className="flex items-end justify-between mt-5">
+          <div className="flex items-end justify-between mt-2">
             <div>
-              <h4 className="mt-2 font-bold text-gray-800 text-[34px] dark:text-white/90">
+              <h4 className="mt-2 font-bold text-[#1B281B] text-[34px] dark:text-white/90">
                 {item.value}
               </h4>
             </div>

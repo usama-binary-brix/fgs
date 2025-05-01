@@ -211,7 +211,7 @@ export default function MonthlySalesChart(data: any) {
               options={chartData.options}
               series={chartData.series}
               type="bar"
-              height={350}
+              height={250}
             />
           ) : (
             <div className="h-[350px] flex items-center justify-center">

@@ -5,6 +5,7 @@ import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
 import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
 import StatisticsChart from "@/components/ecommerce/StatisticsChart";
 import { PageTitle } from "@/components/PageTitle";
+import BarChart from "./components/BarChart";
 
 export const metadata: Metadata = {
   title: "FGS Admin Dashboard",
@@ -21,21 +22,22 @@ export default function Ecommerce() {
       <div className="grid grid-cols-12 gap-6">
         {/* Left Section (8 Columns) */}
         <div className="col-span-12 xl:col-span-8 space-y-6">
-  <EcommerceMetrics />
+          <EcommerceMetrics />
+          {/* Wrap in a Flex Grid for Large Screens */}
+          <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
+            {/* <StatisticsChart />
+            <MonthlySalesChart /> */}
+<BarChart/>
 
-  {/* Wrap in a Flex Grid for Large Screens */}
-  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <StatisticsChart />
-    <MonthlySalesChart />
-  </div>
+          </div>
 
-  {/* <RecentOrders /> */}
-</div>
+          {/* <RecentOrders /> */}
+        </div>
 
 
         {/* Right Section (4 Columns) */}
         <div className="col-span-12 xl:col-span-4 space-y-6">
-          <MonthlyTarget />
+          {/* <MonthlyTarget /> */}
           {/* <MonthlySalesChart /> */}
           {/* <DemographicCard /> */}
         </div>

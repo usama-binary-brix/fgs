@@ -26,13 +26,15 @@ const AdminDashbOard = () => {
             <div className="grid grid-cols-12 gap-6">
                 <div className="col-span-12 xl:col-span-8 space-y-6">
                     <AdminMatrics data={data} />
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
                         <AllProjectsStatitics data={data} />
-                        <MonthlySalesChart data={data}/>
+                        {/* <MonthlySalesChart data={data}/> */}
                     </div>
                 </div>
                 <div className="col-span-12 xl:col-span-4 space-y-6">
                     <TopInvestorsChart data={data} />
+                    <MonthlySalesChart data={data}/>
+
                     {/* <MonthlySalesChart /> */}
                     {/* <DemographicCard /> */}
                 </div>

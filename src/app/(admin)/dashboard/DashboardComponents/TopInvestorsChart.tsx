@@ -109,7 +109,7 @@ const TopInvestorsChart = (data: any) => {
               name: {
                 show: true,
                 fontFamily: "Inter, sans-serif",
-                offsetY: 40,
+                offsetY: 20,
               },
               total: {
                 showAlways: true,
@@ -119,6 +119,7 @@ const TopInvestorsChart = (data: any) => {
                 formatter: () => `$${totalInvestment.toLocaleString()}`,
                 fontWeight: 'bold',
                 fontSize: '16px',
+
               },
               value: {
                 show: true,
@@ -192,7 +193,7 @@ const TopInvestorsChart = (data: any) => {
   };
 
   return (
-    <div className="w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
+    <div className="w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:pt-6">
       <div className="flex justify-between mb-3">
         <div className="flex justify-center items-center">
           <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">
@@ -202,11 +203,11 @@ const TopInvestorsChart = (data: any) => {
       </div>
 
       {isLoading ? (
-        <div className="py-6 flex items-center justify-center h-96">
+        <div className="pt-6 flex items-center justify-center h-96">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
         </div>
       ) : investorsData.length > 0 ? (
-        <div className="py-6">
+        <div className="">
           <ReactApexChart
             options={getChartOptions()}
             series={investorsData.map((investor) => investor.amount)}
