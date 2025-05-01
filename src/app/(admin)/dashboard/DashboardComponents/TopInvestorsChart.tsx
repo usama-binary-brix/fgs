@@ -48,10 +48,12 @@ const TopInvestorsChart = (data: any) => {
     
     setInvestorsData(transformedData);
   };
+
   const totalInvestment = investorsData.reduce(
     (sum, investor) => sum + investor.amount,
     0
   );
+
   const getChartOptions = (): ApexOptions => {
     return {
       series: investorsData.map((investor) => investor.amount),
@@ -62,7 +64,8 @@ const TopInvestorsChart = (data: any) => {
         type: "donut",
         animations: {
           enabled: true,
-          speed: 800,
+       
+          speed: 500,
           animateGradually: {
             enabled: true,
             delay: 150
@@ -72,7 +75,27 @@ const TopInvestorsChart = (data: any) => {
             speed: 350
           }
         },
-      },
+        events: {
+          mounted: (chart) => {
+          setTimeout(()=>{
+            const paths = chart.el.querySelectorAll('.apexcharts-pie-series path');
+            paths.forEach((path: SVGPathElement) => {
+              path.style.transition = 'all 0.3s ease';
+              path.style.transformOrigin = 'center';
+              
+              path.addEventListener('mouseenter', () => {
+                path.style.transform = 'scale(1.05) translateY(1px)';
+                path.style.filter = 'drop-shadow(0 3px 5px rgba(0,0,0,0.2))';
+              });
+              
+              path.addEventListener('mouseleave', () => {
+                path.style.transform = '';
+                path.style.filter = '';
+              });
+            })
+          },1000)
+          }
+      }},
       stroke: {
         colors: ["transparent"],
         lineCap: "round",
@@ -93,13 +116,17 @@ const TopInvestorsChart = (data: any) => {
                 show: true,
                 label: "Total Investment",
                 fontFamily: "Inter, sans-serif",
-                formatter: () => `$${totalInvestment.toLocaleString()}`,                
+                formatter: () => `$${totalInvestment.toLocaleString()}`,
+                fontWeight: 'bold',
+                fontSize: '16px',
               },
               value: {
                 show: true,
                 fontFamily: "Inter, sans-serif",
                 offsetY: -20,
                 formatter: (value) => `$${parseInt(value).toLocaleString()}`,
+                fontWeight: 'bold',
+                fontSize: '30px',
               },
             },
             size: "70%",
@@ -128,8 +155,6 @@ const TopInvestorsChart = (data: any) => {
         },
         custom: ({ seriesIndex }) => {
           const investor = investorsData[seriesIndex];
-          const percentage = ((investor.amount / totalInvestment) * 100).toFixed(1);
-          
           return `
             <div class="px-3 py-2 bg-white rounded shadow-lg border border-gray-200">
               <div class="font-semibold text-gray-900">${investor.name}</div>
@@ -141,8 +166,7 @@ const TopInvestorsChart = (data: any) => {
       states: {
         hover: {
           filter: {
-            type: 'lighten', // or 'darken'
-                 // brightness value
+            type: 'none',
           }
         },
         active: {
@@ -168,31 +192,26 @@ const TopInvestorsChart = (data: any) => {
   };
 
   return (
-    <div className="max-w-lg w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
+    <div className="w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
       <div className="flex justify-between mb-3">
         <div className="flex justify-center items-center">
           <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">
-         Top 10 Investors
+            Top 10 Investors
           </h5>
-        </div>
-        <div>
-          {/* <span className="bg-primary/30 text-primary text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
-            {isLoading ? 'Loading...' : `${investorsData.length} Investor${investorsData.length !== 1 ? 's' : ''}`}
-          </span> */}
         </div>
       </div>
 
       {isLoading ? (
         <div className="py-6 flex items-center justify-center h-96">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
         </div>
       ) : investorsData.length > 0 ? (
-        <div className="py-6" id="donut-chart">
+        <div className="py-6">
           <ReactApexChart
             options={getChartOptions()}
             series={investorsData.map((investor) => investor.amount)}
             type="donut"
-            height={420}
+            height={250}
           />
         </div>
       ) : (

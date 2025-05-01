@@ -28,7 +28,7 @@ const AdminDashbOard = () => {
                     <AdminMatrics data={data} />
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <AllProjectsStatitics data={data} />
-                        <MonthlySalesChart />
+                        <MonthlySalesChart data={data}/>
                     </div>
                 </div>
                 <div className="col-span-12 xl:col-span-4 space-y-6">
