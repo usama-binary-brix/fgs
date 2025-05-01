@@ -7,6 +7,7 @@ import { useGetAllAdminEmployeeTasksQuery } from '@/store/services/api'
 import { useParams } from 'next/navigation'
 import { useSelector } from 'react-redux'
 import { MdKeyboardArrowDown } from 'react-icons/md'
+import { useDebounce } from 'use-debounce'
 
 const TasksList = () => {
   const { id } = useParams()
@@ -15,10 +16,8 @@ const TasksList = () => {
   const userRole = useSelector((state: any) => state?.user?.user?.account_type)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [selectedFilter, setSelectedFilter] = useState('All Tasks')
-
-
-
-
+  const [searchText, setSearchText] = useState('');
+  const [debouncedSearchText] = useDebounce(searchText, 300);
 
   const handleSelect = (option: string) => {
     setSelectedFilter(option)
@@ -32,21 +31,30 @@ const TasksList = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+  
+  // Create a mapping between display text and API filter values
+  const filterMap: Record<string, string> = {
+    'All Tasks': '',
+    'Pending Tasks': 'pending',
+    'Active Tasks': 'active',
+    'Completed Tasks': 'completed'
+  };
 
-  const { data, isError, } = useGetAllAdminEmployeeTasksQuery(id)
+  // Updated query hook with both search and filter parameters
+  const { data, isError } = useGetAllAdminEmployeeTasksQuery({
+    id,
+    search: debouncedSearchText,
+    filter: filterMap[selectedFilter] // Use the mapped value here
+  });
+
   const handleUpdate = (taskId: any, updatedDetails: any) => {
     console.log(`Task ${taskId} updated with:`, updatedDetails);
   }
-
-
-
-
 
   return (
     <>
       <div className='flex justify-between items-center mb-4'>
         <p className='text-lg font-semibold'>Task List</p>
-
 
         {(userRole === 'super_admin' || userRole === 'admin') && (
           <div className='flex gap-3 items-center'>
@@ -54,14 +62,14 @@ const TasksList = () => {
               <div className="hidden sm:block">
                 <div className="flex items-center space-x-2">
                   <div className="relative">
-
                     <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#616161]" />
                     <input
-                      className="text-xs border placeholder-[#616161]  bg-white rounded-lg pl-9 pr-2 h-9 w-64 border-[#DDD] font-family font-medium text-[12.5px] text-[#616161] focus:border-gray-400 focus:outline-none"
+                      className="text-xs border placeholder-[#616161] bg-white rounded-lg pl-9 pr-2 h-9 w-64 border-[#DDD] font-family font-medium text-[12.5px] text-[#616161] focus:border-gray-400 focus:outline-none"
                       placeholder="Search"
+                      value={searchText}
+                      onChange={(e) => setSearchText(e.target.value)}
                     />
                   </div>
-
                 </div>
               </div>
             </div>
@@ -77,10 +85,9 @@ const TasksList = () => {
                 <MdKeyboardArrowDown className="text-xl" />
               </button>
 
-              {/* Dropdown Options */}
               {isDropdownOpen && (
                 <div className="absolute right-0 w-48 bg-white border rounded-lg shadow-lg z-10">
-                  {['All Tasks', 'Pending Tasks','Active Tasks', 'Completed Tasks'].map((option) => (
+                  {['All Tasks', 'Pending Tasks', 'Active Tasks', 'Completed Tasks'].map((option) => (
                     <div
                       key={option}
                       onClick={() => handleSelect(option)}
@@ -93,29 +100,19 @@ const TasksList = () => {
               )}
             </div>
 
-
-            <Button variant="primary"
-              size='sm'
-              onClick={handleOpenModal}
-            >
+            <Button variant="primary" size='sm' onClick={handleOpenModal}>
               Add New Task
             </Button>
-
           </div>
         )}
-
-
-
       </div>
 
       {isError ? (
-        <>
-          <div className="flex flex-col items-center justify-center py-8">
-            <div className="text-gray-500 text-lg mb-4">
-              No tasks available
-            </div>
+        <div className="flex flex-col items-center justify-center py-8">
+          <div className="text-gray-500 text-lg mb-4">
+            No tasks available
           </div>
-        </>
+        </div>
       ) : (
         <div>
           {data?.task?.map((task: any) => (
@@ -133,9 +130,7 @@ const TasksList = () => {
             />
           ))}
         </div>
-
       )}
-
 
       <AddTaskModal open={isModalOpen} onClose={handleCloseModal} />
     </>

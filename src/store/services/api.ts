@@ -295,8 +295,8 @@ export const api = createApi({
     }),
 
     getAllAdminEmployeeTasks: builder.query({
-      query: (id) => ({
-        url: `get/inventory/task/${id}`,
+      query: ({id, search, filter}) => ({
+        url: `get/inventory/task/${id}?search=${search}&status=${filter}`,
         method: 'GET',
       }),
       providesTags: ["AllAdminTasks"],
