@@ -33,7 +33,7 @@ const EmployeeCompletionRate = ({ data }: { data: TaskData }) => {
         data?.completed_percentage, 
         data?.active_percentage, 
         data?.pending_percentage,
-        data?.total_task
+        // data?.total_task
     ];
 
     const completionRate = data?.completed_percentage;
@@ -42,8 +42,8 @@ const EmployeeCompletionRate = ({ data }: { data: TaskData }) => {
             type: "donut",
             height: 300,
         },
-        colors: ["#D18428", "#EF9A35", "#FFB359", "#FFF1E0"],
-        labels: ["Completed Tasks", "In-Progress", "Pending", "Total Tasks"],
+        colors: ["#D18428", "#FFB359", "#FFF1E0", ],
+        labels: ["Completed Tasks", "In-Progress", "Pending",],
         dataLabels: {
             enabled: false,
         },

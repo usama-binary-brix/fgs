@@ -8,25 +8,25 @@ export const AdminMatrics = (data?: any) => {
       title: "Total Investors",
       value: data?.data?.total_investors || "0",
       tooltip: "Number of investors in the FGS",
-      icon: <MdInfoOutline />,
-    },
+      icon: <MdInfoOutline className="text-gray-400 text-xl"/>,
+      },
     {
       title: "Total Employees",
       value: data?.data?.total_employees || "0",
       tooltip: "Number of employees in the FGS",
-      icon: <MdInfoOutline />,
+      icon: <MdInfoOutline className="text-gray-400 text-xl"/>,
     },
     {
       title: "Total Investments",
       value: data?.data?.total_investments ? `$${data?.data?.total_investments}` : "$0.00",
       tooltip: "Total amount invested across all projects",
-      icon: <MdInfoOutline />,
+      icon: <MdInfoOutline className="text-gray-400 text-xl"/>,
     },
     {
       title: "Total Projects",
       value: data?.data?.total_projects || "0",
       tooltip: "Number of active projects",
-      icon: <MdInfoOutline />,
+      icon: <MdInfoOutline className="text-gray-400 text-xl"/>,
     },
   ];
 

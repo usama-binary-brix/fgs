@@ -127,6 +127,7 @@ const EditInventoryForm = () => {
         setIsSubmitting(true)
         await editInventory(formData).unwrap();
         toast.success("Inventory updated successfully!");
+        setIsEditing(false)
         // router.push('/dashboard/inventory')
       } catch (error) {
 
@@ -171,16 +172,16 @@ const EditInventoryForm = () => {
         const errorResponse = error as SUbCategoriesErrorResponse;
 
 
-        if (errorResponse?.data?.message) {
-          const message = errorResponse.data.message;
+        // if (errorResponse?.data?.message) {
+        //   const message = errorResponse.data.message;
 
-          if (typeof message === 'string') {
-            toast.error(message);
-          } else if (typeof message === 'object') {
-            const combined = Object.values(message).join(', ');
-            toast.error(combined);
-          }
-        }
+        //   if (typeof message === 'string') {
+        //     toast.error(message);
+        //   } else if (typeof message === 'object') {
+        //     const combined = Object.values(message).join(', ');
+        //     toast.error(combined);
+        //   }
+        // }
       }
     }
   };
@@ -426,7 +427,7 @@ const EditInventoryForm = () => {
                 </select>
               </div>
               <div>
-                <Label className="">Subcategory <span className="text-red-600">*</span></Label>
+                <Label className="">Subcategory</Label>
                 <select
                   name="subcategory_id"
                   value={formik.values.subcategory_id}

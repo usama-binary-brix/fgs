@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks", "EmployeeInventory", "AllEmployeeTasks", "AllShipments", "InventoryCost", "AllShipmentOpportunities", "AllShipmentQuotes", "EmployeeAdminDashboard"],
+  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks", "EmployeeInventory", "AllEmployeeTasks", "AllShipments", "InventoryCost", "AllShipmentOpportunities", "AllShipmentQuotes", "EmployeeAdminDashboard","BrokerDashboard","MyShipments", "InvestorDashboard"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -492,6 +492,8 @@ export const api = createApi({
       // providesTags: ["AllShipmentOpportunities"],
 
     }),
+   
+   
     getEmployeeDashboard: builder.query({
       query: () => ({
         url: `employee/dashboard`,
@@ -501,8 +503,31 @@ export const api = createApi({
 
     }),
 
+    getBrokerDashboard: builder.query({
+      query: () => ({
+        url: `shipment/dashboard`,
+        method: 'GET',
+      }),
+      providesTags: ["BrokerDashboard"],
 
-   
+    }),
+
+    getAllMyShipments: builder.query({
+      query: ({ page = 1, perPage = 10, search }) => ({
+        url: `shipment/qoute?page=${page}&per_page=${perPage}&search=${search}`,
+        method: 'GET',
+      }),
+      providesTags: ["BrokerDashboard", "MyShipments"],
+    }),
+
+    getInvestorDashboard: builder.query({
+      query: () => ({
+        url: `investor/dashboard`,
+        method: 'GET',
+      }),
+      providesTags: ["InvestorDashboard"],
+
+    }),
 
 
 
@@ -566,5 +591,8 @@ export const { useLoginMutation,
   useGetBrokerShipmentByIdQuery,
   useGetAdminDashboardStatesQuery,
   useGetEmployeeDashboardQuery,
+  useGetBrokerDashboardQuery,
+useGetAllMyShipmentsQuery,
+useGetInvestorDashboardQuery,
 
 } = api;

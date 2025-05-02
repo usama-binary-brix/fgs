@@ -40,7 +40,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   InventoryId: any;
-  listingNumber?:any
+  listingNumber?: any
 }
 
 const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId, listingNumber }) => {
@@ -75,7 +75,7 @@ const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId, lis
       }
 
 
-    }finally {
+    } finally {
       setLoadingStatus((prev) => ({ ...prev, [investmentId]: false }));
     }
   };
@@ -120,44 +120,44 @@ const InvestorRequestModal: React.FC<Props> = ({ open, onClose, InventoryId, lis
               </TableRow>
             </TableHeader>
             <TableBody className="divide-y divide-gray-100">
-  {filteredInvestments && filteredInvestments.length > 0 ? (
-    filteredInvestments.map((lead: any, index: number) => (
-      <TableRow className="!border-t-0 !border-b-0" key={index}>
-        <TableCell className="!text-[13px] !text-[#616161] !font-medium !font-family !border-b-0">
-          {lead.user.first_name} {lead.user.last_name}
-        </TableCell>
-        <TableCell className="!text-[13px] !text-[#616161] !font-medium !font-family !border-b-0">
-          {lead.user.email}
-        </TableCell>
-        <TableCell className="!text-[13px] !text-[#616161] !font-medium !font-family !border-b-0">
-          $ {lead.investment_amount}
-        </TableCell>
-        <TableCell className="px-5 py-4 text-[13px] !border-b-0">
-          {lead.status === 'pending' ? (
-            <div className="flex items-center gap-3">
+              {filteredInvestments && filteredInvestments.length > 0 ? (
+                filteredInvestments.map((lead: any, index: number) => (
+                  <TableRow className="!border-t-0 !border-b-0" key={index}>
+                    <TableCell className="!text-[13px] !text-[#616161] !font-medium !font-family !border-b-0">
+                      {lead.user.first_name} {lead.user.last_name}
+                    </TableCell>
+                    <TableCell className="!text-[13px] !text-[#616161] !font-medium !font-family !border-b-0">
+                      {lead.user.email}
+                    </TableCell>
+                    <TableCell className="!text-[13px] !text-[#616161] !font-medium !font-family !border-b-0">
+                      $ {lead.investment_amount}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-[13px] !border-b-0">
+                      {lead.status === 'pending' ? (
+                        <div className="flex items-center gap-3">
 
 
-<Button variant="outlined"
-size='sm'
-          disabled={loadingStatus[lead.id]}
+                          <Button variant="outlined"
+                            size='sm'
+                            disabled={loadingStatus[lead.id]}
 
-            onClick={() => !loadingStatus[lead.id] && handleStatusUpdate(lead.id, 'rejected')}
-            >
-           Reject
-          </Button>
-          <Button variant="primary"
-size='sm'
+                            onClick={() => !loadingStatus[lead.id] && handleStatusUpdate(lead.id, 'rejected')}
+                          >
+                            Reject
+                          </Button>
+                          <Button variant="primary"
+                            size='sm'
 
-          disabled={loadingStatus[lead.id]}
-                onClick={() => !loadingStatus[lead.id] && handleStatusUpdate(lead.id, 'approved')}
-                >
-           Approve
-          </Button>
-           
-
+                            disabled={loadingStatus[lead.id]}
+                            onClick={() => !loadingStatus[lead.id] && handleStatusUpdate(lead.id, 'approved')}
+                          >
+                            Approve
+                          </Button>
 
 
-              {/* <span
+
+
+                          {/* <span
                 className={`border border-[#D1842880] rounded p-1 bg-[#D18428] ${
                   loadingStatus[lead.id] ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                 }`}
@@ -168,25 +168,25 @@ size='sm'
               </span> */}
 
 
-            </div>
-          ) : (
-            <span className={`px-3 items-center py-2 rounded text-white ${lead.status === 'approved' ? 'bg-green-500' : 'bg-red-500'}`}>
-              {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
-            </span>
-          )}
-        </TableCell>
-      </TableRow>
-    ))
-  ) : (
-    <TableRow>
-      <TableCell colSpan={4} className="text-center py-6 text-[#999] text-[14px] font-medium">
-<p className='flex items-center justify-center'>
-No Record Found
-</p>
-      </TableCell>
-    </TableRow>
-  )}
-</TableBody>
+                        </div>
+                      ) : (
+                        <span className={`px-3 items-center py-2 rounded text-white ${lead.status === 'approved' ? 'bg-green-500' : 'bg-red-500'}`}>
+                          {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
+                        </span>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center py-6 text-[#999] text-[14px] font-medium">
+                    <p className='flex items-center justify-center'>
+                      No Record Found
+                    </p>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
 
           </Table>
         </div>

@@ -244,7 +244,7 @@ const MyInvestmentTable = () => {
                         <div className='px-6 border-t'>
                             <Pagination
                                 currentPage={currentPage}
-                                totalPages={data?.totalPages || 1}
+                                totalPages={data?.investments?.last_page || 1}
                                 onPageChange={handlePageChange}
                                 perPage={perPage}
                                 onPerPageChange={handlePerPageChange}

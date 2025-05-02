@@ -10,6 +10,7 @@ import { useGetAdminDashboardStatesQuery } from '@/store/services/api'
 import { AdminMatrics } from './DashboardComponents/AdminMetrics'
 import TopInvestorsChart from './DashboardComponents/TopInvestorsChart'
 import AllProjectsStatitics from './DashboardComponents/AllProjectsStatitics'
+import ProjectStages from './DashboardComponents/ProjectStages'
 
 const AdminDashbOard = () => {
     const { data, error, isLoading, refetch } = useGetAdminDashboardStatesQuery('')
@@ -26,14 +27,15 @@ const AdminDashbOard = () => {
             <div className="grid grid-cols-12 gap-6">
                 <div className="col-span-12 xl:col-span-8 space-y-6">
                     <AdminMatrics data={data} />
-                    <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <AllProjectsStatitics data={data} />
-                        {/* <MonthlySalesChart data={data}/> */}
+                    <MonthlySalesChart data={data}/>
+
                     </div>
                 </div>
                 <div className="col-span-12 xl:col-span-4 space-y-6">
                     <TopInvestorsChart data={data} />
-                    <MonthlySalesChart data={data}/>
+                    <ProjectStages/>
 
                     {/* <MonthlySalesChart /> */}
                     {/* <DemographicCard /> */}

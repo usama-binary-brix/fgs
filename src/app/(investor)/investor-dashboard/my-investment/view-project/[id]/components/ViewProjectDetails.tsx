@@ -76,7 +76,7 @@ const ViewProjectDetails = () => {
             <div className=" mx-auto">
         <div className="grid grid-cols-3 gap-4">
           {/* Project Name */}
-          <div>
+          {/* <div>
             <Label className="">Project Name</Label>
             <Input
               type="text"
@@ -84,7 +84,7 @@ const ViewProjectDetails = () => {
 
               className="w-full bg-gray-100 text-[#616161] border border-gray-300 rounded-md p-2 cursor-not-allowed"
             />
-          </div>
+          </div> */}
 
           {/* Purchase Date */}
           <div>
@@ -176,14 +176,14 @@ const ViewProjectDetails = () => {
         </div>
 
         {/* Project Description */}
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <Label className="">Project Description</Label>
           <TextArea
             value={formik.values.project_description}
 
             className="w-full h-24 bg-gray-100 text-[#616161] border border-gray-300 rounded-md p-2 cursor-not-allowed resize-none"
           />
-        </div>
+        </div> */}
       </div>
         </>
       )} 

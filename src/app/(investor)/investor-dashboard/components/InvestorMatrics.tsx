@@ -1,43 +1,32 @@
 "use client";
-import { useGetBrokerDashboardQuery } from "@/store/services/api";
 import React from "react";
 import { MdInfoOutline } from "react-icons/md";
 
-export const BrokerMetrics = () => {
-
-      const { data, isLoading, error } = useGetBrokerDashboardQuery("");
-
-
+export const InvestorMetrics = (data:any) => {
   const metricsData = [
     {
-      title: "Total Quotes",
-      value: data?.total_quote || '0',
+      title: "No. of Investments",
+      value: data?.data?.investment_count || 0,
+      icon: <MdInfoOutline />,
+    },
+   
+    {
+      title: "Total Profits",
+      value: data?.data?.Profit !== undefined && data?.data?.Profit !== null 
+        ? `${data.data.Profit}%` 
+        : "0%",
       icon: <MdInfoOutline />,
     },
     {
-      title: "In-Progress Shipments",
-      value: data?.inprogress_quote || '0',
+      title: "Projects In-Progress",
+      value: data?.data?.inprogress_project_count,
       icon: <MdInfoOutline />,
     },
-    {
-      title: "Completed Shipments",
-      value: data?.acceptd_quote || '0',
-      icon: <MdInfoOutline />,
-    },
-    // {
-    //   title: "Pending Quotes",
-    //   value: "60",
-    //   icon: <MdInfoOutline />,
-    // },
-    {
-      title: "Total Earnings $",
-      value: `$${data?.total_earning || '0.00'}`,
-      icon: <MdInfoOutline />,
-    },
+  
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-4 md:gap-3">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-3">
       {metricsData.map((item, index) => (
         <div
           key={index}
@@ -49,10 +38,9 @@ export const BrokerMetrics = () => {
             </span>
             {item.icon}
           </div>
-
           <div className="flex items-end justify-between mt-5">
             <div>
-              <h4 className="mt-2 font-bold text-gray-800 text-[40px] dark:text-white/90">
+              <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
                 {item.value}
               </h4>
             </div>

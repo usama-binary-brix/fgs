@@ -221,12 +221,12 @@ const InvestmentOpportunityTable = () => {
 
                                                     {openDropdown === lead.id && (
                                                         <div className="absolute right-9 top-[-4px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
-                                                            <DropdownItem
+                                                            {/* <DropdownItem
                                                                 onItemClick={closeDropdown}
                                                                 className="flex w-full text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9] text-left rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
                                                             >
                                                                 View Details
-                                                            </DropdownItem>
+                                                            </DropdownItem> */}
 
                                                             {!lead.complete_investment && (
                                                                 <DropdownItem

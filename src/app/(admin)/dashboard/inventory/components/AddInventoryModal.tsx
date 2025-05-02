@@ -107,16 +107,16 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                 const errorResponse = error as SUbCategoriesErrorResponse;
 
 
-                if (errorResponse?.data?.message) {
-                    const message = errorResponse.data.message;
+                // if (errorResponse?.data?.message) {
+                //     const message = errorResponse.data.message;
 
-                    if (typeof message === 'string') {
-                        toast.error(message);
-                    } else if (typeof message === 'object') {
-                        const combined = Object.values(message).join(', ');
-                        toast.error(combined);
-                    }
-                }
+                //     if (typeof message === 'string') {
+                //         toast.error(message);
+                //     } else if (typeof message === 'object') {
+                //         const combined = Object.values(message).join(', ');
+                //         toast.error(combined);
+                //     }
+                // }
             }
         } else {
             setSubCategories([]);
@@ -269,7 +269,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                         </Grid>
 
                         <Grid item xs={12} md={4}>
-                            <Label> Sub Category <span className="text-error-500">*</span></Label>
+                            <Label> Sub Category</Label>
                             <Select
                                 name="subcategory_id"
                                 value={formik.values.subcategory_id}
@@ -281,7 +281,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                 }
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                required
+                        
                             />
 
                         </Grid>
