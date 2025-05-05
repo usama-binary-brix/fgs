@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { FaEdit } from "react-icons/fa";
 import { useFormik } from "formik";
 import {
@@ -22,6 +22,7 @@ import Input from "@/components/form/input/InputField";
 import Button from "@/components/ui/button/Button";
 import * as Yup from 'yup';
 import CustomizedTimeline from "./CustomizedTimeline";
+import { FiLock } from "react-icons/fi";
 
 type ErrorResponse = {
   data: {
@@ -39,11 +40,40 @@ type SUbCategoriesErrorResponse = {
 const EditInventoryForm = () => {
   const { id } = useParams();
   const router = useRouter()
+  const searchParams = useSearchParams();
   const { data: inventoryData, error, isLoading, refetch } = useGetInventoryByIdQuery(id);
   const { data: categories, isLoading: loadingCategories } = useGetAllCategoriesQuery('');
   const [fetchSubCategories] = useGetSubCategoriesMutation();
   const [editInventory] = useEditInventoryMutation()
+  const tabFromUrl = searchParams.get('tab'); // This will be "reconditioning" if passed
+
   const [activeTab, setActiveTab] = useState("details");
+  const investmentAmount = inventoryData?.profit_data?.total_investment
+  const sellingPrice = inventoryData?.inventory?.selling_price
+  const profitAmount = inventoryData?.profit_data?.profit
+  const profitPercentage = inventoryData?.profit_data?.profit_percentage
+
+
+  console.log('first', inventoryData)
+  // Update tab based on URL
+  useEffect(() => {
+    if (tabFromUrl) {
+      setActiveTab(tabFromUrl);
+    }
+  }, [tabFromUrl]);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  
+    // Remove 'tab' param from URL
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    current.delete('tab');
+  
+    const newUrl = `${window.location.pathname}?${current.toString()}`;
+    router.replace(newUrl, { scroll: false });
+  };
+
+
   const { data: timelineData, error: timelineError, isLoading: allTimelineLoading, refetch: timelineRefetch } = useGetAllTimelineQuery(id);
 
 
@@ -204,6 +234,11 @@ const EditInventoryForm = () => {
   useEffect(() => {
     if (inventoryData?.inventory) {
       const inv = inventoryData.inventory;
+      const investmentAmount = 1000
+      const sellingPrice = 100
+      const profitAmount = 10
+      const profitPercentage = 5
+
       formik.setValues({
         inventory_id: id,
         category_id: inv.category_id || "",
@@ -290,21 +325,21 @@ const EditInventoryForm = () => {
               <button
                 className={`border border-[#D184281A] text-[13px] font-family py-2 px-4 font-semibold rounded transition-all duration-300
                 ${activeTab === "details" ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
-                onClick={() => setActiveTab("details")}
+                onClick={() => handleTabChange("details")}
               >
                 Details
               </button>
               <button
                 className={`border border-[#D184281A] text-[13px] font-family py-2 px-4 font-semibold rounded transition-all duration-300
                 ${activeTab === "shipment" ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
-                onClick={() => setActiveTab("shipment")}
+                onClick={() => handleTabChange("shipment")}
               >
                 Shipments
               </button>
               <button
                 className={`border border-[#D184281A] text-[13px] font-family py-2 px-4 font-semibold rounded transition-all duration-300
                 ${activeTab === "reconditioning" ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
-                onClick={() => setActiveTab("reconditioning")}
+              onClick={() => handleTabChange("reconditioning")}
               >
                 Reconditioning
               </button>
@@ -314,12 +349,7 @@ const EditInventoryForm = () => {
             <QRCodeCanvas value="https://yourwebsite.com" size={76} />
             <h1 className="text-[#818181] text-[9.5px] font-normal font-family text-center mt-1">QR-Code</h1>
           </div>
-          {/* <button
-          className="bg-primary text-white px-4 py-2 rounded-md flex items-center gap-2"
-          onClick={() => setIsEditing(!isEditing)}
-        >
-          <FaEdit /> {isEditing ? "Cancel" : "Edit"}
-        </button> */}
+
         </div>
       </div>
 
@@ -490,6 +520,55 @@ const EditInventoryForm = () => {
                 )}
               </div>
             </div>
+            {sellingPrice !== null && (<>
+
+              <h1 className="text-[#414141] text-[18px] font-family font-medium mt-6 flex items-center gap-1">Final Cost & Profit <FiLock /></h1>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4  gap-4">
+                <div>
+                  <Label>Investment Amount</Label>
+                  <Input
+                    type="text"
+                    value={investmentAmount}  // Replace with your actual value source
+                    // disabled={true}
+                    className="bg-gray-100"  // Optional: Add a different background to indicate it's read-only
+                  />
+                </div>
+
+                <div>
+                  <Label>Selling Price</Label>
+                  <Input
+                    type="text"
+                    value={sellingPrice}  // Replace with your actual value source
+                    // disabled={true}
+                    className="bg-gray-100"
+                  />
+                </div>
+
+                <div>
+                  <Label>Profit Amount (Auto-calculated)</Label>
+                  <Input
+                    type="text"
+                    value={profitAmount}  // Replace with your calculated value
+                    // disabled={true}
+                    className="bg-gray-100"
+                  />
+                </div>
+
+                <div>
+                  <Label>Profit Percentage (Auto-calculated)</Label>
+                  <Input
+                    type="text"
+                    value={`${profitPercentage}%`}  // Replace with your calculated value
+                    // disabled={true}
+                    className="bg-gray-100"
+                  />
+                </div>
+              </div>
+            </>)}
+
+
+
             <div className="mt-6">
               <h1 className="font-semibold">Attached Files</h1>
               <div className="flex mt-2 gap-5 items-center flex-wrap">
@@ -583,12 +662,7 @@ const EditInventoryForm = () => {
             </div>
 
           </form>
-          {/* <div>
-            <h1 className="text-[#000] text-[17px] font-semibold font-family mt-10 mb-5">Inventory Stages</h1>
-            <div className="flex justify-center">
-    <CustomizedTimeline steps={timelineData?.timeLine}/>
-            </div>
-          </div> */}
+
         </>
 
 

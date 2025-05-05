@@ -35,7 +35,7 @@ const AdminDashbOard = () => {
                 </div>
                 <div className="col-span-12 xl:col-span-4 space-y-6">
                     <TopInvestorsChart data={data} />
-                    <ProjectStages/>
+                    <ProjectStages data={data}/>
 
                     {/* <MonthlySalesChart /> */}
                     {/* <DemographicCard /> */}

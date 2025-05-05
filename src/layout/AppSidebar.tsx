@@ -200,13 +200,13 @@ const navItems: NavItem[] = [
     subItems: [{ name: "All Inventory", path: "/dashboard/inventory" }],
     roles: ["admin", 'super_admin'],
   },
-  {
-    icon: <GridIcon />,
-    name: "Notifications",
-    path: "/dashboard/admin-notifications",
-    roles: ["admin", 'super_admin'],
-    count: 5
-  },
+  // {
+  //   icon: <GridIcon />,
+  //   name: "Notifications",
+  //   path: "/dashboard/admin-notifications",
+  //   roles: ["admin", 'super_admin'],
+  //   count: 5
+  // },
   { icon: <GridIcon />, name: "Dashboard", path: "/investor-dashboard", roles: ["investor"] },
   { icon: <GridIcon />, name: "Investment Opportunities", path: "/investor-dashboard/investment-opportunities", roles: ["investor"] },
   { icon: <GridIcon />, name: "My Investment", path: "/investor-dashboard/my-investment", roles: ["investor"] },
