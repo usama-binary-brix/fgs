@@ -48,7 +48,7 @@ export default function SignInForm() {
         } else if (res.user.account_type === "admin" || res.user.account_type === "super_admin") {
           router.push("/dashboard");
         } else if (res.user.account_type === "salesperson") {
-          router.push("/sales-dashboard");
+          router.push("/sales-dashboard/leads");
         } else if (res.user.account_type === "employee") {
           router.push("/employee-dashboard");
         } else if (res.user.account_type === "broker") {

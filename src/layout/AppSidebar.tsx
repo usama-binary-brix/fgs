@@ -210,7 +210,9 @@ const navItems: NavItem[] = [
   { icon: <GridIcon />, name: "Dashboard", path: "/investor-dashboard", roles: ["investor"] },
   { icon: <GridIcon />, name: "Investment Opportunities", path: "/investor-dashboard/investment-opportunities", roles: ["investor"] },
   { icon: <GridIcon />, name: "My Investment", path: "/investor-dashboard/my-investment", roles: ["investor"] },
-  { icon: <GridIcon />, name: "Dashboard", path: "/sales-dashboard", roles: ["salesperson"] },
+
+
+  // { icon: <GridIcon />, name: "Dashboard", path: "/sales-dashboard", roles: ["salesperson"] },
   { icon: <GridIcon />, name: "All Leads", path: "/sales-dashboard/leads", roles: ["salesperson"] },
   { icon: <GridIcon />, name: "Dashboard", path: "/broker-dashboard", roles: ["broker"] },
   {

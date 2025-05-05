@@ -69,7 +69,7 @@ const BrokerTable = () => {
             <div className='bg-[#fff]  p-3 rounded-sm'>
                 <div className="xl:flex lg:flex md:flex  justify-between items-center mb-4">
                     <div className="text-center mb-3 md:mb-0 lg:mb-0 xl:mb-0">
-                        <h1 className='text-[#000] text-[16px] font-medium font-family text-center'>Accepted Shipment Quotes this Week</h1>
+                        <h1 className='text-[#000] text-[16px] font-medium font-family text-center'>Accepted Shipment Quotes</h1>
                     </div>
                     <div className="flex items-center gap-3">
 
