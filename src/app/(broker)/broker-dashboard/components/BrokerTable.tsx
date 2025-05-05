@@ -65,6 +65,8 @@ const BrokerTable = () => {
                 </div>
 
 
+
+
             </div>
             <div className='bg-[#fff]  p-3 rounded-sm'>
                 <div className="xl:flex lg:flex md:flex  justify-between items-center mb-4">
