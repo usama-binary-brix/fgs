@@ -1,4 +1,5 @@
 "use client";
+import { ErrorResponse } from '@/app/(admin)/dashboard/accounts/components/AccountsModal';
 import Input from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
 import { PageTitle } from '@/components/PageTitle';
@@ -10,7 +11,6 @@ import React, { useRef, useState } from 'react'
 import { FiCamera, FiX, FiCheck } from "react-icons/fi";
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { ErrorResponse } from '../accounts/components/AccountsModal';
 
 const Page = () => {
     const [selected, setSelected] = useState(null);
