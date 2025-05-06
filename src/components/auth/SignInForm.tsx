@@ -44,8 +44,9 @@ export default function SignInForm() {
       try {
         const res = await login(values).unwrap();
         dispatch(setUser({ user: res.user, token: res.token }));
-        Cookies.set('accessToken', res.token, { path: '/', expires: 7 }); // expires in 7 days
-        Cookies.set('role', res.user.account_type, { path: '/', expires: 7 });
+     
+        Cookies.set('accessToken', res.token, { path: '/', expires: 1 }); 
+        Cookies.set('role', res.user.account_type, { path: '/', expires: 1 });
     
         // const defaultRoute = RoleBasedRoutes[res.user.account_type as keyof typeof RoleBasedRoutes]?.[0] || '/';
         // router.push(defaultRoute);
