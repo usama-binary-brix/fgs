@@ -4,7 +4,6 @@ import { TfiArrowTopRight } from 'react-icons/tfi';
 
 const ProjectStages = (data: any) => {
 
-  console.log(data?.data?.inventory_stages, "stages data")
 const router = useRouter()
 
 const handleSendToInventory = (id: any) => {

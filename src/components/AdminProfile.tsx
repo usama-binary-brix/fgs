@@ -4,20 +4,23 @@ import { FiSettings } from "react-icons/fi";
 import { useLogoutMutation } from "@/store/services/api";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { clearUser } from "@/store/services/userSlice";
 
 const AdminProfile = () => {
   const [logout, { isLoading }] = useLogoutMutation();
   const router = useRouter()
   const user = useSelector((state: any) => state?.user?.user)
   const [loading, setLoading] = useState(false)
+const dispatch = useDispatch()
 
   const handleLogout = async () => {
     setLoading(true)
     try {
 
       await logout('').unwrap();
+      dispatch(clearUser());
       router.push('/signin');
       setLoading(false)
 

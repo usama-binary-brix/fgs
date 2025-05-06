@@ -87,14 +87,7 @@ export const api = createApi({
         url: 'user/logout',
         method: 'POST',
       }),
-      // async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-      //   try {
-      //     await queryFulfilled;
-      //     localStorage.removeItem('token');
-      //   } catch (err) {
-      //     console.error('Logout failed: ', err);
-      //   }
-      // },
+ 
     }),
 
 
@@ -594,5 +587,5 @@ export const { useLoginMutation,
   useGetBrokerDashboardQuery,
 useGetAllMyShipmentsQuery,
 useGetInvestorDashboardQuery,
-
+ 
 } = api;

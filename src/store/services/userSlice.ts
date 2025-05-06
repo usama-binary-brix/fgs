@@ -39,13 +39,20 @@ const userSlice = createSlice({
       localStorage.setItem("user", JSON.stringify(action.payload.user));
       localStorage.setItem("token", action.payload.token);
     },
-    clearUser: (state) => {
-      state.user = null;
-      state.token = null;
+      clearUser: (state) => {
+        state.user = null;
+        state.token = null;
 
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
-    },
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        const expireCookie = (name:any) => {
+          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        };
+      
+        expireCookie("accessToken");
+        expireCookie("role");
+
+      },
   },
 });
 

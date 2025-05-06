@@ -2,7 +2,7 @@ export const PublicRoutes = [
     '/sign-in',
     '/forget-password',
     '/reset-password',
-    '/unauthorized'
+    '/'
   ];
   
   export const RoleBasedRoutes = {
@@ -40,6 +40,7 @@ export const PublicRoutes = [
   };
   
   export const isRouteAllowed = (path: string, role: string) => {
+    console.log('first')
     const allowedRoutes = RoleBasedRoutes[role as keyof typeof RoleBasedRoutes] || [];
     return allowedRoutes.some(route => path === route || path.startsWith(route));
   };

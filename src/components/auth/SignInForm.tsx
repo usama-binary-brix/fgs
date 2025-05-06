@@ -11,6 +11,8 @@ import { useLoginMutation } from "@/store/services/api";
 import { setUser } from "@/store/services/userSlice";
 import Link from "next/link";
 import Select from "../form/Select";
+import Cookies from 'js-cookie';
+import { RoleBasedRoutes } from "@/lib/routes";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -42,6 +44,11 @@ export default function SignInForm() {
       try {
         const res = await login(values).unwrap();
         dispatch(setUser({ user: res.user, token: res.token }));
+        Cookies.set('accessToken', res.token, { path: '/', expires: 7 }); // expires in 7 days
+        Cookies.set('role', res.user.account_type, { path: '/', expires: 7 });
+    
+        // const defaultRoute = RoleBasedRoutes[res.user.account_type as keyof typeof RoleBasedRoutes]?.[0] || '/';
+        // router.push(defaultRoute);
 
         if (res.user.account_type === "investor") {
           router.push("/investor-dashboard");
