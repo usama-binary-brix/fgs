@@ -23,7 +23,7 @@ const AdminDashbOard = () => {
 
         <>
             <PageTitle title="Admin Dashboard" />
-            <h1 className="text-lg font-semibold mb-4">Overview</h1>
+            <h1 className="text-lg font-semibold mb-2">Overview</h1>
             <div className="grid grid-cols-12 gap-6">
                 <div className="col-span-12 xl:col-span-8 space-y-6">
                     <AdminMatrics data={data} />
@@ -34,15 +34,15 @@ const AdminDashbOard = () => {
                     </div>
                 </div>
                 <div className="col-span-12 xl:col-span-4 space-y-6">
-                    <TopInvestorsChart data={data} />
                     <ProjectStages data={data}/>
+                    <TopInvestorsChart data={data} />
 
                     {/* <MonthlySalesChart /> */}
                     {/* <DemographicCard /> */}
                 </div>
             </div>
             <div className='flex items-center justify-center mt-4'>
-                <p className='text-xs text-[#616161]'>Copyright © 2025 - FirstGroupServices</p>
+                <p className='text-xs text-[#616161]'>Copyright © 2025 - First Group Services</p>
 
             </div>
 

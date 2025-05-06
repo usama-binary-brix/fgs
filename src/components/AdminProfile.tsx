@@ -33,8 +33,19 @@ const dispatch = useDispatch()
   };
 
   const handleNavigate = () => {
-    router.push("/dashboard/settings")
-  }
+    if (user?.account_type === 'super_admin' || user?.account_type === 'admin') {
+      router.push("/dashboard/settings");
+    } else if (user?.account_type === 'salesperson') {
+      router.push("/sales-dashboard/settings");
+    }
+    else if (user?.account_type === 'broker') {
+      router.push("/broker-dashboard/settings");
+    }  else if (user?.account_type === 'employee') {
+      router.push("/employee-dashboard/settings");
+    } else if (user?.account_type === 'investor') {
+      router.push("/investor-dashboard/settings");
+    }
+  };
 
   return (
     <div className="w-[239.5px] bg-[#222222] text-white p-4   pt-4 border-t border-[#ffffff1a] shadow-lg">

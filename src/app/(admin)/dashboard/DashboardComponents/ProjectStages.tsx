@@ -35,8 +35,11 @@ const handleSendToInventory = (id: any) => {
   // ];
 
   return (
-    <div className="font-sans max-w-[600px] h-[13rem] overflow-auto mx-auto text-sm bg-white p-2 rounded-lg">
-      <h1 className="text-lg mb-5 text-gray-800 font-semibold">Projects by Stages</h1>
+    <>
+    <div className='bg-white max-w-[600px] h-[16rem] overflow-auto'>
+
+      <h1 className="text-lg text-gray-800 font-semibold sticky top-0 pt-1 pl-2 bg-white">Projects by Stages</h1>
+    <div className="font-sans  mx-auto text-sm p-2 rounded-lg">
 
       {data?.data?.inventory_stages?.map((project: any, index: any) => (
         <div
@@ -84,6 +87,9 @@ const handleSendToInventory = (id: any) => {
         </div>
       ))}
     </div>
+    </div>
+
+    </>
   );
 };
 

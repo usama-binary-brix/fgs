@@ -522,6 +522,15 @@ export const api = createApi({
 
     }),
 
+    updateUserInfo: builder.mutation({
+      query: (statusData) => ({
+        url: 'update/setting',
+        method: 'POST',
+        body: statusData,
+      }),
+      // invalidatesTags: ["AllShipmentQuotes"],
+
+    }),
 
 
   }),
@@ -587,5 +596,7 @@ export const { useLoginMutation,
   useGetBrokerDashboardQuery,
 useGetAllMyShipmentsQuery,
 useGetInvestorDashboardQuery,
+useUpdateUserInfoMutation,
+
  
 } = api;

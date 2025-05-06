@@ -15,6 +15,17 @@ interface ApiResponse {
   };
 }
 
+
+const getCurrentMonthName = () => {
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  return months[new Date().getMonth()];
+};
+
+
+
 export default function MonthlySalesChart(data: any) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -150,6 +161,11 @@ export default function MonthlySalesChart(data: any) {
       console.error(err);
     }
   }, [data]);
+  const currentMonthName = getCurrentMonthName();
+  const currentMonthValue = data?.data?.monthly_price_change?.[currentMonthName] || "0%";
+
+
+
 
   if (isLoading) {
     return (
@@ -186,6 +202,15 @@ export default function MonthlySalesChart(data: any) {
         <h4 className="mt-2 font-bold text-gray-800 text-[34px] dark:text-white/90">
           $ {chartData?.sellingPrice || "0"}
         </h4>
+      <p className={`text-sm font-medium ${
+          currentMonthValue.startsWith('-') 
+            ? 'text-red-500' 
+            : currentMonthValue !== "0%" 
+              ? 'text-green-500' 
+              : 'text-gray-500'
+        }`}>
+          {currentMonthValue}
+        </p>
       </div>
 
       <style jsx global>{`

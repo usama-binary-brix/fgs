@@ -59,7 +59,7 @@ const TopInvestorsChart = (data: any) => {
       series: investorsData.map((investor) => investor.amount),
       colors: investorsData.map((investor) => investor.color),
       chart: {
-        height: 420,
+        height: 320,
         width: "100%",
         type: "donut",
         animations: {
@@ -203,7 +203,7 @@ const TopInvestorsChart = (data: any) => {
       </div>
 
       {isLoading ? (
-        <div className="pt-6 flex items-center justify-center h-96">
+        <div className="pt-6 flex items-center justify-center h-60">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
         </div>
       ) : investorsData.length > 0 ? (
@@ -212,7 +212,7 @@ const TopInvestorsChart = (data: any) => {
             options={getChartOptions()}
             series={investorsData.map((investor) => investor.amount)}
             type="donut"
-            height={250}
+            height={200}
           />
         </div>
       ) : (

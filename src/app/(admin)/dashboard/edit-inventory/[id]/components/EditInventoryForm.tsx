@@ -54,7 +54,6 @@ const EditInventoryForm = () => {
   const profitPercentage = inventoryData?.profit_data?.profit_percentage
 
 
-  console.log('first', inventoryData)
   // Update tab based on URL
   useEffect(() => {
     if (tabFromUrl) {
