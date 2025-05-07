@@ -70,16 +70,16 @@ const AppSidebar: React.FC = () => {
   const pathname = usePathname();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
-  // const filteredNavItems = navItems.filter((item) => item.roles?.includes(userRole));
+  const filteredNavItems = navItems.filter((item) => item.roles?.includes(userRole));
 
-  const filteredNavItems = navItems.filter((item) => {
-    if (!userRole) return false;
-    if (item.path && isRouteAllowed(item.path, userRole)) return true;
-    if (item.subItems) {
-      return item.subItems.some(sub => isRouteAllowed(sub.path, userRole));
-    }
-    return false;
-  });
+  // const filteredNavItems = navItems.filter((item) => {
+  //   if (!userRole) return false;
+  //   if (item.path && isRouteAllowed(item.path, userRole)) return true;
+  //   if (item.subItems) {
+  //     return item.subItems.some(sub => isRouteAllowed(sub.path, userRole));
+  //   }
+  //   return false;
+  // });
 
   
   const handleLinkClick = () => {
