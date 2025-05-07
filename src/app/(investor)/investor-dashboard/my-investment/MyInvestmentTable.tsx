@@ -221,7 +221,7 @@ const MyInvestmentTable = () => {
                                                         <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                                                     </button>
 
-                                                    {openDropdown === lead.inventory_id && (
+                                                    {openDropdown === lead.id && (
                                                         <div className="absolute right-9 top-[-4px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
                                                             <DropdownItem
                                                                 onItemClick={() => handleNavigate(lead.inventory_id)}
