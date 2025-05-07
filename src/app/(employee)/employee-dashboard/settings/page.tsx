@@ -123,7 +123,7 @@ const Page = () => {
                 const response = await updateUserInfo(formData).unwrap();
 
                 toast.success(response.message)
-                dispatch(updateUserData({ user: response.User }));
+                dispatch(updateUserData({ user: response.user }));
                 setInitialValues({
                     ...values,
                     profile_image: null,
