@@ -153,14 +153,15 @@ const AccountsTable = () => {
                   {data?.users?.data?.map((user: any, index: any) => (
                     <TableRow key={index}>
                       <TableCell className="px-5 py-2 text-sm flex items-center gap-3">
-                        {user.image ? (
-                          <Image
-                            width={32}
-                            height={32}
-                            src={user.image}
-                            alt={user.first_name}
-                            className="rounded-full"
-                          />
+                        {user.profile_image ? (
+                         <Image
+                         width={26}
+                         height={6}
+                         src={user.profile_image || '/fallback-avatar.png'}
+                         alt={user.first_name}
+                         className="rounded-full w-6 h-6"
+                       />
+                       
                         ) : (
                           <span>
                             <FaUserCircle className="w-6 h-6 text-gray-500" />
