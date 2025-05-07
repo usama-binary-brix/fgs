@@ -99,11 +99,13 @@ const Page = () => {
                 const formData = new FormData();
 
 
-                if (values.first_name) formData.append('first_name', values.first_name);
-                if (values.last_name) formData.append('last_name', values.last_name);
-                if (values.email) formData.append('email', values.email);
-                if (values.phone_number) formData.append('phone_number', values.phone_number);
-
+             
+             
+                formData.append('first_name', values.first_name || '');
+                formData.append('last_name', values.last_name || '');
+                formData.append('email', values.email || '');
+                formData.append('phone_number', values.phone_number || '');
+        
                 
                 if (isImageRemoved && profileImageFile === null) {
               
