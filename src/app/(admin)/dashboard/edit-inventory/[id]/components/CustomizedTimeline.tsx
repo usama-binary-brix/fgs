@@ -219,7 +219,7 @@ export default function CustomizedTimeline({ steps = [], timelineData }: Customi
   const lastCompletedIndex = steps.map(step => step.status).lastIndexOf("completed");
   const [modalOpen, setModalOpen] = React.useState(false);
   const allPreviousCompleted = steps.length > 0 ? steps.every(step => step.status === "completed") : false;
-  const userRole = useSelector((state:any)=>state.user.user.account_type)
+  const userRole = useSelector((state:any)=>state?.user?.user?.account_type)
   const isAdminUser = userRole === 'super_admin' || userRole === 'admin';
   const isTimelineCompleted = timelineData?.is_completed;
 

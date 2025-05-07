@@ -20,8 +20,9 @@ const dispatch = useDispatch()
     try {
 
       await logout('').unwrap();
-      dispatch(clearUser());
       router.push('/signin');
+      dispatch(clearUser());
+
       setLoading(false)
 
     } catch (error) {
