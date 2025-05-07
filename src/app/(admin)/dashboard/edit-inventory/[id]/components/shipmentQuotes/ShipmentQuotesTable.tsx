@@ -97,9 +97,10 @@ const ShipmentQuotesTable = () => {
                 </div>
             )}
             <div className="overflow-auto rounded-lg">
-                <Table className='table-auto'>
-                    <TableHeader className="border-b bg-[#F7F7F7] text-[#616161] font-family font-medium text-[12.5px] border-gray-100 dark:border-white/[0.05]">
-                        <TableRow>
+            <div className="max-w-full h-[23rem] overflow-x-auto">
+              <Table>
+                <TableHeader className="sticky top-0 z-50 border-b bg-[#F7F7F7] border-gray-100 dark:border-white/[0.05]">
+                  <TableRow>
                             {[
                                 'Company Name', 'Quote Amount', 'Estimated Time of Arrival', 'Contact Information', 'Action'
                             ].map((heading) => (
@@ -114,14 +115,14 @@ const ShipmentQuotesTable = () => {
                             ))}
                         </TableRow>
                     </TableHeader>
-                     {/* ${activeRowId === lead.id ? 'bg-[#FFFAF3]' : ''} */}
+                    {/* ${activeRowId === lead.id ? 'bg-[#FFFAF3]' : ''} */}
 
                     <TableBody className="dark:divide-white/[0.05]">
                         {quotes.map((lead: any) => (
                             <TableRow className={`!border-b-0 
                                 
                                 
-                                `} 
+                                `}
                                 key={lead.id}
                             >
                                 <TableCell className="px-5 py-2 !border-none !text-[#616161] !font-normal !text-[14px] !font-family text-start whitespace-nowrap overflow-hidden">
@@ -148,17 +149,17 @@ const ShipmentQuotesTable = () => {
 
                                         {openDropdown === lead.id && (
                                             <div className="absolute right-0 top-full mt-1 z-[999] w-48 bg-white shadow-md border rounded-sm">
-                                               {lead.status !== 'accept' && (
-  <DropdownItem
-  onItemClick={() => {
-      handleStatusUpdate(lead.id, 'accept');
-  }}
-  className="flex w-full text-left text-[12px] font-family text-[#414141] whitespace-nowrap font-normal rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
->
-  Accept & Confirm Shipment
-</DropdownItem>
-                                               )}
-                                              
+                                                {lead.status !== 'accept' && (
+                                                    <DropdownItem
+                                                        onItemClick={() => {
+                                                            handleStatusUpdate(lead.id, 'accept');
+                                                        }}
+                                                        className="flex w-full text-left text-[12px] font-family text-[#414141] whitespace-nowrap font-normal rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                                                    >
+                                                        Accept & Confirm Shipment
+                                                    </DropdownItem>
+                                                )}
+
                                                 <DropdownItem
                                                     onItemClick={() => {
                                                         handleStatusUpdate(lead.id, 'reject');
@@ -175,6 +176,7 @@ const ShipmentQuotesTable = () => {
                         ))}
                     </TableBody>
                 </Table>
+            </div>
             </div>
             {showPagination && (
                 <div className='px-6 border-t'>
@@ -193,8 +195,8 @@ const ShipmentQuotesTable = () => {
     if (showAccordions) {
         return (
             <div className="space-y-4">
-                <Accordion 
-                sx={{ borderRadius: '0.8rem !important', overflow: 'hidden', boxShadow:'none' }}
+                <Accordion
+                    sx={{ borderRadius: '0.8rem !important', overflow: 'hidden', boxShadow: 'none' }}
                 >
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
@@ -207,8 +209,8 @@ const ShipmentQuotesTable = () => {
                     </AccordionDetails>
                 </Accordion>
 
-                <Accordion 
-                sx={{ borderRadius: '0.8rem !important', overflow: 'hidden', boxShadow:'none' }}
+                <Accordion
+                    sx={{ borderRadius: '0.8rem !important', overflow: 'hidden', boxShadow: 'none' }}
                 >
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}

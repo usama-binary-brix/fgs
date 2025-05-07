@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { IoSearchOutline } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
@@ -37,14 +37,17 @@ const BrokerTable = () => {
         setCurrentPage(1); // Reset to first page on per-page change
     };
 
-    const { data, isLoading, error } = useGetAllMyShipmentsQuery({
+    const { data, isLoading, error, refetch } = useGetAllMyShipmentsQuery({
         page: currentPage,
         perPage: perPage,
         search: debouncedSearchText
     });
 
+useEffect(()=>{
+    refetch()
+},[refetch])
 
-    console.log(data?.shipments, 'data')
+
     return (
         <>
             <div className="flex items-center justify-between mb-3">
