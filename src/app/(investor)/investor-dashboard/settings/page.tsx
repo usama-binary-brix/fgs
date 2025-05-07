@@ -17,6 +17,7 @@ const Page = () => {
     const User = useSelector((state: any) => state.user.user);
     const [updateUserInfo, { isLoading }] = useUpdateUserInfoMutation();
     const [isEdit, setIsEdit] = useState(false);
+    const [isImageRemoved, setIsImageRemoved] = useState(false);
     const [initialValues, setInitialValues] = useState({
         first_name: User?.first_name || '',
         last_name: User?.last_name || '',
@@ -49,6 +50,7 @@ const Page = () => {
     const handleRemoveImage = () => {
         setImage(null);
         setProfileImageFile(null);
+        setIsImageRemoved(true); // Add this line
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
@@ -56,63 +58,61 @@ const Page = () => {
 
     const formik = useFormik({
         initialValues: initialValues,
-        validate: (values) => {
-            const errors: any = {};
+        // validate: (values) => {
+        //     const errors: any = {};
 
-            if (!values.first_name) {
-                errors.first_name = 'First name is required';
-            }
+        //     if (!values.first_name) {
+        //         errors.first_name = 'First name is required';
+        //     }
 
-            if (!values.last_name) {
-                errors.last_name = 'Last name is required';
-            }
+        //     if (!values.last_name) {
+        //         errors.last_name = 'Last name is required';
+        //     }
 
-            if (!values.email) {
-                errors.email = 'Email is required';
-            } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-                errors.email = 'Invalid email address';
-            }
+        //     if (!values.email) {
+        //         errors.email = 'Email is required';
+        //     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+        //         errors.email = 'Invalid email address';
+        //     }
 
-            // Password validation only if any password field is filled
-            if (values.old_password || values.new_password || values.new_password_confirmation) {
-                if (!values.old_password) {
-                    errors.old_password = 'Old password is required';
-                }
+        //     // Password validation only if any password field is filled
+        //     if (values.old_password || values.new_password || values.new_password_confirmation) {
+        //         if (!values.old_password) {
+        //             errors.old_password = 'Old password is required';
+        //         }
 
-                if (!values.new_password) {
-                    errors.new_password = 'New password is required';
-                } else if (values.new_password.length < 8) {
-                    errors.new_password = 'Password must be at least 8 characters';
-                }
+        //         if (!values.new_password) {
+        //             errors.new_password = 'New password is required';
+        //         } else if (values.new_password.length < 8) {
+        //             errors.new_password = 'Password must be at least 8 characters';
+        //         }
 
-                if (values.new_password !== values.new_password_confirmation) {
-                    errors.new_password_confirmation = 'Passwords do not match';
-                }
-            }
+        //         if (values.new_password !== values.new_password_confirmation) {
+        //             errors.new_password_confirmation = 'Passwords do not match';
+        //         }
+        //     }
 
-            return errors;
-        },
+        //     return errors;
+        // },
         onSubmit: async (values, { setSubmitting }) => {
             try {
                 const formData = new FormData();
 
 
-                formData.append('first_name', values.first_name);
-                formData.append('last_name', values.last_name);
-                formData.append('email', values.email);
-                formData.append('phone_number', values.phone_number);
+                if (values.first_name) formData.append('first_name', values.first_name);
+                if (values.last_name) formData.append('last_name', values.last_name);
+                if (values.email) formData.append('email', values.email);
+                if (values.phone_number) formData.append('phone_number', values.phone_number);
 
-                // Append profile image if changed
-                if (profileImageFile) {
+                
+                if (isImageRemoved && profileImageFile === null) {
+              
+                    formData.append('remove_profile_image', '1');
+                } else if (profileImageFile) {
+                
                     formData.append('profile_image', profileImageFile);
                 }
-                // if (profileImageFile) {
-                //     formData.append('profile_image', profileImageFile);
-                // } else {
-
-                //     formData.append('profile_image', 'null');
-
-                // }
+             
 
                 if (values.old_password) {
                     formData.append('old_password', values.old_password);
@@ -155,11 +155,13 @@ const Page = () => {
         setIsEdit(true);
     };
 
+
     const handleCancelClick = () => {
         formik.resetForm();
         setIsEdit(false);
         setImage(User?.profile_image || null);
         setProfileImageFile(null);
+        setIsImageRemoved(false); 
     };
 
     return (
@@ -246,7 +248,7 @@ const Page = () => {
                                     <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
                                         <div className="mb-4">
                                             <Label>
-                                                First Name <span className="text-error-500">*</span>
+                                                First Name 
                                             </Label>
                                             <Input
                                                 placeholder="Enter First Name"
@@ -264,7 +266,7 @@ const Page = () => {
 
                                         <div className="mb-4">
                                             <Label>
-                                                Last Name <span className="text-error-500">*</span>
+                                                Last Name 
                                             </Label>
                                             <Input
                                                 placeholder="Enter Last Name"
@@ -282,7 +284,7 @@ const Page = () => {
 
                                         <div className="mb-4">
                                             <Label>
-                                                Email <span className="text-error-500">*</span>
+                                                Email 
                                             </Label>
                                             <Input
                                                 placeholder="Enter Email"
