@@ -35,6 +35,7 @@ const {id} = useParams()
         <Button variant="primary"
             size='sm'
             onClick={handleOpenEditTimeline}
+
           >
             Edit Timeline
           </Button>

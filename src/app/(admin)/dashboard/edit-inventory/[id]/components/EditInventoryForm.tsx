@@ -426,10 +426,9 @@ const EditInventoryForm = () => {
                 )}
                 <Button
                   onClick={() => setIsEditing(!isEditing)}
-
                   variant="primary"
                   className='font-semibold'
-
+disabled={sellingPrice !== null}
                 >
                   {isEditing ? "Cancel" : "Edit"}
                 </Button>
@@ -513,6 +512,8 @@ const EditInventoryForm = () => {
                     formik.setFieldValue("date_purchased", value);
                   }}
                   disableFuture={true}
+disabled={sellingPrice !== null}
+
                 />
                 {formik.touched.date_purchased && formik.errors.date_purchased && (
                   <p className="text-red-500">{formik.errors.date_purchased}</p>
