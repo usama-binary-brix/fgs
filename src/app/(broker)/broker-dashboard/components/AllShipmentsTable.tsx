@@ -144,7 +144,7 @@ const AllShipmentsTable = () => {
           <Table>
             <TableHeader className="border-b border-gray-100 overflow-auto bg-[#F7F7F7] dark:border-white/[0.05]">
               <TableRow>
-                {['ID', 'SHIPMENT DATE', 'ETA', 'ELEVATOR YEAR', 'MANUFACTURER', 'MODEL', 'SERIAL NO.', 'STATUS', 'ACTION'].map((heading) => (
+                {['ID', 'SHIPMENT DATE', 'ETA', 'ELEVATOR YEAR', 'MANUFACTURER', 'MODEL', 'SERIAL NO.', 'ACTION'].map((heading) => (
                   <TableCell key={heading} isHeader className="px-3  py-3 font-family whitespace-nowrap overflow-hidden font-medium text-[#616161] text-start text-theme-sm dark:text-gray-400">
                     <div className='flex justify-between gap-5 items-center'>
 
@@ -162,15 +162,15 @@ const AllShipmentsTable = () => {
             <TableBody className="overflow-auto">
               {data?.shipments?.data?.map((shipment: any) => (
                 <TableRow key={shipment.id}>
-                  <TableCell className=" px-3 py-3.5 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{shipment.inventory.listing_number}</TableCell>
+                  <TableCell className=" px-3 py-3.5 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{shipment?.inventory?.listing_number}</TableCell>
                   <TableCell className="px-3 py-6 text-[14px] flex items-center gap-2 font-family text-[#616161] font-normal">{shipment.shipmentDate}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{shipment.eta}</TableCell>
-                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{shipment.inventory.year}</TableCell>
-                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{shipment.inventory.make}</TableCell>
-                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{shipment.inventory.model}</TableCell>
-                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{shipment.inventory.serial_no}</TableCell>
+                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{shipment?.inventory?.year}</TableCell>
+                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{shipment?.inventory?.make}</TableCell>
+                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{shipment?.inventory?.model}</TableCell>
+                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{shipment?.inventory?.serial_no}</TableCell>
 
-                  {shipment.status ? (
+                  {/* {shipment.status ? (
                     <TableCell className="px-5 py-2 text-xs">
                       <span
                         className={`px-3 py-2 rounded-md text-sm font-medium ${shipment.status === 'in progress'
@@ -182,7 +182,7 @@ const AllShipmentsTable = () => {
                               : ''
                           }`}
                       >
-                        {shipment.status.charAt(0).toUpperCase() + shipment.status.slice(1)} {/* Capitalize */}
+                        {shipment.status.charAt(0).toUpperCase() + shipment.status.slice(1)} 
                       </span>
                     </TableCell>
                   ) : (
@@ -193,7 +193,7 @@ const AllShipmentsTable = () => {
                         Pending
                       </span>
                     </TableCell>
-                  )}
+                  )} */}
 
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-visible font-normal font-family text-center">
                     <div className="relative inline-block">

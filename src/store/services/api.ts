@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks", "EmployeeInventory", "AllEmployeeTasks", "AllShipments", "InventoryCost", "AllShipmentOpportunities", "AllShipmentQuotes", "EmployeeAdminDashboard","BrokerDashboard","MyShipments", "InvestorDashboard"],
+  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks", "EmployeeInventory", "AllEmployeeTasks", "AllShipments", "InventoryCost", "AllShipmentOpportunities", "AllShipmentQuotes", "EmployeeAdminDashboard","BrokerDashboard","MyShipments", "InvestorDashboard", "AdditionalCost"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -532,6 +532,15 @@ export const api = createApi({
 
     }),
 
+    addAdditionalCost: builder.mutation({
+      query: (additionalCost) => ({
+        url: 'add/additional/cost',
+        method: 'POST',
+        body: additionalCost,
+      }),
+      invalidatesTags: ["AdditionalCost",],
+    }),
+
 
   }),
 });
@@ -597,6 +606,6 @@ export const { useLoginMutation,
 useGetAllMyShipmentsQuery,
 useGetInvestorDashboardQuery,
 useUpdateUserInfoMutation,
-
+useAddAdditionalCostMutation
  
 } = api;

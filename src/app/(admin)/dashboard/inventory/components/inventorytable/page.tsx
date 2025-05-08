@@ -309,20 +309,25 @@ const InventoryTable = () => {
                     <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.profitAmt || '---'}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.profit || '---'}</TableCell>
                     {lead.status ? (
-                      <TableCell className="px-5 py-2 text-xs">
-                        <span
-                          className={`px-3 py-2 rounded-md text-sm font-medium ${lead.status === 'in progress'
-                            ? 'bg-orange-100 text-orange-500'
-                            : lead.status === 'sold'
-                              ? 'bg-green-100 text-green-600'
-                              : lead.status === 'pending'
-                                ? 'bg-[#8e7f9c1f] font-family text-[14px] font-medium  text-[#8E7F9C]'
-                                : ''
-                            }`}
-                        >
-                          {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)} {/* Capitalize */}
-                        </span>
-                      </TableCell>
+                     <TableCell className="px-1 py-2 text-xs">
+                     <span
+                       className={`px-3 py-2 rounded-md text-sm font-medium ${
+                         lead.status === 'in_progress'
+                           ? 'bg-orange-100 text-orange-500'
+                           : lead.status === 'complete'
+                           ? 'bg-green-100 text-green-600'
+                           : lead.status === 'pending'
+                           ? 'bg-[#8e7f9c1f] font-family text-[14px] font-medium text-[#8E7F9C]'
+                           : ''
+                       }`}
+                     >
+                       {lead.status
+                         .split('_') // split by underscore
+                         .map((word:any) => word.charAt(0).toUpperCase() + word.slice(1)) // capitalize each word
+                         .join(' ')} {/* Join with space */}
+                     </span>
+                   </TableCell>
+                   
                     ) : (
                       <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-familytext-start">
                         <span
