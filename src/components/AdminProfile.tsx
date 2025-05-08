@@ -19,8 +19,9 @@ const dispatch = useDispatch()
     setLoading(true)
     try {
 
-      await logout('').unwrap();
       router.push('/signin');
+      await logout('').unwrap();
+     
       setTimeout(() => {
         dispatch(clearUser());
       }, 100); 
