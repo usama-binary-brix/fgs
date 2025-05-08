@@ -179,6 +179,8 @@
 //     </>
 //   );
 // }
+
+'use client'
 import * as React from 'react';
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
@@ -222,7 +224,6 @@ export default function CustomizedTimeline({ steps = [], timelineData }: Customi
   const userRole = useSelector((state:any)=>state?.user?.user?.account_type)
   const isAdminUser = userRole === 'super_admin' || userRole === 'admin';
   const isTimelineCompleted = timelineData?.is_completed;
-
   const allSteps = steps.length > 0 ? [
     ...steps,
     {

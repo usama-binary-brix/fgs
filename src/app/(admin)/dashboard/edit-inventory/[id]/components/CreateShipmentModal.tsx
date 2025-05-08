@@ -125,6 +125,7 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose, defaultShipmentTy
         },
         enableReinitialize: true,
         onSubmit: async (values, { resetForm }) => {
+            setLoading(true)
             try {
                 const pickupAddress = values.shipmentType === 'inbound' ? {
                     pickup_address: values.pickupAddress,
@@ -166,11 +167,15 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose, defaultShipmentTy
                 };
 
                 const response = await createShipment(payload).unwrap();
-                console.log('Shipment created:', response);
+              
                 toast.success(response.message || 'Shipment created successfully');
                 resetForm();
                 onClose();
+            setLoading(false)
+
             } catch (error) {
+            setLoading(false)
+
                 const errorResponse = error as ErrorResponse;
                 if (errorResponse?.data?.error) {
                     Object.values(errorResponse.data.error).forEach((errorMessage) => {
@@ -180,8 +185,11 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose, defaultShipmentTy
                             toast.error(errorMessage);
                         }
                     });
+
                 } else {
                     toast.error('Failed to create shipment');
+            setLoading(false)
+
                 }
             }
         },

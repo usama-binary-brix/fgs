@@ -379,7 +379,7 @@ export const api = createApi({
         method: 'POST',
         body: sellingPrice,
       }),
-      // invalidatesTags: ["InventoryCost",]
+      invalidatesTags: ["InventoryTimeline",]
     }),
 
     getInventorySellingPrice: builder.query({
@@ -542,6 +542,16 @@ export const api = createApi({
     }),
 
 
+    deleteAdditionalCostRow: builder.mutation({
+      query: (id) => ({
+        url: `delete/additionalCost/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ["InventoryTimeline"],
+    }),
+
+
+
   }),
 });
 
@@ -606,6 +616,8 @@ export const { useLoginMutation,
 useGetAllMyShipmentsQuery,
 useGetInvestorDashboardQuery,
 useUpdateUserInfoMutation,
-useAddAdditionalCostMutation
+useAddAdditionalCostMutation,
+useDeleteAdditionalCostRowMutation,
+
  
 } = api;
