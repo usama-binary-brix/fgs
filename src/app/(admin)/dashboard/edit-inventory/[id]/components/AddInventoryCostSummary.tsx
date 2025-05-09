@@ -16,6 +16,23 @@ import { ErrorResponse } from '../../../accounts/components/AccountsModal';
 import Label from '@/components/form/Label';
 import { FaTrash } from 'react-icons/fa';
 import { IoMdAdd } from 'react-icons/io';
+import { CiLock } from "react-icons/ci";
+
+
+export const modalStyles = {
+  base: "absolute pb-5 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white shadow-xl rounded-lg overflow-y-auto",
+  sizes: {
+    default: "w-[85%] sm:w-[80%] md:w-[80%] lg:w-[70%] max-h-[80vh] md:max-h-[90vh]",
+    small: "w-[70%] sm:w-[60%] md:w-[70%] lg:w-[60%] max-h-[70vh]",
+    large: "w-[78%] sm:w-[65%] md:w-[90%] lg:w-[85%] max-h-[90vh]"
+  },
+  header: "sticky top-0 z-10 bg-white border-b border-gray-400 py-3 px-4",
+  content: "px-4 py-4 overflow-y-auto",
+  title: "text-lg sm:text-xl font-semibold",
+  closeButton: "cursor-pointer text-2xl sm:text-3xl text-gray-600 hover:text-gray-900"
+} as const;
+
+
 
 const modalStyle = {
     position: 'absolute' as const,
@@ -171,7 +188,8 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                 price: stage.price || ''
             })) || [],
             sellingPrice: sellingPrice?.data?.selling_price || '',
-            profit: sellingPrice?.data?.profit || ''
+            profit: sellingPrice?.data?.profit || '',
+            profit_percentage: sellingPrice?.data?.profit_percentage || ''
         },
         enableReinitialize: true,
         onSubmit: async (values, { resetForm }) => {
@@ -364,7 +382,7 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
     }
     return (
         <Modal open={open} onClose={handleCloseReset}>
-            <Box sx={modalStyle}>
+                 <Box className={`${modalStyles.base} ${modalStyles.sizes.default}`}>
                 <div className=' border-b border-gray-400 mb-3 py-3'>
                     <div className='flex justify-between items-center px-4'>
                         <p className='text-xl font-semibold'>Inventory Cost Summary</p>
@@ -380,7 +398,7 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                             <TableHeader className="sticky top-0 z-50 border-b bg-[#F7F7F7] border-gray-100 dark:border-white/[0.05]">
                                 <TableRow>
                                     {['Stage Name', 'Total Stage cost'].map((heading) => (
-                                        <TableCell key={heading} className="px-5 py-3 uppercase text-[#616161] font-medium text-start text-[14px] dark:text-gray-400">
+                                        <TableCell key={heading} className=" px-2 py-1 lg:px-5 lg:py-3 uppercase text-[#616161] font-medium text-start text-[14px] dark:text-gray-400">
                                             <div className=' w-full flex justify-between items-center '>
                                                 {heading}
                                             </div>
@@ -392,7 +410,7 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                             <TableBody>
                                 {timelineData?.timeLine?.map((stage: any, index: number) => (
                                     <TableRow key={stage.id}>
-                                        <TableCell className=' px-4 text-sm text-[#616161] w-110'>{stage.name}</TableCell>
+                                        <TableCell className=' px-4 text-sm text-[#616161] lg:w-110'>{stage.name}</TableCell>
                                         <TableCell className='px-3 py-2'>
                                             <Input
                                                 name={`stages[${index}].price`}
@@ -453,7 +471,7 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                                         {['Name', 'Total Cost', 'Action'].map((heading) => (
                                             <TableCell
                                                 key={heading}
-                                                className={`px-5 py-3 uppercase text-[#616161] font-medium text-[14px] ${heading === 'Action' ? 'text-center' : 'text-start'
+                                                className={`px-2 py-2 lg:px-5 lg:py-3 uppercase text-[#616161] font-medium text-[14px] ${heading === 'Action' ? 'text-center' : 'text-start'
                                                     }`}
                                             >
                                                 {heading}
@@ -526,9 +544,20 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                             <p className='text-md text-[#414141] font-medium'>Final Cost & Profit</p>
                         </div>
 
-                        <div className='grid grid-cols-2 gap-4 px-4'>
+                        <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 px-4'>
                             <div>
-                                <Label>Selling Price <span className="text-error-500">*</span></Label>
+                                <Label className='flex items-center gap-1'>Purchase Price <CiLock className='text-lg'/> </Label>
+                                <Input
+                                    name="price_paid"
+                                    placeholder='$ 0.00'
+                                    value={timelineData?.timeLine[0]?.inventory?.price_paid}
+                                    type="number"
+                                    min="0"
+                                    disabled
+                                />
+                            </div>
+                            <div>
+                                <Label className='text-black'>Selling Price <span className="text-error-500">*</span></Label>
                                 <Input
                                     name="sellingPrice"
                                     placeholder='$ 0.00'
@@ -538,15 +567,29 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                                     min="0"
                                 />
                             </div>
-                            <div>
-                                <Label>Profit (Auto calculated)</Label>
+                       
+
+                                 <div>
+                                <Label className='flex items-center gap-1'>Profit (Auto calculated) <CiLock className='text-lg'/></Label>
                                 <Input
                                     name="profit"
                                     placeholder='$ 0.00'
                                     value={formik.values.profit}
                                     type="number"
+                                    disabled
                                 />
                             </div>
+                                 <div>
+                                <Label className='flex items-center gap-1'>Profit % (Auto calculated) <CiLock className='text-lg'/></Label>
+                                <Input
+                                    name="profit_percentage"
+                                    placeholder='$ 0.00'
+                                    value={`${formik.values.profit_percentage}%`}
+                                    type="number"
+                                    disabled
+                                />
+                            </div>
+
                         </div>
 
                         <div className='flex items-center gap-3 justify-end mt-4 pr-4'>
