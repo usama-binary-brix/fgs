@@ -482,8 +482,8 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                                     variant="primary"
                                     onClick={handleSaveAdditionalCosts}
                                     disabled={
-                                        additionalCosts.length === 0 ||
-                                        additionalCosts.some(cost => !cost.cost_name || Number(cost.cost) <= 0) ||
+                                      
+                                        additionalCosts.some(cost => !cost.cost_name || Number(cost.cost) < 0) ||
                                         formik.isSubmitting
                                     }
                                 >
