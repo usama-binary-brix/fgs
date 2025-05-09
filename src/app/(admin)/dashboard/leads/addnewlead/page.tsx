@@ -14,6 +14,9 @@ import { useRouter } from "next/navigation";
 import { PageTitle } from "@/components/PageTitle";
 import Button from "@/components/ui/button/Button";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import Label from "@/components/form/Label";
+import Select from "@/components/form/Select";
+import LeadSelect from "@/components/form/LeadSelect";
 
 type ErrorResponse = {
   data: {
@@ -33,7 +36,7 @@ const AddNewLead = () => {
   const [isIconRotate, setIsIconRotate] = useState(false);
   const [addLead] = useAddLeadMutation();
   const router = useRouter()
-const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const toggleDropdown = (dropdown: keyof typeof dropdownStates) => {
     setDropdownStates((prev) => ({
@@ -64,16 +67,17 @@ const [isSubmitting, setIsSubmitting] = useState(false);
     { label: "5th Call - Cyan", value: "5th Call - Cyan" },
   ];
 
-  const leadSourceOptions = [
-    { value: "Google (Call-In)" },
-    { value: "Machinery Trader" },
-    { value: "Forlift 123" },
-    { value: "Rock & Dirt" },
-    { value: "Buyer Zone" },
-    { value: "Machine" },
-    { value: "Auction" },
-    { value: "Mascus" },
-  ];
+const leadSourceOptions = [
+  { value: "Google (Call-In)", label: "Google (Call-In)" },
+  { value: "Machinery Trader", label: "Machinery Trader" },
+  { value: "Forlift 123", label: "Forlift 123" },
+  { value: "Rock & Dirt", label: "Rock & Dirt" },
+  { value: "Buyer Zone", label: "Buyer Zone" },
+  { value: "Machine", label: "Machine" },
+  { value: "Auction", label: "Auction" },
+  { value: "Mascus", label: "Mascus" },
+];
+
 
   const engineOptions = [
     { value: "Liquid propane Gas (LPG)" },
@@ -127,21 +131,21 @@ const [isSubmitting, setIsSubmitting] = useState(false);
       quick_comment: "",
       comments: "",
       lead_created_by: "",
-   
+
     },
     validationSchema: Yup.object().shape({
       name: Yup.string().required("Name is required"),
       phone: Yup.string().required("Phone is required"),
       email: Yup.string().email("Invalid email").required("Email is required"),
-    //   budget_min: Yup.number()
-    //   .typeError('Minimum budget must be a number')
-    //   .moreThan(0, 'Minimum budget must be greater than 0')
-    //   .required('Minimum budget is required'),
-  
-    // budget_max: Yup.number()
-    //   .typeError('Maximum budget must be a number')
-    //   .moreThan(Yup.ref('budget_min'), 'Maximum budget must be greater than minimum budget')
-    //   .required('Maximum budget is required'),
+      //   budget_min: Yup.number()
+      //   .typeError('Minimum budget must be a number')
+      //   .moreThan(0, 'Minimum budget must be greater than 0')
+      //   .required('Minimum budget is required'),
+
+      // budget_max: Yup.number()
+      //   .typeError('Maximum budget must be a number')
+      //   .moreThan(Yup.ref('budget_min'), 'Maximum budget must be greater than minimum budget')
+      //   .required('Maximum budget is required'),
     }),
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       try {
@@ -188,7 +192,7 @@ const [isSubmitting, setIsSubmitting] = useState(false);
         } else {
           toast.error("Failed to add lead.");
         }
-      }finally{
+      } finally {
         setIsSubmitting(false);
       }
     },
@@ -225,14 +229,14 @@ const [isSubmitting, setIsSubmitting] = useState(false);
   //   const value = e.target.value;
   //   formik.setFieldValue('budget_min', value);
   // };
-  
+
   // const handleMaxChange = (e) => {
   //   const value = e.target.value;
   //   formik.setFieldValue('budget_max', value);
   // };
-  
-  
-  
+
+
+
 
   return (
     <>
@@ -258,9 +262,9 @@ const [isSubmitting, setIsSubmitting] = useState(false);
                   variant="primary"
                   className="text-[13px] font-semibold"
                   disabled={isSubmitting}
-                  >
-                      {isSubmitting ? "Processing..." : " Add Lead"}
-                 
+                >
+                  {isSubmitting ? "Processing..." : " Add Lead"}
+
                 </Button>
 
 
@@ -273,7 +277,7 @@ const [isSubmitting, setIsSubmitting] = useState(false);
             <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 gap-4">
               {/* Contact Information */}
               <div className="bg-white w-full rounded p-3">
-                <h1 className="text-[#000] text-[14px] font-family font-medium mb-2">Contact Information</h1>
+                <h1 className="text-[#000] text-[14px] font-family font-medium mb-1">Contact Information</h1>
                 <div>
 
                   <AddLeadInput
@@ -414,72 +418,31 @@ const [isSubmitting, setIsSubmitting] = useState(false);
                 <h1 className="text-[#000] text-[14px] font-family font-medium mb-2">Lead Details</h1>
 
                 <div className="relative w-full">
-                  <label className="text-xs text-gray-500 font-family font-medium">Number of Calls</label>
-                  <button
-                    type="button"
-                    className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
-                    onClick={() => toggleDropdown('calls')}
-                  >
-                    {formik.values.number_of_calls || "Select an option"}
-                    <FiChevronDown
-                      className={`text-lg transition-transform duration-300 ${dropdownStates.calls ? "rotate-180" : "rotate-0"}`}
-                    />
-                  </button>
-
-                  {dropdownStates.calls && (
-                    <ul className="absolute w-full bg-white border z-10 border-gray-300 rounded-md shadow-md mt-1">
-                      {options.map((option, index) => (
-                        <li
-                          key={index}
-                          className="px-3 py-2 text-darkGray font-family hover:bg-text hover:text-yellow text-xs cursor-pointer"
-                          onClick={() => {
-                            formik.setFieldValue("number_of_calls", option.value);
-                            toggleDropdown('calls');
-                          }}
-                        >
-                          {option.label}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {formik.touched.number_of_calls && formik.errors.number_of_calls && (
-                    <p className="text-red-500 text-xs mt-1">{formik.errors.number_of_calls}</p>
-                  )}
+                  <label className="text-[11.5px] text-[#818181] font-normal font-family">Number of Calls</label>
+                  <LeadSelect
+                    name="number_of_calls"
+                    value={formik.values.number_of_calls}
+                    options={options}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.number_of_calls ? formik.errors.number_of_calls : undefined}
+                  />
                 </div>
 
-                {/* Lead Source Dropdown */}
-                <div className="relative w-full">
-                  <label className="text-xs text-gray-500 font-family">Lead Source</label>
-                  <button
-                    type="button"
-                    className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium  font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
-                    onClick={() => toggleDropdown('source')}
-                  >
-                    {formik.values.lead_source || "Select a source"}
-                    <FiChevronDown
-                      className={`text-lg transition-transform duration-300 ${dropdownStates.source ? "rotate-180" : "rotate-0"}`}
-                    />
-                  </button>
-                  {dropdownStates.source && (
-                    <ul className="absolute w-full bg-white border z-10 border-gray-300 rounded-md shadow-md mt-1">
-                      {leadSourceOptions.map((option, index) => (
-                        <li
-                          key={index}
-                          className="px-3 py-2 text-darkGray hover:bg-gray-100 text-xs cursor-pointer"
-                          onClick={() => {
-                            formik.setFieldValue("lead_source", option.value);
-                            toggleDropdown('source');
-                          }}
-                        >
-                          {option.value}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {formik.touched.lead_source && formik.errors.lead_source && (
-                    <p className="text-red-500 text-xs mt-1">{formik.errors.lead_source}</p>
-                  )}
+      <div className="relative w-full">
+                  <label className="text-[11.5px] text-[#818181] font-normal font-family">Lead Source</label>
+                  <LeadSelect
+                    name="lead_source"
+                    value={formik.values.lead_source}
+                    options={leadSourceOptions}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.lead_source ? formik.errors.lead_source : undefined}
+                  />
                 </div>
+
+
+           
 
                 <div className="">
                   <AddLeadInput
@@ -607,6 +570,8 @@ const [isSubmitting, setIsSubmitting] = useState(false);
                       <p className="text-red-500 text-xs mt-1">{formik.errors.lift_type}</p>
                     )}
                   </div>
+
+                  
                   <div className="">
                     <div className="relative w-full mb-2">
                       <label className="text-xs text-gray-500 font-family font-medium">Engine Type</label>
@@ -705,38 +670,38 @@ const [isSubmitting, setIsSubmitting] = useState(false);
                 <div className="mb-5 bg-white w-full p-3">
                   <h1 className="text-black font-family font-medium mb-2">Budget & Financing</h1>
                   <div className="">
-<label className="text-xs text-gray-500 font-family font-medium">Budget Range</label>
-<div className="flex gap-3 items-center">
-<input
-type="number"
-name="budget_min"
-value={formik.values.budget_min}
-onChange={formik.handleChange}
-onBlur={formik.handleBlur}
-placeholder="$ 1.00"
-className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs outline-none text-md"
-/>
-{formik.touched.budget_min && formik.errors.budget_min && (
-<p className="text-red-500 text-xs mt-1">{formik.errors.budget_min}</p>
-)}
--
-<input
-type="number"
-name="budget_max"
-value={formik.values.budget_max}
-onChange={formik.handleChange}
-onBlur={formik.handleBlur}
-placeholder="$ 100.00"
-className="w-full text-left text-[#666] placeholder-[#666] text-[12px] font-medium font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs mt-1 outline-none text-md"
-/>
-{formik.touched.budget_max && formik.errors.budget_max && (
-<p className="text-red-500 text-xs mt-1">{formik.errors.budget_max}</p>
-)}
-</div>
-</div>
-                  
-                  
-                 
+                    <label className="text-xs text-gray-500 font-family font-medium">Budget Range</label>
+                    <div className="flex gap-3 items-center">
+                      <input
+                        type="number"
+                        name="budget_min"
+                        value={formik.values.budget_min}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        placeholder="$ 1.00"
+                        className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs outline-none text-md"
+                      />
+                      {formik.touched.budget_min && formik.errors.budget_min && (
+                        <p className="text-red-500 text-xs mt-1">{formik.errors.budget_min}</p>
+                      )}
+                      -
+                      <input
+                        type="number"
+                        name="budget_max"
+                        value={formik.values.budget_max}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        placeholder="$ 100.00"
+                        className="w-full text-left text-[#666] placeholder-[#666] text-[12px] font-medium font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs mt-1 outline-none text-md"
+                      />
+                      {formik.touched.budget_max && formik.errors.budget_max && (
+                        <p className="text-red-500 text-xs mt-1">{formik.errors.budget_max}</p>
+                      )}
+                    </div>
+                  </div>
+
+
+
                   <div className="">
                     <AddLeadInput
                       name="financing"
