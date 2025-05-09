@@ -17,6 +17,8 @@ import Label from '@/components/form/Label';
 import { FaEdit, FaSave, FaTrash } from 'react-icons/fa';
 import { IoMdAdd } from 'react-icons/io';
 import { CiLock } from "react-icons/ci";
+import { SlTrash } from "react-icons/sl";
+import { AiOutlineEdit } from "react-icons/ai";
 
 
 export const modalStyles = {
@@ -487,13 +489,13 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
 
     {/* Actions Cell */}
     <TableCell className='px-3 py-2'>
-      <div className='flex justify-center text-start items-center gap-1'>
+      <div className='flex justify-center text-start items-center gap-2'>
         {/* Delete button - always shown */}
         <button
           type="button"
           onClick={() => handleDeleteAdditionalCostRow(index, cost.id)}
         >
-          <FaTrash />
+          <SlTrash className='text-[#818181] text-lg'/>
         </button>
 
         {/* Edit/Save button - only shown for existing costs */}
@@ -503,7 +505,7 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
               type="button"
               onClick={() => handleEditAdditionalCost(index)}
             >
-              <FaEdit />
+              <AiOutlineEdit className='text-[#818181] text-xl'/>
             </button>
 
         )}
