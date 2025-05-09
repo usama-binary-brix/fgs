@@ -285,46 +285,78 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
 
 
 
+    // const handleSaveAdditionalCosts = async () => {
+    //     await formik.submitForm()
+
+    //     try {
+    //         const savePromises = additionalCosts.map(cost => {
+    //             const payload = {
+    //                 inventory_id: Number(id),
+    //                 cost_name: cost.cost_name,
+    //                 cost: Number(cost.cost)
+    //             };
+
+             
+    //             if (cost.id) {
+    //                 return saveAdditionalCost({
+    //                     ...payload,
+    //                     additional_cost_id: cost.id
+    //                 }).unwrap();
+    //             }
+              
+    //             return saveAdditionalCost(payload).unwrap();
+    //         });
+
+    //         await Promise.all(savePromises);
+    //         toast.success('Additional costs saved successfully');
+    //         refetch(); // Clear the additional costs after saving
+    //     } catch (error) {
+    //         const errorResponse = error as ErrorResponse;
+    //         if (errorResponse?.data?.error) {
+    //             Object.values(errorResponse.data.error).forEach((errorMessage) => {
+    //                 if (Array.isArray(errorMessage)) {
+    //                     errorMessage.forEach((msg) => toast.error(msg));
+    //                 } else {
+    //                     toast.error(errorMessage);
+    //                 }
+    //             });
+    //         } else {
+    //             toast.error('Failed to save additional costs');
+    //         }
+    //     }
+    // };
+
     const handleSaveAdditionalCosts = async () => {
-        await formik.submitForm()
+    await formik.submitForm();
 
-        try {
-            const savePromises = additionalCosts.map(cost => {
-                const payload = {
-                    inventory_id: Number(id),
-                    cost_name: cost.cost_name,
-                    cost: Number(cost.cost)
-                };
+    try {
+        const additional_costs = additionalCosts.map(cost => ({
+            inventory_id: Number(id),
+            cost_name: cost.cost_name,
+            cost: Number(cost.cost),
+            ...(cost.id && { additional_cost_id: cost.id })
+        }));
 
-                // If cost has ID, it's an update
-                if (cost.id) {
-                    return saveAdditionalCost({
-                        ...payload,
-                        additional_cost_id: cost.id
-                    }).unwrap();
+        // Send the array in a single API call
+        await saveAdditionalCost({ additional_costs }).unwrap();
+
+        toast.success('Additional costs saved successfully');
+        refetch(); // Clear or refresh the data after saving
+    } catch (error) {
+        const errorResponse = error as ErrorResponse;
+        if (errorResponse?.data?.error) {
+            Object.values(errorResponse.data.error).forEach((errorMessage) => {
+                if (Array.isArray(errorMessage)) {
+                    errorMessage.forEach((msg) => toast.error(msg));
+                } else {
+                    toast.error(errorMessage);
                 }
-                // Otherwise it's a create
-                return saveAdditionalCost(payload).unwrap();
             });
-
-            await Promise.all(savePromises);
-            toast.success('Additional costs saved successfully');
-            refetch(); // Clear the additional costs after saving
-        } catch (error) {
-            const errorResponse = error as ErrorResponse;
-            if (errorResponse?.data?.error) {
-                Object.values(errorResponse.data.error).forEach((errorMessage) => {
-                    if (Array.isArray(errorMessage)) {
-                        errorMessage.forEach((msg) => toast.error(msg));
-                    } else {
-                        toast.error(errorMessage);
-                    }
-                });
-            } else {
-                toast.error('Failed to save additional costs');
-            }
+        } else {
+            toast.error('Failed to save additional costs');
         }
-    };
+    }
+};
 
     const handleCloseReset = () => {
         onClose()

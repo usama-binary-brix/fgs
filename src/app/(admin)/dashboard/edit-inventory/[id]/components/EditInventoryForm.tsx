@@ -63,11 +63,11 @@ const EditInventoryForm = () => {
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
-  
+
     // Remove 'tab' param from URL
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     current.delete('tab');
-  
+
     const newUrl = `${window.location.pathname}?${current.toString()}`;
     router.replace(newUrl, { scroll: false });
   };
@@ -338,7 +338,7 @@ const EditInventoryForm = () => {
               <button
                 className={`border border-[#D184281A] text-[13px] font-family py-2 px-4 font-semibold rounded transition-all duration-300
                 ${activeTab === "reconditioning" ? 'bg-[#D18428] text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
-              onClick={() => handleTabChange("reconditioning")}
+                onClick={() => handleTabChange("reconditioning")}
               >
                 Reconditioning
               </button>
@@ -428,7 +428,7 @@ const EditInventoryForm = () => {
                   onClick={() => setIsEditing(!isEditing)}
                   variant="primary"
                   className='font-semibold'
-disabled={sellingPrice !== null}
+                  disabled={sellingPrice !== null}
                 >
                   {isEditing ? "Cancel" : "Edit"}
                 </Button>
@@ -512,7 +512,7 @@ disabled={sellingPrice !== null}
                     formik.setFieldValue("date_purchased", value);
                   }}
                   disableFuture={true}
-disabled={sellingPrice !== null}
+                  disabled={sellingPrice !== null}
 
                 />
                 {formik.touched.date_purchased && formik.errors.date_purchased && (
