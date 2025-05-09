@@ -14,7 +14,7 @@ import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import { ErrorResponse } from '../../../accounts/components/AccountsModal';
 import Label from '@/components/form/Label';
-import { FaTrash } from 'react-icons/fa';
+import { FaEdit, FaSave, FaTrash } from 'react-icons/fa';
 import { IoMdAdd } from 'react-icons/io';
 import { CiLock } from "react-icons/ci";
 
@@ -67,6 +67,8 @@ interface AdditionalCost {
     added_by?: number;
     created_at?: string;
     updated_at?: string;
+
+  isEditing?: boolean;
 }
 
 // interface TimelineResponse {
@@ -126,6 +128,14 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
 
     };
     const [additionalCosts, setAdditionalCosts] = useState<AdditionalCost[]>([]);
+    const [isEditing, setIsEditing] = useState(false);
+
+
+    const handleEditAdditionalCost = (index: number) => {
+  setAdditionalCosts(prev => prev.map((cost, i) => 
+    i === index ? {...cost, isEditing: true} : cost
+  ));
+};
 
     // Initialize with API data when modal opens
     useEffect(() => {
@@ -441,38 +451,66 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
 
                                 <TableBody>
 
-                                    {additionalCosts.map((cost, index) => (
-                                        <TableRow key={cost.id || `new-${index}`}>
-                                            <TableCell className='px-3 py-2'>
-                                                <Input
-                                                    placeholder='Name'
-                                                    value={cost.cost_name}
-                                                    onChange={(e) => handleAdditionalCostChange(index, 'cost_name', e.target.value)}
-                                                />
-                                            </TableCell>
-                                            <TableCell className='px-3 py-2'>
-                                                <Input
-                                                    placeholder='$ 0.00'
-                                                    value={cost.cost}
-                                                    onChange={(e) => handleAdditionalCostChange(index, 'cost', e.target.value)}
-                                                    // type="number"
-                                                    min="0"
-                                                />
-                                            </TableCell>
-                                            <TableCell className='px-3 py-2 '>
-                                                <div className='flex justify-center text-start items-center'>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleDeleteAdditionalCostRow(index, cost.id)}
+                           {additionalCosts.map((cost, index) => (
+  <TableRow key={cost.id || `new-${index}`}>
+    {/* Cost Name Cell */}
+    <TableCell className='px-4 text-sm text-[#616161] lg:w-110'>
+      {cost.isEditing || !cost.id ? (
+        <Input
+          placeholder='Name'
+          value={cost.cost_name}
+          onChange={(e) => handleAdditionalCostChange(index, 'cost_name', e.target.value)}
+        />
+      ) : (
+        cost.cost_name
+      )}
+    </TableCell>
 
-                                                    >
-                                                        <FaTrash />
-                                                    </button>
+    {/* Cost Value Cell */}
+    <TableCell className='px-3 py-2'>
+      {!cost.id ? (
+        <Input
+          placeholder='$ 0.00'
+          value={cost.cost}
+          onChange={(e) => handleAdditionalCostChange(index, 'cost', e.target.value)}
+          min="0"
+        />
+      ) : (
+        <Input
+          placeholder='$ 0.00'
+          value={cost.cost}
+          onChange={(e) => handleAdditionalCostChange(index, 'cost', e.target.value)}
+          min="0"
+        />
+      )}
+    </TableCell>
 
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+    {/* Actions Cell */}
+    <TableCell className='px-3 py-2'>
+      <div className='flex justify-center text-start items-center gap-1'>
+        {/* Delete button - always shown */}
+        <button
+          type="button"
+          onClick={() => handleDeleteAdditionalCostRow(index, cost.id)}
+        >
+          <FaTrash />
+        </button>
+
+        {/* Edit/Save button - only shown for existing costs */}
+        {cost.id && (
+     
+          <button
+              type="button"
+              onClick={() => handleEditAdditionalCost(index)}
+            >
+              <FaEdit />
+            </button>
+
+        )}
+      </div>
+    </TableCell>
+  </TableRow>
+))}
                                 </TableBody>
                             </Table>
 
