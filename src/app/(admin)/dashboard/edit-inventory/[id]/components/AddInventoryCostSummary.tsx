@@ -544,7 +544,7 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                             <p className='text-md text-[#414141] font-medium'>Final Cost & Profit</p>
                         </div>
 
-                        <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 px-4'>
+                        <div className='grid grid-cols-1 lg:grid-cols-4 gap-4 px-4'>
                             <div>
                                 <Label className='flex items-center gap-1'>Purchase Price <CiLock className='text-lg'/> </Label>
                                 <Input
@@ -585,7 +585,6 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                                     name="profit_percentage"
                                     placeholder='$ 0.00'
                                     value={`${formik.values.profit_percentage}%`}
-                                    type="number"
                                     disabled
                                 />
                             </div>
