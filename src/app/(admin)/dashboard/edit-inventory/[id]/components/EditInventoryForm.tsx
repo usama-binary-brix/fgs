@@ -72,10 +72,6 @@ const EditInventoryForm = () => {
     router.replace(newUrl, { scroll: false });
   };
 
-
-  const { data: timelineData, error: timelineError, isLoading: allTimelineLoading, refetch: timelineRefetch } = useGetAllTimelineQuery(id);
-
-
   const [isEditing, setIsEditing] = useState(false);
   const [subCategories, setSubCategories] = useState<{ categories: any[] }>({ categories: [] });
   const [images, setImages] = useState<File[]>([]);
@@ -88,8 +84,6 @@ const EditInventoryForm = () => {
   }, [id])
   const validationSchema = Yup.object().shape({
     category_id: Yup.string().required('Category is required'),
-    // subcategory_id: Yup.string().required('Subcategory is required'),
-
     year: Yup.number()
       .required('Year is required')
       .max(9999, 'Maximum 4 digits allowed')
@@ -156,14 +150,10 @@ const EditInventoryForm = () => {
         setIsSubmitting(true)
         await editInventory(formData).unwrap();
         toast.success("Inventory updated successfully!");
+        setImages([]);
         setIsEditing(false)
-        // router.push('/dashboard/inventory')
       } catch (error) {
-
-
         const errorResponse = error as ErrorResponse;
-
-
         if (errorResponse?.data?.error) {
           Object.values(errorResponse.data.error).forEach((errorMessage) => {
             if (Array.isArray(errorMessage)) {
@@ -391,12 +381,7 @@ const EditInventoryForm = () => {
               Reconditioning
             </button>
           </div>
-          {/* <button
-          className="bg-primary text-white px-4 py-2 rounded-md flex items-center gap-2"
-          onClick={() => setIsEditing(!isEditing)}
-        >
-          <FaEdit /> {isEditing ? "Cancel" : "Edit"}
-        </button> */}
+      
         </div>
       </div>
 
@@ -613,14 +598,17 @@ const EditInventoryForm = () => {
                   );
                 })}
 
-                {/* Newly uploaded files */}
+
                 {images.map((img, index) => {
                   const isImage = img.type.startsWith('image/');
                   const previewSrc = isImage ? URL.createObjectURL(img) : getFileTypeIcon(img.name);
                   const fileName = img.name;
 
                   return (
-                    <div key={index} className="relative w-35">
+
+                  
+                      <>
+      <div key={index} className="relative w-35">
                       <div className="h-30 rounded-lg overflow-hidden">
                         <img
                           src={previewSrc}
@@ -638,6 +626,8 @@ const EditInventoryForm = () => {
                         {fileName}
                       </p>
                     </div>
+                      </>
+                   
                   );
                 })}
 

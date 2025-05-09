@@ -20,16 +20,16 @@ import { CiLock } from "react-icons/ci";
 
 
 export const modalStyles = {
-  base: "absolute pb-5 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white shadow-xl rounded-lg overflow-y-auto",
-  sizes: {
-    default: "w-[85%] sm:w-[80%] md:w-[80%] lg:w-[70%] max-h-[80vh] md:max-h-[90vh]",
-    small: "w-[70%] sm:w-[60%] md:w-[70%] lg:w-[60%] max-h-[70vh]",
-    large: "w-[78%] sm:w-[65%] md:w-[90%] lg:w-[85%] max-h-[90vh]"
-  },
-  header: "sticky top-0 z-10 bg-white border-b border-gray-400 py-3 px-4",
-  content: "px-4 py-4 overflow-y-auto",
-  title: "text-lg sm:text-xl font-semibold",
-  closeButton: "cursor-pointer text-2xl sm:text-3xl text-gray-600 hover:text-gray-900"
+    base: "absolute pb-5 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white shadow-xl rounded-lg overflow-y-auto",
+    sizes: {
+        default: "w-[85%] sm:w-[80%] md:w-[80%] lg:w-[70%] max-h-[80vh] md:max-h-[90vh]",
+        small: "w-[70%] sm:w-[60%] md:w-[70%] lg:w-[60%] max-h-[70vh]",
+        large: "w-[78%] sm:w-[65%] md:w-[90%] lg:w-[85%] max-h-[90vh]"
+    },
+    header: "sticky top-0 z-10 bg-white border-b border-gray-400 py-3 px-4",
+    content: "px-4 py-4 overflow-y-auto",
+    title: "text-lg sm:text-xl font-semibold",
+    closeButton: "cursor-pointer text-2xl sm:text-3xl text-gray-600 hover:text-gray-900"
 } as const;
 
 
@@ -302,79 +302,37 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
     );
 
 
-
-    // const handleSaveAdditionalCosts = async () => {
-    //     await formik.submitForm()
-
-    //     try {
-    //         const savePromises = additionalCosts.map(cost => {
-    //             const payload = {
-    //                 inventory_id: Number(id),
-    //                 cost_name: cost.cost_name,
-    //                 cost: Number(cost.cost)
-    //             };
-
-             
-    //             if (cost.id) {
-    //                 return saveAdditionalCost({
-    //                     ...payload,
-    //                     additional_cost_id: cost.id
-    //                 }).unwrap();
-    //             }
-              
-    //             return saveAdditionalCost(payload).unwrap();
-    //         });
-
-    //         await Promise.all(savePromises);
-    //         toast.success('Additional costs saved successfully');
-    //         refetch(); // Clear the additional costs after saving
-    //     } catch (error) {
-    //         const errorResponse = error as ErrorResponse;
-    //         if (errorResponse?.data?.error) {
-    //             Object.values(errorResponse.data.error).forEach((errorMessage) => {
-    //                 if (Array.isArray(errorMessage)) {
-    //                     errorMessage.forEach((msg) => toast.error(msg));
-    //                 } else {
-    //                     toast.error(errorMessage);
-    //                 }
-    //             });
-    //         } else {
-    //             toast.error('Failed to save additional costs');
-    //         }
-    //     }
-    // };
-
     const handleSaveAdditionalCosts = async () => {
-    await formik.submitForm();
+        await formik.submitForm();
 
-    try {
-        const additional_costs = additionalCosts.map(cost => ({
-            inventory_id: Number(id),
-            cost_name: cost.cost_name,
-            cost: Number(cost.cost),
-            ...(cost.id && { additional_cost_id: cost.id })
-        }));
+        try {
+            const additional_costs = additionalCosts.map(cost => ({
+                inventory_id: Number(id),
+                cost_name: cost.cost_name,
+                cost: Number(cost.cost),
+                ...(cost.id && { additional_cost_id: cost.id })
+            }));
 
-        // Send the array in a single API call
-        await saveAdditionalCost({ additional_costs }).unwrap();
 
-        toast.success('Additional costs saved successfully');
-        refetch(); // Clear or refresh the data after saving
-    } catch (error) {
-        const errorResponse = error as ErrorResponse;
-        if (errorResponse?.data?.error) {
-            Object.values(errorResponse.data.error).forEach((errorMessage) => {
-                if (Array.isArray(errorMessage)) {
-                    errorMessage.forEach((msg) => toast.error(msg));
-                } else {
-                    toast.error(errorMessage);
-                }
-            });
-        } else {
-            toast.error('Failed to save additional costs');
+            await saveAdditionalCost({ additional_costs }).unwrap();
+
+
+            refetch();
+        } catch (error) {
+            const errorResponse = error as ErrorResponse;
+            if (errorResponse?.data?.error) {
+                Object.values(errorResponse.data.error).forEach((errorMessage) => {
+                    if (Array.isArray(errorMessage)) {
+                        errorMessage.forEach((msg) => toast.error(msg));
+                    } else {
+                        toast.error(errorMessage);
+                    }
+                });
+            } else {
+                toast.error('Failed to save additional costs');
+            }
         }
-    }
-};
+    };
 
     const handleCloseReset = () => {
         onClose()
@@ -382,7 +340,7 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
     }
     return (
         <Modal open={open} onClose={handleCloseReset}>
-                 <Box className={`${modalStyles.base} ${modalStyles.sizes.default}`}>
+            <Box className={`${modalStyles.base} ${modalStyles.sizes.default}`}>
                 <div className=' border-b border-gray-400 mb-3 py-3'>
                     <div className='flex justify-between items-center px-4'>
                         <p className='text-xl font-semibold'>Inventory Cost Summary</p>
@@ -497,7 +455,7 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                                                     placeholder='$ 0.00'
                                                     value={cost.cost}
                                                     onChange={(e) => handleAdditionalCostChange(index, 'cost', e.target.value)}
-                                                    type="number"
+                                                    // type="number"
                                                     min="0"
                                                 />
                                             </TableCell>
@@ -546,7 +504,7 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
 
                         <div className='grid grid-cols-1 lg:grid-cols-4 gap-4 px-4'>
                             <div>
-                                <Label className='flex items-center gap-1'>Purchase Price <CiLock className='text-lg'/> </Label>
+                                <Label className='flex items-center gap-1'>Purchase Price <CiLock className='text-lg' /> </Label>
                                 <Input
                                     name="price_paid"
                                     placeholder='$ 0.00'
@@ -567,10 +525,10 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                                     min="0"
                                 />
                             </div>
-                       
 
-                                 <div>
-                                <Label className='flex items-center gap-1'>Profit (Auto calculated) <CiLock className='text-lg'/></Label>
+
+                            <div>
+                                <Label className='flex items-center gap-1'>Profit (Auto calculated) <CiLock className='text-lg' /></Label>
                                 <Input
                                     name="profit"
                                     placeholder='$ 0.00'
@@ -579,8 +537,8 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                                     disabled
                                 />
                             </div>
-                                 <div>
-                                <Label className='flex items-center gap-1'>Profit % (Auto calculated) <CiLock className='text-lg'/></Label>
+                            <div>
+                                <Label className='flex items-center gap-1'>Profit % (Auto calculated) <CiLock className='text-lg' /></Label>
                                 <Input
                                     name="profit_percentage"
                                     placeholder='$ 0.00'
