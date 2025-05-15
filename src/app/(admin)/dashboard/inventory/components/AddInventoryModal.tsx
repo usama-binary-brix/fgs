@@ -134,9 +134,9 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
 
         make: Yup.number()
             .required('Make is required')
-            .max(9999, 'Maximum 4 digits allowed')
-            .typeError('Year must be a number')
-            .max(currentYear, `Year cannot be greater than ${currentYear}`)
+            // .max(9999, 'Maximum 4 digits allowed')
+            // .typeError('Year must be a number')
+            // .max(currentYear, `Year cannot be greater than ${currentYear}`)
         ,
         model: Yup.string().required('Model is required'),
         serial_no: Yup.string().required('Serial No is required'),
