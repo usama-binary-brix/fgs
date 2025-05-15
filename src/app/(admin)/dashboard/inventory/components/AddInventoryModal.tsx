@@ -132,7 +132,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
             .typeError('Year must be a number')
             .max(currentYear, `Year cannot be greater than ${currentYear}`),
 
-        make: Yup.number()
+        make: Yup.string()
             .required('Make is required')
             // .max(9999, 'Maximum 4 digits allowed')
             // .typeError('Year must be a number')
