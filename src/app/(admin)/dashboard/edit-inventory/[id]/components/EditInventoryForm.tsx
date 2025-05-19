@@ -23,6 +23,7 @@ import Button from "@/components/ui/button/Button";
 import * as Yup from 'yup';
 import CustomizedTimeline from "./CustomizedTimeline";
 import { FiLock } from "react-icons/fi";
+import ButtonLoader from "@/components/ButtonLoader";
 
 type ErrorResponse = {
   data: {
@@ -298,7 +299,11 @@ const EditInventoryForm = () => {
     setRemovedExistingFiles([...removedExistingFiles, fileToRemove.id]);
     setExistingFiles(existingFiles.filter((_, i) => i !== index));
   };
-  if (isLoading || loadingCategories) return <p>Loading...</p>;
+  if (isLoading || loadingCategories) return <> 
+   <div className="py-6 flex items-center justify-center h-[80vh]">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          </div>
+    </>;
   if (error) return <p>Error fetching inventory</p>;
 
 
@@ -405,7 +410,7 @@ const EditInventoryForm = () => {
                       className='font-semibold'
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? "Updating..." : "Update"}
+                      {isSubmitting ? <ButtonLoader/> : "Update"}
                     </Button>
                   </div>
                 )}

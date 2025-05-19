@@ -7,13 +7,14 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import Input from '@/components/form/input/InputField';
 import Button from '@/components/ui/button/Button';
 import { useParams } from 'next/navigation';
-import { 
-  useAddNewTimelineMutation, 
-  useDeleteTimelineMutation, 
-  useGetAllTimelineQuery, 
+import {
+  useAddNewTimelineMutation,
+  useDeleteTimelineMutation,
+  useGetAllTimelineQuery,
   useReorderTimelineMutation,
 } from '@/store/services/api';
 import { toast } from 'react-toastify';
+import ButtonLoader from '@/components/ButtonLoader';
 
 interface Props {
   open: boolean;
@@ -41,12 +42,12 @@ const ItemTypes = {
   STAGE: 'stage',
 };
 
-const DraggableStage: React.FC<DraggableStageProps> = ({ 
-  stage, 
-  index, 
-  moveStage, 
+const DraggableStage: React.FC<DraggableStageProps> = ({
+  stage,
+  index,
+  moveStage,
   handleDeleteStage,
-  handleEditStage 
+  handleEditStage
 }) => {
   const ref = React.useRef<HTMLDivElement>(null);
 
@@ -102,14 +103,14 @@ const DraggableStage: React.FC<DraggableStageProps> = ({
         <span>{stage.name}</span>
       </div>
       <div className="flex gap-2">
-        <IconButton 
+        <IconButton
           size="small"
           onClick={() => handleEditStage(index)}
         >
           <FaEdit className="text-gray-600" />
         </IconButton>
-        <IconButton 
-          size="small" 
+        <IconButton
+          size="small"
           onClick={() => handleDeleteStage(index)}
         >
           <FaTrash className="text-gray-600" />
@@ -150,16 +151,21 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
   const { id } = useParams();
   const [addNewTimeline, { isLoading: isAdding }] = useAddNewTimelineMutation();
   const [reorderTimeline] = useReorderTimelineMutation();
-
+  const [reorderLoading, setReorderLoading] = useState(false)
   const handleReorderSubmit = async () => {
     const reorderedStages = stages.map(stage => ({ id: stage.id }));
+    setReorderLoading(true)
     try {
       await reorderTimeline({ stages: reorderedStages }).unwrap();
       toast.success("Stages reordered successfully");
+
       onClose(); // or refetch() if you want to refresh the data
+      setReorderLoading(false)
+
     } catch (error) {
-      console.error("Reorder failed:", error);
       toast.error("Failed to reorder stages");
+      setReorderLoading(false)
+
     }
   };
 
@@ -171,7 +177,7 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
   const [newStage, setNewStage] = useState('');
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editStageValue, setEditStageValue] = useState('');
-
+  const [addStageLoading, setAddStageLoading] = useState(false)
   // Update stages when data loads
   useEffect(() => {
     if (timelineData && timelineData.timeLine.length > 0) {
@@ -181,7 +187,7 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
 
   const handleAddStage = async () => {
     if (!newStage.trim()) return;
-    
+    setAddStageLoading(true)
     try {
       const response = await addNewTimeline({
         name: newStage.trim(),
@@ -198,19 +204,24 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
       }]);
       setNewStage('');
       toast.success(response.message);
+      setAddStageLoading(false)
+
     } catch (error) {
       toast.error('Failed to add stage');
       console.error('Error adding stage:', error);
+      setAddStageLoading(false)
+
     }
   };
 
   const handleUpdateStage = async () => {
     if (editingIndex === null || !editStageValue.trim()) return;
-    
+
     const stageToUpdate = stages[editingIndex];
-    
+    setAddStageLoading(true)
+
     try {
-    const response = await addNewTimeline({
+      const response = await addNewTimeline({
         timeline_id: stageToUpdate.id,
         name: editStageValue.trim(),
         inventory_id: Number(id)
@@ -226,37 +237,41 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
       setEditingIndex(null);
       setEditStageValue('');
       toast.success(response.message);
+      setAddStageLoading(false)
+
     } catch (error) {
       toast.error('Failed to update stage');
       console.error('Error updating stage:', error);
+      setAddStageLoading(false)
+
     }
   };
 
-    const [deleteTimeline, { isLoading: isDeleting }] = useDeleteTimelineMutation();
+  const [deleteTimeline, { isLoading: isDeleting }] = useDeleteTimelineMutation();
 
-    const handleDeleteStage = async (index: number) => {
-      const stageToDelete = stages[index];
-      
-      try {
-        const response = await deleteTimeline(stageToDelete.id).unwrap();
-        
-        const updatedStages = [...stages];
-        updatedStages.splice(index, 1);
-        setStages(updatedStages);
-        
-        if (editingIndex === index) {
-          setEditingIndex(null);
-          setEditStageValue('');
-        }
-        
-        toast.success(response.message || "Stage deleted successfully");
-      } catch (error) {
-        toast.error('Failed to delete stage');
-        console.error('Error deleting stage:', error);
+  const handleDeleteStage = async (index: number) => {
+    const stageToDelete = stages[index];
+
+    try {
+      const response = await deleteTimeline(stageToDelete.id).unwrap();
+
+      const updatedStages = [...stages];
+      updatedStages.splice(index, 1);
+      setStages(updatedStages);
+
+      if (editingIndex === index) {
+        setEditingIndex(null);
+        setEditStageValue('');
       }
-    };
-    
-  
+
+      toast.success(response.message || "Stage deleted successfully");
+    } catch (error) {
+      toast.error('Failed to delete stage');
+      console.error('Error deleting stage:', error);
+    }
+  };
+
+
 
   const handleEditStage = (index: number) => {
     setEditingIndex(index);
@@ -286,7 +301,7 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
 
   return (
     <Modal open={open} onClose={onClose} sx={{ zIndex: 9999 }}>
-       <Box className={`${timelineModalStyles.base} ${timelineModalStyles.sizes.default}`}>
+      <Box className={`${timelineModalStyles.base} ${timelineModalStyles.sizes.default}`}>
         <div className="border-b border-gray-400 mb-2 py-2">
           <div className="flex justify-between items-center px-4">
             <p className="text-lg font-semibold">Edit Timeline</p>
@@ -305,9 +320,9 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
                 placeholder="Enter Stage Name"
                 className='w-full'
                 value={editingIndex !== null ? editStageValue : newStage}
-                onChange={(e) => 
-                  editingIndex !== null 
-                    ? setEditStageValue(e.target.value) 
+                onChange={(e) =>
+                  editingIndex !== null
+                    ? setEditStageValue(e.target.value)
                     : setNewStage(e.target.value)
                 }
               />
@@ -318,9 +333,10 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
                   className='h-9'
                   variant="primary"
                   onClick={handleUpdateStage}
-                  // loading={isUpdating}
+                // loading={isUpdating}
                 >
-                  Update
+                  {addStageLoading ? <ButtonLoader /> : 'Update'}
+                
                 </Button>
                 <Button
                   className='h-9'
@@ -335,9 +351,11 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
                 className='h-9 w-40 md:w-30'
                 variant="primary"
                 onClick={handleAddStage}
-                // loading={isAdding}
+              // loading={isAdding}
               >
-                Add Stage
+                {addStageLoading ? <ButtonLoader /> : "Add Stage"}
+
+
               </Button>
             )}
           </div>
@@ -371,7 +389,7 @@ const EditTimelineModal: React.FC<Props> = ({ open, onClose }) => {
             variant="primary"
             onClick={handleReorderSubmit}
           >
-            Update Order
+            {reorderLoading ? <ButtonLoader /> : "Update Order"}
           </Button>
         </div>
       </Box>

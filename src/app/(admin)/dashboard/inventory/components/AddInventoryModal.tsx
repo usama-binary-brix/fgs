@@ -387,7 +387,9 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                     className='font-semibold'
                                     disabled={isSubmitting}
                                 >
-                                    {isSubmitting ? "Processing..." : "Add Inventory"}
+                                    {isSubmitting ? <div className=" flex items-center justify-center">
+            <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></div>
+          </div> : "Add Inventory"}
                                 </Button>
                             </div>
                         </Grid>

@@ -145,7 +145,9 @@ export default function SignInForm() {
                   className="w-full bg-primary hover:bg-primary py-2 text-white rounded-lg"
                   disabled={isLoading || formik.isSubmitting}
                 >
-                  {isLoading || formik.isSubmitting ? "Signing in..." : "Sign in"}
+                  {isLoading || formik.isSubmitting ?  <div className=" flex items-center justify-center">
+            <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></div>
+          </div> : "Sign in"}
                 </button>
               </div>
 

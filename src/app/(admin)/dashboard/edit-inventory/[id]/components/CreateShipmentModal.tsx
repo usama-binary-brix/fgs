@@ -18,6 +18,7 @@ import { useParams } from 'next/navigation';
 import { useAddNewShipmentMutation, useGetInventoryByIdQuery } from '@/store/services/api';
 import { toast } from 'react-toastify';
 import { ErrorResponse, modalStyles } from '../../../accounts/components/AccountsModal';
+import ButtonLoader from '@/components/ButtonLoader';
 
 const modalStyle = {
     position: 'absolute' as const,
@@ -562,7 +563,7 @@ const CreateShipmentModal: React.FC<Props> = ({ open, onClose, defaultShipmentTy
                             className="bg-blue-600 text-white px-5 py-2 text-sm rounded-md hover:bg-blue-700 transition"
                             disabled={loading}
                         >
-                            {loading ? 'Creating...' : 'Create Shipment'}
+                            {loading ? <ButtonLoader/> : 'Create Shipment'}
                         </Button>
                     </div>
                 </form>

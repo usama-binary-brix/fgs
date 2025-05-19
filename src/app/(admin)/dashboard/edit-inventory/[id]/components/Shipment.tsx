@@ -23,6 +23,7 @@ import { toast } from 'react-toastify';
 import { ErrorResponse } from '../../../accounts/components/AccountsModal';
 import RadioButton from '../../../leads/components/radiobutton/RadioButton';
 import ShipmentQuotesTable from './shipmentQuotes/ShipmentQuotesTable';
+import ButtonLoader from '@/components/ButtonLoader';
 
 // Shipment Provider 
 const shipmentProvider = [
@@ -87,7 +88,7 @@ const Shipment = () => {
   const [activeRowId, setActiveRowId] = useState<string | null>(null);
   const [editingShipmentId, setEditingShipmentId] = useState<string | null>(null);
   const [updateShipment] = useAddNewShipmentMutation();
-
+const [isUpdateInboundShipment , setIsUpdateInboundShipment] = useState(false)
   const router = useRouter()
 
   const toggleDropdown = (id: string) => {
@@ -135,6 +136,7 @@ const Shipment = () => {
 
     },
     onSubmit: async (values, { resetForm }) => {
+      setIsUpdateInboundShipment(true)
       try {
         const payload = {
 
@@ -166,7 +168,9 @@ const Shipment = () => {
         }).unwrap();
         toast.success(response.message || 'Shipment updated successfully');
         setEditingShipmentId(null);
-        setIsEditMode(false);;
+        setIsEditMode(false);
+      setIsUpdateInboundShipment(false)
+
       } catch (error) {
         const errorResponse = error as ErrorResponse;
 
@@ -181,6 +185,8 @@ const Shipment = () => {
         } else {
           toast.error('Failed to create shipment');
         }
+      setIsUpdateInboundShipment(false)
+
       }
     },
     enableReinitialize: false,
@@ -248,7 +254,9 @@ const Shipment = () => {
 
 
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div>  <div className="py-6 flex items-center justify-center h-[60vh]">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          </div></div>;
   if (error) return <div>Error loading shipments</div>;
 
   return (
@@ -691,7 +699,7 @@ const Shipment = () => {
                                         formik.handleSubmit();
                                       }}
                                     >
-                                      Update
+                                    {isUpdateInboundShipment ? <ButtonLoader/> : 'Update'}
                                     </Button>
                                     <Button
                                       variant="outlined"
@@ -1128,7 +1136,8 @@ const Shipment = () => {
                                         formik.handleSubmit();
                                       }}
                                     >
-                                      Update
+                                                                       {isUpdateInboundShipment ? <ButtonLoader/> : 'Update'}
+
                                     </Button>
                                     <Button
                                       variant="outlined"
