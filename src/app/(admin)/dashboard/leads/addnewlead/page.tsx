@@ -17,6 +17,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import Label from "@/components/form/Label";
 import Select from "@/components/form/Select";
 import LeadSelect from "@/components/form/LeadSelect";
+import ButtonLoader from "@/components/ButtonLoader";
 
 type ErrorResponse = {
   data: {
@@ -263,7 +264,7 @@ const leadSourceOptions = [
                   className="text-[13px] font-semibold"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Processing..." : " Add Lead"}
+                  {isSubmitting ? <ButtonLoader/> : " Add Lead"}
 
                 </Button>
 

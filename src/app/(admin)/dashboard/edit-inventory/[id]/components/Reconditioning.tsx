@@ -10,41 +10,53 @@ import { useSelector } from 'react-redux'
 
 const Reconditioning = () => {
   const [openTimelineModal, setOpenEditTimelineModal] = useState(false)
-  const handleOpenEditTimeline = ()=>{
+  const handleOpenEditTimeline = () => {
     setOpenEditTimelineModal(true)
   }
-  const handleCloseModal = ()=>{
+  const handleCloseModal = () => {
     setOpenEditTimelineModal(false)
   }
 
-  const userRole = useSelector((state:any)=>state?.user?.user?.account_type)
+  const userRole = useSelector((state: any) => state?.user?.user?.account_type)
 
-const {id} = useParams()
- const { data: timelineData, error, isLoading: allTimelineLoading, refetch } = useGetAllTimelineQuery(id);
- const steps =
-  (error as any)?.status === 404
-    ? []
-    : timelineData?.timeLine || [];
+  const { id } = useParams()
+  const { data: timelineData, error, isLoading: allTimelineLoading, refetch } = useGetAllTimelineQuery(id);
+  const steps =
+    (error as any)?.status === 404
+      ? []
+      : timelineData?.timeLine || [];
 
   return (
     <>
-     <div className="flex justify-between items-center mt-3">
+      <div className="flex justify-between items-center mt-3">
         {/* <h1 className="text-[#000] text-[17px] font-family font-semibold">Timeline</h1> */}
         <p className='text-lg font-semibold'>Reconditioning Timeline:</p>
-      {(userRole === 'super_admin' || userRole === 'admin') && (
-        <Button variant="primary"
+        {(userRole === 'super_admin' || userRole === 'admin') && (
+          <Button variant="primary"
             size='sm'
             onClick={handleOpenEditTimeline}
 
           >
             Edit Timeline
           </Button>
-      ) }
-        
+        )}
+
       </div>
-    <CustomizedTimeline steps={steps} timelineData={timelineData}/>
-<TasksList/>
-    <EditTimelineModal open={openTimelineModal} onClose={handleCloseModal}/>
+{allTimelineLoading ? (
+  <>
+    <div className="py-6 flex items-center justify-center h-[60vh]">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          </div>
+  </>
+):(
+  <>
+      <CustomizedTimeline steps={steps} timelineData={timelineData} />
+      <TasksList />
+
+
+  </>
+)}
+      <EditTimelineModal open={openTimelineModal} onClose={handleCloseModal} />
     </>
   )
 }

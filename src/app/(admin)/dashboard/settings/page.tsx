@@ -11,6 +11,7 @@ import { FiCamera, FiX, FiCheck } from "react-icons/fi";
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { ErrorResponse } from '../accounts/components/AccountsModal';
+import ButtonLoader from '@/components/ButtonLoader';
 
 const Page = () => {
     const [selected, setSelected] = useState(null);
@@ -392,7 +393,7 @@ const Page = () => {
                                             variant="primary"
                                             disabled={isLoading || formik.isSubmitting}
                                         >
-                                            Submit
+                                           {isLoading || formik.isSubmitting ? <ButtonLoader/> : 'Submit'}
                                         </Button>
                                     </div>
                                 )}

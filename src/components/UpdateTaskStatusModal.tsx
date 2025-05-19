@@ -9,6 +9,7 @@ import { useAddInventoryMutation, useAddTaskStatusMutation, useEmployeeTaskStatu
 import Label from '@/components/form/Label';
 import TextArea from './form/input/TextArea';
 import Button from '@/components/ui/button/Button';
+import ButtonLoader from './ButtonLoader';
 
 const modalStyle = {
     position: 'absolute' as const,
@@ -335,7 +336,7 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName, taskI
                                     className='font-semibold'
                                     disabled={isSubmitting}
                                 >
-                                    {isSubmitting ? "Processing..." : "Update"}
+                                    {isSubmitting ? <ButtonLoader/>: "Update"}
                                 </Button>
                             </div>
                         </Grid>

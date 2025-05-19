@@ -52,7 +52,9 @@ const userRole = useSelector((state:any)=>state?.user?.user?.account_type)
           ) : (
             user?.user && (
               <div className="flex flex-col gap-4 mt-4">
-                <div className="grid grid-cols-5 gap-8 text-gray-700 text-sm">
+                {/* <div className="grid grid-cols-5 gap-8 text-gray-700 text-sm"> */}
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 text-gray-700 text-sm">
+
                   <div>
                     <p className="text-gray-500">Account Type</p>
                     <p className="font-medium text-[#616161] mt-1">{user?.user.account_type}</p>
@@ -63,7 +65,7 @@ const userRole = useSelector((state:any)=>state?.user?.user?.account_type)
                   </div>
                   <div>
                     <p className="text-gray-500">Last Name</p>
-                    <p className="font-medium break-words max-w-[100px] overflow-hidden text-ellipsis text-[#616161] mt-1">{user?.user.last_name}</p>
+                    <p className="font-medium break-words max-w-[100px] overflow-hidden text-ellipsis text-[#616161] mt-1">{user?.user.last_name || '---'}</p>
                   </div>
                   <div>
                     <p className="text-gray-500">Email</p>
@@ -75,7 +77,7 @@ const userRole = useSelector((state:any)=>state?.user?.user?.account_type)
                   </div>
                   <div>
                     <p className="text-gray-500">Company</p>
-                    <p className="font-medium text-[#616161] mt-1">{user?.user.company_name}</p>
+                    <p className="font-medium text-[#616161] mt-1">{user?.user.company_name || '---'}</p>
                   </div>
                   <div>
                     <p className="text-gray-500">Referred By</p>

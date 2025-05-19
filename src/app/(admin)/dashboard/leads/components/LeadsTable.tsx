@@ -272,18 +272,36 @@ const LeadsTable = () => {
                                   Edit
                                 </DropdownItem>
                               )}
-                              <DropdownItem
+                              {/* <DropdownItem
                                 onItemClick={() => { lead.type === 'lead' && handlePromoteClick(lead.id); closeDropdown(); }}
                                 className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
                               >
                                 {isPromoteLoading && selectedId === lead.id ? "Promoting..." : (lead.type === 'lead' ? "Promote to investor" : "Already Promoted")}
-                              </DropdownItem>
+                              </DropdownItem> */}
                               <DropdownItem
+  onItemClick={() => {
+    if (lead.type === 'lead') {
+      handlePromoteClick(lead.id);
+    }
+    closeDropdown();
+  }}
+  className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
+>
+  {isPromoteLoading && selectedId === lead.id ? (
+    "Promoting..."
+  ) : lead.type === 'lead' ? (
+    "Promote to investor"
+  ) : (
+    <span className="text-green-500">Already Promoted</span>
+  )}
+</DropdownItem>
+
+                              {/* <DropdownItem
                                 onItemClick={closeDropdown}
                                 className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]"
                               >
                                 Send Email
-                              </DropdownItem>
+                              </DropdownItem> */}
                               <DropdownItem
                                 onItemClick={() => {
                                   setOpenDropdownId(null);

@@ -11,6 +11,7 @@ import Button from '@/components/ui/button/Button';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import ButtonLoader from '@/components/ButtonLoader';
 type ErrorResponse = {
   data: {
     error: Record<string, string>; // `error` contains field names as keys and error messages as values
@@ -279,7 +280,7 @@ const ViewDetailsLeads = () => {
                 className='font-semibold'
                 disabled={isSubmitting || leadData?.lead?.type !== 'lead'}
               >
-                {isSubmitting ? 'Updating' : 'Update'}
+                {isSubmitting ? <ButtonLoader/> : 'Update'}
               </Button>
               <Button variant="primary"
                 className='font-semibold'
@@ -288,7 +289,7 @@ const ViewDetailsLeads = () => {
 
               >
 
-                {isPromoteLoading ? "Promoting..." : (leadData?.lead?.type === 'lead' ? "Promote to Investor" : "Already Promoted")}
+                {isPromoteLoading ? <ButtonLoader/> : (leadData?.lead?.type === 'lead' ? "Promote to Investor" : "Already Promoted")}
               </Button>
             </div>
 

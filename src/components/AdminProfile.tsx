@@ -57,11 +57,11 @@ const dispatch = useDispatch()
       <div className="flex items-center justify-between">
 
       <div className="flex items-center gap-[0.65rem]">
-      {user?.profileImage ? (
-  <Image
-    width={12}
-    height={12}
-    src={user.profileImage}
+      {user?.profile_image ? (
+  <img
+    // width={12}
+    // height={12}
+    src={user?.profile_image}
     alt="User Profile"
     className="w-12 h-12 rounded-full object-cover"
   />

@@ -3,7 +3,7 @@ import Input from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
 import Button from '@/components/ui/button/Button';
 import { Box, Grid, Modal, Autocomplete, TextField } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -13,6 +13,7 @@ import { useAddNewTaskMutation, useGetAllEmployeesQuery, useGetAllTimelineQuery,
 import { ErrorResponse } from '@/app/(admin)/dashboard/accounts/components/AccountsModal';
 import { toast } from 'react-toastify';
 import TextArea from '@/components/form/input/TextArea';
+import ButtonLoader from '@/components/ButtonLoader';
 
 interface Props {
     open: boolean;
@@ -79,7 +80,7 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose, taskId }) => {
     const [userInput, setUserInput] = React.useState('');
     const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
     const [selectedTimeline, setSelectedTimeline] = React.useState<Timeline | null>(null);
-
+    const [loading, setLoading] = useState(false)
     // API hooks
     const [addTask] = useAddNewTaskMutation();
     const [editTask] = useUpdateTaskMutation();
@@ -183,7 +184,7 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose, taskId }) => {
                 timeline_id: selectedTimeline?.id || '',
                 inventory_id: id
             };
-
+            setLoading(true)
             try {
                 let response;
                 if (isEditMode && taskId) {
@@ -197,6 +198,8 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose, taskId }) => {
                 }
                 resetForm();
                 onClose();
+                setLoading(false)
+
             } catch (error) {
                 const errorResponse = error as ErrorResponse;
                 if (errorResponse?.data?.error) {
@@ -209,6 +212,8 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose, taskId }) => {
                     });
                 }
                 handleClose();
+                setLoading(false)
+
             }
         },
     });
@@ -404,8 +409,9 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose, taskId }) => {
                             <div className='flex items-center gap-4'>
                                 <Button onClick={handleClose} variant="fgsoutline">Cancel</Button>
                                 <Button type="submit" variant="primary">
-                                    {isEditMode ? 'Update Task' : 'Add Task'}
+                                    {loading ? <ButtonLoader /> : isEditMode ? 'Update Task' : 'Add Task'}
                                 </Button>
+
                             </div>
                         </Grid>
                     </Grid>
