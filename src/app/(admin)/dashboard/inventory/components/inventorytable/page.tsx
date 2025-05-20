@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import Pagination from '@/components/tables/Pagination';
 import { useDebounce } from 'use-debounce';
+import NProgress from 'nprogress';
 
 
 
@@ -351,6 +352,8 @@ const InventoryTable = () => {
                           <div className="absolute right-9 top-[-7px] mt-2 z-[999] w-40 bg-white p-2 shadow-md border rounded-sm">
                             <DropdownItem
                               onItemClick={() => {
+                                     NProgress.start();
+                                
                                 router.push(`/dashboard/edit-inventory/${lead.id}`);
                                 closeDropdown();
                               }}
@@ -361,6 +364,7 @@ const InventoryTable = () => {
 
                             <DropdownItem
                               onItemClick={() => {
+     NProgress.start();
 
                                 router.push(`/dashboard/edit-inventory/${lead.id}`);
                                 closeDropdown();

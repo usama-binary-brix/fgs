@@ -1,4 +1,5 @@
 import { useRouter } from 'next/navigation';
+import NProgress from 'nprogress';
 import React from 'react';
 import { TfiArrowTopRight } from 'react-icons/tfi';
 
@@ -7,6 +8,8 @@ const ProjectStages = (data: any) => {
 const router = useRouter()
 
 const handleSendToInventory = (id: any) => {
+       NProgress.start();
+  
   router.push(`/dashboard/edit-inventory/${id}?tab=reconditioning`);
 };
 

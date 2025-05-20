@@ -11,6 +11,7 @@ import Button from '@/components/ui/button/Button';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import NProgress from 'nprogress';
 type ErrorResponse = {
   data: {
     error: Record<string, string>; // `error` contains field names as keys and error messages as values
@@ -257,6 +258,8 @@ const ViewDetailsLeads = () => {
     }));
   };
   const handleNavigate = () => {
+         NProgress.start();
+    
     router.push('/sales-dashboard/leads')
   }
 

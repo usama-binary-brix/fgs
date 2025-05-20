@@ -41,15 +41,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={outfit.variable}>
       <TopLoader/>
-        {/* <NextTopLoader 
+        <NextTopLoader  
         height={3} 
-      showSpinner={false} 
       color='#D18428'
-      crawl={true} // Enable for child routes
-      crawlSpeed={200} // Adjust crawl speed
-      easing="ease"
-      speed={200}
-      shadow="0 0 10px #D18428,0 0 5px #D18428" /> */}
+ />
 
         <ProvidersWrapper>{children}</ProvidersWrapper>
         <ToastContainer

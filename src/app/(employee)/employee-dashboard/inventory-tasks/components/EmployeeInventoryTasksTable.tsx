@@ -16,6 +16,7 @@ import AddLeadInput from '@/app/(admin)/dashboard/leads/components/input/AddLead
 import { useFormik } from 'formik';
 import { useDebounce } from 'use-debounce';
 import Pagination from '@/components/tables/Pagination';
+import NProgress from 'nprogress';
 
 
 
@@ -69,6 +70,8 @@ const EmployeeInventoryTasksTable = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedId, setSelectedId] = useState<string | number | null>(null);
     const handleNavigate = (id: any) => {
+             NProgress.start();
+        
         router.push(`view-tasks/${id}`)
     }
     const formik = useFormik({

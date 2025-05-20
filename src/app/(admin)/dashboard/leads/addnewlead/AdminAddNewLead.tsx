@@ -18,6 +18,7 @@ import Label from "@/components/form/Label";
 import Select from "@/components/form/Select";
 import LeadSelect from "@/components/form/LeadSelect";
 import ButtonLoader from "@/components/ButtonLoader";
+import NProgress from "nprogress";
 
 type ErrorResponse = {
   data: {
@@ -225,6 +226,8 @@ const AdminAddNewLead = () => {
   };
 
   const handleNavigate = () => {
+         NProgress.start();
+    
     router.push('/dashboard/leads')
   }
 

@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { PageTitle } from "@/components/PageTitle";
 import Button from "@/components/ui/button/Button";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import NProgress from "nprogress";
 
 type ErrorResponse = {
   data: {
@@ -210,6 +211,8 @@ const AddNewLead = () => {
 
 
   const handleNavigate = () => {
+         NProgress.start();
+    
     router.push('/sales-dashboard/leads')
   }
 

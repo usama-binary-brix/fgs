@@ -17,6 +17,7 @@ import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import Pagination from '@/components/tables/Pagination';
 import { format } from 'date-fns';
 import { useDebounce } from 'use-debounce';
+import NProgress from 'nprogress';
 
 interface Lead {
   id: string;
@@ -54,10 +55,14 @@ const LeadsTable = () => {
 
 
   const handleNavigate = () => {
+         NProgress.start();
+    
     router.push("/sales-dashboard/leads/addnewlead")
   }
 
   const hanldeViewDetails = (id: any) => {
+         NProgress.start();
+    
     router.push(`/sales-dashboard/leads/view-lead/${id}`)
   }
 

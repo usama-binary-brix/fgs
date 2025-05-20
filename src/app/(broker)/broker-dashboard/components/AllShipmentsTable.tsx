@@ -17,6 +17,7 @@ import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import Pagination from '@/components/tables/Pagination';
 import { format } from 'date-fns';
 import { useDebounce } from 'use-debounce';
+import NProgress from 'nprogress';
 
 
 
@@ -205,6 +206,8 @@ const AllShipmentsTable = () => {
                         <div className="absolute right-9 top-[-5px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
                           <DropdownItem
                             onItemClick={() => {
+                                   NProgress.start();
+                              
                               router.push(`/broker-dashboard/shipments-opportunities/all-shipments/view-shipment/${shipment.id}`);
                               closeDropdown();
                             }}

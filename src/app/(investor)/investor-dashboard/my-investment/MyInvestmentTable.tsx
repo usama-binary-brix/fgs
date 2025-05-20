@@ -16,6 +16,7 @@ import AddLeadInput from '@/app/(admin)/dashboard/leads/components/input/AddLead
 import { useFormik } from 'formik';
 import Pagination from '@/components/tables/Pagination';
 import { useDebounce } from 'use-debounce';
+import NProgress from 'nprogress';
 
 
 
@@ -80,6 +81,8 @@ const MyInvestmentTable = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedId, setSelectedId] = useState<string | number | null>(null);
     const handleNavigate = (id: any) => {
+             NProgress.start();
+        
         router.push(`my-investment/view-project/${id}`)
     }
     const formik = useFormik({
