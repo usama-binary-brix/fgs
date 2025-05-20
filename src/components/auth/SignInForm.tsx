@@ -41,6 +41,8 @@ export default function SignInForm() {
       password: Yup.string().required("Password is required."),
     }),
     onSubmit: async (values, { setSubmitting, setFieldError }) => {
+      setSubmitting(true);
+
       try {
         const res = await login(values).unwrap();
         dispatch(setUser({ user: res.user, token: res.token }));
@@ -64,6 +66,8 @@ export default function SignInForm() {
         } else {
           router.push("/");
         }
+      setSubmitting(false);
+
       } 
         catch (err: any) {
           setFieldError("password", err?.data?.message || err?.data?.error || "Login failed");
