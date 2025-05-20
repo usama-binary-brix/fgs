@@ -3,6 +3,8 @@ import "./globals.css";
 import { ProvidersWrapper } from "@/components/ProviderWrapper";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import NextTopLoader from "nextjs-toploader";
+
 
 const outfit = Outfit({
   variable: "--font-outfit-sans",
@@ -18,6 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={outfit.variable}>
+                <NextTopLoader height={3} showSpinner={false} color='#D18428' />
+
         <ProvidersWrapper>{children}</ProvidersWrapper>
         <ToastContainer 
           position="top-right"
