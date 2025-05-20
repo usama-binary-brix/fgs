@@ -29,6 +29,8 @@ const userRole = useSelector((state:any)=>state?.user?.user?.account_type)
 
   };
 
+  console.log(user?.user?.investments.length, 'user length')
+
   return (
     <>
 
@@ -88,7 +90,7 @@ const userRole = useSelector((state:any)=>state?.user?.user?.account_type)
             )
           )}
 
-          {user?.user?.account_type === 'investor' && (
+          {user?.user?.account_type === 'investor' && user?.user?.investments.length > 0 && (
             <>
           <div className='mt-4'>
             <UserProjects user={user}/>

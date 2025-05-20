@@ -2,7 +2,6 @@ import React from 'react'
 
 const UserProjects = (user: any) => {
 
-  console.log(user?.user, 'user data ')
 
   const projects = [
     { name: "ThyssenKrupp Evolution", investment_amount: 500, profits: 250.75, status: "Sold" },
@@ -21,7 +20,7 @@ const UserProjects = (user: any) => {
           {/* Table Header */}
           <thead className="bg-[#F7F7F7] dark:border-white/[0.05]">
             <tr>
-              {['Project', 'Investment Amount', 'Profits', 'Payment Status'].map((heading) => (
+              {['Project ID', 'Investment Amount', 'Profits', 'Project Status'].map((heading) => (
                 <th key={heading} className="px-5 py-3 uppercase text-[#616161] font-[500] text-start text-theme-sm dark:text-gray-400">
                   <div className="w-full flex justify-between items-center">
                     {heading}
@@ -36,20 +35,20 @@ const UserProjects = (user: any) => {
 
           {/* Table Body */}
           <tbody>
-            {projects.map((project, index) => (
+            {user?.user?.user?.investments?.map((project:any, index:any) => (
               <tr key={index} className="">
-                <td className="px-5 py-3 text-sm text-[#616161]">{project.name}</td>
-                <td className="px-5 py-3 text-sm text-[#616161]">${project.investment_amount.toFixed(2)}</td>
+                <td className="px-5 py-3 text-sm text-[#616161]">{project?.inventory?.listing_number || '---'}</td>
+                <td className="px-5 py-3 text-sm text-[#616161]">${project?.investment_amount || '---'}</td>
                 <td className="px-5 py-3 text-sm text-[#616161]">
-                  {project.profits !== null ? `$ ${project.profits.toFixed(2)}` : "---"}
+                  {project.profits ? `$ ${project.profits}` : "---"}
                 </td>
                 <td className="px-5 py-3 text-sm">
-                  <span className={`px-3 py-2 rounded-sm text-sm font-medium
-                    ${project.status === 'Sold' ? 'bg-green-100 text-green-600' :
-                      project.status === 'Pending' ? 'bg-gray-200 text-gray-600' :
+                  <span className={`px-3 py-2 rounded-sm text-sm font-medium capitalize
+                    ${project.inventory.status === 'complete' ? 'bg-green-100 text-green-600' :
+                      project.inventory.status === 'Pending' ? 'bg-gray-200 text-gray-600' :
                         'bg-orange-100 text-orange-500'}`}
                   >
-                    {project.status}
+                    {project.inventory.status || '---'}
                   </span>
                 </td>
               </tr>
