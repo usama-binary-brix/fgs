@@ -679,3 +679,14 @@ layer(base);
 .css-1n04w30-MuiInputBase-root-MuiOutlinedInput-root:hover{
   border-color: none !important;
 }
+
+/* nprogress customization */
+#nprogress .bar {
+  background: #D18428 !important;
+  height: 3px !important;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #D18428, 0 0 5px #D18428 !important;
+}
+
