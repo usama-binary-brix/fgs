@@ -550,7 +550,14 @@ export const api = createApi({
       invalidatesTags: ["InventoryTimeline"],
     }),
 
+ getQRCodeInventoryById: builder.query({
+      query: (id) => ({
+        url: `inventory-detail/${id}`,
+        method: 'GET',
+      }),
+      providesTags: ["Inventory"],
 
+    }),
 
   }),
 });
@@ -618,6 +625,6 @@ useGetInvestorDashboardQuery,
 useUpdateUserInfoMutation,
 useAddAdditionalCostMutation,
 useDeleteAdditionalCostRowMutation,
-
+useGetQRCodeInventoryByIdQuery,
  
 } = api;
