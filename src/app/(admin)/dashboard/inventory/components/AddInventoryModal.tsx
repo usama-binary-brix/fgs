@@ -74,6 +74,19 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
     const [fetchSubCategories] = useGetSubCategoriesMutation();
     const [addInventory] = useAddInventoryMutation();
 
+
+  const fields = [
+    { name: "year", label: "Year" },
+    { name: "make", label: "Make" },
+    { name: "model", label: "Model" },
+    { name: "serial_no", label: "Serial No" },
+    { name: "length", label: "Length (feet)" },
+    { name: "height", label: "Height (feet)" },
+    { name: "width", label: "Width (feet)" },
+    { name: "weight", label: "Weight" },
+    { name: "hours", label: "Hours" },
+    { name: "price_paid", label: "Price Paid" },
+  ];
     useEffect(() => {
         if (!open) {
             setSelectedCategory('');
@@ -286,7 +299,40 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
 
                         </Grid>
 
-                        {["year", "make", "model", "serial_no", "length", "height", "width", "weight", "hours", "price_paid",].map((field) => (
+                        {fields.map(({ name, label }) => (
+                            <Grid item xs={12} md={4}>
+
+                <div key={name}>
+                  <Label className="capitalize">
+                    {label} <span className="text-red-600">*</span>
+                  </Label>
+
+                  <div className="relative flex items-center">
+                    <input
+                      type="text"
+                      name={name}
+                      value={formik.values[name as keyof typeof formik.values] || ""}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      className="h-9 w-full rounded-sm border appearance-none px-4 py-1 text-sm shadow-theme-xs text-black placeholder:text-gray-400 focus:outline-hidden focus:ring-1 pr-10"
+                    />
+                    {["length", "height", "width"].includes(name) && (
+        <span className="absolute right-3 text-sm text-gray-600">feet</span>
+      )}
+                  </div>
+
+                  {formik.touched[name as keyof typeof formik.values] &&
+                    formik.errors[name as keyof typeof formik.errors] && (
+                      <p className="text-red-500 text-sm">
+                        {formik.errors[name as keyof typeof formik.errors]}
+                      </p>
+                    )}
+                </div>
+                            </Grid>
+
+              ))}
+
+                        {/* {["year", "make", "model", "serial_no", "length", "height", "width", "weight", "hours", "price_paid",].map((field) => (
                             <Grid item xs={12} md={4} key={field}>
                                 <Label className='capitalize'>
                                     {field.replace("_", " ")}
@@ -305,7 +351,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                     <p className="text-red-500">{formik.errors[field as keyof typeof formik.errors]}</p>
                                 )}
                             </Grid>
-                        ))}
+                        ))} */}
 
                         <Grid item xs={12} md={4}>
                             <Label>Date Purchased <span className="text-red-500">*</span></Label>

@@ -573,9 +573,9 @@ let safeId = '';
                       onBlur={formik.handleBlur}
                       className="h-9 w-full rounded-sm border appearance-none px-4 py-1 text-sm shadow-theme-xs text-black placeholder:text-gray-400 focus:outline-hidden focus:ring-1 pr-10"
                     />
-                    {/* {["length", "height", "width"].includes(name) && (
-        <span className="absolute right-3 text-sm text-gray-600">ft</span>
-      )} */}
+                    {["length", "height", "width"].includes(name) && (
+        <span className="absolute right-3 text-sm text-gray-600">feet</span>
+      )}
                   </div>
 
                   {formik.touched[name as keyof typeof formik.values] &&
