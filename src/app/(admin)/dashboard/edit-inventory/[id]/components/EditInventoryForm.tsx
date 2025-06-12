@@ -26,6 +26,7 @@ import { FiLock } from "react-icons/fi";
 import ButtonLoader from "@/components/ButtonLoader";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import CryptoJS from 'crypto-js';
 
 type ErrorResponse = {
   data: {
@@ -39,7 +40,7 @@ type SUbCategoriesErrorResponse = {
   };
 };
 
-
+const SECRET_KEY = 'my_secret_key_123'; 
 const EditInventoryForm = () => {
   const { id } = useParams();
   const router = useRouter()
@@ -55,7 +56,21 @@ const EditInventoryForm = () => {
   const sellingPrice = inventoryData?.inventory?.selling_price
   const profitAmount = inventoryData?.profit_data?.profit
   const profitPercentage = inventoryData?.profit_data?.profit_percentage
-   const qrRef = useRef<HTMLDivElement>(null);
+  const qrRef = useRef<HTMLDivElement>(null);
+
+  // Encrypt the ID using AES
+let safeId = '';
+  if (typeof id === 'string') {
+    safeId = id;
+  } else if (Array.isArray(id)) {
+    safeId = id[0]; // use first item
+  } else {
+    return null; // or render an error
+  }
+
+  // ✅ Encrypt ID safely
+  const encryptedId = CryptoJS.AES.encrypt(safeId, SECRET_KEY).toString();
+  const qrUrl = `https://fgs-theta.vercel.app/inventory/${encodeURIComponent(encryptedId)}`;
 
   const handleDownloadPDF = async () => {
     if (!qrRef.current) return;
@@ -71,15 +86,13 @@ const EditInventoryForm = () => {
 
     const pageWidth = 148;
     const pageHeight = 210;
-
-    const qrSize = 76; // you can adjust this as needed
+    const qrSize = 76;
     const x = (pageWidth - qrSize) / 2;
     const y = (pageHeight - qrSize) / 2;
 
     pdf.addImage(imgData, 'PNG', x, y, qrSize, qrSize);
     pdf.save('qr-code.pdf');
   };
-
 
 
   // Update tab based on URL
@@ -386,7 +399,7 @@ const EditInventoryForm = () => {
 
    <div className="flex flex-col items-center">
       <div ref={qrRef}>
-        <QRCodeCanvas value={`https://fgs-theta.vercel.app/inventory/${id}`} size={76} />
+       <QRCodeCanvas value={qrUrl} size={76} />
       </div>
       <h1
         onClick={handleDownloadPDF}
