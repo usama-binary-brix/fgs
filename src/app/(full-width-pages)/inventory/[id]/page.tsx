@@ -11,16 +11,20 @@ const SECRET_KEY = 'my_secret_key_123';
 const Page = () => {
   const { id } = useParams();
   const [decryptedId, setDecryptedId] = useState('');
-
+const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (typeof id === 'string') {
       try {
+        
         const decodedURI = decodeURIComponent(id);
         const bytes = CryptoJS.AES.decrypt(decodedURI, SECRET_KEY);
         const originalId = bytes.toString(CryptoJS.enc.Utf8);
         setDecryptedId(originalId);
+        setLoading(false)
       } catch (error) {
+        setLoading(false)
+
         console.error('Decryption failed:', error);
         setDecryptedId('Invalid or corrupted ID');
       }
@@ -67,7 +71,11 @@ const Page = () => {
     }
   };
 
-
+  if (isLoading || loading) return <>
+    <div className="py-6 flex items-center justify-center h-[80vh]">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+    </div>
+  </>;
 
 
   return (
