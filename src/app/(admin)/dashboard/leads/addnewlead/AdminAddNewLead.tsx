@@ -60,6 +60,11 @@ const AdminAddNewLead = () => {
   //   }));
   // };
 
+      const leads_type = [
+      { value: "investor", label: "Investor" },
+    { value: "customer", label: "Customer" },
+
+  ];
   const options = [
     { label: "No Calls - Black", value: "No Calls - Black" },
     { label: "1st Call - Red", value: "1st Call - Red" },
@@ -106,6 +111,7 @@ const AdminAddNewLead = () => {
 
   const formik = useFormik({
     initialValues: {
+      lead_type:"",
       name: "",
       title: "",
       company: "",
@@ -284,6 +290,23 @@ const AdminAddNewLead = () => {
               {/* Contact Information */}
               <div className="bg-white w-full rounded p-3">
                 <h1 className="text-[#000] text-[14px] font-family font-medium mb-1">Contact Information</h1>
+                <div>
+                            <label className="text-[11.5px] text-[#818181] font-normal font-family">
+       Lead Type <span className="text-red-500">*</span>
+
+      
+      </label>   
+                                         <LeadSelect
+                                         
+                                           name="lead_type"
+                                           value={formik.values.lead_type}
+                                           options={leads_type}
+                                           onChange={formik.handleChange}
+                                           onBlur={formik.handleBlur}
+                                           error={formik.touched.lead_type ? formik.errors.lead_type : undefined}
+                                         />
+                           
+                         </div>
                 <div>
 
                   <AddLeadInput

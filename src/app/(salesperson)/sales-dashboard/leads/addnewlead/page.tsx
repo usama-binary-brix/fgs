@@ -16,6 +16,9 @@ import { PageTitle } from "@/components/PageTitle";
 import Button from "@/components/ui/button/Button";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import NProgress from "nprogress";
+import Label from "@/components/form/Label";
+import Select from "@/components/form/Select";
+import LeadSelect from "@/components/form/LeadSelect";
 
 type ErrorResponse = {
   data: {
@@ -98,8 +101,18 @@ const AddNewLead = () => {
     { value: "Myron" },
   ];
 
+
+    const leads_type = [
+      { value: "investor", label: "Investor" },
+    { value: "customer", label: "Customer" },
+
+  ];
+
+
+
   const formik = useFormik({
     initialValues: {
+      lead_type:"",
       name: "",
       title: "",
       company: "",
@@ -257,6 +270,23 @@ const AddNewLead = () => {
               {/* Contact Information */}
               <div className="bg-white w-full rounded p-3">
                 <h1 className="text-[#000] text-[14px] font-family font-medium mb-2">Contact Information</h1>
+          <div>
+                     <label className="text-[11.5px] text-[#818181] font-normal font-family">
+       Lead Type <span className="text-red-500">*</span>
+
+      
+      </label>   
+                          <LeadSelect
+                          
+                            name="lead_type"
+                            value={formik.values.lead_type}
+                            options={leads_type}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.lead_type ? formik.errors.lead_type : undefined}
+                          />
+            
+          </div>
                 <div>
 
                   <AddLeadInput

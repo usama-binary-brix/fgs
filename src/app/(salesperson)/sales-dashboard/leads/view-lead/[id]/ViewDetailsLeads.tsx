@@ -284,6 +284,8 @@ const ViewDetailsLeads = () => {
               >
                 {isSubmitting ? 'Updating' : 'Update'}
               </Button>
+              {leadData?.lead?.lead_type !== 'customer' && (
+                <>
               <Button variant="primary"
                 className='font-semibold'
                 onClick={() => handlePromoteClick(id)}
@@ -292,7 +294,10 @@ const ViewDetailsLeads = () => {
               >
 
                 {isPromoteLoading ? "Promoting..." : (leadData?.lead?.type === 'lead' ? "Promote to Investor" : "Already Promoted")}
-              </Button>
+              </Button>  
+                </>
+              )}
+              
             </div>
 
           </div>

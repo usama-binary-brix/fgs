@@ -32,7 +32,7 @@ interface Lead {
   image: string;
 }
 
-const LeadsTable = () => {
+const InvestorLeadsTable = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,7 +45,7 @@ const LeadsTable = () => {
     page: currentPage,
     perPage: perPage,
     search: debouncedSearchText,
-    type:''
+    type:'investor'
   });
 
 
@@ -358,4 +358,4 @@ const LeadsTable = () => {
   );
 };
 
-export default LeadsTable;
+export default InvestorLeadsTable;

@@ -195,9 +195,9 @@ const InventoryTable = () => {
               <TableHeader className="sticky top-0 z-50 border-b bg-[#F7F7F7] text-[#616161] font-family font-medium text-[12.5px] border-gray-100 dark:border-white/[0.05]">
                 <TableRow>
                   {[
-                    'ID', 'ELEVATOR MANUFACTURER', 'ELEVATOR MODEL', 'ELEVATOR SERIAL', 'PURCHASE DATE',
+                    'ID',  'STATUS', 'ELEVATOR MANUFACTURER', 'ELEVATOR MODEL', 'ELEVATOR SERIAL', 'PURCHASE DATE',
                     'PURCHASE PRICE', 'RECONDITIONING %', 'COMPLETION DATE', 'INV. REQUESTS', 'TOTAL INVESTORS',
-                    'INVESTMENT AMOUNT', 'SALE PRICE', 'PROFIT AMT', 'PROFIT %', 'STATUS', 'ACTION'
+                    'INVESTMENT AMOUNT', 'SALE PRICE', 'PROFIT AMT', 'PROFIT %', 'ACTION'
                   ].map((heading) => (
                     <TableCell key={heading} isHeader className="px-5 py-3 whitespace-nowrap overflow-hidden font-medium text-gray-500 text-start text-[14px] dark:text-gray-400">
                       <div className=' w-full flex gap-5 justify-between items-center '>
@@ -221,6 +221,35 @@ const InventoryTable = () => {
                       onClick={() => handleRowClick(lead.id)}
                     > */}
                     <TableCell className="px-5 py-2 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.listing_number}</TableCell>
+                       {lead.status ? (
+                     <TableCell className="px-1 py-2 text-xs">
+                     <span
+                       className={`px-3 py-2 rounded-md text-sm font-medium ${
+                         lead.status === 'in_progress'
+                           ? 'bg-orange-100 text-orange-500'
+                           : lead.status === 'complete'
+                           ? 'bg-green-100 text-green-600'
+                           : lead.status === 'pending'
+                           ? 'bg-[#8e7f9c1f] font-family text-[14px] font-medium text-[#8E7F9C]'
+                           : ''
+                       }`}
+                     >
+                       {lead.status
+                         .split('_') // split by underscore
+                         .map((word:any) => word.charAt(0).toUpperCase() + word.slice(1)) // capitalize each word
+                         .join(' ')} {/* Join with space */}
+                     </span>
+                   </TableCell>
+                   
+                    ) : (
+                      <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-familytext-start">
+                        <span
+                          className={`px-3 py-2 rounded-md text-sm font-medium bg-[#8E7F9C1F] text-[#8E7F9C]`}
+                        >
+                          Pending
+                        </span>
+                      </TableCell>
+                    )}
                     <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.make}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.model}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.serial_no}</TableCell>
@@ -309,35 +338,7 @@ const InventoryTable = () => {
                     <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead?.selling_price || '---'}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.profitAmt || '---'}</TableCell>
                     <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.profit || '---'}</TableCell>
-                    {lead.status ? (
-                     <TableCell className="px-1 py-2 text-xs">
-                     <span
-                       className={`px-3 py-2 rounded-md text-sm font-medium ${
-                         lead.status === 'in_progress'
-                           ? 'bg-orange-100 text-orange-500'
-                           : lead.status === 'complete'
-                           ? 'bg-green-100 text-green-600'
-                           : lead.status === 'pending'
-                           ? 'bg-[#8e7f9c1f] font-family text-[14px] font-medium text-[#8E7F9C]'
-                           : ''
-                       }`}
-                     >
-                       {lead.status
-                         .split('_') // split by underscore
-                         .map((word:any) => word.charAt(0).toUpperCase() + word.slice(1)) // capitalize each word
-                         .join(' ')} {/* Join with space */}
-                     </span>
-                   </TableCell>
-                   
-                    ) : (
-                      <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-familytext-start">
-                        <span
-                          className={`px-3 py-2 rounded-md text-sm font-medium bg-[#8E7F9C1F] text-[#8E7F9C]`}
-                        >
-                          Pending
-                        </span>
-                      </TableCell>
-                    )}
+                 
                     <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-center relative">
                       <div className="relative inline-block">
                         <button
@@ -362,7 +363,7 @@ const InventoryTable = () => {
                               View Details
                             </DropdownItem>
 
-                            <DropdownItem
+    <DropdownItem
                               onItemClick={() => {
      NProgress.start();
 
@@ -374,6 +375,8 @@ const InventoryTable = () => {
                               Edit
                             </DropdownItem>
 
+                        
+{lead?.selling_price == null && (
                             <DropdownItem
                               onItemClick={() => {
                                 setOpenDropdownId(null);
@@ -386,6 +389,7 @@ const InventoryTable = () => {
                             >
                               Delete
                             </DropdownItem>
+)}
                           </div>
                         )}
                       </div>

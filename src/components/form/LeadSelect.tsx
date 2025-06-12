@@ -34,7 +34,7 @@ const LeadSelect: React.FC<SelectProps> = ({
         onChange={onChange}
         onBlur={onBlur}
       
-        className="w-full h-8 p-1  border border-gray-300 rounded-xs text-[#666666] text-xs"
+        className="w-full h-8 p-1  border border-gray-300  text-[#666666] text-xs"
       >
         <option value="" className="text-gray-400 text-xs">Select an option</option>
         {options.map((option) => (

@@ -18,6 +18,7 @@ import Pagination from '@/components/tables/Pagination';
 import { format } from 'date-fns';
 import { useDebounce } from 'use-debounce';
 import NProgress from 'nprogress';
+import { useSelector } from 'react-redux';
 
 
 
@@ -42,15 +43,16 @@ const AllShipmentsTable = () => {
     const [perPage, setPerPage] = useState(10);
     const [searchText, setSearchText] = useState('');
     const [debouncedSearchText] = useDebounce(searchText, 300);
+const userRole = useSelector((state:any)=>state?.user?.user?.account_type)
 
-
-  const { data, isLoading, error } = useGetAllShipmentOpportunitiesQuery({
+  const { data, isLoading, error, refetch } = useGetAllShipmentOpportunitiesQuery({
     page: currentPage,
     perPage: perPage,
     search: debouncedSearchText
   });
-
-  console.log(data, 'data')
+useEffect(()=>{
+  refetch()
+},[])
   const toggleDropdown = (id: string) => {
     setOpenDropdown(openDropdown === id ? null : id);
   };
@@ -85,7 +87,6 @@ const AllShipmentsTable = () => {
         type: "promote_to_investor",
       }).unwrap();
 
-      console.log("Promotion Successful:", response);
       toast.success("Investor promoted successfully!");
     } catch (error) {
       const err = error as { data?: { error?: string } };
@@ -204,17 +205,23 @@ const AllShipmentsTable = () => {
 
                       {openDropdown === shipment.id && (
                         <div className="absolute right-9 top-[-5px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
-                          <DropdownItem
-                            onItemClick={() => {
-                                   NProgress.start();
-                              
-                              router.push(`/broker-dashboard/shipments-opportunities/all-shipments/view-shipment/${shipment.id}`);
-                              closeDropdown();
-                            }}
-                            className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
-                          >
-                            View Details
-                          </DropdownItem>
+                        <DropdownItem
+  onItemClick={() => {
+    NProgress.start();
+    
+    if (userRole === "admin" || userRole === "super_admin") {
+      router.push(`/dashboard/shipments/all-shipments/view-shipment/${shipment.id}`);
+    } else {
+      router.push(`/broker-dashboard/shipments-opportunities/all-shipments/view-shipment/${shipment.id}`);
+    }
+
+    closeDropdown();
+  }}
+  className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
+>
+  View Details
+</DropdownItem>
+
 
                         </div>
                       )}

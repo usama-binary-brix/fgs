@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { FaEdit } from "react-icons/fa";
 import { useFormik } from "formik";
@@ -24,6 +24,8 @@ import * as Yup from 'yup';
 import CustomizedTimeline from "./CustomizedTimeline";
 import { FiLock } from "react-icons/fi";
 import ButtonLoader from "@/components/ButtonLoader";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 type ErrorResponse = {
   data: {
@@ -53,6 +55,31 @@ const EditInventoryForm = () => {
   const sellingPrice = inventoryData?.inventory?.selling_price
   const profitAmount = inventoryData?.profit_data?.profit
   const profitPercentage = inventoryData?.profit_data?.profit_percentage
+   const qrRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadPDF = async () => {
+    if (!qrRef.current) return;
+
+    const canvas = await html2canvas(qrRef.current);
+    const imgData = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a5',
+    });
+
+    const pageWidth = 148;
+    const pageHeight = 210;
+
+    const qrSize = 76; // you can adjust this as needed
+    const x = (pageWidth - qrSize) / 2;
+    const y = (pageHeight - qrSize) / 2;
+
+    pdf.addImage(imgData, 'PNG', x, y, qrSize, qrSize);
+    pdf.save('qr-code.pdf');
+  };
+
 
 
   // Update tab based on URL
@@ -73,7 +100,7 @@ const EditInventoryForm = () => {
     router.replace(newUrl, { scroll: false });
   };
 
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
   const [subCategories, setSubCategories] = useState<{ categories: any[] }>({ categories: [] });
   const [images, setImages] = useState<File[]>([]);
   const [existingFiles, setExistingFiles] = useState<{ id: number; url: string }[]>([]);
@@ -91,11 +118,11 @@ const EditInventoryForm = () => {
       .typeError('Year must be a number')
       .max(currentYear, `Year cannot be greater than ${currentYear}`),
 
-    make: Yup.number()
+    make: Yup.string()
       .required('Make is required')
-      .max(9999, 'Maximum 4 digits allowed')
-      .typeError('Year must be a number')
-      .max(currentYear, `Year cannot be greater than ${currentYear}`)
+    // .max(9999, 'Maximum 4 digits allowed')
+    // .typeError('Year must be a number')
+    // .max(currentYear, `Year cannot be greater than ${currentYear}`)
     ,
     model: Yup.string().required('Model is required'),
     serial_no: Yup.string().required('Serial No is required'),
@@ -152,7 +179,7 @@ const EditInventoryForm = () => {
         await editInventory(formData).unwrap();
         toast.success("Inventory updated successfully!");
         setImages([]);
-        setIsEditing(false)
+        // setIsEditing(false)
       } catch (error) {
         const errorResponse = error as ErrorResponse;
         if (errorResponse?.data?.error) {
@@ -172,6 +199,19 @@ const EditInventoryForm = () => {
     },
 
   });
+
+
+  const fields = [
+    { name: "make", label: "Make" },
+    { name: "model", label: "Model" },
+    { name: "serial_no", label: "Serial No" },
+    { name: "length", label: "Length (feet)" },
+    { name: "height", label: "Height (feet)" },
+    { name: "width", label: "Width (feet)" },
+    { name: "weight", label: "Weight" },
+    { name: "hours", label: "Hours" },
+    { name: "price_paid", label: "Price Paid" },
+  ];
 
   const handleCategoryChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const categoryId = e.target.value;
@@ -299,11 +339,11 @@ const EditInventoryForm = () => {
     setRemovedExistingFiles([...removedExistingFiles, fileToRemove.id]);
     setExistingFiles(existingFiles.filter((_, i) => i !== index));
   };
-  if (isLoading || loadingCategories) return <> 
-   <div className="py-6 flex items-center justify-center h-[80vh]">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-          </div>
-    </>;
+  if (isLoading || loadingCategories) return <>
+    <div className="py-6 flex items-center justify-center h-[80vh]">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+    </div>
+  </>;
   if (error) return <p>Error fetching inventory</p>;
 
 
@@ -339,11 +379,22 @@ const EditInventoryForm = () => {
               </button>
             </div>
           </div>
-          <div className="flex flex-col items-cetner">
-            <QRCodeCanvas value="https://yourwebsite.com" size={76} />
+          {/* <div className="flex flex-col items-cetner">
+            <QRCodeCanvas value={`https://fgs-theta.vercel.app/${id}`} size={76} />
             <h1 className="text-[#818181] text-[9.5px] font-normal font-family text-center mt-1">QR-Code</h1>
-          </div>
+          </div> */}
 
+   <div className="flex flex-col items-center">
+      <div ref={qrRef}>
+        <QRCodeCanvas value={`https://fgs-theta.vercel.app/inventory/${id}`} size={76} />
+      </div>
+      <h1
+        onClick={handleDownloadPDF}
+        className="text-[#818181] text-[9.5px] font-normal font-family text-center mt-1 cursor-pointer hover:underline"
+      >
+        QR-Code
+      </h1>
+    </div>
         </div>
       </div>
 
@@ -357,7 +408,7 @@ const EditInventoryForm = () => {
                 <p className="text-gray-600">Inventory</p>
               </div>
               <div className="flex flex-col items-cetner">
-                <QRCodeCanvas value="https://yourwebsite.com" size={76} />
+                <QRCodeCanvas value={`https://fgs-theta.vercel.app/inventory/${id}`} size={76} />
                 <h1 className="text-[#818181] text-[9.5px] font-normal font-family text-center mt-1">QR-Code</h1>
               </div>
             </div>
@@ -386,7 +437,7 @@ const EditInventoryForm = () => {
               Reconditioning
             </button>
           </div>
-      
+
         </div>
       </div>
 
@@ -410,18 +461,18 @@ const EditInventoryForm = () => {
                       className='font-semibold'
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? <ButtonLoader/> : "Update"}
+                      {isSubmitting ? <ButtonLoader /> : "Update"}
                     </Button>
                   </div>
                 )}
-                <Button
+                {/* <Button
                   onClick={() => setIsEditing(!isEditing)}
                   variant="primary"
                   className='font-semibold'
                   disabled={sellingPrice !== null}
                 >
                   {isEditing ? "Cancel" : "Edit"}
-                </Button>
+                </Button> */}
 
 
               </div>
@@ -475,7 +526,7 @@ const EditInventoryForm = () => {
                   <p className="text-red-500">{formik.errors.year}</p>
                 )}
               </div>
-              {["make", "model", "serial_no", "length", "height", "width", "weight", "hours", "price_paid"].map((field) => (
+              {/* {["make", "model", "serial_no", "length", "height", "width", "weight", "hours", "price_paid"].map((field) => (
                 <div key={field}>
                   <Label className="capitalize ">{field.replace("_", " ")} <span className="text-red-600">*</span></Label>
                   <input
@@ -484,7 +535,7 @@ const EditInventoryForm = () => {
                     value={formik.values[field as keyof typeof formik.values]}
                     onChange={formik.handleChange}
                     disabled={!isEditing}
-                    maxLength={["make"].includes(field) ? 4 : undefined}
+                    // maxLength={["make"].includes(field) ? 4 : undefined}
                     onBlur={formik.handleBlur}
                     className="h-9 w-full rounded-sm border appearance-none px-4 py-1 text-sm shadow-theme-xs text-black placeholder:text-gray-400 focus:outline-hidden focus:ring-1"
                   />
@@ -492,7 +543,37 @@ const EditInventoryForm = () => {
                     <p className="text-red-500">{formik.errors[field as keyof typeof formik.errors]}</p>
                   )}
                 </div>
+              ))} */}
+              {fields.map(({ name, label }) => (
+                <div key={name}>
+                  <Label className="capitalize">
+                    {label} <span className="text-red-600">*</span>
+                  </Label>
+
+                  <div className="relative flex items-center">
+                    <input
+                      type="text"
+                      name={name}
+                      value={formik.values[name as keyof typeof formik.values] || ""}
+                      onChange={formik.handleChange}
+                      disabled={!isEditing}
+                      onBlur={formik.handleBlur}
+                      className="h-9 w-full rounded-sm border appearance-none px-4 py-1 text-sm shadow-theme-xs text-black placeholder:text-gray-400 focus:outline-hidden focus:ring-1 pr-10"
+                    />
+                    {/* {["length", "height", "width"].includes(name) && (
+        <span className="absolute right-3 text-sm text-gray-600">ft</span>
+      )} */}
+                  </div>
+
+                  {formik.touched[name as keyof typeof formik.values] &&
+                    formik.errors[name as keyof typeof formik.errors] && (
+                      <p className="text-red-500 text-sm">
+                        {formik.errors[name as keyof typeof formik.errors]}
+                      </p>
+                    )}
+                </div>
               ))}
+
               <div>
                 <Label>Date Purchased <span className="text-red-500">*</span></Label>
                 <MuiDatePicker
@@ -502,7 +583,7 @@ const EditInventoryForm = () => {
                     formik.setFieldValue("date_purchased", value);
                   }}
                   disableFuture={true}
-                  disabled={sellingPrice !== null}
+                // disabled={sellingPrice !== null}
 
                 />
                 {formik.touched.date_purchased && formik.errors.date_purchased && (
@@ -611,28 +692,28 @@ const EditInventoryForm = () => {
 
                   return (
 
-                  
-                      <>
-      <div key={index} className="relative w-35">
-                      <div className="h-30 rounded-lg overflow-hidden">
-                        <img
-                          src={previewSrc}
-                          alt={`Uploaded preview ${index}`}
-                          className="w-full h-full object-cover rounded-lg"
-                        />
-                        <button
-                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
-                          onClick={() => removeImage(index)}
-                        >
-                          <RxCross2 className="text-xs" />
-                        </button>
+
+                    <>
+                      <div key={index} className="relative w-35">
+                        <div className="h-30 rounded-lg overflow-hidden">
+                          <img
+                            src={previewSrc}
+                            alt={`Uploaded preview ${index}`}
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                          <button
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                            onClick={() => removeImage(index)}
+                          >
+                            <RxCross2 className="text-xs" />
+                          </button>
+                        </div>
+                        <p className="text-xs text-center mt-1 truncate w-full" title={fileName}>
+                          {fileName}
+                        </p>
                       </div>
-                      <p className="text-xs text-center mt-1 truncate w-full" title={fileName}>
-                        {fileName}
-                      </p>
-                    </div>
-                      </>
-                   
+                    </>
+
                   );
                 })}
 

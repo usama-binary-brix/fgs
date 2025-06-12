@@ -32,7 +32,7 @@ interface Lead {
   image: string;
 }
 
-const LeadsTable = () => {
+const InvestorLeads = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const router = useRouter();
 
@@ -45,8 +45,8 @@ const LeadsTable = () => {
      const { data, isLoading, error, refetch } = useGetAllUserLeadsQuery({ page: currentPage,
        perPage: perPage,
        search: debouncedSearchText,
-      type:''
-      });
+    type:'investor'
+    });
   const toggleDropdown = (id: string) => {
     setOpenDropdown(openDropdown === id ? null : id);
   };
@@ -149,10 +149,10 @@ const LeadsTable = () => {
     setPerPage(newPerPage);
     setCurrentPage(1); // Reset to first page on per-page change
   };
+
   useEffect(()=>{
     refetch()
   },[])
-
 
 
   return (
@@ -276,21 +276,19 @@ const LeadsTable = () => {
                               Edit
                             </DropdownItem>
                           )}
-{lead?.lead_type !== 'customer' && (
-                        <DropdownItem
+
+                          <DropdownItem
                             onItemClick={() => {lead.type === 'lead' && handlePromoteClick(lead.id); closeDropdown();}}
                             className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
                           >
                             {isPromoteLoading && selectedId === lead.id ? "Promoting..." : (lead.type === 'lead' ? "Promote to investor" : "Already Promoted")}
                           </DropdownItem>
-  
-)}
-                          {/* <DropdownItem
+                          <DropdownItem
                             onItemClick={closeDropdown}
                             className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
                           >
                             Send Email
-                          </DropdownItem> */}
+                          </DropdownItem>
 
                           <DropdownItem
                             onItemClick={() => {
@@ -338,4 +336,4 @@ const LeadsTable = () => {
   );
 };
 
-export default LeadsTable;
+export default InvestorLeads;

@@ -298,7 +298,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                     value={formik.values[field as keyof typeof formik.values]}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    maxLength={["year", "make"].includes(field) ? 4 : undefined}
+                                    maxLength={["year"].includes(field) ? 4 : undefined}
                                     className='border-1 border-[#E8E8E8]  focus:outline-none focus:border-[#E8E8E8] text-[#414141]'
                                 />
                                 {formik.touched[field as keyof typeof formik.values] && formik.errors[field as keyof typeof formik.errors] && (
@@ -328,13 +328,23 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                             </div>
                             <div className="flex items-center gap-2 mt-3">
                                 <label className="flex flex-col items-center justify-center border-2 border-dashed border-[#B1BFD0] rounded-lg cursor-pointer h-30 w-35 hover:bg-gray-100">
-                                    <input
+                                    {/* <input
                                         type="file"
                                         // accept="image/png, image/jpeg, application/pdf"
                                         multiple
                                         className="hidden"
                                         onChange={handleImageUpload}
-                                    />
+                                    /> */}
+
+                                    <input
+  type="file"
+  accept="image/*,application/*,text/*,.zip,.rar,.7z"
+  multiple
+  className="hidden"
+  onChange={handleImageUpload}
+/>
+
+
                                     <div className="text-center">
                                         <p className="text-gray-700 font-semibold text-xs">Drop your files here,</p>
                                         <p className="text-blue-600 underline text-xs">or browse</p>

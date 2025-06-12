@@ -2,12 +2,13 @@
 import MuiDatePicker from '@/components/CustomDatePicker';
 import Button from '@/components/ui/button/Button';
 import React, { useState } from 'react'
-import SubmitQuoteModal from '../../../../components/SubmitQuoteModal';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useGetBrokerShipmentByIdQuery, useGetShipmentByIdQuery } from '@/store/services/api';
+import SubmitQuoteModal from '@/app/(broker)/broker-dashboard/components/SubmitQuoteModal';
 
 const ViewShipment = () => {
     const { id } = useParams();
+    const router = useRouter()
     // const { data: shipmentDatas } = useGetBrokerShipmentByIdQuery(id);
     const { data: shipmentData, error, isLoading } = useGetBrokerShipmentByIdQuery(id);
     const [isOpen, setIsOpen] = useState(false);
@@ -21,11 +22,13 @@ const ViewShipment = () => {
     const handleCloseQuoteModal = () => {
         setIsOpen(false);
     }
+const handleNavigateToEdit = (id:any)=>{
+router.push(`/dashboard/edit-inventory/${id}?tab=shipment`)
+}
 
 
 
-
-      if (isLoading) return (<div> <div className="py-6 flex items-center justify-center h-100">
+    if (isLoading) return (<div> <div className="py-6 flex items-center justify-center h-100">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div></div>)
     if (error) return <div>Error loading shipment data</div>;
@@ -80,9 +83,9 @@ const ViewShipment = () => {
                                     type="submit"
                                     variant="primary"
                                     size='sm'
-                                    onClick={() => handleQuoteModal(inventory.id)}
+                                    onClick={() => handleNavigateToEdit(inventory.id)}
                                 >
-                                    Submit Qoute
+                                    Edit Shipment
                                 </Button>
                             </div>
                         </div>

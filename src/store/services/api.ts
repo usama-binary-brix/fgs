@@ -163,16 +163,16 @@ export const api = createApi({
 
 
     getAllLeads: builder.query({
-      query: ({ page = 1, perPage = 10, search }) => ({
-        url: `get/leads?per_page=${perPage}&page=${page}&search=${search}`,
+      query: ({ page = 1, perPage = 10, search, type }) => ({
+        url: `get/leads?per_page=${perPage}&page=${page}&search=${search}&type=${type}`,
         method: 'GET',
       }),
       providesTags: ["leads"],
     }),
 
     getAllUserLeads: builder.query({
-      query: ({ page = 1, perPage = 10, search }) => ({
-        url: `get/lead?per_page=${perPage}&page=${page}&search=${search}`,
+      query: ({ page = 1, perPage = 10, search, type }) => ({
+        url: `get/lead?per_page=${perPage}&page=${page}&search=${search}&type=${type}`,
         method: 'GET',
       }),
       providesTags: ["userLead"],

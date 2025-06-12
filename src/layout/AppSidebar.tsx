@@ -22,7 +22,16 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { icon: <GridIcon />, name: "Dashboard", path: "/dashboard", roles: ["admin", 'super_admin'] },
-  { icon: <GridIcon />, name: "All Leads", path: "/dashboard/leads", roles: ["admin", 'super_admin'] },
+  // { icon: <GridIcon />, name: "All Leads", path: "/dashboard/leads", roles: ["admin", 'super_admin'] },
+
+   {
+    icon: <GridIcon />,
+    name: "Leads",
+    subItems: [{ name: "All Leads", path: "/dashboard/leads" }, { name: "Investor Leads", path: "/dashboard/investor-leads" }, { name: "Customer Leads", path: "/dashboard/customer-leads" }],
+    roles: ["admin", 'super_admin'],
+  },
+
+
   { icon: <GridIcon />, name: "Accounts", path: "/dashboard/accounts", roles: ["admin", 'super_admin'] },
   {
     icon: <GridIcon />,
@@ -30,6 +39,8 @@ const navItems: NavItem[] = [
     subItems: [{ name: "All Inventory", path: "/dashboard/inventory" }],
     roles: ["admin", 'super_admin'],
   },
+  { icon: <GridIcon />, name: "Shipments", path: "/dashboard/shipments/all-shipments",  roles: ["admin", 'super_admin'] },
+
   // {
   //   icon: <GridIcon />,
   //   name: "Notifications",
@@ -43,7 +54,15 @@ const navItems: NavItem[] = [
 
 
   // { icon: <GridIcon />, name: "Dashboard", path: "/sales-dashboard", roles: ["salesperson"] },
-  { icon: <GridIcon />, name: "All Leads", path: "/sales-dashboard/leads", roles: ["salesperson"] },
+  // { icon: <GridIcon />, name: "All Leads", path: "/sales-dashboard/leads", roles: ["salesperson"] },
+  {
+    icon: <GridIcon />,
+    name: "Leads",
+    subItems: [{ name: "All Leads", path: "/sales-dashboard/leads" }, { name: "Investor Leads", path: "/sales-dashboard/investor-leads" }, { name: "Customer Leads", path: "/sales-dashboard/customer-leads" }],
+    roles: ['salesperson'],
+  },
+
+
   { icon: <GridIcon />, name: "Dashboard", path: "/broker-dashboard", roles: ["broker"] },
   {
     icon: <GridIcon />,
