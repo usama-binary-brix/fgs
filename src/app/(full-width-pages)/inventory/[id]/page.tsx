@@ -39,7 +39,6 @@ const [loading, setLoading] = useState(true)
   } = useGetQRCodeInventoryByIdQuery(decryptedId!, {
     skip: !decryptedId,
   });
-  console.log(inventoryData, 'data onvhgiu')
 
   
   const getFileTypeIcon = (fileUrl: string): string => {
