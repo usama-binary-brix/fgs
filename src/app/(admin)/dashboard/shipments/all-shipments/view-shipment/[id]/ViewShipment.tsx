@@ -22,8 +22,9 @@ const ViewShipment = () => {
     const handleCloseQuoteModal = () => {
         setIsOpen(false);
     }
-const handleNavigateToEdit = (id:any)=>{
-router.push(`/dashboard/edit-inventory/${id}?tab=shipment`)
+const handleNavigateToEdit = (id: any, type: any) => {
+
+  router.push(`/dashboard/edit-inventory/${id}?tab=shipment&shipment_type=${type}`)
 }
 
 
@@ -83,7 +84,7 @@ router.push(`/dashboard/edit-inventory/${id}?tab=shipment`)
                                     type="submit"
                                     variant="primary"
                                     size='sm'
-                                    onClick={() => handleNavigateToEdit(inventory.id)}
+                                    onClick={() => handleNavigateToEdit(inventory.id, shipment.shipment)}
                                 >
                                     Edit Shipment
                                 </Button>

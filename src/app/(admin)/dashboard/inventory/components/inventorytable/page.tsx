@@ -355,7 +355,7 @@ const InventoryTable = () => {
                               onItemClick={() => {
                                      NProgress.start();
                                 
-                                router.push(`/dashboard/edit-inventory/${lead.id}`);
+                                router.push(`/dashboard/view-inventory/${lead.id}`);
                                 closeDropdown();
                               }}
                               className="flex w-full text-left text-[12px] font-family text-[#414141] font-normal border-b border-[#E9E9E9] rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"

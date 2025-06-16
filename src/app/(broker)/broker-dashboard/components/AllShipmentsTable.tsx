@@ -39,20 +39,20 @@ const AllShipmentData = [
 const AllShipmentsTable = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const router = useRouter();
-    const [currentPage, setCurrentPage] = useState(1);
-    const [perPage, setPerPage] = useState(10);
-    const [searchText, setSearchText] = useState('');
-    const [debouncedSearchText] = useDebounce(searchText, 300);
-const userRole = useSelector((state:any)=>state?.user?.user?.account_type)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const [searchText, setSearchText] = useState('');
+  const [debouncedSearchText] = useDebounce(searchText, 300);
+  const userRole = useSelector((state: any) => state?.user?.user?.account_type)
 
   const { data, isLoading, error, refetch } = useGetAllShipmentOpportunitiesQuery({
     page: currentPage,
     perPage: perPage,
     search: debouncedSearchText
   });
-useEffect(()=>{
-  refetch()
-},[])
+  useEffect(() => {
+    refetch()
+  }, [])
   const toggleDropdown = (id: string) => {
     setOpenDropdown(openDropdown === id ? null : id);
   };
@@ -110,13 +110,13 @@ useEffect(()=>{
 
   const handlePerPageChange = (newPerPage: number) => {
     setPerPage(newPerPage);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
 
-   useEffect(() => {
-      setCurrentPage(1);
-    }, [debouncedSearchText]);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearchText]);
 
 
 
@@ -138,7 +138,7 @@ useEffect(()=>{
             </div>
           </div>
         </div>
-        
+
       </div>
 
       <div className="overflow-auto rounded border  border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -146,7 +146,7 @@ useEffect(()=>{
           <Table>
             <TableHeader className="border-b border-gray-100 overflow-auto bg-[#F7F7F7] dark:border-white/[0.05]">
               <TableRow>
-                {['ID', 'SHIPMENT DATE', 'ETA', 'ELEVATOR YEAR', 'MANUFACTURER', 'MODEL', 'SERIAL NO.', 'ACTION'].map((heading) => (
+                {['ID', "INVENTORY ID", 'ELEVATOR YEAR', 'MANUFACTURER', 'MODEL', 'SERIAL NO.', 'SHIPMENT TYPE', 'ACTION'].map((heading) => (
                   <TableCell key={heading} isHeader className="px-3  py-3 font-family whitespace-nowrap overflow-hidden font-medium text-[#616161] text-start text-theme-sm dark:text-gray-400">
                     <div className='flex justify-between gap-5 items-center'>
 
@@ -165,68 +165,36 @@ useEffect(()=>{
               {data?.shipments?.data?.map((shipment: any) => (
                 <TableRow key={shipment.id}>
                   <TableCell className=" px-3 py-3.5 text-[#616161] font-normal whitespace-nowrap overflow-hidden text-[14px] font-family">{shipment?.inventory?.listing_number}</TableCell>
-                  <TableCell className="px-3 py-6 text-[14px] flex items-center gap-2 font-family text-[#616161] font-normal">{shipment.shipmentDate}</TableCell>
-                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{shipment.eta}</TableCell>
+                  <TableCell className="px-3 py-6 text-[14px] flex items-center gap-2 font-family text-[#616161] font-normal">{shipment?.inventory?.listing_number}</TableCell>
+                  {/* <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{shipment.eta}</TableCell> */}
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{shipment?.inventory?.year}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] font-normal font-family max-w-[130px] truncate overflow-hidden text-ellipsis whitespace-nowrap">{shipment?.inventory?.make}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{shipment?.inventory?.model}</TableCell>
                   <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{shipment?.inventory?.serial_no}</TableCell>
+                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family capitalize">{shipment?.shipment}</TableCell>
 
-                  {/* {shipment.status ? (
-                    <TableCell className="px-5 py-2 text-xs">
-                      <span
-                        className={`px-3 py-2 rounded-md text-sm font-medium ${shipment.status === 'in progress'
-                          ? 'bg-orange-100 text-orange-500'
-                          : shipment.status === 'sold'
-                            ? 'bg-green-100 text-green-600'
-                            : shipment.status === 'pending'
-                              ? 'bg-[#8e7f9c1f] font-family text-[14px] font-medium  text-[#8E7F9C]'
-                              : ''
-                          }`}
-                      >
-                        {shipment.status.charAt(0).toUpperCase() + shipment.status.slice(1)} 
-                      </span>
-                    </TableCell>
-                  ) : (
-                    <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-familytext-start text-left">
-                      <span
-                        className={`px-3 py-2 rounded-md text-sm font-medium bg-[#8E7F9C1F] text-[#8E7F9C]`}
-                      >
-                        Pending
-                      </span>
-                    </TableCell>
-                  )} */}
+                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family capitalize">
+                    <button
+                      // onClick={() => toggleDropdown(shipment.id)}   className={`dropdown-toggle p-1 rounded ${ openDropdown === shipment.id ? 'bg-gray-100' : 'hover:bg-gray-50'}`}
+                      onClick={() => {
+                        NProgress.start();
 
-                  <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-visible font-normal font-family text-center">
-                    <div className="relative inline-block">
-                      <button onClick={() => toggleDropdown(shipment.id)}   className={`dropdown-toggle p-1 rounded ${ openDropdown === shipment.id ? 'bg-gray-100' : 'hover:bg-gray-50'}`}>
-                        <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />
-                      </button>
+                        if (userRole === "admin" || userRole === "super_admin") {
+                          router.push(`/dashboard/shipments/all-shipments/view-shipment/${shipment.id}`);
+                        } else {
+                          router.push(`/broker-dashboard/shipments-opportunities/all-shipments/view-shipment/${shipment.id}`);
+                        }
 
-                      {openDropdown === shipment.id && (
-                        <div className="absolute right-9 top-[-5px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
-                        <DropdownItem
-  onItemClick={() => {
-    NProgress.start();
-    
-    if (userRole === "admin" || userRole === "super_admin") {
-      router.push(`/dashboard/shipments/all-shipments/view-shipment/${shipment.id}`);
-    } else {
-      router.push(`/broker-dashboard/shipments-opportunities/all-shipments/view-shipment/${shipment.id}`);
-    }
+                        closeDropdown();
+                      }}
+                      className="flex w-full font-normal flex-start text-start text-[12px] text-[#414141] underline"
+                    >
+                      View Details
 
-    closeDropdown();
-  }}
-  className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
->
-  View Details
-</DropdownItem>
-
-
-                        </div>
-                      )}
-                    </div>
+                    </button>
                   </TableCell>
+
+
 
                 </TableRow>
               ))}
@@ -234,15 +202,15 @@ useEffect(()=>{
           </Table>
         </div>
         <div className='px-6 border-t'>
-         
 
-    <Pagination
-                            currentPage={currentPage}
-                            totalPages={data?.shipments?.last_page || 1}
-                            onPageChange={handlePageChange}
-                            perPage={perPage}
-                            onPerPageChange={handlePerPageChange}
-                        />
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={data?.shipments?.last_page || 1}
+            onPageChange={handlePageChange}
+            perPage={perPage}
+            onPerPageChange={handlePerPageChange}
+          />
         </div>
 
       </div>

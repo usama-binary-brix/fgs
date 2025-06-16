@@ -16,7 +16,7 @@ import { Pagination, Table, TableBody, TableCell, TableRow } from '@mui/material
 import { TableHeader } from '@/components/ui/table';
 import { MoreDotIcon } from '@/icons';
 import { DropdownItem } from '@/components/ui/dropdown/DropdownItem';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useAddNewShipmentMutation, useDeleteShipmentMutation, useGetAllShipmentsQuery } from '@/store/services/api';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import { toast } from 'react-toastify';
@@ -63,8 +63,6 @@ const shipmentQuotesData = [
 const Shipment = () => {
   const [activeTab, setActiveTab] = useState("details");
   const { id } = useParams()
-  const searchParams = useSearchParams();
-  const tabFromUrl = searchParams.get('shipment_type');
   const [isEditMode, setIsEditMode] = useState(false)
   const [activeBoundTab, setActiveBoundTab] = useState("inbound");
   const [createShipmentModal, setCreateShipmentModal] = useState(false);
@@ -78,35 +76,7 @@ const Shipment = () => {
     shipmentType: activeBoundTab,
   });
 
-  useEffect(() => {
-    if (tabFromUrl) {
-      setActiveBoundTab(tabFromUrl);
-      setIsEditMode(false);
-      setEditingShipmentId(null);
-      setOpenDropdown(null);
-      setActiveRowId(null);
-    }
-  }, [tabFromUrl]);
-
-   const handleTabChange = (tab: string) => {
-    setActiveBoundTab(tab);
-    const current = new URLSearchParams(Array.from(searchParams.entries()));
-    current.delete('shipment_type');
-
-    const newUrl = `${window.location.pathname}?${current.toString()}`;
-    router.replace(newUrl, { scroll: false });
-  };
-
-  // const handleTabChange = (tab: string) => {
-  //   setActiveBoundTab(tab);
-  //   // Reset edit mode and other states when changing tabs
-  //   setIsEditMode(false);
-  //   setEditingShipmentId(null);
-  //   setOpenDropdown(null);
-  //   setActiveRowId(null);
-
-    
-  // };
+ 
 
   useEffect(() => {
     refetch()
@@ -118,7 +88,7 @@ const Shipment = () => {
   const [activeRowId, setActiveRowId] = useState<string | null>(null);
   const [editingShipmentId, setEditingShipmentId] = useState<string | null>(null);
   const [updateShipment] = useAddNewShipmentMutation();
-  const [isUpdateInboundShipment, setIsUpdateInboundShipment] = useState(false)
+const [isUpdateInboundShipment , setIsUpdateInboundShipment] = useState(false)
   const router = useRouter()
 
   const toggleDropdown = (id: string) => {
@@ -199,7 +169,7 @@ const Shipment = () => {
         toast.success(response.message || 'Shipment updated successfully');
         setEditingShipmentId(null);
         setIsEditMode(false);
-        setIsUpdateInboundShipment(false)
+      setIsUpdateInboundShipment(false)
 
       } catch (error) {
         const errorResponse = error as ErrorResponse;
@@ -215,7 +185,7 @@ const Shipment = () => {
         } else {
           toast.error('Failed to create shipment');
         }
-        setIsUpdateInboundShipment(false)
+      setIsUpdateInboundShipment(false)
 
       }
     },
@@ -285,8 +255,8 @@ const Shipment = () => {
 
 
   if (isLoading) return <div>  <div className="py-6 flex items-center justify-center h-[60vh]">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-  </div></div>;
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          </div></div>;
   if (error) return <div>Error loading shipments</div>;
 
   return (
@@ -321,17 +291,14 @@ const Shipment = () => {
                 <button
                   className={`border border-[#D184281A] text-[13px] opacity-50 font-family py-2 px-4 font-semibold rounded transition-all duration-300
                     ${activeBoundTab === "inbound" ? 'bg-[#D18428] opacity-100 text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
-                  onClick={() => handleTabChange("inbound")}
-
+                  onClick={() => setActiveBoundTab("inbound")}
                 >
                   Inbound
                 </button>
                 <button
                   className={`border border-[#D184281A] text-[13px] opacity-50 font-family py-2 px-4 font-semibold rounded transition-all duration-300
                     ${activeBoundTab === "outbound" ? 'bg-[#D18428] opacity-100 text-white' : 'bg-[#D184281A] text-[#D18428]'}`}
-                  // onClick={() => setActiveBoundTab("outbound")}
-                  onClick={() => handleTabChange("outbound")}
-
+                  onClick={() => setActiveBoundTab("outbound")}
                 >
                   Outbound
                 </button>
@@ -732,7 +699,7 @@ const Shipment = () => {
                                         formik.handleSubmit();
                                       }}
                                     >
-                                      {isUpdateInboundShipment ? <ButtonLoader /> : 'Update'}
+                                    {isUpdateInboundShipment ? <ButtonLoader/> : 'Update'}
                                     </Button>
                                     <Button
                                       variant="outlined"
@@ -1169,7 +1136,7 @@ const Shipment = () => {
                                         formik.handleSubmit();
                                       }}
                                     >
-                                      {isUpdateInboundShipment ? <ButtonLoader /> : 'Update'}
+                                                                       {isUpdateInboundShipment ? <ButtonLoader/> : 'Update'}
 
                                     </Button>
                                     <Button
@@ -1209,7 +1176,7 @@ const Shipment = () => {
           )}
 
           {activeTab == "shipmentQuotes" && (
-            <ShipmentQuotesTable />
+           <ShipmentQuotesTable />
           )}
         </div>
       </div>
