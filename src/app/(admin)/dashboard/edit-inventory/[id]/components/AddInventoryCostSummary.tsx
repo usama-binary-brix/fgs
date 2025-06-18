@@ -70,7 +70,7 @@ interface AdditionalCost {
     created_at?: string;
     updated_at?: string;
 
-  isEditing?: boolean;
+    isEditing?: boolean;
 }
 
 // interface TimelineResponse {
@@ -134,10 +134,10 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
 
 
     const handleEditAdditionalCost = (index: number) => {
-  setAdditionalCosts(prev => prev.map((cost, i) => 
-    i === index ? {...cost, isEditing: true} : cost
-  ));
-};
+        setAdditionalCosts(prev => prev.map((cost, i) =>
+            i === index ? { ...cost, isEditing: true } : cost
+        ));
+    };
 
     // Initialize with API data when modal opens
     useEffect(() => {
@@ -192,7 +192,6 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
     const [inventoryCost] = useAddInventoryCostMutation();
     const [calculateProfit] = useCalculateProfitMutation();
     const [addSellingPrice] = useAddSellingPriceMutation();
-
     const formik = useFormik({
         initialValues: {
             stages: timelineData?.timeLine?.map((stage: any) => ({
@@ -200,8 +199,16 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                 price: stage.price || ''
             })) || [],
             sellingPrice: sellingPrice?.data?.selling_price || '',
-            profit: sellingPrice?.data?.profit || '',
-            profit_percentage: sellingPrice?.data?.profit_percentage || ''
+
+            profit: sellingPrice?.data?.gross_profit || '',
+            profit_percentage: sellingPrice?.data?.gross_profit_percentage || '',
+            salescommission: sellingPrice?.data?.sales_commission_percentage || " ",
+            salescommissionAmount: sellingPrice?.data?.sales_commission_amount || " ",
+            fgscommission: sellingPrice?.data?.fgs_commission_percentage || " ",
+            fgscommissionAmount: sellingPrice?.data?.fgs_commission_percentage || " ",
+            investorcomission: sellingPrice?.data?.investor_profit_percentage || " ",
+            investorcomissionAmount: sellingPrice?.data?.investor_profit_amount || " ",
+
         },
         enableReinitialize: true,
         onSubmit: async (values, { resetForm }) => {
@@ -232,6 +239,8 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
         }
     });
 
+
+
     const debounce = (func: Function, delay: number) => {
         let timer: NodeJS.Timeout;
         return (...args: any[]) => {
@@ -248,13 +257,31 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                         selling_price: sellingPrice,
                         inventory_id: id
                     }).unwrap();
-                    formik.setFieldValue('profit', response.profit);
+
+                    formik.setFieldValue('profit', response.gross_profit || '');
+                    formik.setFieldValue('profit_percentage', response.gross_profit_percentage || '');
+                    formik.setFieldValue('salescommission', response.sales_commission_percentage || '');
+                    formik.setFieldValue('salescommissionAmount', response.sales_commission_amount || '');
+                    formik.setFieldValue('fgscommission', response.fgs_commission_percentage || '');
+                    formik.setFieldValue('fgscommissionAmount', response.fgs_commission_amount || '');
+                    formik.setFieldValue('investorcomission', response.investor_profit_percentage || '');
+                    formik.setFieldValue('investorcomissionAmount', response.investor_profit_amount || '');
                 } else {
                     formik.setFieldValue('profit', '');
+                    formik.setFieldValue('profit_percentage', '');
+                    formik.setFieldValue('salescommission', '');
+                    formik.setFieldValue('salescommissionAmount', '');
+                    formik.setFieldValue('fgscommission', '');
+                    formik.setFieldValue('fgscommissionAmount', '');
+                    formik.setFieldValue('investorcomission', '');
+                    formik.setFieldValue('investorcomissionAmount', '');
+
                 }
             } catch (error) {
                 toast.error('Failed to calculate profit');
                 formik.setFieldValue('profit', '');
+                formik.setFieldValue('profit_percentage', '');
+
             }
         }, 500), // 500ms delay
         [calculateProfit, id]
@@ -264,8 +291,29 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
         const sellingPrice = parseFloat(e.target.value);
         formik.setFieldValue('sellingPrice', sellingPrice);
         debouncedCalculateProfit(sellingPrice);
+
     };
 
+    //    const handleSalesCommisionPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const salescommission = (e.target.value);
+    //     formik.setFieldValue('salescommission', salescommission);
+    //     // debouncedCalculateProfit(salescommission);
+    // };
+
+    const handleSalesCommisionPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value;
+
+        // // Remove any existing % sign to avoid duplication
+        // value = value.replace(/%/g, '');
+
+        // // Add % sign if there's a value
+        // if (value !== '') {
+        //     value += '%';
+        // }
+
+        formik.setFieldValue('salescommission', value);
+        // debouncedCalculateProfit(value);
+    };
     const handleSellingPriceSubmit = async () => {
         try {
             const sellingPrice = parseFloat(formik.values.sellingPrice);
@@ -453,66 +501,66 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
 
                                 <TableBody>
 
-                           {additionalCosts.map((cost, index) => (
-  <TableRow key={cost.id || `new-${index}`}>
-    {/* Cost Name Cell */}
-    <TableCell className='px-4 text-sm text-[#616161] lg:w-110'>
-      {cost.isEditing || !cost.id ? (
-        <Input
-          placeholder='Name'
-          value={cost.cost_name}
-          onChange={(e) => handleAdditionalCostChange(index, 'cost_name', e.target.value)}
-        />
-      ) : (
-        cost.cost_name
-      )}
-    </TableCell>
+                                    {additionalCosts.map((cost, index) => (
+                                        <TableRow key={cost.id || `new-${index}`}>
+                                            {/* Cost Name Cell */}
+                                            <TableCell className='px-4 text-sm text-[#616161] lg:w-110'>
+                                                {cost.isEditing || !cost.id ? (
+                                                    <Input
+                                                        placeholder='Name'
+                                                        value={cost.cost_name}
+                                                        onChange={(e) => handleAdditionalCostChange(index, 'cost_name', e.target.value)}
+                                                    />
+                                                ) : (
+                                                    cost.cost_name
+                                                )}
+                                            </TableCell>
 
-    {/* Cost Value Cell */}
-    <TableCell className='px-3 py-2'>
-      {!cost.id ? (
-        <Input
-          placeholder='$ 0.00'
-          value={cost.cost}
-          onChange={(e) => handleAdditionalCostChange(index, 'cost', e.target.value)}
-          min="0"
-        />
-      ) : (
-        <Input
-          placeholder='$ 0.00'
-          value={cost.cost}
-          onChange={(e) => handleAdditionalCostChange(index, 'cost', e.target.value)}
-          min="0"
-        />
-      )}
-    </TableCell>
+                                            {/* Cost Value Cell */}
+                                            <TableCell className='px-3 py-2'>
+                                                {!cost.id ? (
+                                                    <Input
+                                                        placeholder='$ 0.00'
+                                                        value={cost.cost}
+                                                        onChange={(e) => handleAdditionalCostChange(index, 'cost', e.target.value)}
+                                                        min="0"
+                                                    />
+                                                ) : (
+                                                    <Input
+                                                        placeholder='$ 0.00'
+                                                        value={cost.cost}
+                                                        onChange={(e) => handleAdditionalCostChange(index, 'cost', e.target.value)}
+                                                        min="0"
+                                                    />
+                                                )}
+                                            </TableCell>
 
-    {/* Actions Cell */}
-    <TableCell className='px-3 py-2'>
-      <div className='flex justify-center text-start items-center gap-2'>
-        {/* Delete button - always shown */}
-        <button
-          type="button"
-          onClick={() => handleDeleteAdditionalCostRow(index, cost.id)}
-        >
-          <SlTrash className='text-[#818181] text-lg'/>
-        </button>
+                                            {/* Actions Cell */}
+                                            <TableCell className='px-3 py-2'>
+                                                <div className='flex justify-center text-start items-center gap-2'>
+                                                    {/* Delete button - always shown */}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleDeleteAdditionalCostRow(index, cost.id)}
+                                                    >
+                                                        <SlTrash className='text-[#818181] text-lg' />
+                                                    </button>
 
-        {/* Edit/Save button - only shown for existing costs */}
-        {cost.id && (
-     
-          <button
-              type="button"
-              onClick={() => handleEditAdditionalCost(index)}
-            >
-              <AiOutlineEdit className='text-[#818181] text-xl'/>
-            </button>
+                                                    {/* Edit/Save button - only shown for existing costs */}
+                                                    {cost.id && (
 
-        )}
-      </div>
-    </TableCell>
-  </TableRow>
-))}
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleEditAdditionalCost(index)}
+                                                        >
+                                                            <AiOutlineEdit className='text-[#818181] text-xl' />
+                                                        </button>
+
+                                                    )}
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
                                 </TableBody>
                             </Table>
 
@@ -522,7 +570,7 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                                     variant="primary"
                                     onClick={handleSaveAdditionalCosts}
                                     disabled={
-                                      
+
                                         additionalCosts.some(cost => !cost.cost_name || Number(cost.cost) < 0) ||
                                         formik.isSubmitting
                                     }
@@ -535,59 +583,170 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                     </>
                 )}
 
-
                 {hasPositiveStagePrice && (
-                    <div className='mt-6'>
-                        <div className='px-4 mb-2'>
-                            <p className='text-md text-[#414141] font-medium'>Final Cost & Profit</p>
+                    <>
+                        <div className='mt-6'>
+                            <div className='px-4 mb-2'>
+                                <p className='text-md text-[#414141] font-medium'>Cost & Profit</p>
+                            </div>
+
+                            <div className='grid grid-cols-1 lg:grid-cols-4 gap-4 px-4'>
+                                <div>
+                                    <Label className='flex items-center gap-1'>Purchase Price <CiLock className='text-lg' /> </Label>
+                                    <Input
+                                        name="price_paid"
+                                        placeholder='$ 0.00'
+                                        value={timelineData?.timeLine[0]?.inventory?.price_paid}
+                                        type="number"
+                                        min="0"
+                                        disabled
+                                    />
+                                </div>
+                                <div>
+                                    <Label className='text-black'>Selling Price <span className="text-error-500">*</span></Label>
+                                    <Input
+                                        name="sellingPrice"
+                                        placeholder='$ 0.00'
+                                        value={formik.values.sellingPrice}
+                                        onChange={handleSellingPriceChange}
+                                        type="number"
+                                        min="0"
+                                    />
+                                </div>
+
+
+                                <div>
+                                    <Label className='flex items-center gap-1'> Gross Profit (Auto calculated) <CiLock className='text-lg' /></Label>
+                                    <Input
+                                        name="profit"
+                                        placeholder='$ 0.00'
+                                        value={formik.values.profit}
+                                        type="number"
+                                        disabled
+                                    />
+                                </div>
+                                <div>
+                                    <Label className='flex items-center gap-1'>Gross Profit % (Auto calculated) <CiLock className='text-lg' /></Label>
+                                    <Input
+                                        name="profit_percentage"
+                                        placeholder='$ 0.00'
+                                        value={`${formik.values.profit_percentage}%`}
+                                        disabled
+                                    />
+                                </div>
+
+                            </div>
+
+
                         </div>
 
-                        <div className='grid grid-cols-1 lg:grid-cols-4 gap-4 px-4'>
-                            <div>
-                                <Label className='flex items-center gap-1'>Purchase Price <CiLock className='text-lg' /> </Label>
-                                <Input
-                                    name="price_paid"
-                                    placeholder='$ 0.00'
-                                    value={timelineData?.timeLine[0]?.inventory?.price_paid}
-                                    type="number"
-                                    min="0"
-                                    disabled
-                                />
-                            </div>
-                            <div>
-                                <Label className='text-black'>Selling Price <span className="text-error-500">*</span></Label>
-                                <Input
-                                    name="sellingPrice"
-                                    placeholder='$ 0.00'
-                                    value={formik.values.sellingPrice}
-                                    onChange={handleSellingPriceChange}
-                                    type="number"
-                                    min="0"
-                                />
-                            </div>
+                  <div className='mt-6'>
+            <div className='px-4 mb-2'>
+                <p className='text-md text-[#414141] font-medium'>Sales Commission</p>
+            </div>
+
+            <div className='grid grid-cols-1 lg:grid-cols-4 gap-4 px-4'>
+                <div>
+                    <Label className='text-black'>Sales Commission %</Label>
+                    <Input
+                        name="salescommission"
+                        placeholder='0%'
+                        value={formik.values.salescommission}
+                        onChange={(e) => {
+                            // Allow only numbers and percentage
+                            const value = e.target.value.replace(/[^0-9.]/g, '');
+                            formik.setFieldValue('salescommission', value);
+                            // Recalculate if selling price exists
+                            if (formik.values.sellingPrice) {
+                                debouncedCalculateProfit(parseFloat(formik.values.sellingPrice));
+                            }
+                        }}
+                    />
+                </div>
+                <div>
+                    <Label className='flex items-center gap-1'>Sales Commission Amount <CiLock className='text-lg' /></Label>
+                    <Input
+                        name="salescommissionAmount"
+                        placeholder='$ 0.00'
+                        value={formik.values.salescommissionAmount}
+                        type="number"
+                        disabled
+                    />
+                </div>
+            </div>
+        </div>
+
+        {/* FGS Commission Section */}
+        <div className='mt-6'>
+            <div className='px-4 mb-2'>
+                <p className='text-md text-[#414141] font-medium'>FGS Commission</p>
+            </div>
+
+            <div className='grid grid-cols-1 lg:grid-cols-4 gap-4 px-4'>
+                <div>
+                    <Label className='text-black'>FGS Commission %</Label>
+                    <Input
+                        name="fgscommission"
+                        placeholder='0%'
+                        value={formik.values.fgscommission}
+                        onChange={(e) => {
+                            const value = e.target.value.replace(/[^0-9.]/g, '');
+                            formik.setFieldValue('fgscommission', value);
+                            if (formik.values.sellingPrice) {
+                                debouncedCalculateProfit(parseFloat(formik.values.sellingPrice));
+                            }
+                        }}
+                    />
+                </div>
+                <div>
+                    <Label className='flex items-center gap-1'>FGS Commission Amount <CiLock className='text-lg' /></Label>
+                    <Input
+                        name="fgscommissionAmount"
+                        placeholder='$ 0.00'
+                        value={formik.values.fgscommissionAmount}
+                        type="number"
+                        disabled
+                    />
+                </div>
+            </div>
+        </div>
+
+        {/* Investor Profit Section */}
+        <div className='mt-6'>
+            <div className='px-4 mb-2'>
+                <p className='text-md text-[#414141] font-medium'>Investor Profit</p>
+            </div>
+
+            <div className='grid grid-cols-1 lg:grid-cols-4 gap-4 px-4'>
+                <div>
+                    <Label className='text-black'>Investor Profit %</Label>
+                    <Input
+                        name="investorcomission"
+                        placeholder='0%'
+                        value={formik.values.investorcomission}
+                        onChange={(e) => {
+                            const value = e.target.value.replace(/[^0-9.]/g, '');
+                            formik.setFieldValue('investorcomission', value);
+                            if (formik.values.sellingPrice) {
+                                debouncedCalculateProfit(parseFloat(formik.values.sellingPrice));
+                            }
+                        }}
+                    />
+                </div>
+                <div>
+                    <Label className='flex items-center gap-1'>Investor Profit Amount <CiLock className='text-lg' /></Label>
+                    <Input
+                        name="investorcomissionAmount"
+                        placeholder='$ 0.00'
+                        value={formik.values.investorcomissionAmount}
+                        type="number"
+                        disabled
+                    />
+                </div>
+            </div>
+        </div>
 
 
-                            <div>
-                                <Label className='flex items-center gap-1'>Profit (Auto calculated) <CiLock className='text-lg' /></Label>
-                                <Input
-                                    name="profit"
-                                    placeholder='$ 0.00'
-                                    value={formik.values.profit}
-                                    type="number"
-                                    disabled
-                                />
-                            </div>
-                            <div>
-                                <Label className='flex items-center gap-1'>Profit % (Auto calculated) <CiLock className='text-lg' /></Label>
-                                <Input
-                                    name="profit_percentage"
-                                    placeholder='$ 0.00'
-                                    value={`${formik.values.profit_percentage}%`}
-                                    disabled
-                                />
-                            </div>
-
-                        </div>
 
                         <div className='flex items-center gap-3 justify-end mt-4 pr-4'>
                             <Button onClick={handleCloseReset} variant="fgsoutline">
@@ -601,8 +760,16 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                                 Mark as Sold
                             </Button>
                         </div>
-                    </div>
+                    </>
                 )}
+
+
+
+
+
+
+
+
             </Box>
         </Modal>
     );
