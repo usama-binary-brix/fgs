@@ -198,7 +198,7 @@ const InvestmentOpportunityTable = () => {
                                 </TableHeader>
 
                                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                                    {data?.inventories?.data?.map((lead: any) => (
+                            {data?.inventories?.data ?.filter((lead: any) => lead.status !== 'complete' || lead.complete_investment === false).map((lead: any) => (
                                         <TableRow key={lead.id}>
                                             <TableCell className="px-5 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.listing_number}</TableCell>
                                             <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.make}</TableCell>
@@ -219,7 +219,7 @@ const InvestmentOpportunityTable = () => {
                                                         <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                                                     </button>
 
-                                                    {openDropdown === lead.id && (
+                                                    {openDropdown === lead.id && !lead.complete_investment && (
                                                         <div className="absolute right-9 top-[-4px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
                                                             {/* <DropdownItem
                                                                 onItemClick={closeDropdown}

@@ -26,7 +26,7 @@ const EmployeeTaskList = () => {
         <p className="text-lg font-semibold">Task: List</p>
 
         {/* Dropdown Button */}
-        <div className="relative">
+        {/* <div className="relative">
           <button
             type="button"
             onClick={() => setIsDropdownOpen((prev) => !prev)}
@@ -37,7 +37,6 @@ const EmployeeTaskList = () => {
             <MdKeyboardArrowDown className="text-xl" />
           </button>
 
-          {/* Dropdown Options */}
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10">
               {['All Tasks', 'Pending Tasks', 'Completed Tasks'].map((option) => (
@@ -51,7 +50,7 @@ const EmployeeTaskList = () => {
               ))}
             </div>
           )}
-        </div>
+        </div> */}
       </div>
 
       <div>
@@ -67,6 +66,7 @@ const EmployeeTaskList = () => {
             priority={task.priority}
             initialDetails={task.task_description}
             onSubmitTask={(details) => handleUpdate(task.id, details)}
+            statuses={task.statuses}
           />
         ))}
       </div>

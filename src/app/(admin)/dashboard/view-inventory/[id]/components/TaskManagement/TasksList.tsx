@@ -127,6 +127,8 @@ const TasksList = () => {
               priority={task.priority}
               initialDetails={task.task_description}
               onSubmitTask={(details) => handleUpdate(task.id, details)}
+              statuses={task.statuses}
+
             />
           ))}
         </div>

@@ -34,6 +34,7 @@ interface TaskAccordionProps {
   initialDetails?: string;
   onSubmitTask?: (details: string) => void;
   onTaskDeleted?: (taskId: any) => void;
+  statuses?:any
 }
 
 const TaskAccordion: React.FC<TaskAccordionProps> = ({
@@ -47,6 +48,7 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
   initialDetails = "",
   onSubmitTask,
   onTaskDeleted,
+  statuses
 }) => {
 
 
@@ -226,7 +228,7 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
                   {(userType == "super_admin" || userType == "admin" || userType == "employee") && (
                     <>
                       <Button
-                        onClick={() => handleOpenModal(id)}
+                        onClick={() => handleOpenModal(statuses.id)}
                       >
                         Update Task Status
                       </Button>
