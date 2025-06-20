@@ -1,11 +1,10 @@
-
 import React, { useEffect, useState } from 'react';
 import {
     Modal,
     Box,
 } from '@mui/material';
 import { useParams } from 'next/navigation';
-import { useAddAdditionalCostMutation, useAddInventoryCostMutation, useAddSellingPriceMutation, useCalculateProfitMutation, useDeleteAdditionalCostRowMutation, useGetAllTimelineQuery, useGetInventorySellingPriceQuery } from '@/store/services/api';
+import { useAddAdditionalCostMutation, useAddInventoryCostMutation, useAddSellingPriceMutation, useCalculateProfitMutation, useDeleteAdditionalCostRowMutation, useGetAllTimelineQuery, useGetInventorySellingPriceQuery, } from '@/store/services/api';
 import Input from '@/components/form/input/InputField';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import Button from '@/components/ui/button/Button';
@@ -110,6 +109,10 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
     } = useGetInventorySellingPriceQuery(id, {
         skip: !open,
     });
+
+    console.log(sellingPrice?.data?.selling_price, 'selling price')
+
+
     const [additionalCost, setAdditionalCost] = useState(false);
 
     const [deleteAdditionalRow, { isLoading: isDeleting }] = useDeleteAdditionalCostRowMutation();
@@ -192,6 +195,7 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
     const [inventoryCost] = useAddInventoryCostMutation();
     const [calculateProfit] = useCalculateProfitMutation();
     const [addSellingPrice] = useAddSellingPriceMutation();
+    console.log(sellingPrice, 'price')
     const formik = useFormik({
         initialValues: {
             stages: timelineData?.timeLine?.map((stage: any) => ({
@@ -199,16 +203,14 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                 price: stage.price || ''
             })) || [],
             sellingPrice: sellingPrice?.data?.selling_price || '',
-
-            profit: sellingPrice?.data?.gross_profit || '',
-            profit_percentage: sellingPrice?.data?.gross_profit_percentage || '',
-            salescommission: sellingPrice?.data?.sales_commission_percentage || " ",
-            salescommissionAmount: sellingPrice?.data?.sales_commission_amount || " ",
-            fgscommission: sellingPrice?.data?.fgs_commission_percentage || " ",
-            fgscommissionAmount: sellingPrice?.data?.fgs_commission_percentage || " ",
-            investorcomission: sellingPrice?.data?.investor_profit_percentage || " ",
-            investorcomissionAmount: sellingPrice?.data?.investor_profit_amount || " ",
-
+            profit: sellingPrice?.data?.gross_profit || 0,
+            profit_percentage: sellingPrice?.data?.gross_profit_percentage || 0,
+            salescommission: sellingPrice?.data?.selling_price ? sellingPrice?.data?.sales_commission_percentage : 15,
+            salescommissionAmount: sellingPrice?.data?.sales_commission_amount || 0,
+            fgscommission:  sellingPrice?.data?.selling_price ? sellingPrice?.data?.fgs_commission_percentage : 50,
+            fgscommissionAmount: sellingPrice?.data?.fgs_commission_amount || 0,
+            investorcomission:  sellingPrice?.data?.selling_price ? sellingPrice?.data?.investor_profit_percentage : 50,
+            investorcomissionAmount: sellingPrice?.data?.investor_profit_amount || 0,
         },
         enableReinitialize: true,
         onSubmit: async (values, { resetForm }) => {
@@ -220,7 +222,13 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
                 const response = await inventoryCost(payload).unwrap();
                 toast.success(response.message || 'Success');
                 if (sellingPrice?.data?.selling_price) {
-                    await debouncedCalculateProfit(parseFloat(values.sellingPrice));
+                    await calculateProfit({
+                        selling_price: parseFloat(values.sellingPrice),
+                        inventory_id: id,
+                        sales_commission_percentage: parseFloat(values.salescommission) || 0,
+                        fgs_commission_percentage: parseFloat(values.fgscommission) || 0,
+                        investor_profit_percentage: parseFloat(values.investorcomission) || 0
+                    }).unwrap();
                 }
 
                 resetForm();
@@ -239,7 +247,55 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
         }
     });
 
+    const handleSellingPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/[^0-9.]/g, '');
+        formik.setFieldValue('sellingPrice', value);
 
+        if (value) {
+            const payload = {
+                selling_price: parseFloat(value),
+                inventory_id: id,
+                sales_commission_percentage: parseFloat(formik.values.salescommission) || 15,
+                fgs_commission_percentage: parseFloat(formik.values.fgscommission) || 50,
+                investor_profit_percentage: parseFloat(formik.values.investorcomission) || 50
+            };
+            debouncedCalculateProfit(payload);
+        } else {
+            // Reset all commission fields if selling price is cleared
+            formik.setFieldValue('profit', 0);
+            formik.setFieldValue('profit_percentage', 0);
+            formik.setFieldValue('salescommission', 0);
+            formik.setFieldValue('salescommissionAmount', 0);
+            formik.setFieldValue('fgscommission', 0);
+            formik.setFieldValue('fgscommissionAmount', 0);
+            formik.setFieldValue('investorcomission', 0);
+            formik.setFieldValue('investorcomissionAmount', 0);
+        }
+    };
+
+    const handleSalesCommissionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/[^0-9.]/g, '');
+        formik.setFieldValue('salescommission', value);
+        if (formik.values.sellingPrice) {
+            calculateProfit({
+                selling_price: parseFloat(formik.values.sellingPrice),
+                inventory_id: id,
+                sales_commission_percentage: parseFloat(value) || 0,
+                fgs_commission_percentage: parseFloat(formik.values.fgscommission) || 0,
+                investor_profit_percentage: parseFloat(formik.values.investorcomission) || 0
+            }).unwrap().then(response => {
+                formik.setFieldValue('profit', response.gross_profit || '');
+                formik.setFieldValue('profit_percentage', response.gross_profit_percentage || '');
+                formik.setFieldValue('salescommissionAmount', response.sales_commission_amount || '');
+                formik.setFieldValue('fgscommissionAmount', response.fgs_commission_amount || '');
+                formik.setFieldValue('investorcomissionAmount', response.investor_profit_amount || '');
+              
+
+            }).catch(error => {
+                toast.error('Failed to calculate profit');
+            });
+        }
+    };
 
     const debounce = (func: Function, delay: number) => {
         let timer: NodeJS.Timeout;
@@ -249,71 +305,59 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
         };
     };
 
-    const debouncedCalculateProfit = React.useCallback(
-        debounce(async (sellingPrice: number) => {
-            try {
-                if (sellingPrice > 0) {
-                    const response = await calculateProfit({
-                        selling_price: sellingPrice,
-                        inventory_id: id
-                    }).unwrap();
+    const debouncedCalculateProfit = debounce(async (payload: any) => {
+        try {
+            const response = await calculateProfit(payload).unwrap();
+            formik.setFieldValue('profit', response.gross_profit || 0);
+            formik.setFieldValue('profit_percentage', response.gross_profit_percentage || 0);
+            formik.setFieldValue('salescommissionAmount', response.sales_commission_amount || 0);
+            formik.setFieldValue('fgscommissionAmount', response.fgs_commission_amount || 0);
+            formik.setFieldValue('investorcomissionAmount', response.investor_profit_amount || 0);
+        } catch (error) {
+            toast.error('Failed to calculate profit');
+        }
+    }, 500);
 
-                    formik.setFieldValue('profit', response.gross_profit || '');
-                    formik.setFieldValue('profit_percentage', response.gross_profit_percentage || '');
-                    formik.setFieldValue('salescommission', response.sales_commission_percentage || '');
-                    formik.setFieldValue('salescommissionAmount', response.sales_commission_amount || '');
-                    formik.setFieldValue('fgscommission', response.fgs_commission_percentage || '');
-                    formik.setFieldValue('fgscommissionAmount', response.fgs_commission_amount || '');
-                    formik.setFieldValue('investorcomission', response.investor_profit_percentage || '');
-                    formik.setFieldValue('investorcomissionAmount', response.investor_profit_amount || '');
-                } else {
-                    formik.setFieldValue('profit', '');
-                    formik.setFieldValue('profit_percentage', '');
-                    formik.setFieldValue('salescommission', '');
-                    formik.setFieldValue('salescommissionAmount', '');
-                    formik.setFieldValue('fgscommission', '');
-                    formik.setFieldValue('fgscommissionAmount', '');
-                    formik.setFieldValue('investorcomission', '');
-                    formik.setFieldValue('investorcomissionAmount', '');
+    const handleFgsCommissionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/[^0-9.]/g, '');
+        const fgsValue = parseFloat(value) || 0;
+        const investorValue = 100 - fgsValue;
 
-                }
-            } catch (error) {
-                toast.error('Failed to calculate profit');
-                formik.setFieldValue('profit', '');
-                formik.setFieldValue('profit_percentage', '');
+        formik.setFieldValue('fgscommission', fgsValue);
+        formik.setFieldValue('investorcomission', investorValue);
 
-            }
-        }, 500), // 500ms delay
-        [calculateProfit, id]
-    );
-
-    const handleSellingPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const sellingPrice = parseFloat(e.target.value);
-        formik.setFieldValue('sellingPrice', sellingPrice);
-        debouncedCalculateProfit(sellingPrice);
-
+        if (formik.values.sellingPrice) {
+            const payload = {
+                selling_price: parseFloat(formik.values.sellingPrice),
+                inventory_id: id,
+                sales_commission_percentage: parseFloat(formik.values.salescommission) || 0,
+                fgs_commission_percentage: fgsValue,
+                investor_profit_percentage: investorValue
+            };
+            debouncedCalculateProfit(payload);
+        }
     };
 
-    //    const handleSalesCommisionPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const salescommission = (e.target.value);
-    //     formik.setFieldValue('salescommission', salescommission);
-    //     // debouncedCalculateProfit(salescommission);
-    // };
+    const handleInvestorCommissionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/[^0-9.]/g, '');
+        const investorValue = parseFloat(value) || 0;
+        const fgsValue = 100 - investorValue;
 
-    const handleSalesCommisionPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let value = e.target.value;
+        formik.setFieldValue('investorcomission', investorValue);
+        formik.setFieldValue('fgscommission', fgsValue);
 
-        // // Remove any existing % sign to avoid duplication
-        // value = value.replace(/%/g, '');
-
-        // // Add % sign if there's a value
-        // if (value !== '') {
-        //     value += '%';
-        // }
-
-        formik.setFieldValue('salescommission', value);
-        // debouncedCalculateProfit(value);
+        if (formik.values.sellingPrice) {
+            const payload = {
+                selling_price: parseFloat(formik.values.sellingPrice),
+                inventory_id: id,
+                sales_commission_percentage: parseFloat(formik.values.salescommission) || 0,
+                fgs_commission_percentage: fgsValue,
+                investor_profit_percentage: investorValue
+            };
+            debouncedCalculateProfit(payload);
+        }
     };
+
     const handleSellingPriceSubmit = async () => {
         try {
             const sellingPrice = parseFloat(formik.values.sellingPrice);
@@ -324,13 +368,15 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
 
             const response = await addSellingPrice({
                 selling_price: sellingPrice,
-                inventory_id: id
+                inventory_id: id,
+                sales_commission_percentage: parseFloat(formik.values.salescommission) || 0,
+                fgs_commission_percentage: parseFloat(formik.values.fgscommission) || 0,
+                investor_profit_percentage: parseFloat(formik.values.investorcomission) || 0
             }).unwrap();
 
             toast.success(response.message || 'Selling price added successfully');
             onClose();
-            formik.setFieldValue('profit', '');
-            formik.setFieldValue('sellingPrice', '');
+            sellingPriceRefetch(); // Refresh selling price data
         } catch (error) {
             const errorResponse = error as ErrorResponse;
             if (errorResponse?.data?.error) {
@@ -347,8 +393,8 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
         }
     };
 
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error loading data</div>;
+    if (sellingPriceLoading) return <div>Loading...</div>;
+    if (sellingPriceError) return <div>Error loading data</div>;
 
     const handlePriceChange = (index: number, value: string) => {
         const numValue = parseFloat(value);
@@ -592,7 +638,7 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
 
                             <div className='grid grid-cols-1 lg:grid-cols-4 gap-4 px-4'>
                                 <div>
-                                    <Label className='flex items-center gap-1'>Purchase Price <CiLock className='text-lg' /> </Label>
+                                    <Label className='flex items-center gap-1'>Purchase Price <CiLock className='text-lg' /></Label>
                                     <Input
                                         name="price_paid"
                                         placeholder='$ 0.00'
@@ -640,111 +686,77 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
 
                         </div>
 
-                  <div className='mt-6'>
-            <div className='px-4 mb-2'>
-                <p className='text-md text-[#414141] font-medium'>Sales Commission</p>
-            </div>
+                        <div className='mt-6'>
 
-            <div className='grid grid-cols-1 lg:grid-cols-4 gap-4 px-4'>
-                <div>
-                    <Label className='text-black'>Sales Commission %</Label>
-                    <Input
-                        name="salescommission"
-                        placeholder='0%'
-                        value={formik.values.salescommission}
-                        onChange={(e) => {
-                            // Allow only numbers and percentage
-                            const value = e.target.value.replace(/[^0-9.]/g, '');
-                            formik.setFieldValue('salescommission', value);
-                            // Recalculate if selling price exists
-                            if (formik.values.sellingPrice) {
-                                debouncedCalculateProfit(parseFloat(formik.values.sellingPrice));
-                            }
-                        }}
-                    />
-                </div>
-                <div>
-                    <Label className='flex items-center gap-1'>Sales Commission Amount <CiLock className='text-lg' /></Label>
-                    <Input
-                        name="salescommissionAmount"
-                        placeholder='$ 0.00'
-                        value={formik.values.salescommissionAmount}
-                        type="number"
-                        disabled
-                    />
-                </div>
-            </div>
-        </div>
 
-        {/* FGS Commission Section */}
-        <div className='mt-6'>
-            <div className='px-4 mb-2'>
-                <p className='text-md text-[#414141] font-medium'>FGS Commission</p>
-            </div>
+                            {formik.values.sellingPrice && (
+                                <>
+                                    <div className='px-4 mb-2'>
+                                        <p className='text-md text-[#414141] font-medium'>Commissions Calculation</p>
+                                    </div>
+                                    <div className='grid grid-cols-1 lg:grid-cols-4 gap-4 px-4'>
+                                        <div>
+                                            <Label className='text-black'>Sales Commission %</Label>
+                                            <Input
+                                                name="salescommission"
+                                                placeholder='0%'
+                                                value={formik.values.salescommission || 0}
+                                                onChange={handleSalesCommissionChange}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label className='flex items-center gap-1'>Sales Commission Amount <CiLock className='text-lg' /></Label>
+                                            <Input
+                                                name="salescommissionAmount"
+                                                placeholder='$ 0.00'
+                                                value={formik.values.salescommissionAmount || 0}
+                                                type="number"
+                                                disabled
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label className='text-black'>FGS Commission %</Label>
+                                            <Input
+                                                name="fgscommission"
+                                                placeholder='0%'
+                                                value={formik.values.fgscommission || 0}
+                                                onChange={handleFgsCommissionChange}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label className='flex items-center gap-1'>FGS Commission Amount <CiLock className='text-lg' /></Label>
+                                            <Input
+                                                name="fgscommissionAmount"
+                                                placeholder='$ 0.00'
+                                                value={formik.values.fgscommissionAmount || 0}
+                                                type="number"
+                                                disabled
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label className='text-black'>Investor Profit %</Label>
+                                            <Input
+                                                name="investorcomission"
+                                                placeholder='0%'
+                                                value={formik.values.investorcomission || 0}
+                                                onChange={handleInvestorCommissionChange}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label className='flex items-center gap-1'>Investor Profit Amount <CiLock className='text-lg' /></Label>
+                                            <Input
+                                                name="investorcomissionAmount"
+                                                placeholder='$ 0.00'
+                                                value={formik.values.investorcomissionAmount || 0}
+                                                type="number"
+                                                disabled
+                                            />
+                                        </div>
+                                    </div>
+                                </>
 
-            <div className='grid grid-cols-1 lg:grid-cols-4 gap-4 px-4'>
-                <div>
-                    <Label className='text-black'>FGS Commission %</Label>
-                    <Input
-                        name="fgscommission"
-                        placeholder='0%'
-                        value={formik.values.fgscommission}
-                        onChange={(e) => {
-                            const value = e.target.value.replace(/[^0-9.]/g, '');
-                            formik.setFieldValue('fgscommission', value);
-                            if (formik.values.sellingPrice) {
-                                debouncedCalculateProfit(parseFloat(formik.values.sellingPrice));
-                            }
-                        }}
-                    />
-                </div>
-                <div>
-                    <Label className='flex items-center gap-1'>FGS Commission Amount <CiLock className='text-lg' /></Label>
-                    <Input
-                        name="fgscommissionAmount"
-                        placeholder='$ 0.00'
-                        value={formik.values.fgscommissionAmount}
-                        type="number"
-                        disabled
-                    />
-                </div>
-            </div>
-        </div>
-
-        {/* Investor Profit Section */}
-        <div className='mt-6'>
-            <div className='px-4 mb-2'>
-                <p className='text-md text-[#414141] font-medium'>Investor Profit</p>
-            </div>
-
-            <div className='grid grid-cols-1 lg:grid-cols-4 gap-4 px-4'>
-                <div>
-                    <Label className='text-black'>Investor Profit %</Label>
-                    <Input
-                        name="investorcomission"
-                        placeholder='0%'
-                        value={formik.values.investorcomission}
-                        onChange={(e) => {
-                            const value = e.target.value.replace(/[^0-9.]/g, '');
-                            formik.setFieldValue('investorcomission', value);
-                            if (formik.values.sellingPrice) {
-                                debouncedCalculateProfit(parseFloat(formik.values.sellingPrice));
-                            }
-                        }}
-                    />
-                </div>
-                <div>
-                    <Label className='flex items-center gap-1'>Investor Profit Amount <CiLock className='text-lg' /></Label>
-                    <Input
-                        name="investorcomissionAmount"
-                        placeholder='$ 0.00'
-                        value={formik.values.investorcomissionAmount}
-                        type="number"
-                        disabled
-                    />
-                </div>
-            </div>
-        </div>
+                            )}
+                        </div>
 
 
 
