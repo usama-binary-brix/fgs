@@ -67,6 +67,8 @@ export default function EmployeeDashboard() {
                     status={task.status}
                     priority={task.priority}
                     initialDetails={task.task_description}
+                    isEmployeeDashboard={true}
+                    inventoryId={task?.inventory_id}
                   />
                 ))}
               </div>

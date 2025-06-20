@@ -46,6 +46,7 @@ interface Props {
     onClose: () => void;
     taskName?: any
     taskId?: any
+     taskStatusId?:any
 }
 
 type ErrorResponse = {
@@ -60,12 +61,12 @@ const statusOptions = [
     { value: 'completed', label: 'Completed' },
 ];
 
-const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName, taskId }) => {
+const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName, taskId, taskStatusId }) => {
     const [images, setImages] = useState<File[]>([]);
     const [existingFiles, setExistingFiles] = useState<any[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [addStatus] = useAddTaskStatusMutation();
-    const { data: taskStatusData, error: taskStatusError, isLoading: taskStatusLoading, refetch: taskStatusRefetch } = useEmployeeTaskStatusQuery(taskId, { skip: !taskId || !open });
+    const { data: taskStatusData, error: taskStatusError, isLoading: taskStatusLoading, refetch: taskStatusRefetch } = useEmployeeTaskStatusQuery(taskStatusId, { skip: !taskStatusId || !open });
   
     // Reset all local state when modal closes
     const resetFormState = () => {
@@ -76,10 +77,10 @@ const UpdateTaskStatusModal: React.FC<Props> = ({ open, onClose, taskName, taskI
 
     // Fetch data when modal opens or taskId changes
     useEffect(() => {
-        if (open) {
+        if (open && taskStatusId) {
             taskStatusRefetch();
         }
-    }, [open, taskId]);
+    }, [open, taskStatusId]);
 
     // Update form with API data when it's available
     useEffect(() => {

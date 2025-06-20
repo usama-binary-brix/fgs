@@ -17,6 +17,7 @@ import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import { useDeleteTaskMutation } from "@/store/services/api";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 interface AssignedUser {
   first_name: string;
@@ -34,7 +35,9 @@ interface TaskAccordionProps {
   initialDetails?: string;
   onSubmitTask?: (details: string) => void;
   onTaskDeleted?: (taskId: any) => void;
-  statuses?:any
+  statuses?:any;
+  isEmployeeDashboard?:any;
+  inventoryId?:any
 }
 
 const TaskAccordion: React.FC<TaskAccordionProps> = ({
@@ -48,7 +51,9 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
   initialDetails = "",
   onSubmitTask,
   onTaskDeleted,
-  statuses
+  statuses,
+  isEmployeeDashboard,
+  inventoryId
 }) => {
 
 
@@ -57,15 +62,32 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedTaskId, setSelectedTaskId] = useState<any>(null);
   const [selectedUpdateTaskId, setSelectedUpdateTaskId] = useState<any>(null);
+  const [selectedTaskStatusId, setSelectedTaskStatusId] = useState<any>(null);
   const userType = useSelector((state: any) => state?.user?.user?.account_type)
   const [selectedTaskName, setSelectedTaskName] = useState("");
-
+const router = useRouter()
   const [deleteTask, { isLoading: isDeleting }] = useDeleteTaskMutation();
 
-  const handleOpenModal = (id: any) => {
-    setIsModalOpen(true);
-    setSelectedUpdateTaskId(id)
+  // const handleOpenModal = (id: any, statusId?:any) => {
+  //   setIsModalOpen(true);
+  //   setSelectedUpdateTaskId(id)
+  //   setSelectedTaskStatusId(statusId)
+
+
+  // };
+
+  const handleOpenModal = (id: any, statusId?: any) => {
+    if (isEmployeeDashboard) {
+      // Navigate to view task page for employee dashboard
+      router.push(`/employee-dashboard/view-tasks/${inventoryId}`);
+    } else {
+      // Open modal for other dashboards
+      setIsModalOpen(true);
+      setSelectedUpdateTaskId(id);
+      setSelectedTaskStatusId(statusId);
+    }
   };
+
 
   const handleOpenTaskModal = (taskId: any) => {
     setIsTaskModalOpen(true);
@@ -228,7 +250,7 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
                   {(userType == "super_admin" || userType == "admin" || userType == "employee") && (
                     <>
                       <Button
-                        onClick={() => handleOpenModal(statuses.id)}
+                        onClick={() => handleOpenModal(id, statuses?.id)}
                       >
                         Update Task Status
                       </Button>
@@ -247,6 +269,7 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
         onClose={handleCloseModal}
         taskName={title}
         taskId={selectedUpdateTaskId}
+        taskStatusId={selectedTaskStatusId}
 
       />
 
