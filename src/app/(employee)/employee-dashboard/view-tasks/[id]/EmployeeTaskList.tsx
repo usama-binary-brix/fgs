@@ -5,7 +5,7 @@ import { MdKeyboardArrowDown } from 'react-icons/md'
 import { useGetAllEmployeesTasksQuery } from '@/store/services/api'
 import { useParams } from 'next/navigation'
 
-const EmployeeTaskList = () => {
+const EmployeeTaskList = ({Inventorydata}:any) => {
   const { id } = useParams()
   const { data } = useGetAllEmployeesTasksQuery(id)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -14,7 +14,7 @@ const EmployeeTaskList = () => {
   const handleUpdate = (taskId: any, updatedDetails: any) => {
     console.log(`Task ${taskId} updated with:`, updatedDetails)
   }
-
+console.log('first', Inventorydata?.inventory)
   const handleSelect = (option: string) => {
     setSelectedFilter(option)
     setIsDropdownOpen(false)
@@ -67,6 +67,8 @@ const EmployeeTaskList = () => {
             initialDetails={task.task_description}
             onSubmitTask={(details) => handleUpdate(task.id, details)}
             statuses={task.statuses}
+sellingPrice={Inventorydata?.inventory?.selling_price
+}
           />
         ))}
       </div>

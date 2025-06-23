@@ -18,7 +18,6 @@ const EmployeeViewTask = () => {
   const { id } = useParams()
   const { data: timelineData, error, isLoading: allTimelineLoading, refetch } = useGetAllTimelineQuery(id);
   const { data: inventoryData, error: inventoryError, } = useGetInventoryByIdQuery(id);
-
   return (
     <>
 
@@ -72,7 +71,7 @@ const EmployeeViewTask = () => {
 
       </div>
       <CustomizedTimeline steps={timelineData?.timeLine} />
-      <EmployeeTaskList />
+      <EmployeeTaskList Inventorydata={inventoryData}/>
     </>
   )
 }

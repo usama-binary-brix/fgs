@@ -35,9 +35,10 @@ interface TaskAccordionProps {
   initialDetails?: string;
   onSubmitTask?: (details: string) => void;
   onTaskDeleted?: (taskId: any) => void;
-  statuses?:any;
-  isEmployeeDashboard?:any;
-  inventoryId?:any
+  statuses?: any;
+  isEmployeeDashboard?: any;
+  inventoryId?: any
+  sellingPrice?: any
 }
 
 const TaskAccordion: React.FC<TaskAccordionProps> = ({
@@ -53,7 +54,8 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
   onTaskDeleted,
   statuses,
   isEmployeeDashboard,
-  inventoryId
+  inventoryId,
+  sellingPrice
 }) => {
 
 
@@ -65,7 +67,7 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
   const [selectedTaskStatusId, setSelectedTaskStatusId] = useState<any>(null);
   const userType = useSelector((state: any) => state?.user?.user?.account_type)
   const [selectedTaskName, setSelectedTaskName] = useState("");
-const router = useRouter()
+  const router = useRouter()
   const [deleteTask, { isLoading: isDeleting }] = useDeleteTaskMutation();
 
   // const handleOpenModal = (id: any, statusId?:any) => {
@@ -129,24 +131,24 @@ const router = useRouter()
           <p className="text-base font-semibold mb-1">{title}</p>
           {assignedUsers && (
             <>
-            <div className="flex items-center gap-1">
-            <span className="text-[14px] text-[#616161] font-medium mr-1">
-              Assigned to:
-            </span>
-            <div>
-              <AvatarGroup>
-                <Avatar
-                  alt={`${assignedUsers.first_name}`}
-                  src=''
-                  sx={{ height: '2rem', width: '2rem' }}
-                />
-              </AvatarGroup>
-              <p className="text-xs text-gray-500 text-center">{assignedUsers.first_name}</p>
-            </div>
-          </div>
+              <div className="flex items-center gap-1">
+                <span className="text-[14px] text-[#616161] font-medium mr-1">
+                  Assigned to:
+                </span>
+                <div>
+                  <AvatarGroup>
+                    <Avatar
+                      alt={`${assignedUsers.first_name}`}
+                      src=''
+                      sx={{ height: '2rem', width: '2rem' }}
+                    />
+                  </AvatarGroup>
+                  <p className="text-xs text-gray-500 text-center">{assignedUsers.first_name}</p>
+                </div>
+              </div>
             </>
           )}
-          
+
         </div>
 
         <div className="px-4">
@@ -247,16 +249,16 @@ const router = useRouter()
                     </>
                   )}
 
-                  {(userType == "super_admin" || userType == "admin" || userType == "employee") && (
-                    <>
-                      <Button
-                        onClick={() => handleOpenModal(id, statuses?.id)}
-                      >
+                  {(
+                    userType === "admin" ||
+                    userType === "super_admin" ||
+                    (userType === "employee" && sellingPrice == null)
+                  ) && (
+                      <Button onClick={() => handleOpenModal(id, statuses?.id)}>
                         Update Task Status
                       </Button>
+                    )}
 
-                    </>
-                  )}
                 </div>
               </AccordionDetails>
             </Accordion>
