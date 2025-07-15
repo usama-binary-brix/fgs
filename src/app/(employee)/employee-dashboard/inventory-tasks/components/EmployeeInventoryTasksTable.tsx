@@ -40,7 +40,7 @@ interface Lead {
 const EmployeeInventoryTasksTable = () => {
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const [searchText, setSearchText] = useState('');
-    const [debouncedSearchText] = useDebounce(searchText, 300);
+    const [debouncedSearchText] = useDebounce(searchText, 800);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(10); // Example total pages
     const [perPage, setPerPage] = useState(10);

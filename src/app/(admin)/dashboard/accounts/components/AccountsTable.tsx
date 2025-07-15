@@ -22,7 +22,7 @@ const AccountsTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [searchText, setSearchText] = useState('');
-  const [debouncedSearchText] = useDebounce(searchText, 300);
+  const [debouncedSearchText] = useDebounce(searchText, 800);
 
   const { data, isLoading, error } = useGetAllUsersQuery({
     page: currentPage,

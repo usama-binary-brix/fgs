@@ -33,12 +33,13 @@ const navItems: NavItem[] = [
 
 
   { icon: <GridIcon />, name: "Accounts", path: "/dashboard/accounts", roles: ["admin", 'super_admin'] },
-  {
-    icon: <GridIcon />,
-    name: "Inventory",
-    subItems: [{ name: "All Inventory", path: "/dashboard/inventory" }],
-    roles: ["admin", 'super_admin'],
-  },
+  { icon: <GridIcon />, name: "All Inventory", path: "/dashboard/inventory", roles: ["admin", 'super_admin'] },
+  // {
+  //   icon: <GridIcon />,
+  //   name: "Inventory",
+  //   subItems: [{ name: "All Inventory", path: "/dashboard/inventory" }],
+  //   roles: ["admin", 'super_admin'],
+  // },
   { icon: <GridIcon />, name: "Shipments", path: "/dashboard/shipments/all-shipments",  roles: ["admin", 'super_admin'] },
 
   // {
@@ -73,14 +74,15 @@ const navItems: NavItem[] = [
     roles: ["broker"],
   },
   { icon: <GridIcon />, name: "Dashboard", path: "/employee-dashboard", roles: ["employee"] },
-  {
-    icon: <GridIcon />,
-    name: "Inventory Tasks",
-    subItems: [
-      { name: "All Inventory Tasks", path: "/employee-dashboard/inventory-tasks" },
-    ],
-    roles: ["employee"],
-  },
+  { icon: <GridIcon />, name: "Inventory Tasks", path: "/employee-dashboard/inventory-tasks", roles: ["employee"] },
+  // {
+  //   icon: <GridIcon />,
+  //   name: "Inventory Tasks",
+  //   subItems: [
+  //     { name: "All Inventory Tasks", path: "/employee-dashboard/inventory-tasks" },
+  //   ],
+  //   roles: ["employee"],
+  // },
 ];
 
 const AppSidebar: React.FC = () => {

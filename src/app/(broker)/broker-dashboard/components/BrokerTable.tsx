@@ -27,7 +27,7 @@ const BrokerTable = () => {
     const [totalPages, setTotalPages] = useState(10); // Example total pages
     const [perPage, setPerPage] = useState(10); // Default items per page
     const [searchText, setSearchText] = useState('');
-    const [debouncedSearchText] = useDebounce(searchText, 300);
+    const [debouncedSearchText] = useDebounce(searchText, 800);
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
     };

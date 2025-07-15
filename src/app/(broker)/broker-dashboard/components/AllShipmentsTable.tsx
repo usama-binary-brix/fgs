@@ -42,7 +42,7 @@ const AllShipmentsTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [searchText, setSearchText] = useState('');
-  const [debouncedSearchText] = useDebounce(searchText, 300);
+  const [debouncedSearchText] = useDebounce(searchText, 800);
   const userRole = useSelector((state: any) => state?.user?.user?.account_type)
 
   const { data, isLoading, error, refetch } = useGetAllShipmentOpportunitiesQuery({

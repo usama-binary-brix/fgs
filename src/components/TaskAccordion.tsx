@@ -255,7 +255,7 @@ const TaskAccordion: React.FC<TaskAccordionProps> = ({
                     (userType === "employee" && sellingPrice == null)
                   ) && (
                       <Button onClick={() => handleOpenModal(id, statuses?.id)}>
-                        Update Task Status
+                      {isEmployeeDashboard ? 'View Task Details': 'Update Task Status'}
                       </Button>
                     )}
 

@@ -17,7 +17,7 @@ const TasksList = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [selectedFilter, setSelectedFilter] = useState('All Tasks')
   const [searchText, setSearchText] = useState('');
-  const [debouncedSearchText] = useDebounce(searchText, 300);
+  const [debouncedSearchText] = useDebounce(searchText, 800);
 
   const handleSelect = (option: string) => {
     setSelectedFilter(option)

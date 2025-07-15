@@ -45,7 +45,7 @@ const MyInvestmentTable = () => {
         setOpenDropdown(openDropdown === id ? null : id);
     };
     const [searchText, setSearchText] = useState('');
-    const [debouncedSearchText] = useDebounce(searchText, 300);
+    const [debouncedSearchText] = useDebounce(searchText, 800);
     const [currentPage, setCurrentPage] = useState(1);
     const [perPage, setPerPage] = useState(10);
 

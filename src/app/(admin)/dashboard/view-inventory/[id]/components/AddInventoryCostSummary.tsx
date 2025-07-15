@@ -110,7 +110,6 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
         skip: !open,
     });
 
-    console.log(sellingPrice?.data?.selling_price, 'selling price')
 
 
     const [additionalCost, setAdditionalCost] = useState(false);
@@ -195,7 +194,6 @@ const AddInventoryCostSummary: React.FC<CostSummaryProps> = ({
     const [inventoryCost] = useAddInventoryCostMutation();
     const [calculateProfit] = useCalculateProfitMutation();
     const [addSellingPrice] = useAddSellingPriceMutation();
-    console.log(sellingPrice, 'price')
     const formik = useFormik({
         initialValues: {
             stages: timelineData?.timeLine?.map((stage: any) => ({

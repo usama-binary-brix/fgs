@@ -70,7 +70,7 @@ const EmployeeViewTask = () => {
 
 
       </div>
-      <CustomizedTimeline steps={timelineData?.timeLine} />
+      <CustomizedTimeline steps={timelineData?.timeLine} timelineData={timelineData} />
       <EmployeeTaskList Inventorydata={inventoryData}/>
     </>
   )
