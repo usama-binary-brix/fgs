@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks", "EmployeeInventory", "AllEmployeeTasks", "AllShipments", "InventoryCost", "AllShipmentOpportunities", "AllShipmentQuotes", "EmployeeAdminDashboard","BrokerDashboard","MyShipments", "InvestorDashboard", "AdditionalCost"],
+  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks", "EmployeeInventory", "AllEmployeeTasks", "AllShipments", "InventoryCost", "AllShipmentOpportunities", "AllShipmentQuotes", "EmployeeAdminDashboard","BrokerDashboard","MyShipments", "InvestorDashboard", "AdditionalCost","notifications"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -559,6 +559,15 @@ export const api = createApi({
 
     }),
 
+     getNotifications: builder.query({
+      query: (page) => ({
+        url: `get/notification?per_page=${page}`,
+        method: 'GET',
+      }),
+      providesTags: ["notifications"],
+
+    }),
+
   }),
 });
 
@@ -626,5 +635,5 @@ useUpdateUserInfoMutation,
 useAddAdditionalCostMutation,
 useDeleteAdditionalCostRowMutation,
 useGetQRCodeInventoryByIdQuery,
- 
+ useGetNotificationsQuery
 } = api;
