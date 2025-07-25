@@ -29,7 +29,6 @@ const userRole = useSelector((state:any)=>state?.user?.user?.account_type)
 
   };
 
-  console.log(user?.user?.investments.length, 'user length')
 
   return (
     <>

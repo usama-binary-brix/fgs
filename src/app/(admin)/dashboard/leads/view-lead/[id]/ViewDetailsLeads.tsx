@@ -1,6 +1,6 @@
 'use client'
 import { useParams, useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useFormik } from 'formik';
 import AddLeadInput from '../../components/input/AddLeadInput';
 import { useEditLeadMutation, useGetLeadByIdQuery, usePromoteToInvestorMutation } from '@/store/services/api';
@@ -72,8 +72,13 @@ const ViewDetailsLeads = () => {
     { value: "Arcangelo" },
     { value: "Myron" },
   ];
+  const leads_type = [
+    { value: "investor", label: "Investor" },
+    { value: "customer", label: "Customer" },
+  ];
   const formik = useFormik({
     initialValues: {
+      lead_type: '',
       name: '',
       title: '',
       company: '',
@@ -159,6 +164,7 @@ const ViewDetailsLeads = () => {
         : null;
 
       formik.setValues({
+        lead_type: leadData.lead.lead_type || '',
         name: leadData.lead.name || '',
         title: leadData.lead.title || '',
         company: leadData.lead.company || '',
@@ -210,6 +216,7 @@ const ViewDetailsLeads = () => {
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
+  const dateInputRef = useRef<HTMLInputElement>(null);
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
@@ -318,6 +325,27 @@ const ViewDetailsLeads = () => {
             <AddLeadInput label="State" name="state" value={formik.values.state} onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={!isEditing} />
             <AddLeadInput label="Zip Code" name="zip_code" value={formik.values.zip_code} onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={!isEditing} />
           */}
+              <div>
+                <label className="text-[11.5px] text-[#818181] font-normal font-family">
+                  Lead Type <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="lead_type"
+                  value={formik.values.lead_type}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  disabled={!isEditing}
+                  className="w-full mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium font-family border border-[#E8E8E8] px-2 py-1.5 rounded-xs bg-white focus:outline-none"
+                >
+                  <option value="">Select Lead Type</option>
+                  {leads_type.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+                {formik.touched.lead_type && formik.errors.lead_type && (
+                  <p className="text-red-500 text-xs mt-1">{formik.errors.lead_type}</p>
+                )}
+              </div>
               <div>
 
                 <AddLeadInput
@@ -547,11 +575,27 @@ const ViewDetailsLeads = () => {
                     <DatePicker
                       selected={selectedDate}
                       onChange={handleDateChange} // Handles only date
+                      minDate={new Date()}
                       dateFormat="dd/MM/yyyy"
                       className="w-full px-3 py-1 cursor-pointer text-sm pr-10 border border-[#E8E8E8] rounded-xs outline-0 text-[#666] placeholder-[#666] text-[12px]"
                       placeholderText="Select Date"
+                      customInput={
+                        <div style={{ position: 'relative', width: '100%' }}>
+                          <input
+                              className="w-full px-0 py-0 cursor-pointer text-sm pr-10 outline-0 text-[#666] placeholder-[#666] text-[12px]"
+                            value={selectedDate ? selectedDate.toLocaleDateString() : ''}
+                            readOnly
+                            ref={dateInputRef}
+                            placeholder='Select Date'
+                          />
+                          <FiCalendar
+                            className="absolute right-2 top-1 w-[14px] h-[14px] text-gray-500 cursor-pointer"
+                            onClick={() => dateInputRef.current?.focus()}
+                          />
+                        </div>
+                      }
                     />
-                    <FiCalendar className="absolute right-2 top-2 w-[14px] h-[14px] text-gray-500 cursor-pointer" />
+                    {/* <FiCalendar className="absolute right-2 top-2 w-[14px] h-[14px] text-gray-500 cursor-pointer" /> */}
                   </div>
 
                   {/* Time Picker */}

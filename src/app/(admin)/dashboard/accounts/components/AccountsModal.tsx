@@ -196,6 +196,18 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
       note: Yup.string(),
     }),
     onSubmit: async (values, { resetForm }) => {
+      if (values.password && !values.password_confirmation) {
+        toast.error('Confirm password is required.');
+        return;
+      }
+      if (values.password_confirmation && !values.password) {
+        toast.error('Password is required.');
+        return;
+      }
+      if (values.password && values.password_confirmation && values.password !== values.password_confirmation) {
+        toast.error('Passwords do not match.');
+        return;
+      }
       setLoading(true);
       try {
         let response;
@@ -302,6 +314,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                 <Input
                   placeholder="Enter Email"
                   type="email"
+                  autoComplete="new-email"
                   {...formik.getFieldProps("email")} // ✅ Now works properly with onBlur
                 />
                 {formik.touched.email && formik.errors.email && (
@@ -336,6 +349,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
 
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter password"
+                    autoComplete="new-password"
                     {...formik.getFieldProps("password")}
                   />
                   <span
@@ -356,6 +370,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                   <Input
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Enter confirm password"
+                    autoComplete="new-password"
                     {...formik.getFieldProps("password_confirmation")}
                   />
                   <span
@@ -487,7 +502,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                   Referred By
                 </Label>
                 <Input
-                  placeholder="Enter Preferred By"
+                  placeholder="Enter Referred By"
                   type="text"
                   {...formik.getFieldProps("reffer_by")}
                 />

@@ -17,7 +17,8 @@ interface InputProps {
   success?: boolean;
   error?: boolean;
   hint?: any;
-  maxLength?:any
+  maxLength?:any;
+  autoComplete?: string; // <-- Add this line
 }
 
 const Input: FC<InputProps> = ({
@@ -38,6 +39,7 @@ const Input: FC<InputProps> = ({
   error = false,
   hint,
   maxLength,
+  autoComplete = "off", // <-- Add this line
 }) => {
   let inputClasses = `h-9 w-full rounded-sm border appearance-none px-4 py-1 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ${className}`;
 
@@ -68,7 +70,7 @@ const Input: FC<InputProps> = ({
         className={inputClasses}
         value={value}
         maxLength={maxLength}
-        autoComplete="off"
+        autoComplete={autoComplete} // <-- Change this line
         onKeyDown={(e:any) => {
           if (e.key === '-') {
               e.preventDefault();

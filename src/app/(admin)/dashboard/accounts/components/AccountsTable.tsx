@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components
 import { MoreDotIcon } from '@/icons';
 import Image from 'next/image';
 import { useEffect, useState, useCallback } from 'react';
+import { useRef } from 'react';
 import { IoSearchOutline } from 'react-icons/io5';
 import AccountsModal from './AccountsModal';
 import { useDeleteUserMutation, useGetAllUsersQuery } from '@/store/services/api';
@@ -93,6 +94,23 @@ const AccountsTable = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [debouncedSearchText]);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!openDropdownId) return;
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpenDropdownId(null);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openDropdownId]);
 
   return (
     <>
@@ -192,7 +210,7 @@ const AccountsTable = () => {
                       </TableCell>
 
                       <TableCell className="px-5 py-2 text-sm text-center text-[#616161]">
-                        <div className="relative inline-block">
+                        <div className="relative inline-block" ref={openDropdownId === user.id ? dropdownRef : null}>
                           <button onClick={() => toggleDropdown(user.id)} className={`dropdown-toggle p-1 rounded ${openDropdownId === user.id ? 'bg-gray-100' : ''}`}>
                             <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                           </button>

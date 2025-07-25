@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { useRef } from 'react';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { DropdownItem } from '@/components/ui/dropdown/DropdownItem';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
@@ -56,6 +57,23 @@ const InvestorLeadsTable = () => {
   const closeDropdown = () => {
     setOpenDropdown(null);
   };
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!openDropdown) return;
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpenDropdown(null);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openDropdown]);
 
 
   const handleNavigate = () => {
@@ -255,7 +273,7 @@ const InvestorLeadsTable = () => {
                       <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.condition || '---'}</TableCell>
                       <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.lead_created_by || '---'}</TableCell>
                       <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-visible relative  font-normal font-family">
-                        <div className="relative inline-block">
+                        <div className="relative inline-block" ref={openDropdown === lead.id ? dropdownRef : null}>
                           <button onClick={() => toggleDropdown(lead.id)} className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : ''}`}>
                             <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />
                           </button>

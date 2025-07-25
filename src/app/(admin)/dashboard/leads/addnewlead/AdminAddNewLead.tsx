@@ -19,6 +19,7 @@ import Select from "@/components/form/Select";
 import LeadSelect from "@/components/form/LeadSelect";
 import ButtonLoader from "@/components/ButtonLoader";
 import NProgress from "nprogress";
+import React, { useRef } from 'react'
 
 type ErrorResponse = {
   data: {
@@ -210,6 +211,7 @@ const AdminAddNewLead = () => {
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
+  const dateInputRef = useRef<HTMLInputElement>(null);
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
@@ -494,13 +496,28 @@ const AdminAddNewLead = () => {
                     {/* Date Picker */}
                     <div className="relative w-full">
                       <DatePicker
-                        selected={selectedDate}
-                        onChange={handleDateChange} // Handles only date
+                        selected={formik.values.reminder_date_time}
+                        onChange={date => formik.setFieldValue('reminder_date_time', date)}
+                        minDate={new Date()}
                         dateFormat="dd/MM/yyyy"
                         className="w-full px-3 py-1 cursor-pointer text-sm pr-10 border border-[#E8E8E8] rounded-xs outline-0 text-[#666] placeholder-[#666] text-[12px]"
                         placeholderText="Select Date"
+                        customInput={
+                          <div style={{ position: 'relative', width: '100%' }}>
+                            <input
+                              className="w-full px-0 py-0 cursor-pointer text-sm pr-10 outline-0 text-[#666] placeholder-[#666] text-[12px]"
+                              value={formik.values.reminder_date_time ? formik.values.reminder_date_time.toLocaleDateString() : ''}
+                              readOnly
+                              ref={dateInputRef}
+                               placeholder='Select Date'
+                            />
+                            <FiCalendar
+                              className="absolute right-2 top-1 w-[14px] h-[14px] text-gray-500 cursor-pointer"
+                              onClick={() => dateInputRef.current?.focus()}
+                            />
+                          </div>
+                        }
                       />
-                      <FiCalendar className="absolute right-2 top-2 w-[14px] h-[14px] text-gray-500 cursor-pointer" />
                     </div>
 
                     {/* Time Picker */}

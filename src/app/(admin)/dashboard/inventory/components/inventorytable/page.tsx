@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { useRef } from 'react';
 import TopButtons from '@/components/Buttons/TopButtons';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { DropdownItem } from '@/components/ui/dropdown/DropdownItem';
@@ -144,6 +145,23 @@ const InventoryTable = () => {
     setPerPage(newPerPage);
     setCurrentPage(1); // Reset to first page on per-page change
   };
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!openDropdown) return;
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpenDropdown(null);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openDropdown]);
 
   return (
     <>
@@ -340,7 +358,7 @@ const InventoryTable = () => {
                     <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-start">{lead.profit || '---'}</TableCell>
                  
                     <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-center relative">
-                      <div className="relative inline-block">
+                      <div className="relative inline-block" ref={openDropdown === lead.id ? dropdownRef : null}>
                         <button
                           onClick={() => toggleDropdown(lead.id)}
                           className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : 'hover:bg-gray-50'
