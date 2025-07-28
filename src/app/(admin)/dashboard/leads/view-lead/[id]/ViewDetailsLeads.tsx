@@ -2,6 +2,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState, useRef } from 'react'
 import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import AddLeadInput from '../../components/input/AddLeadInput';
 import { useEditLeadMutation, useGetLeadByIdQuery, usePromoteToInvestorMutation } from '@/store/services/api';
 import { toast } from 'react-toastify';
@@ -109,6 +110,15 @@ const ViewDetailsLeads = () => {
       comments: "",
       lead_created_by: "",
     },
+    validationSchema: Yup.object().shape({
+      name: Yup.string()
+        .required("Name is required")
+        .matches(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces")
+        .min(2, "Name must be at least 2 characters")
+        .max(50, "Name must be less than 50 characters"),
+      phone: Yup.string().required("Phone is required"),
+      email: Yup.string().email("Invalid email").required("Email is required"),
+    }),
     onSubmit: async (values, { resetForm, setSubmitting }) => {
 
       let reminderDateTime: string | null = null;
@@ -271,6 +281,14 @@ const ViewDetailsLeads = () => {
     router.push('/dashboard/leads')
   }
 
+  // Custom handler for name field to only allow letters and spaces
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow letters and spaces
+    const filteredValue = value.replace(/[^a-zA-Z\s]/g, '');
+    formik.setFieldValue('name', filteredValue);
+  };
+
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
@@ -352,7 +370,7 @@ const ViewDetailsLeads = () => {
                   label="Name"
                   name="name"
                   value={formik.values.name}
-                  onChange={formik.handleChange}
+                  onChange={handleNameChange}
                   onBlur={formik.handleBlur}
                   error={formik.touched.name && formik.errors.name}
                   isRequired={true}

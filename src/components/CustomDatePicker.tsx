@@ -16,6 +16,7 @@ interface MuiDatePickerProps {
   width?: string;
   defaultDate?: string | null;
   disableFuture?: boolean; // New prop to control future date disabling
+  disablePast?: boolean; // New prop to control past date disabling
 }
 
 const MuiDatePicker: React.FC<MuiDatePickerProps> = ({
@@ -31,11 +32,15 @@ const MuiDatePicker: React.FC<MuiDatePickerProps> = ({
   width,
   defaultDate,
   disableFuture = false, // Default to false if not provided
+  disablePast = false, // Default to false if not provided
 }) => {
-  // Function to disable only future dates if disableFuture is true
+  // Function to disable dates based on disableFuture and disablePast props
   const shouldDisableDate = (date: Dayjs) => {
     if (disableFuture) {
       return date.isAfter(dayjs(), 'day'); // Only disable dates AFTER today
+    }
+    if (disablePast) {
+      return date.isBefore(dayjs(), 'day'); // Only disable dates BEFORE today
     }
     return false;
   };

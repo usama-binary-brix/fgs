@@ -192,7 +192,10 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
       status: Yup.string(),
       company_name: Yup.string(),
       communication_preference: Yup.string(),
-      reffer_by: Yup.string(),
+      reffer_by: Yup.string()
+        .matches(/^[a-zA-Z\s]+$/, "Referred by can only contain letters and spaces")
+        .min(2, "Referred by must be at least 2 characters")
+        .max(50, "Referred by must be less than 50 characters"),
       note: Yup.string(),
     }),
     onSubmit: async (values, { resetForm }) => {
@@ -249,6 +252,14 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
       formik.setValues(getInitialValues(userData));
     }
   }, [userData]);
+
+  // Custom handler for reffer_by field to only allow letters and spaces
+  const handleRefferByChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow letters and spaces
+    const filteredValue = value.replace(/[^a-zA-Z\s]/g, '');
+    formik.setFieldValue('reffer_by', filteredValue);
+  };
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -504,7 +515,10 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                 <Input
                   placeholder="Enter Referred By"
                   type="text"
-                  {...formik.getFieldProps("reffer_by")}
+                  name="reffer_by"
+                  value={formik.values.reffer_by}
+                  onChange={handleRefferByChange}
+                  onBlur={formik.handleBlur}
                 />
                 {formik.touched.reffer_by && formik.errors.reffer_by && (
                   <p className="text-error-500 text-sm">{String(formik.errors.reffer_by)}</p>

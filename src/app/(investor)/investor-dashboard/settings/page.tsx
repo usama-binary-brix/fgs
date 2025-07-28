@@ -1,5 +1,4 @@
 "use client";
-import { ErrorResponse } from '@/app/(admin)/dashboard/accounts/components/AccountsModal';
 import Input from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
 import { PageTitle } from '@/components/PageTitle';
@@ -7,10 +6,13 @@ import Button from '@/components/ui/button/Button';
 import { useUpdateUserInfoMutation } from '@/store/services/api';
 import { setUser, updateUserData } from '@/store/services/userSlice';
 import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import React, { useRef, useState } from 'react'
 import { FiCamera, FiX, FiCheck } from "react-icons/fi";
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import ButtonLoader from '@/components/ButtonLoader';
+import { ErrorResponse } from '@/app/(admin)/dashboard/accounts/components/AccountsModal';
 
 const Page = () => {
     const [selected, setSelected] = useState(null);
@@ -56,8 +58,58 @@ const Page = () => {
         }
     };
 
+    // Custom handler for first_name field to only allow letters and spaces
+    const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        // Only allow letters and spaces
+        const filteredValue = value.replace(/[^a-zA-Z\s]/g, '');
+        formik.setFieldValue('first_name', filteredValue);
+    };
+
+    // Custom handler for last_name field to only allow letters and spaces
+    const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        // Only allow letters and spaces
+        const filteredValue = value.replace(/[^a-zA-Z\s]/g, '');
+        formik.setFieldValue('last_name', filteredValue);
+    };
+
+    // Custom handler for phone_number field to only allow numbers and + sign
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        // Only allow numbers and + sign (but + can only be at the beginning)
+        let filteredValue = value.replace(/[^0-9+]/g, '');
+
+        // Ensure + can only be at the beginning
+        if (filteredValue.includes('+')) {
+            const parts = filteredValue.split('+');
+            if (parts.length > 2) {
+                // If there are multiple + signs, keep only the first one
+                filteredValue = '+' + parts.slice(1).join('');
+            }
+        }
+
+        formik.setFieldValue('phone_number', filteredValue);
+    };
+
     const formik = useFormik({
         initialValues: initialValues,
+        validationSchema: Yup.object().shape({
+            first_name: Yup.string()
+                .required("First name is required")
+                .matches(/^[a-zA-Z\s]+$/, "First name can only contain letters and spaces")
+                .min(2, "First name must be at least 2 characters")
+                .max(50, "First name must be less than 50 characters"),
+            last_name: Yup.string()
+                .matches(/^[a-zA-Z\s]+$/, "Last name can only contain letters and spaces")
+                .min(2, "Last name must be at least 2 characters")
+                .max(50, "Last name must be less than 50 characters"),
+            email: Yup.string().email("Invalid email").required("Email is required"),
+            phone_number: Yup.string()
+                .matches(/^[+]?[0-9]+$/, "Phone number can only contain numbers and + sign")
+                .min(10, "Phone number must be at least 10 digits")
+                .max(15, "Phone number must be less than 15 digits"),
+        }),
         // validate: (values) => {
         //     const errors: any = {};
 
@@ -99,21 +151,20 @@ const Page = () => {
                 const formData = new FormData();
 
 
-             
                 formData.append('first_name', values.first_name || '');
                 formData.append('last_name', values.last_name || '');
                 formData.append('email', values.email || '');
                 formData.append('phone_number', values.phone_number || '');
-        
-                
+
+
                 if (isImageRemoved && profileImageFile === null) {
-              
+
                     formData.append('remove_profile_image', '1');
                 } else if (profileImageFile) {
-                
+
                     formData.append('profile_image', profileImageFile);
                 }
-             
+
 
                 if (values.old_password) {
                     formData.append('old_password', values.old_password);
@@ -162,7 +213,7 @@ const Page = () => {
         setIsEdit(false);
         setImage(User?.profile_image || null);
         setProfileImageFile(null);
-        setIsImageRemoved(false); 
+        setIsImageRemoved(false);
     };
 
     return (
@@ -176,7 +227,7 @@ const Page = () => {
                         className='px-10'
                         onClick={handleEditClick}
                     >
-                        Update                    </Button>
+                        Edit                   </Button>
                 )}
             </div>
             <div className="container">
@@ -196,10 +247,11 @@ const Page = () => {
                                             <div className="relative">
                                                 {image ? (
                                                     <>
-                                                        <img
+                                                    <div className='border-1 rounded-full p-3'>
+<img
                                                             src={image}
                                                             alt="Profile"
-                                                            className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
+                                                            className="w-20 h-20 object-contain"
                                                         />
                                                         {isEdit && (
                                                             <label
@@ -209,11 +261,14 @@ const Page = () => {
                                                                 <FiCamera className="w-4 h-4" />
                                                             </label>
                                                         )}
+
+                                                    </div>
+                                                        
                                                     </>
                                                 ) : (
                                                     <>
                                                         <div
-                                                            className="w-20 h-20 rounded-full bg-gray-200 border-2 border-gray-300 flex items-center justify-center cursor-pointer"
+                                                            className="w-25 h-25 p-3 rounded-full bg-gray-200 border-2 border-gray-300 flex items-center justify-center cursor-pointer"
                                                             onClick={() => isEdit && fileInputRef.current?.click()}
                                                         >
                                                             <FiCamera className="text-gray-500 w-6 h-6" />
@@ -238,7 +293,7 @@ const Page = () => {
                                                             className="text-red-500 flex ml-2 items-center text-xs mt-1"
                                                             type="button"
                                                         >
-                                                            <FiX className="w-4 h-4" />
+                                                            <FiX className="w-6 h-4" />
                                                             Remove
                                                         </button>
                                                     </div>
@@ -249,14 +304,14 @@ const Page = () => {
                                     <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
                                         <div className="mb-4">
                                             <Label>
-                                                First Name 
+                                                First Name
                                             </Label>
                                             <Input
                                                 placeholder="Enter First Name"
                                                 type="text"
                                                 name="first_name"
                                                 value={formik.values.first_name}
-                                                onChange={formik.handleChange}
+                                                onChange={handleFirstNameChange}
                                                 onBlur={formik.handleBlur}
                                                 disabled={!isEdit}
                                             />
@@ -267,14 +322,14 @@ const Page = () => {
 
                                         <div className="mb-4">
                                             <Label>
-                                                Last Name 
+                                                Last Name
                                             </Label>
                                             <Input
                                                 placeholder="Enter Last Name"
                                                 type="text"
                                                 name="last_name"
                                                 value={formik.values.last_name}
-                                                onChange={formik.handleChange}
+                                                onChange={handleLastNameChange}
                                                 onBlur={formik.handleBlur}
                                                 disabled={!isEdit}
                                             />
@@ -285,7 +340,7 @@ const Page = () => {
 
                                         <div className="mb-4">
                                             <Label>
-                                                Email 
+                                                Email
                                             </Label>
                                             <Input
                                                 placeholder="Enter Email"
@@ -309,7 +364,7 @@ const Page = () => {
                                                 type="text"
                                                 name="phone_number"
                                                 value={formik.values.phone_number}
-                                                onChange={formik.handleChange}
+                                                onChange={handlePhoneChange}
                                                 onBlur={formik.handleBlur}
                                                 disabled={!isEdit}
                                             />
@@ -339,6 +394,8 @@ const Page = () => {
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             disabled={!isEdit}
+                                            autoComplete="new-password"
+
                                         />
                                         {formik.touched.old_password && formik.errors.old_password && (
                                             <p className="text-error-500 text-sm">{String(formik.errors.old_password)}</p>
@@ -356,6 +413,8 @@ const Page = () => {
                                                 onChange={formik.handleChange}
                                                 onBlur={formik.handleBlur}
                                                 disabled={!isEdit}
+                                                autoComplete="auto-password"
+
                                             />
                                             {formik.touched.new_password && formik.errors.new_password && (
                                                 <p className="text-error-500 text-sm">{String(formik.errors.new_password)}</p>
@@ -372,6 +431,8 @@ const Page = () => {
                                                 onChange={formik.handleChange}
                                                 onBlur={formik.handleBlur}
                                                 disabled={!isEdit}
+                                                autoComplete="new-password"
+
                                             />
                                             {formik.touched.new_password_confirmation && formik.errors.new_password_confirmation && (
                                                 <p className="text-error-500 text-sm">{String(formik.errors.new_password_confirmation)}</p>
@@ -393,7 +454,7 @@ const Page = () => {
                                             variant="primary"
                                             disabled={isLoading || formik.isSubmitting}
                                         >
-                                            Submit
+                                            {isLoading || formik.isSubmitting ? <ButtonLoader /> : 'Submit'}
                                         </Button>
                                     </div>
                                 )}

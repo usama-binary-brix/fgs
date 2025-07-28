@@ -51,7 +51,7 @@ toast.success(res.message)
                 <div>
                     <div className="mb-5 sm:mb-8">
                         <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-                            Forget Password
+                            Forgot Password
                         </h1>
                     </div>
                     <form onSubmit={formik.handleSubmit}>
@@ -74,7 +74,7 @@ toast.success(res.message)
                                         className="w-full bg-primary hover:bg-primary py-2 text-white rounded-lg"
                                         disabled={isLoading || formik.isSubmitting}
                                     >
-                                        {isLoading || formik.isSubmitting ? "Sumitting" : "Reset Password"}
+                                        {isLoading || formik.isSubmitting ? "Submitting" : "Reset Password"}
                                     </button>
                                 </div>
                             </div>
