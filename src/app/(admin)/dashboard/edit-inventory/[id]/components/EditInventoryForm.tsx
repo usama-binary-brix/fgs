@@ -614,7 +614,7 @@ let safeId = '';
                   <Input
                     type="text"
                     value={investmentAmount}  // Replace with your actual value source
-                    // disabled={true}
+                    disabled={true}
                     className="bg-gray-100"  // Optional: Add a different background to indicate it's read-only
                   />
                 </div>
@@ -624,7 +624,7 @@ let safeId = '';
                   <Input
                     type="text"
                     value={sellingPrice}  // Replace with your actual value source
-                    // disabled={true}
+                    disabled={true}
                     className="bg-gray-100"
                   />
                 </div>
@@ -634,7 +634,7 @@ let safeId = '';
                   <Input
                     type="text"
                     value={profitAmount}  // Replace with your calculated value
-                    // disabled={true}
+                    disabled={true}
                     className="bg-gray-100"
                   />
                 </div>
@@ -644,7 +644,7 @@ let safeId = '';
                   <Input
                     type="text"
                     value={`${profitPercentage}%`}  // Replace with your calculated value
-                    // disabled={true}
+                    disabled={true}
                     className="bg-gray-100"
                   />
                 </div>
