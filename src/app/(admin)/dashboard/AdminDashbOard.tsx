@@ -18,7 +18,7 @@ const AdminDashbOard = () => {
         refetch()
     }, [refetch])
 
-    
+
     return (
 
         <>
@@ -29,22 +29,23 @@ const AdminDashbOard = () => {
                     <AdminMatrics data={data} />
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <AllProjectsStatitics data={data} />
-                    <MonthlySalesChart data={data}/>
+                        <MonthlySalesChart data={data} />
 
                     </div>
                 </div>
                 <div className="col-span-12 xl:col-span-4 space-y-6">
-                    <ProjectStages data={data}/>
+                    <ProjectStages data={data} />
                     <TopInvestorsChart data={data} />
 
                     {/* <MonthlySalesChart /> */}
                     {/* <DemographicCard /> */}
                 </div>
             </div>
-            <div className='flex items-center justify-center mt-4'>
-                <p className='text-xs text-[#616161]'>Copyright © 2025 - First Group Services</p>
+            <p className="absolute text-xs text-[#616161] text-center -translate-x-1/2 bottom-6 left-1/2 dark:text-gray-400">
+                Copyright   &copy; {new Date().getFullYear()} - First Group Services
 
-            </div>
+            </p>
+
 
 
         </>

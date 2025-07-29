@@ -129,37 +129,37 @@ const Page = () => {
           </div>
         </div>
 
-        
- {/* Specifications */}
-<div className="bg-white shadow rounded-lg p-4 mb-4 text-left">
-  <h3 className="font-semibold text-gray-700 text-[17px] mb-2">Specifications</h3>
-  <div className="flex justify-between">
-    <div className="space-y-2 text-gray-600">
-      <div className="flex">
-        <span className="w-25 font-medium text-[13px]">Length</span>
-        <span className='text-[13px]'>{inventoryData?.inventory?.length ?? 'N/A'}</span>
-      </div>
-      <div className="flex">
-        <span className="w-25 font-medium text-[13px]">Height</span>
-        <span className='text-[13px]'>{inventoryData?.inventory?.height ?? 'N/A'}</span>
-      </div>
-      <div className="flex">
-        <span className="w-25 font-medium text-[13px]">Width</span>
-        <span className='text-[13px]'>{inventoryData?.inventory?.width ?? 'N/A'}</span>
-      </div>
-    </div>
-    <div className="space-y-2 text-gray-600">
-      <div className="flex">
-        <span className="w-25 font-medium text-[13px]">Weight</span>
-        <span className='text-[13px]'>{inventoryData?.inventory?.weight ?? 'N/A'}</span>
-      </div>
-      <div className="flex">
-        <span className="w-25 font-medium text-[13px]">Hours</span>
-        <span className='text-[13px]'>{inventoryData?.inventory?.hours ?? 'N/A'}</span>
-      </div>
-    </div>
-  </div>
-</div>
+
+        {/* Specifications */}
+        <div className="bg-white shadow rounded-lg p-4 mb-4 text-left">
+          <h3 className="font-semibold text-gray-700 text-[17px] mb-2">Specifications</h3>
+          <div className="flex justify-between">
+            <div className="space-y-2 text-gray-600">
+              <div className="flex">
+                <span className="w-25 font-medium text-[13px]">Length</span>
+                <span className='text-[13px]'>{inventoryData?.inventory?.length ?? 'N/A'}</span>
+              </div>
+              <div className="flex">
+                <span className="w-25 font-medium text-[13px]">Height</span>
+                <span className='text-[13px]'>{inventoryData?.inventory?.height ?? 'N/A'}</span>
+              </div>
+              <div className="flex">
+                <span className="w-25 font-medium text-[13px]">Width</span>
+                <span className='text-[13px]'>{inventoryData?.inventory?.width ?? 'N/A'}</span>
+              </div>
+            </div>
+            <div className="space-y-2 text-gray-600">
+              <div className="flex">
+                <span className="w-25 font-medium text-[13px]">Weight</span>
+                <span className='text-[13px]'>{inventoryData?.inventory?.weight ?? 'N/A'}</span>
+              </div>
+              <div className="flex">
+                <span className="w-25 font-medium text-[13px]">Hours</span>
+                <span className='text-[13px]'>{inventoryData?.inventory?.hours ?? 'N/A'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
 
         <div className="bg-white shadow rounded-lg p-4 mb-8 text-left">
@@ -200,11 +200,10 @@ const Page = () => {
         {/* Footer */}
         <div className="text-gray-400 text-xs">
           <a href="https://fgs-theta.vercel.app/" className="text-primary hover:underline flex items-center justify-center w-full gap-1">
-          <FaArrowUpRightFromSquare className='text-primary' />  firstgroupservices.com
+            <FaArrowUpRightFromSquare className='text-primary' />  firstgroupservices.com
           </a>
-          <p className="mt-1">&copy; 2025 First Group Services Inc. | All rights reserved.</p>
+          <p className="mt-1"> &copy; {new Date().getFullYear()}  First Group Services Inc. | All rights reserved.</p>
         </div>
-
       </div>
     </div>
   );

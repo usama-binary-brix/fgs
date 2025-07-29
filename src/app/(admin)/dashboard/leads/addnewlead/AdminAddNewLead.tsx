@@ -151,16 +151,45 @@ const AdminAddNewLead = () => {
         .min(2, "Name must be at least 2 characters")
         .max(50, "Name must be less than 50 characters"),
       phone: Yup.string().required("Phone is required"),
-      email: Yup.string().email("Invalid email").required("Email is required"),
-      //   budget_min: Yup.number()
-      //   .typeError('Minimum budget must be a number')
-      //   .moreThan(0, 'Minimum budget must be greater than 0')
-      //   .required('Minimum budget is required'),
-
-      // budget_max: Yup.number()
-      //   .typeError('Maximum budget must be a number')
-      //   .moreThan(Yup.ref('budget_min'), 'Maximum budget must be greater than minimum budget')
-      //   .required('Maximum budget is required'),
+      email: Yup.string()
+        .required("Email is required")
+        .email("Please enter a valid email address")
+        .matches(
+          /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+          "Please enter a valid email address"
+        )
+        .max(254, "Email must be less than 254 characters"),
+      budget_min: Yup.number()
+        .typeError('Minimum budget must be a number')
+        .min(0.01, 'Minimum budget must be greater than 0')
+        .test('max-budget-required', 'Maximum budget is required when minimum budget is provided', function(value) {
+          const { budget_max } = this.parent;
+          if (value && value > 0 && (!budget_max || budget_max <= 0)) {
+            return this.createError({ message: 'Maximum budget is required when minimum budget is provided' });
+          }
+          return true;
+        }),
+      budget_max: Yup.number()
+        .typeError('Maximum budget must be a number')
+        .min(0.01, 'Maximum budget must be greater than 0')
+        .test('min-budget-required', 'Minimum budget is required when maximum budget is provided', function(value) {
+          const { budget_min } = this.parent;
+          if (value && value > 0 && (!budget_min || budget_min <= 0)) {
+            return this.createError({ message: 'Minimum budget is required when maximum budget is provided' });
+          }
+          return true;
+        })
+        .test('max-greater-than-min', 'Maximum budget must be greater than minimum budget', function(value) {
+          const { budget_min } = this.parent;
+          if (value && budget_min && value <= budget_min) {
+            return this.createError({ message: 'Maximum budget must be greater than minimum budget' });
+          }
+          return true;
+        }),
+      max_capacity: Yup.number()
+        .typeError('Max capacity must be a number')
+        .min(0, 'Max capacity cannot be negative')
+        .nullable(),
     }),
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       try {
@@ -251,17 +280,55 @@ const AdminAddNewLead = () => {
     formik.setFieldValue('name', filteredValue);
   };
 
-  // const handleMinChange = (e) => {
-  //   const value = e.target.value;
-  //   formik.setFieldValue('budget_min', value);
-  // };
+  // Custom handler for email field to only allow valid email characters
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow valid email characters: letters, numbers, @, ., -, _
+    const filteredValue = value.replace(/[^a-zA-Z0-9@._-]/g, '');
+    formik.setFieldValue('email', filteredValue);
+  };
 
-  // const handleMaxChange = (e) => {
-  //   const value = e.target.value;
-  //   formik.setFieldValue('budget_max', value);
-  // };
+  // Custom handler for budget min field
+  const handleBudgetMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const numValue = parseFloat(value);
+    
+    // Only allow positive numbers
+    if (value === '' || (numValue >= 0)) {
+      formik.setFieldValue('budget_min', value);
+    }
+  };
 
+  // Custom handler for budget max field
+  const handleBudgetMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const numValue = parseFloat(value);
+    
+    // Only allow positive numbers
+    if (value === '' || (numValue >= 0)) {
+      formik.setFieldValue('budget_max', value);
+    }
+  };
 
+  // Custom handler for max_capacity field
+  const handleMaxCapacityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    // Only allow numbers and decimal point
+    const filteredValue = value.replace(/[^0-9.]/g, '');
+    
+    // Prevent multiple decimal points
+    const parts = filteredValue.split('.');
+    if (parts.length > 2) {
+      return; // Don't update if more than one decimal point
+    }
+    
+    // Only allow non-negative numbers
+    const numValue = parseFloat(filteredValue);
+    if (filteredValue === '' || (numValue >= 0)) {
+      formik.setFieldValue('max_capacity', filteredValue);
+    }
+  };
 
 
   return (
@@ -385,7 +452,7 @@ const AdminAddNewLead = () => {
                   <AddLeadInput
                     name="email"
                     value={formik.values.email}
-                    onChange={formik.handleChange}
+                    onChange={handleEmailChange}
                     onBlur={formik.handleBlur}
                     error={formik.touched.email && formik.errors.email}
                     label="Email"
@@ -662,7 +729,7 @@ const AdminAddNewLead = () => {
                     <AddLeadInput
                       name="max_capacity"
                       value={formik.values.max_capacity}
-                      onChange={formik.handleChange}
+                      onChange={handleMaxCapacityChange}
                       onBlur={formik.handleBlur}
                       label="Max Capacity"
                       type="number"
@@ -714,28 +781,29 @@ const AdminAddNewLead = () => {
                         type="number"
                         name="budget_min"
                         value={formik.values.budget_min}
-                        onChange={formik.handleChange}
+                        onChange={handleBudgetMinChange}
                         onBlur={formik.handleBlur}
                         placeholder="$ 1.00"
                         className="w-full text-left mt-1 text-[#666] placeholder-[#666] text-[12px] font-medium font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs outline-none text-md"
                       />
-                      {formik.touched.budget_min && formik.errors.budget_min && (
-                        <p className="text-red-500 text-xs mt-1">{formik.errors.budget_min}</p>
-                      )}
                       -
                       <input
                         type="number"
                         name="budget_max"
                         value={formik.values.budget_max}
-                        onChange={formik.handleChange}
+                        onChange={handleBudgetMaxChange}
                         onBlur={formik.handleBlur}
                         placeholder="$ 100.00"
                         className="w-full text-left text-[#666] placeholder-[#666] text-[12px] font-medium font-family text-md border flex justify-between items-center border-[#E8E8E8] px-2 py-1.5 rounded-xs mt-1 outline-none text-md"
                       />
-                      {formik.touched.budget_max && formik.errors.budget_max && (
-                        <p className="text-red-500 text-xs mt-1">{formik.errors.budget_max}</p>
-                      )}
                     </div>
+                    {/* Error messages displayed below the fields */}
+                    {formik.touched.budget_min && formik.errors.budget_min && (
+                      <p className="text-red-500 text-xs mt-1">{formik.errors.budget_min}</p>
+                    )}
+                    {!formik.errors.budget_min && formik.touched.budget_max && formik.errors.budget_max && (
+                      <p className="text-red-500 text-xs mt-1">{formik.errors.budget_max}</p>
+                    )}
                   </div>
 
 

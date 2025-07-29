@@ -182,7 +182,12 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
       email: Yup.string().email('Invalid email').required('Required'),
       phone_number: Yup.string()
       .matches(/^[+\d\s]+$/, 'Only numbers, +, and spaces are allowed')
-      .max(18, 'Phone number must be at least 15 digits')
+      .test('min-digits', 'Phone number must have at least 8 digits', function(value) {
+        if (!value) return true; // Let required validation handle empty values
+        const digitCount = (value.match(/\d/g) || []).length;
+        return digitCount >= 8;
+      })
+      .max(18, 'Phone number must be at most 18 characters')
       .required('Required'),
       country: Yup.string(),
       address: Yup.string(),
@@ -259,6 +264,14 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
     // Only allow letters and spaces
     const filteredValue = value.replace(/[^a-zA-Z\s]/g, '');
     formik.setFieldValue('reffer_by', filteredValue);
+  };
+
+  // Custom handler for phone_number field to only allow numbers, +, and spaces
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow numbers, +, and spaces
+    const filteredValue = value.replace(/[^\d\s+]/g, '');
+    formik.setFieldValue('phone_number', filteredValue);
   };
 
   return (
@@ -342,7 +355,10 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                 <Input
                   placeholder="Enter Phone Number"
                   type="text"
-                  {...formik.getFieldProps("phone_number")} // ✅ Now works properly with onBlur
+                  name="phone_number"
+                  value={formik.values.phone_number}
+                  onChange={handlePhoneNumberChange}
+                  onBlur={formik.handleBlur}
                 />
                 {formik.touched.phone_number && formik.errors.phone_number && (
                   <p className="text-error-500 text-sm">{String(formik.errors.phone_number)}</p>

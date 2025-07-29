@@ -9,6 +9,7 @@ interface SelectProps {
   onBlur?: (e: React.FocusEvent<HTMLSelectElement>) => void;
   error?: any;
   required?: boolean;
+  disabled?:any
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -20,6 +21,7 @@ const Select: React.FC<SelectProps> = ({
   onBlur,
   error,
   required,
+  disabled
 }) => {
   return (
     <div>
@@ -33,12 +35,12 @@ const Select: React.FC<SelectProps> = ({
         value={value}
         onChange={onChange}
         onBlur={onBlur}
-      
-        className="w-full h-9 p-2  border border-gray-300 rounded-sm text-sm"
+      disabled={disabled}
+        className={`w-full h-9 p-2 border border-gray-300 rounded-sm text-sm ${value ? 'text-gray-800' : 'text-gray-500'}`}
       >
         <option value="" className="text-gray-400 text-sm">Select an option</option>
         {options.map((option) => (
-          <option key={option.value} value={option.value} className="text-sm">
+          <option key={option.value} value={option.value} className="text-gray-800 text-sm">
             {option.label}
           </option>
         ))}

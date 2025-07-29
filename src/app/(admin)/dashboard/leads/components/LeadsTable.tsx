@@ -222,7 +222,7 @@ const LeadsTable = () => {
               <Table>
                 <TableHeader className="sticky top-0 z-50 border-b border-gray-100 overflow-auto bg-[#F7F7F7] dark:border-white/[0.05]">
                   <TableRow>
-                    {['ID', 'Name', 'Email', 'Company', 'Source', 'Reminder Date', 'Budget', 'Condition', 'Created by', 'Action'].map((heading) => (
+                    {['ID', 'Name', 'Email', 'Company', 'Source', 'Reminder Date', 'Budget', 'Condition', 'Lead Type', 'Action'].map((heading) => (
                       <TableCell key={heading} isHeader className="px-3  py-3 font-family whitespace-nowrap overflow-hidden font-medium text-[#616161] text-start text-[14px] dark:text-gray-400">
                         <div className='flex justify-between gap-5 items-center'>
 
@@ -274,7 +274,7 @@ const LeadsTable = () => {
                       </TableCell>
                       <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.budget_min ? `$ ${lead.budget_min}` : '---'}</TableCell>
                       <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.condition || '---'}</TableCell>
-                      <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.lead_created_by || '---'}</TableCell>
+                      <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family capitalize">{lead.lead_type || '---'}</TableCell>
                       <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-visible relative  font-normal font-family">
                         <div className="relative inline-block" ref={openDropdown === lead.id ? dropdownRef : null}>
                           <button onClick={() => toggleDropdown(lead.id)} className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : ''}`}>
