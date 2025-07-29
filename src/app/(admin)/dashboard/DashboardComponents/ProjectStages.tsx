@@ -12,35 +12,10 @@ const handleSendToInventory = (id: any) => {
   
   router.push(`/dashboard/edit-inventory/${id}?tab=reconditioning`);
 };
-
-  // const projects = [
-  //   {
-  //     year: '2020',
-  //     name: 'Holst C25L SN# CO9701',
-  //     stage: 'Battery Replacement',
-  //     status: 'Project Stage',
-  //     progress: 75 // percentage
-  //   },
-  //   {
-  //     year: '2021',
-  //     name: 'Holst C30L SN# CO9702',
-  //     stage: 'Maintenance',
-  //     status: 'Project Stage',
-  //     progress: 40 // percentage
-  //   },
-  //   {
-  //     year: '2022',
-  //     name: 'Holst C35L SN# CO9703',
-  //     stage: 'Initial Assessment',
-  //     status: 'Planning Stage',
-  //     progress: 15 // percentage
-  //   }
-  // ];
-
   return (
     <>
-    <div className='bg-white max-w-[600px] h-[16rem] overflow-auto'>
-
+    <div className='bg-white max-w-[600px] h-[16rem] overflow-auto rounded-xl shadow-lg'>
+ <div className="h-[16rem] overflow-auto">
       <h1 className="text-lg text-gray-800 font-semibold sticky top-0 pt-1 pl-2 bg-white">Projects by Stages</h1>
     <div className="font-sans  mx-auto text-sm p-2 rounded-lg">
 
@@ -90,6 +65,9 @@ const handleSendToInventory = (id: any) => {
         </div>
       ))}
     </div>
+
+  </div>
+
     </div>
 
     </>

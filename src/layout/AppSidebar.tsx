@@ -22,59 +22,49 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { icon: <GridIcon />, name: "Dashboard", path: "/dashboard", roles: ["admin", 'super_admin'] },
-  // { icon: <GridIcon />, name: "All Leads", path: "/dashboard/leads", roles: ["admin", 'super_admin'] },
-
-   {
+  { icon: <GridIcon />, name: "Accounts", path: "/dashboard/accounts", roles: ["admin", 'super_admin'] },
+  { icon: <GridIcon />, name: "All Inventory", path: "/dashboard/inventory", roles: ["admin", 'super_admin'] },
+  {
     icon: <GridIcon />,
     name: "Leads",
     subItems: [{ name: "All Leads", path: "/dashboard/leads" }, { name: "Investor Leads", path: "/dashboard/investor-leads" }, { name: "Customer Leads", path: "/dashboard/customer-leads" }],
     roles: ["admin", 'super_admin'],
   },
 
-
-  { icon: <GridIcon />, name: "Accounts", path: "/dashboard/accounts", roles: ["admin", 'super_admin'] },
-  { icon: <GridIcon />, name: "All Inventory", path: "/dashboard/inventory", roles: ["admin", 'super_admin'] },
-  // {
-  //   icon: <GridIcon />,
-  //   name: "Inventory",
-  //   subItems: [{ name: "All Inventory", path: "/dashboard/inventory" }],
-  //   roles: ["admin", 'super_admin'],
-  // },
-  { icon: <GridIcon />, name: "Shipments", path: "/dashboard/shipments/all-shipments",  roles: ["admin", 'super_admin'] },
+  { icon: <GridIcon />, name: "Shipments", path: "/dashboard/shipments/all-shipments", roles: ["admin", 'super_admin'] },
 
   {
     icon: <GridIcon />,
     name: "Notifications",
     path: "/dashboard/admin-notifications",
     roles: ["admin", 'super_admin'],
-    // count: 5
+
   },
 
   { icon: <GridIcon />, name: "Dashboard", path: "/investor-dashboard", roles: ["investor"] },
   { icon: <GridIcon />, name: "Investment Opportunities", path: "/investor-dashboard/investment-opportunities", roles: ["investor"] },
   { icon: <GridIcon />, name: "My Investment", path: "/investor-dashboard/my-investment", roles: ["investor"] },
 
-      {
+  {
     icon: <GridIcon />,
     name: "Notifications",
     path: "/investor-dashboard/notifications",
     roles: ['investor'],
-    // count: 5
+
   },
-  // { icon: <GridIcon />, name: "Dashboard", path: "/sales-dashboard", roles: ["salesperson"] },
-  // { icon: <GridIcon />, name: "All Leads", path: "/sales-dashboard/leads", roles: ["salesperson"] },
+
   {
     icon: <GridIcon />,
     name: "Leads",
     subItems: [{ name: "All Leads", path: "/sales-dashboard/leads" }, { name: "Investor Leads", path: "/sales-dashboard/investor-leads" }, { name: "Customer Leads", path: "/sales-dashboard/customer-leads" }],
     roles: ['salesperson'],
   },
-        {
+  {
     icon: <GridIcon />,
     name: "Notificationsssssssss",
     path: "/sales-dashboard/notifications",
     roles: ['salesperson'],
-    // count: 5
+
   },
 
 
@@ -87,30 +77,23 @@ const navItems: NavItem[] = [
     ],
     roles: ["broker"],
   },
-        {
+  {
     icon: <GridIcon />,
     name: "Notifications",
     path: "/broker-dashboard/notifications",
     roles: ['broker'],
-    // count: 5
+
   },
   { icon: <GridIcon />, name: "Dashboard", path: "/employee-dashboard", roles: ["employee"] },
   { icon: <GridIcon />, name: "Inventory Tasks", path: "/employee-dashboard/inventory-tasks", roles: ["employee"] },
-      {
+  {
     icon: <GridIcon />,
     name: "Notifications",
     path: "/employee-dashboard/notifications",
     roles: ['employee'],
-    // count: 5
+
   },
-  // {
-  //   icon: <GridIcon />,
-  //   name: "Inventory Tasks",
-  //   subItems: [
-  //     { name: "All Inventory Tasks", path: "/employee-dashboard/inventory-tasks" },
-  //   ],
-  //   roles: ["employee"],
-  // },
+
 ];
 
 const AppSidebar: React.FC = () => {
@@ -130,13 +113,13 @@ const AppSidebar: React.FC = () => {
   //   return false;
   // });
 
-  
+
   const handleLinkClick = () => {
     if (isMobileOpen) {
       setIsMobileOpen(false); // Close sidebar on mobile after clicking
     }
   };
-  
+
   const isActive = useCallback(
     (path?: string, subItems?: { name: string; path: string }[]) => {
       if (!path && subItems) {
