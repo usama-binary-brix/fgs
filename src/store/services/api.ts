@@ -12,7 +12,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks", "EmployeeInventory", "AllEmployeeTasks", "AllShipments", "InventoryCost", "AllShipmentOpportunities", "AllShipmentQuotes", "EmployeeAdminDashboard","BrokerDashboard","MyShipments", "InvestorDashboard", "AdditionalCost","notifications"],
+  tagTypes: ["Users", "Inventory", "leads", 'Investment', "userLead", "UserInvestment", "InventoryTimeline", "allEmployees", "AllAdminTasks", "EmployeeInventory", "AllEmployeeTasks", "AllShipments", "InventoryCost", "AllShipmentOpportunities", "AllShipmentQuotes", "EmployeeAdminDashboard", "BrokerDashboard", "MyShipments", "InvestorDashboard", "AdditionalCost", "notifications", "InvestmentOpportunity"],
   endpoints: (builder) => ({
     // ----------- LOGIN API ------------
     login: builder.mutation({
@@ -87,7 +87,7 @@ export const api = createApi({
         url: 'user/logout',
         method: 'POST',
       }),
- 
+
     }),
 
 
@@ -288,7 +288,7 @@ export const api = createApi({
     }),
 
     getAllAdminEmployeeTasks: builder.query({
-      query: ({id, search, filter}) => ({
+      query: ({ id, search, filter }) => ({
         url: `get/inventory/task/${id}?search=${search}&status=${filter}`,
         method: 'GET',
       }),
@@ -485,8 +485,8 @@ export const api = createApi({
       // providesTags: ["AllShipmentOpportunities"],
 
     }),
-   
-   
+
+
     getEmployeeDashboard: builder.query({
       query: () => ({
         url: `employee/dashboard`,
@@ -550,7 +550,7 @@ export const api = createApi({
       invalidatesTags: ["InventoryTimeline"],
     }),
 
- getQRCodeInventoryById: builder.query({
+    getQRCodeInventoryById: builder.query({
       query: (id) => ({
         url: `inventory-detail/${id}`,
         method: 'GET',
@@ -559,13 +559,20 @@ export const api = createApi({
 
     }),
 
-     getNotifications: builder.query({
+    getNotifications: builder.query({
       query: (page) => ({
         url: `get/notification?per_page=${page}`,
         method: 'GET',
       }),
       providesTags: ["notifications"],
 
+    }),
+    getAllInvestmentOpportunity: builder.query({
+      query: ({ page = 1, perPage = 10, search }) => ({
+        url: `get/opportunity?page=${page}&per_page=${perPage}&search=${search}`,
+        method: 'GET',
+      }),
+      providesTags: ["InvestmentOpportunity"],
     }),
 
   }),
@@ -629,11 +636,12 @@ export const { useLoginMutation,
   useGetAdminDashboardStatesQuery,
   useGetEmployeeDashboardQuery,
   useGetBrokerDashboardQuery,
-useGetAllMyShipmentsQuery,
-useGetInvestorDashboardQuery,
-useUpdateUserInfoMutation,
-useAddAdditionalCostMutation,
-useDeleteAdditionalCostRowMutation,
-useGetQRCodeInventoryByIdQuery,
- useGetNotificationsQuery
+  useGetAllMyShipmentsQuery,
+  useGetInvestorDashboardQuery,
+  useUpdateUserInfoMutation,
+  useAddAdditionalCostMutation,
+  useDeleteAdditionalCostRowMutation,
+  useGetQRCodeInventoryByIdQuery,
+  useGetNotificationsQuery,
+  useGetAllInvestmentOpportunityQuery
 } = api;

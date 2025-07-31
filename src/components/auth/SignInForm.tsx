@@ -32,9 +32,11 @@ export default function SignInForm() {
     initialValues: {
       email: "",
       password: "",
-      account_type:''
+      account_type: ''
     },
     validationSchema: Yup.object({
+      account_type: Yup.string()
+        .required("Account type is required."),
       email: Yup.string()
         .email("Please enter a valid email.")
         .required("Email is required."),
@@ -46,10 +48,10 @@ export default function SignInForm() {
       try {
         const res = await login(values).unwrap();
         dispatch(setUser({ user: res.user, token: res.token }));
-     
-        Cookies.set('accessToken', res.token, { path: '/', expires: 1 }); 
+
+        Cookies.set('accessToken', res.token, { path: '/', expires: 1 });
         Cookies.set('role', res.user.account_type, { path: '/', expires: 1 });
-    
+
         // const defaultRoute = RoleBasedRoutes[res.user.account_type as keyof typeof RoleBasedRoutes]?.[0] || '/';
         // router.push(defaultRoute);
 
@@ -66,13 +68,13 @@ export default function SignInForm() {
         } else {
           router.push("/");
         }
-      setSubmitting(false);
+        setSubmitting(false);
 
-      } 
-        catch (err: any) {
-          setFieldError("password", err?.data?.message || err?.data?.error || "Login failed");
-       
-              }
+      }
+      catch (err: any) {
+        setFieldError("password", err?.data?.message || err?.data?.error || "Login failed");
+
+      }
       setSubmitting(false);
     },
   });
@@ -91,18 +93,19 @@ export default function SignInForm() {
           </div>
           <form onSubmit={formik.handleSubmit}>
             <div className="space-y-6">
-            <div>
-              <Label>Account Type <span className="text-error-500">*</span></Label>
-              <Select
-                name="account_type"
-                value={formik.values.account_type}
-                options={options}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.account_type ? formik.errors.account_type : undefined}
-                required
-              />
-            </div>
+              <div>
+                <Label>Account Type <span className="text-error-500">*</span></Label>
+                <Select
+                  name="account_type"
+                  value={formik.values.account_type}
+                  options={options}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.account_type ? formik.errors.account_type : undefined}
+                  required
+                />
+
+              </div>
               <div>
                 <Label>Email <span className="text-error-500">*</span></Label>
                 <Input
@@ -111,7 +114,7 @@ export default function SignInForm() {
                   {...formik.getFieldProps("email")}
                 />
                 {formik.touched.email && formik.errors.email && (
-                  <p className="text-error-500 text-sm">{formik.errors.email}</p>
+                  <p className="text-error-500 text-sm mt-2">{formik.errors.email}</p>
                 )}
               </div>
 
@@ -130,36 +133,37 @@ export default function SignInForm() {
                     {showPassword ? <EyeIcon className="fill-gray-500 dark:fill-gray-400" /> : <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />}
                   </span>
                 </div>
-             <div className="flex  items-center justify-end mt-2">
-             <Link
+                <div className={`flex  items-center ${formik.touched.password ? 'justify-between' : 'justify-end'} mt-2`}>
+                  {formik.touched.password && formik.errors.password && (
+                    <p className="text-error-500 text-sm">{formik.errors.password}</p>
+                  )}
+                  <Link
                     href="/forget-password"
                     className="text-sm text-primary hover:text-primary dark:text-primary"
                   >
                     Forgot password?
                   </Link>
-             </div>
-              
-                {formik.touched.password && formik.errors.password && (
-                  <p className="text-error-500 text-sm">{formik.errors.password}</p>
-                )}
-           
-           <div className="mt-4">
-                <button
-                  type="submit"
-                  className="w-full bg-primary hover:bg-primary py-2 text-white rounded-lg"
-                  disabled={isLoading || formik.isSubmitting}
-                >
-                  {isLoading || formik.isSubmitting ?  <div className=" flex items-center justify-center">
-            <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></div>
-          </div> : "Sign in"}
-                </button>
-              </div>
+                </div>
+
+
+
+                <div className="mt-4">
+                  <button
+                    type="submit"
+                    className="w-full bg-primary hover:bg-primary py-2 text-white rounded-lg"
+                    disabled={isLoading || formik.isSubmitting}
+                  >
+                    {isLoading || formik.isSubmitting ? <div className=" flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></div>
+                    </div> : "Sign in"}
+                  </button>
+                </div>
 
               </div>
 
-           
-            
-           
+
+
+
             </div>
           </form>
         </div>

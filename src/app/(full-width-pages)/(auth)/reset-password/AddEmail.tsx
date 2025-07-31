@@ -9,6 +9,7 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { useResetPasswordMutation } from "@/store/services/api";
+import Select from "@/components/form/Select";
 
 
 export default function ResetPassword() {
@@ -16,12 +17,22 @@ export default function ResetPassword() {
     const searchParams = useSearchParams();
     const token = searchParams.get("token");
     const email = searchParams.get("email");
+ const options = [
+    { value: "super_admin", label: "Super Admin" },
+
+    { value: "admin", label: "Admin" },
+    { value: "investor", label: "Investor" },
+    { value: "salesperson", label: "Sales Person" },
+    { value: "employee", label: "Employee" },
+    { value: "broker", label: "Broker" },
+  ];
 
 const router = useRouter()
     const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
     const formik = useFormik({
         initialValues: {
+            account_type:"",
             password: "",
             password_confirmation: "",
         },
@@ -43,6 +54,7 @@ const router = useRouter()
                 const res = await resetPassword({
                     token,
                     email,
+                    account_type:values.account_type,
                     password: values.password,
                     password_confirmation: values.password_confirmation
                 }).unwrap();
@@ -92,6 +104,19 @@ const router = useRouter()
                     </div>
                     <form onSubmit={formik.handleSubmit}>
                         <div className="space-y-6">
+                            <div>
+                                         <Label>Account Type <span className="text-error-500">*</span></Label>
+                                         <Select
+                                           name="account_type"
+                                           value={formik.values.account_type}
+                                           options={options}
+                                           onChange={formik.handleChange}
+                                           onBlur={formik.handleBlur}
+                                           error={formik.touched.account_type ? formik.errors.account_type : undefined}
+                                           required
+                                         />
+                                       </div>
+                           
                             <div>
                                 <Label>Password <span className="text-error-500">*</span></Label>
                                 <div className="relative">

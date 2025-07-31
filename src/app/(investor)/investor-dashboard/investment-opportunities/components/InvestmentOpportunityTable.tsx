@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components
 import { MoreDotIcon } from '@/icons';
 import { IoSearchOutline } from 'react-icons/io5'
 
-import { useAddInvestmentMutation, useDeleteInventoryMutation, useGetAllInventoryQuery } from '@/store/services/api';
+import { useAddInvestmentMutation, useDeleteInventoryMutation, useGetAllInventoryQuery, useGetAllInvestmentOpportunityQuery } from '@/store/services/api';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
@@ -53,7 +53,7 @@ const InvestmentOpportunityTable = () => {
     const [totalPages, setTotalPages] = useState(10); // Example total pages
     const [perPage, setPerPage] = useState(10);
 
-    const { data, isLoading, error } = useGetAllInventoryQuery({
+    const { data, isLoading, error } = useGetAllInvestmentOpportunityQuery({
         page: currentPage,
         perPage: perPage,
         search: debouncedSearchText
@@ -198,7 +198,7 @@ const InvestmentOpportunityTable = () => {
                                 </TableHeader>
 
                                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                                    {data?.inventories?.data?.filter((lead: any) => lead.status !== 'complete' && lead.complete_investment === false).map((lead: any) => (
+                                    {data?.inventories?.data?.map((lead: any) => (
                                         <TableRow key={lead.id}>
                                             <TableCell className="px-10 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.listing_number}</TableCell>
                                             <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.make}</TableCell>
@@ -216,14 +216,14 @@ const InvestmentOpportunityTable = () => {
                                             <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-center">
                                                 <div className="relative inline-block">
                                                     <button
-                                                        disabled={lead.complete_investment}
+                                                        // disabled={lead.complete_investment}
                                                         onClick={() => {
                                                             setOpenDropdownId(null);
                                                             setSelectedId(lead.id);
                                                             setIsOpen(true); // Open the modal for investment request
                                                             setSelectedListingNumber(lead.listing_number);
                                                             closeDropdown(); // Close the dropdown after the action
-                                                        }} className={`dropdown-toggle text-xs p-1 rounded ${lead.complete_investment ? ' text-gray-600 cursor-not-allowed' : ' text-black'}`}>
+                                                        }} className={`dropdown-toggle text-xs p-1 rounded text-black underline`}>
                                                         Request Investment
 
                                                     </button>
