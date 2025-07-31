@@ -35,6 +35,7 @@ interface Lead {
 
 const LeadsTable = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [dropdownPosition, setDropdownPosition] = useState<'top' | 'bottom'>('bottom');
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(10); // Example total pages
@@ -50,14 +51,31 @@ const LeadsTable = () => {
   });
 
 
-  const toggleDropdown = (id: string) => {
+  const toggleDropdown = (id: string, event: React.MouseEvent) => {
+    const button = event.currentTarget as HTMLElement;
+    const rect = button.getBoundingClientRect();
+    const tableContainer = button.closest('.overflow-auto') as HTMLElement;
+    const containerRect = tableContainer?.getBoundingClientRect();
+    
+    if (containerRect) {
+      const spaceBelow = containerRect.bottom - rect.bottom;
+      const spaceAbove = rect.top - containerRect.top;
+      const dropdownHeight = 160; // Approximate height of dropdown
+      
+      // If there's not enough space below but enough space above, position dropdown above
+      if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+        setDropdownPosition('top');
+      } else {
+        setDropdownPosition('bottom');
+      }
+    }
+    
     setOpenDropdown(openDropdown === id ? null : id);
   };
 
   const closeDropdown = () => {
     setOpenDropdown(null);
   };
-
 
   const handleNavigate = () => {
      NProgress.start();
@@ -178,7 +196,6 @@ const LeadsTable = () => {
     };
   }, [openDropdown]);
 
-
   return (
     <>
       <div className="flex justify-between items-center mb-4">
@@ -277,11 +294,11 @@ const LeadsTable = () => {
                       <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family capitalize">{lead.lead_type || '---'}</TableCell>
                       <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-visible relative  font-normal font-family">
                         <div className="relative inline-block" ref={openDropdown === lead.id ? dropdownRef : null}>
-                          <button onClick={() => toggleDropdown(lead.id)} className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : ''}`}>
+                          <button onClick={(event) => toggleDropdown(lead.id, event)} className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : ''}`}>
                             <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />
                           </button>
                           {openDropdown === lead.id && (
-                            <div className="absolute right-9 top-[-4px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
+                            <div className={`absolute right-9 ${dropdownPosition === 'top' ? 'bottom-full mb-1' : 'top-[-4px] mt-1'} z-[999] w-40 bg-white shadow-md border rounded-sm`}>
                               <DropdownItem
                                 onItemClick={() => {
                                   hanldeViewDetails(lead.id);
@@ -299,39 +316,25 @@ const LeadsTable = () => {
                                   Edit
                                 </DropdownItem>
                               )}
-                              {/* <DropdownItem
-                                onItemClick={() => { lead.type === 'lead' && handlePromoteClick(lead.id); closeDropdown(); }}
-                                className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
-                              >
-                                {isPromoteLoading && selectedId === lead.id ? "Promoting..." : (lead.type === 'lead' ? "Promote to investor" : "Already Promoted")}
-                              </DropdownItem> */}
-                              <DropdownItem
-  onItemClick={() => {
-    if (lead.type === 'lead') {
-      handlePromoteClick(lead.id);
-    }
-    closeDropdown();
-  }}
-  className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
->
-  {isPromoteLoading && selectedId === lead.id ? (
-    "Promoting..."
-  ) : lead.type === 'lead' ? (
-    "Promote to investor"
-  ) : (
-    <span className="text-green-500">Already Promoted</span>
-  )}
-</DropdownItem>
-
-                              {/* <DropdownItem
-                                onItemClick={closeDropdown}
-                                className="flex w-full font-normal px-4 text-[12px] border-b border-[#E9E9E9] text-[#414141]"
-                              >
-                                Send Email
-                              </DropdownItem> */}
                               <DropdownItem
                                 onItemClick={() => {
-                                  setOpenDropdownId(null);
+                                  if (lead.type === 'lead') {
+                                    handlePromoteClick(lead.id);
+                                  }
+                                  closeDropdown();
+                                }}
+                                className="flex w-full font-normal !px-4 text-[12px] font-family border-b border-[#E9E9E9] text-[#414141]"
+                              >
+                                {isPromoteLoading && selectedId === lead.id ? (
+                                  "Promoting..."
+                                ) : lead.type === 'lead' ? (
+                                  "Promote to investor"
+                                ) : (
+                                  <span className="text-green-500">Already Promoted</span>
+                                )}
+                              </DropdownItem>
+                              <DropdownItem
+                                onItemClick={() => {
                                   setSelectedId(lead.id);
                                   setSelectedListingNumber(lead.listing_number);
                                   setIsDeleteModalOpen(true);

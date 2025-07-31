@@ -61,7 +61,7 @@ const navItems: NavItem[] = [
   },
   {
     icon: <GridIcon />,
-    name: "Notificationsssssssss",
+    name: "Notifications",
     path: "/sales-dashboard/notifications",
     roles: ['salesperson'],
 

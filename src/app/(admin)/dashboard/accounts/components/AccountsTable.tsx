@@ -35,6 +35,7 @@ const AccountsTable = () => {
 
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
   const [openDropdownId, setOpenDropdownId] = useState<string | number | null>();
+  const [dropdownPosition, setDropdownPosition] = useState<'top' | 'bottom'>('bottom');
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isViewMoreOpen, setIsViewMoreOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | number | null>(null);
@@ -47,7 +48,21 @@ const AccountsTable = () => {
     setIsEditModalOpen(true);
   };
 
-  const toggleDropdown = (id: string | number | null) => {
+  const toggleDropdown = (id: string | number | null, event: React.MouseEvent) => {
+    const button = event.currentTarget as HTMLElement;
+    const rect = button.getBoundingClientRect();
+    const tableContainer = button.closest('.overflow-x-auto') as HTMLElement;
+    const containerRect = tableContainer?.getBoundingClientRect();
+    if (containerRect) {
+      const spaceBelow = containerRect.bottom - rect.bottom;
+      const spaceAbove = rect.top - containerRect.top;
+      const dropdownHeight = 160;
+      if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+        setDropdownPosition('top');
+      } else {
+        setDropdownPosition('bottom');
+      }
+    }
     if (openDropdownId === id) {
       setOpenDropdownId(null);
     } else {
@@ -211,12 +226,12 @@ const AccountsTable = () => {
 
                       <TableCell className="px-5 py-2 text-sm text-center text-[#616161]">
                         <div className="relative inline-block" ref={openDropdownId === user.id ? dropdownRef : null}>
-                          <button onClick={() => toggleDropdown(user.id)} className={`dropdown-toggle p-1 rounded ${openDropdownId === user.id ? 'bg-gray-100' : ''}`}>
+                          <button onClick={(event) => toggleDropdown(user.id, event)} className={`dropdown-toggle p-1 rounded ${openDropdownId === user.id ? 'bg-gray-100' : ''}`}>
                             <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                           </button>
 
                           {openDropdownId === user.id && (
-                            <div className="absolute right-9 top-[-7px] mt-2 z-50 w-30 bg-white shadow-md border rounded-sm">
+                            <div className={`absolute right-9 ${dropdownPosition === 'top' ? 'bottom-full mb-1' : 'top-[-7px] mt-2'} z-50 w-30 bg-white shadow-md border rounded-sm`}>
                               <DropdownItem
                                 onItemClick={() => {
                                   handleViewMore(user.id);

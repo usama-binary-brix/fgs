@@ -182,9 +182,9 @@ const InvestmentOpportunityTable = () => {
                                         {[
                                             'ID', 'ELEVATOR MANUFACTURER', 'ELEVATOR MODEL', 'ELEVATOR SERIAL', 'PURCHASE DATE',
                                             'PURCHASE PRICE', 'RECONDITIONING %', 'COMPLETION DATE', 'SALE PRICE', 'TOTAL INVESTORS',
-                                            'ACTION'
+                                            'ACTIONS'
                                         ].map((heading) => (
-                                            <TableCell key={heading} isHeader className="px-5 py-3 whitespace-nowrap overflow-hidden font-medium text-gray-500 text-start text-[14px] dark:text-gray-400">
+                                            <TableCell key={heading} isHeader className="px-10 py-3 whitespace-nowrap overflow-hidden font-medium text-gray-500 text-start text-[14px] dark:text-gray-400">
                                                 <div className=' w-full flex justify-between items-center '>
                                                     {heading}
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -198,59 +198,38 @@ const InvestmentOpportunityTable = () => {
                                 </TableHeader>
 
                                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                            {data?.inventories?.data ?.filter((lead: any) => lead.status !== 'complete' || lead.complete_investment === false).map((lead: any) => (
+                                    {data?.inventories?.data?.filter((lead: any) => lead.status !== 'complete' && lead.complete_investment === false).map((lead: any) => (
                                         <TableRow key={lead.id}>
-                                            <TableCell className="px-5 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.listing_number}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.make}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.model}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.serial_no}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.date_purchased}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">$ {lead.price_paid || '---'}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.reconditioning || '---'}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.completionDate || '---'}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family text-start">{lead.salePrice || '---'}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.listing_number}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.make}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.model}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.serial_no}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.date_purchased}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">$ {lead.price_paid || '---'}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.reconditioning || '---'}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.completionDate || '---'}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] text-[14px] font-family text-start">{lead.salePrice || '---'}</TableCell>
 
-                                            <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family  text-center">{lead.total_investors || '---'}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] text-[14px] font-family  text-center">{lead.total_investors || '---'}</TableCell>
 
 
                                             <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-center">
                                                 <div className="relative inline-block">
-                                                    <button onClick={() => toggleDropdown(lead.id)} className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : 'hover:bg-gray-50'}`}>
-                                                        <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
+                                                    <button
+                                                        disabled={lead.complete_investment}
+                                                        onClick={() => {
+                                                            setOpenDropdownId(null);
+                                                            setSelectedId(lead.id);
+                                                            setIsOpen(true); // Open the modal for investment request
+                                                            setSelectedListingNumber(lead.listing_number);
+                                                            closeDropdown(); // Close the dropdown after the action
+                                                        }} className={`dropdown-toggle text-xs p-1 rounded ${lead.complete_investment ? ' text-gray-600 cursor-not-allowed' : ' text-black'}`}>
+                                                        Request Investment
+
                                                     </button>
 
-                                                    {openDropdown === lead.id && !lead.complete_investment && (
-                                                        <div className="absolute right-9 top-[-4px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
-                                                            {/* <DropdownItem
-                                                                onItemClick={closeDropdown}
-                                                                className="flex w-full text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9] text-left rounded dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-                                                            >
-                                                                View Details
-                                                            </DropdownItem> */}
-
-                                                            {!lead.complete_investment && (
-                                                                <DropdownItem
-                                                                    onItemClick={() => {
-                                                                        setOpenDropdownId(null);
-                                                                        setSelectedId(lead.id);
-                                                                        setIsOpen(true); // Open the modal for investment request
-                                                                        setSelectedListingNumber(lead.listing_number);
-                                                                        closeDropdown(); // Close the dropdown after the action
-                                                                    }}
-                                                                    className="flex w-full text-left border-t text-[12px] font-family text-[#414141] font-normal border-[#E9E9E9] dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-                                                                >
-                                                                    Request Investment
-                                                                </DropdownItem>
-                                                            )}
-                                                        </div>
-                                                    )}
                                                 </div>
                                             </TableCell>
-
-
-
-
-
                                         </TableRow>
                                     ))}
                                 </TableBody>

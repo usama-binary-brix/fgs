@@ -39,6 +39,7 @@ interface Lead {
 
 const EmployeeInventoryTasksTable = () => {
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+    const [dropdownPosition, setDropdownPosition] = useState<'top' | 'bottom'>('bottom');
     const [searchText, setSearchText] = useState('');
     const [debouncedSearchText] = useDebounce(searchText, 800);
     const [currentPage, setCurrentPage] = useState(1);
@@ -54,7 +55,25 @@ const EmployeeInventoryTasksTable = () => {
     // const { data, isLoading, error } = useGetAllInventoryQuery('');
     const router = useRouter()
     const [addInvestment] = useAddInvestmentMutation()
-    const toggleDropdown = (id: string) => {
+    const toggleDropdown = (id: string, event: React.MouseEvent) => {
+        const button = event.currentTarget as HTMLElement;
+        const rect = button.getBoundingClientRect();
+        const tableContainer = button.closest('.overflow-auto') as HTMLElement;
+        const containerRect = tableContainer?.getBoundingClientRect();
+        
+        if (containerRect) {
+          const spaceBelow = containerRect.bottom - rect.bottom;
+          const spaceAbove = rect.top - containerRect.top;
+          const dropdownHeight = 160; // Approximate height of dropdown
+          
+          // If there's not enough space below but enough space above, position dropdown above
+          if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+            setDropdownPosition('top');
+          } else {
+            setDropdownPosition('bottom');
+          }
+        }
+        
         setOpenDropdown(openDropdown === id ? null : id);
     };
 
@@ -214,16 +233,10 @@ const EmployeeInventoryTasksTable = () => {
 
                                         <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family text-start">
                                             <div className="relative inline-block">
-                                                <button onClick={() => toggleDropdown(lead.id)} className="dropdown-toggle">
-                                                    <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
+                                                <button onClick={() => handleNavigate(lead.id)} className={`dropdown-toggle p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 underline rounded `}>
+                                                    View Details
                                                 </button>
-                                                <Dropdown isOpen={openDropdown === lead.id} onClose={closeDropdown} className="w-40 p-2">
-                                                    <DropdownItem onItemClick={() => handleNavigate(lead.id)} className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                                                        View Details
-                                                    </DropdownItem>
-
-
-                                                </Dropdown>
+                                               
                                             </div>
                                         </TableCell>
                                     </TableRow>

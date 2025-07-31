@@ -44,6 +44,7 @@ interface Lead {
 
 const InventoryTable = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [dropdownPosition, setDropdownPosition] = useState<'top' | 'bottom'>('bottom');
   const [searchText, setSearchText] = useState('');
   const [debouncedSearchText] = useDebounce(searchText, 800);
   const [currentPage, setCurrentPage] = useState(1);
@@ -64,7 +65,25 @@ const InventoryTable = () => {
     router.push(`/dashboard/edit-inventory/${id}`);
   };
 
-  const toggleDropdown = (id: string) => {
+  const toggleDropdown = (id: string, event: React.MouseEvent) => {
+    const button = event.currentTarget as HTMLElement;
+    const rect = button.getBoundingClientRect();
+    const tableContainer = button.closest('.overflow-x-auto') as HTMLElement;
+    const containerRect = tableContainer?.getBoundingClientRect();
+    
+    if (containerRect) {
+      const spaceBelow = containerRect.bottom - rect.bottom;
+      const spaceAbove = rect.top - containerRect.top;
+      const dropdownHeight = 160; // Approximate height of dropdown
+      
+      // If there's not enough space below but enough space above, position dropdown above
+      if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+        setDropdownPosition('top');
+      } else {
+        setDropdownPosition('bottom');
+      }
+    }
+    
     setOpenDropdown(openDropdown === id ? null : id);
   };
 
@@ -360,7 +379,7 @@ const InventoryTable = () => {
                     <TableCell className="px-5 py-2 text-[#616161] text-[14px] font-family text-center relative">
                       <div className="relative inline-block" ref={openDropdown === lead.id ? dropdownRef : null}>
                         <button
-                          onClick={() => toggleDropdown(lead.id)}
+                          onClick={(e) => toggleDropdown(lead.id, e)}
                           className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : 'hover:bg-gray-50'
                             }`}
                         >
@@ -368,7 +387,7 @@ const InventoryTable = () => {
                         </button>
 
                         {openDropdown === lead.id && (
-                          <div className="absolute right-9 top-[-7px] mt-2 z-[999] w-40 bg-white p-2 shadow-md border rounded-sm">
+                          <div className={`absolute right-9 ${dropdownPosition === 'top' ? 'bottom-full mb-1' : 'top-[-7px] mt-2'} z-[999] w-40 bg-white p-2 shadow-md border rounded-sm`}>
                             <DropdownItem
                               onItemClick={() => {
                                      NProgress.start();

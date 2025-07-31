@@ -162,7 +162,7 @@ const MyInvestmentTable = () => {
                                             'PURCHASE PRICE', 'MY INVESTMENT', 'RECONDITIONING %', 'COMPLETION DATE', 'SALE PRICE', 'TOTAL INVESTORS', 'STATUS',
                                             'ACTION'
                                         ].map((heading) => (
-                                            <TableCell key={heading} isHeader className="px-5 py-3 whitespace-nowrap overflow-hidden font-medium text-gray-500 text-start text-[14px] dark:text-gray-400">
+                                            <TableCell key={heading} isHeader className="px-10 py-3 whitespace-nowrap overflow-hidden font-medium text-gray-500 text-start text-[14px] dark:text-gray-400">
                                                 <div className=' w-full flex justify-between items-center '>
                                                     {heading}
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -178,22 +178,22 @@ const MyInvestmentTable = () => {
                                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                                     {data?.investments?.data?.map((lead: any) => (
                                         <TableRow key={lead.id}>
-                                            <TableCell className="px-5 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.inventory.listing_number}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.make}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.model}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.serial_no}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.date_purchased}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">$ {lead.inventory.price_paid || '---'}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">$ {lead.investment_amount || '---'}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.inventory.reconditioning || '---'}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.inventory.completionDate || '---'}</TableCell>
-                                            <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family text-start">{lead.inventory.salePrice || '---'}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161]  text-[14px] font-family text-start whitespace-nowrap overflow-hidden">{lead.inventory.listing_number}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.make}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.model}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.serial_no}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">{lead.inventory.date_purchased}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">$ {lead.inventory.price_paid || '---'}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family  text-start">$ {lead.investment_amount || '---'}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.inventory.reconditioning || '---'}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] whitespace-nowrap text-[14px] font-family text-start">{lead.inventory.completionDate || '---'}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] text-[14px] font-family text-start">{lead.inventory.salePrice || '---'}</TableCell>
 
-                                            <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family  text-center">{lead.inventory.totalInvestors || '---'}</TableCell>
+                                            <TableCell className="px-10 py-4 text-[#616161] text-[14px] font-family  text-center">{lead.inventory.totalInvestors || '---'}</TableCell>
 
 
                                             {lead.inventory.status ? (
-                                                <TableCell className="px-5 py-4 text-xs">
+                                                <TableCell className="px-10 py-4 text-xs">
                                                     <span
                                                         className={`px-3 py-1 rounded-md text-sm font-medium ${lead.inventory.status === 'in progress'
                                                             ? 'bg-orange-100 text-orange-500'
@@ -208,7 +208,7 @@ const MyInvestmentTable = () => {
                                                     </span>
                                                 </TableCell>
                                             ) : (
-                                                <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-familytext-start">
+                                                <TableCell className="px-10 py-4 text-[#616161] text-[14px] font-familytext-start">
                                                     <span
                                                         className={`px-3 py-3 rounded-md text-sm font-medium bg-[#8E7F9C1F] text-[#8E7F9C]`}
                                                     >
@@ -220,20 +220,11 @@ const MyInvestmentTable = () => {
 
                                             <TableCell className="px-5 py-4 text-[#616161] text-[14px] font-family text-start">
                                                 <div className="relative inline-block">
-                                                    <button onClick={() => toggleDropdown(lead.id)} className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : 'hover:bg-gray-50'}`}>
-                                                        <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
+                                                    <button onClick={() => handleNavigate(lead.inventory_id)} className={`dropdown-toggle underline p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : 'hover:bg-gray-50'}`}>
+                                                       View Details
                                                     </button>
 
-                                                    {openDropdown === lead.id && (
-                                                        <div className="absolute right-9 top-[-4px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
-                                                            <DropdownItem
-                                                                onItemClick={() => handleNavigate(lead.inventory_id)}
-                                                                className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-                                                            >
-                                                                View Details
-                                                            </DropdownItem>
-                                                        </div>
-                                                    )}
+                                            
                                                 </div>
                                             </TableCell>
 

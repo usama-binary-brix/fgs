@@ -41,6 +41,7 @@ const InvestorLeadsTable = () => {
   const [perPage, setPerPage] = useState(10); // Default items per page
   const [searchText, setSearchText] = useState('');
   const [debouncedSearchText] = useDebounce(searchText, 800);
+  const [dropdownPosition, setDropdownPosition] = useState<'top' | 'bottom'>('bottom');
 
   const { data, isLoading, error, refetch } = useGetAllLeadsQuery({
     page: currentPage,
@@ -50,7 +51,21 @@ const InvestorLeadsTable = () => {
   });
 
 
-  const toggleDropdown = (id: string) => {
+  const toggleDropdown = (id: string, event: React.MouseEvent) => {
+    const button = event.currentTarget as HTMLElement;
+    const rect = button.getBoundingClientRect();
+    const tableContainer = button.closest('.overflow-x-auto') as HTMLElement;
+    const containerRect = tableContainer?.getBoundingClientRect();
+    if (containerRect) {
+      const spaceBelow = containerRect.bottom - rect.bottom;
+      const spaceAbove = rect.top - containerRect.top;
+      const dropdownHeight = 160;
+      if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+        setDropdownPosition('top');
+      } else {
+        setDropdownPosition('bottom');
+      }
+    }
     setOpenDropdown(openDropdown === id ? null : id);
   };
 
@@ -274,11 +289,11 @@ const InvestorLeadsTable = () => {
                       <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-hidden font-normal font-family">{lead.lead_created_by || '---'}</TableCell>
                       <TableCell className="px-3 py-3.5 text-[14px] text-[#616161] whitespace-nowrap overflow-visible relative  font-normal font-family">
                         <div className="relative inline-block" ref={openDropdown === lead.id ? dropdownRef : null}>
-                          <button onClick={() => toggleDropdown(lead.id)} className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : ''}`}>
+                          <button onClick={(event) => toggleDropdown(lead.id, event)} className={`dropdown-toggle p-1 rounded ${openDropdown === lead.id ? 'bg-gray-100' : ''}`}>
                             <MoreDotIcon className="text-gray-400 font-family hover:text-gray-700 dark:hover:text-gray-300" />
                           </button>
                           {openDropdown === lead.id && (
-                            <div className="absolute right-9 top-[-4px] mt-1 z-[999] w-40 bg-white shadow-md border rounded-sm">
+                            <div className={`absolute right-9 ${dropdownPosition === 'top' ? 'bottom-full mb-1' : 'top-[-4px] mt-1'} z-[999] w-40 bg-white shadow-md border rounded-sm`}>
                               <DropdownItem
                                 onItemClick={() => {
                                   hanldeViewDetails(lead.id);
