@@ -18,7 +18,7 @@ interface InputProps {
   error?: boolean;
   hint?: any;
   maxLength?:any;
-  autoComplete?: string; // <-- Add this line
+  autoComplete?: any; // <-- Add this line
 }
 
 const Input: FC<InputProps> = ({

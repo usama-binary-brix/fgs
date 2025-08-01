@@ -376,7 +376,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
 
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter password"
-                    autoComplete="new-password"
+                    // autoComplete="new-password"
                     {...formik.getFieldProps("password")}
                   />
                   <span
@@ -397,7 +397,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                   <Input
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Enter confirm password"
-                    autoComplete="new-password"
+                    // autoComplete="new-password"
                     {...formik.getFieldProps("password_confirmation")}
                   />
                   <span
