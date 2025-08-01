@@ -511,7 +511,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                 }
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                disabled={!subCategories?.categories || subCategories.categories.length === 0}
+                                // disabled={!subCategories?.categories || subCategories.categories.length === 0}
                             />
 
                         </Grid>
