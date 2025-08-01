@@ -338,7 +338,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                 <Input
                   placeholder="Enter Email"
                   type="email"
-                  autoComplete="new-email"
+                  // autoComplete="new-email"
                   {...formik.getFieldProps("email")} // ✅ Now works properly with onBlur
                 />
                 {formik.touched.email && formik.errors.email && (
