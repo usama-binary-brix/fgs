@@ -403,7 +403,7 @@ let safeId = '';
       </div>
       <h1
         onClick={handleDownloadPDF}
-        className="text-[#818181] text-[9.5px] font-normal font-family text-center mt-1 cursor-pointer hover:underline"
+        className="text-[#818181] text-[9.5px] underline font-normal font-family text-center mt-1 cursor-pointer hover:underline"
       >
         QR-Code
       </h1>
