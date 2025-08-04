@@ -5,7 +5,7 @@ export const passwordValidationSchema = Yup.string()
   .min(8, "Password must be at least 8 characters")
   .max(16, "Password must be at most 16 characters")
   .matches(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/,
     "Password must contain at least one uppercase, lowercase, number and a special character"
   )
   .required("Password is required");
@@ -20,7 +20,7 @@ export const optionalPasswordValidationSchema = Yup.string()
   .min(8, "Password must be at least 8 characters")
   .max(16, "Password must be at most 16 characters")
   .matches(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/,
     "Password must contain at least one uppercase, lowercase, number and special character"
   );
 
@@ -67,8 +67,8 @@ export const getPasswordStrength = (password: string): {
     score += 1;
   }
 
-  if (!/(?=.*[@$!%*?&])/.test(password)) {
-    feedback.push("One special character (@$!%*?&)");
+  if (!/(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/.test(password)) {
+    feedback.push("One special character");
   } else {
     score += 1;
   }
