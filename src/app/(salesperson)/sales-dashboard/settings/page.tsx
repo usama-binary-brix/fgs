@@ -13,6 +13,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import ButtonLoader from '@/components/ButtonLoader';
 import { ErrorResponse } from '@/app/(admin)/dashboard/accounts/components/AccountsModal';
+import { optionalPasswordValidationSchema, optionalConfirmPasswordValidationSchema } from '@/lib/validation';
+import PasswordStrengthIndicator from '@/components/form/PasswordStrengthIndicator';
 
 const Page = () => {
     const [selected, setSelected] = useState(null);
@@ -109,6 +111,9 @@ const Page = () => {
                 .matches(/^[+]?[0-9]+$/, "Phone number can only contain numbers and + sign")
                 .min(10, "Phone number must be at least 10 digits")
                 .max(15, "Phone number must be less than 15 digits"),
+            old_password: Yup.string(),
+            new_password: optionalPasswordValidationSchema,
+            new_password_confirmation: optionalConfirmPasswordValidationSchema,
         }),
         // validate: (values) => {
         //     const errors: any = {};
@@ -395,7 +400,7 @@ const Page = () => {
                                             onBlur={formik.handleBlur}
                                             disabled={!isEdit}
                                             autoComplete="new-password"
-
+                                            maxLength={16}
                                         />
                                         {formik.touched.old_password && formik.errors.old_password && (
                                             <p className="text-error-500 text-sm">{String(formik.errors.old_password)}</p>
@@ -414,11 +419,12 @@ const Page = () => {
                                                 onBlur={formik.handleBlur}
                                                 disabled={!isEdit}
                                                 autoComplete="auto-password"
-
+                                                maxLength={16}
                                             />
                                             {formik.touched.new_password && formik.errors.new_password && (
                                                 <p className="text-error-500 text-sm">{String(formik.errors.new_password)}</p>
                                             )}
+                                            {isEdit && <PasswordStrengthIndicator password={formik.values.new_password} />}
                                         </div>
 
                                         <div className="mb-4">
@@ -432,7 +438,7 @@ const Page = () => {
                                                 onBlur={formik.handleBlur}
                                                 disabled={!isEdit}
                                                 autoComplete="new-password"
-
+                                                maxLength={16}
                                             />
                                             {formik.touched.new_password_confirmation && formik.errors.new_password_confirmation && (
                                                 <p className="text-error-500 text-sm">{String(formik.errors.new_password_confirmation)}</p>

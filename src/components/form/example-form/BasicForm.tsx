@@ -21,10 +21,10 @@ export default function BasicForm() {
             <Input type="text" placeholder="Email address" />
           </div>
           <div className="col-span-full">
-            <Input type="text" placeholder="Password" />
+            <Input type="password" placeholder="Password" maxLength={16} />
           </div>
           <div className="col-span-full">
-            <Input type="text" placeholder="Confirm Password" />
+            <Input type="password" placeholder="Confirm Password" maxLength={16} />
           </div>
           <div className="col-span-full">
             <Button className="w-full" size="sm">

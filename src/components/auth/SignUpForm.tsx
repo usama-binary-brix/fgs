@@ -5,10 +5,50 @@ import Label from "@/components/form/Label";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import React, { useState } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { passwordValidationSchema, confirmPasswordValidationSchema } from "@/lib/validation";
+import PasswordStrengthIndicator from "@/components/form/PasswordStrengthIndicator";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+
+  const formik = useFormik({
+    initialValues: {
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+      password_confirmation: "",
+    },
+    validationSchema: Yup.object({
+      first_name: Yup.string()
+        .max(15, "Must be 15 characters or less")
+        .required("First name is required"),
+      last_name: Yup.string()
+        .max(15, "Must be 15 characters or less")
+        .required("Last name is required"),
+      email: Yup.string()
+        .email("Please enter a valid email")
+        .required("Email is required"),
+      password: passwordValidationSchema,
+      password_confirmation: confirmPasswordValidationSchema,
+    }),
+    onSubmit: async (values, { setSubmitting, setFieldError }) => {
+      setSubmitting(true);
+      try {
+        // TODO: Implement signup API call here
+        console.log("Signup values:", values);
+        // Add your signup logic here
+      } catch (error: any) {
+        setFieldError("email", error?.message || "Signup failed");
+      }
+      setSubmitting(false);
+    },
+  });
+
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-y-auto no-scrollbar">
       <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
@@ -83,7 +123,7 @@ export default function SignUpForm() {
                 </span>
               </div>
             </div>
-            <form>
+            <form onSubmit={formik.handleSubmit}>
               <div className="space-y-5">
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   {/* <!-- First Name --> */}
@@ -93,10 +133,14 @@ export default function SignUpForm() {
                     </Label>
                     <Input
                       type="text"
-                      id="fname"
-                      name="fname"
+                      id="first_name"
+                      name="first_name"
                       placeholder="Enter your first name"
+                      {...formik.getFieldProps("first_name")}
                     />
+                    {formik.touched.first_name && formik.errors.first_name && (
+                      <p className="text-error-500 text-sm mt-1">{formik.errors.first_name}</p>
+                    )}
                   </div>
                   {/* <!-- Last Name --> */}
                   <div className="sm:col-span-1">
@@ -105,10 +149,14 @@ export default function SignUpForm() {
                     </Label>
                     <Input
                       type="text"
-                      id="lname"
-                      name="lname"
+                      id="last_name"
+                      name="last_name"
                       placeholder="Enter your last name"
+                      {...formik.getFieldProps("last_name")}
                     />
+                    {formik.touched.last_name && formik.errors.last_name && (
+                      <p className="text-error-500 text-sm mt-1">{formik.errors.last_name}</p>
+                    )}
                   </div>
                 </div>
                 {/* <!-- Email --> */}
@@ -121,7 +169,11 @@ export default function SignUpForm() {
                     id="email"
                     name="email"
                     placeholder="Enter your email"
+                    {...formik.getFieldProps("email")}
                   />
+                  {formik.touched.email && formik.errors.email && (
+                    <p className="text-error-500 text-sm mt-1">{formik.errors.email}</p>
+                  )}
                 </div>
                 {/* <!-- Password --> */}
                 <div>
@@ -132,6 +184,8 @@ export default function SignUpForm() {
                     <Input
                       placeholder="Enter your password"
                       type={showPassword ? "text" : "password"}
+                      maxLength={16}
+                      {...formik.getFieldProps("password")}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -144,6 +198,37 @@ export default function SignUpForm() {
                       )}
                     </span>
                   </div>
+                  {formik.touched.password && formik.errors.password && (
+                    <p className="text-error-500 text-sm mt-1">{formik.errors.password}</p>
+                  )}
+                  <PasswordStrengthIndicator password={formik.values.password} />
+                </div>
+                {/* <!-- Confirm Password --> */}
+                <div>
+                  <Label>
+                    Confirm Password<span className="text-error-500">*</span>
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      placeholder="Confirm your password"
+                      type={showConfirmPassword ? "text" : "password"}
+                      maxLength={16}
+                      {...formik.getFieldProps("password_confirmation")}
+                    />
+                    <span
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                    >
+                      {showConfirmPassword ? (
+                        <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                      ) : (
+                        <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                      )}
+                    </span>
+                  </div>
+                  {formik.touched.password_confirmation && formik.errors.password_confirmation && (
+                    <p className="text-error-500 text-sm mt-1">{formik.errors.password_confirmation}</p>
+                  )}
                 </div>
                 {/* <!-- Checkbox --> */}
                 <div className="flex items-center gap-3">
@@ -165,8 +250,12 @@ export default function SignUpForm() {
                 </div>
                 {/* <!-- Button --> */}
                 <div>
-                  <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600">
-                    Sign Up
+                  <button 
+                    type="submit"
+                    disabled={formik.isSubmitting}
+                    className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600 disabled:opacity-50"
+                  >
+                    {formik.isSubmitting ? "Signing up..." : "Sign Up"}
                   </button>
                 </div>
               </div>

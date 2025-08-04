@@ -10,10 +10,13 @@ import { toast } from "react-toastify";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { useResetPasswordMutation } from "@/store/services/api";
 import Select from "@/components/form/Select";
+import { passwordValidationSchema, confirmPasswordValidationSchema } from "@/lib/validation";
+import PasswordStrengthIndicator from "@/components/form/PasswordStrengthIndicator";
 
 
 export default function ResetPassword() {
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const searchParams = useSearchParams();
     const token = searchParams.get("token");
     const email = searchParams.get("email");
@@ -37,12 +40,9 @@ const router = useRouter()
             password_confirmation: "",
         },
         validationSchema: Yup.object({
-            password: Yup.string()
-                .min(8, "Password must be at least 8 characters")
-                .required("Password is required"),
-            password_confirmation: Yup.string()
-                .oneOf([Yup.ref("password")], "Passwords must match")
-                .required("Please confirm your password"),
+            account_type: Yup.string().required("Account type is required"),
+            password: passwordValidationSchema,
+            password_confirmation: confirmPasswordValidationSchema,
         }),
         onSubmit: async (values, { setSubmitting, setFieldError }) => {
             if (!token || !email) {
@@ -123,6 +123,7 @@ const router = useRouter()
                                     <Input
                                         type={showPassword ? "text" : "password"}
                                         placeholder="Enter your password"
+                                        maxLength={16}
                                         {...formik.getFieldProps("password")}
                                         // error={formik.touched.password && formik.errors.password}
                                     />
@@ -136,21 +137,22 @@ const router = useRouter()
                                 {formik.touched.password && formik.errors.password && (
                                     <div className="mt-1 text-sm text-error-500">{formik.errors.password}</div>
                                 )}
+                                <PasswordStrengthIndicator password={formik.values.password} />
                             </div>
                             <div>
                                 <Label>Password Confirmation <span className="text-error-500">*</span></Label>
                                 <div className="relative">
                                     <Input
-                                        type={showPassword ? "text" : "password"}
+                                        type={showConfirmPassword ? "text" : "password"}
                                         placeholder="Confirm your password"
+                                        maxLength={16}
                                         {...formik.getFieldProps("password_confirmation")}
-                                        // error={formik.touched.password_confirmation && formik.errors.password_confirmation}
                                     />
                                     <span
-                                        onClick={() => setShowPassword(!showPassword)}
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                         className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
                                     >
-                                        {showPassword ? <EyeIcon className="fill-gray-500 dark:fill-gray-400" /> : <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />}
+                                        {showConfirmPassword ? <EyeIcon className="fill-gray-500 dark:fill-gray-400" /> : <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />}
                                     </span>
                                 </div>
                                 {formik.touched.password_confirmation && formik.errors.password_confirmation && (

@@ -124,6 +124,7 @@ export default function SignInForm() {
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
+                    maxLength={16}
                     {...formik.getFieldProps("password")}
                   />
                   <span

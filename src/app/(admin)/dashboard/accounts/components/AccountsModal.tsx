@@ -17,6 +17,8 @@ import Select from '@/components/form/Select';
 import { EyeCloseIcon, EyeIcon } from '@/icons';
 import TextArea from '@/components/form/input/TextArea';
 import Button from '@/components/ui/button/Button';
+import { optionalPasswordValidationSchema, optionalConfirmPasswordValidationSchema } from '@/lib/validation';
+import PasswordStrengthIndicator from '@/components/form/PasswordStrengthIndicator';
 export const modalStyle = {
   position: 'absolute' as const,
   top: '50%',
@@ -202,6 +204,8 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
         .min(2, "Referred by must be at least 2 characters")
         .max(50, "Referred by must be less than 50 characters"),
       note: Yup.string(),
+      password: optionalPasswordValidationSchema,
+      password_confirmation: optionalConfirmPasswordValidationSchema,
     }),
     onSubmit: async (values, { resetForm }) => {
       if (values.password && !values.password_confirmation) {
@@ -373,10 +377,9 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                 <Label>Password</Label>
                 <div className="relative">
                   <Input
-
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter password"
-                    // autoComplete="new-password"
+                    maxLength={16}
                     {...formik.getFieldProps("password")}
                   />
                   <span
@@ -386,7 +389,10 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                     {showPassword ? <EyeIcon className="fill-gray-500 dark:fill-gray-400" /> : <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />}
                   </span>
                 </div>
-
+                {formik.touched.password && formik.errors.password && (
+                  <p className="text-error-500 text-sm">{String(formik.errors.password)}</p>
+                )}
+                <PasswordStrengthIndicator password={formik.values.password} />
               </div>
 
             </Grid>
@@ -397,7 +403,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                   <Input
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Enter confirm password"
-                    // autoComplete="new-password"
+                    maxLength={16}
                     {...formik.getFieldProps("password_confirmation")}
                   />
                   <span
@@ -407,6 +413,9 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                     {showConfirmPassword ? <EyeIcon className="fill-gray-500 dark:fill-gray-400" /> : <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />}
                   </span>
                 </div>
+                {formik.touched.password_confirmation && formik.errors.password_confirmation && (
+                  <p className="text-error-500 text-sm">{String(formik.errors.password_confirmation)}</p>
+                )}
               </div>
             </Grid>
             <Grid item xs={12} md={4}>
