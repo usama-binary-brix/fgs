@@ -111,6 +111,7 @@ export default function SignInForm() {
                 <Input
                   placeholder="info@gmail.com"
                   type="email"
+                  autoComplete={'new-email'}
                   {...formik.getFieldProps("email")}
                 />
                 {formik.touched.email && formik.errors.email && (
@@ -122,6 +123,8 @@ export default function SignInForm() {
                 <Label>Password <span className="text-error-500">*</span></Label>
                 <div className="relative">
                   <Input
+                  autoComplete={'new-password'}
+
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     maxLength={16}

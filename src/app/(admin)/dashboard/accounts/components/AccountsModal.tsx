@@ -342,7 +342,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                 <Input
                   placeholder="Enter Email"
                   type="email"
-                  // autoComplete="new-email"
+                  autoComplete="new-email"
                   {...formik.getFieldProps("email")} // ✅ Now works properly with onBlur
                 />
                 {formik.touched.email && formik.errors.email && (
@@ -380,6 +380,8 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter password"
                     maxLength={16}
+                    autoComplete={'new-password'}
+
                     {...formik.getFieldProps("password")}
                   />
                   <span
@@ -404,6 +406,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Enter confirm password"
                     maxLength={16}
+                    autoComplete={'new-password'}
                     {...formik.getFieldProps("password_confirmation")}
                   />
                   <span
