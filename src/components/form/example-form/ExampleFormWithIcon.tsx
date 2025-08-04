@@ -52,6 +52,7 @@ export default function ExampleFormWithIcon() {
               placeholder="Password"
               id="password"
               className="pl-11"
+              maxLength={16}
             />
             <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none left-4 top-1/2 dark:text-gray-400">
               <LockIcon />
@@ -63,6 +64,7 @@ export default function ExampleFormWithIcon() {
               placeholder="Confirm Password"
               id="confirm-password"
               className="pl-11"
+              maxLength={16}
             />
             <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none left-4 top-1/2 dark:text-gray-400">
               <LockIcon />

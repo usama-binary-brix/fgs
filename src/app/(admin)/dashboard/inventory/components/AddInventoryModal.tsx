@@ -552,16 +552,16 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                       className="h-9 w-full rounded-sm border appearance-none px-4 py-1 text-sm shadow-theme-xs text-black placeholder:text-gray-400 focus:outline-hidden focus:ring-1 pr-10"
                     />
                     {["length", "height", "width"].includes(name) && (
-        <span className="absolute right-3 text-sm text-gray-600">feet</span>
+        <span className="absolute right-3 text-sm text-gray-400">feet</span>
       )}
                     {name === "weight" && (
-        <span className="absolute right-3 text-sm text-gray-600">lbs</span>
+        <span className="absolute right-3 text-sm text-gray-400">lbs</span>
       )}
                     {name === "hours" && (
-        <span className="absolute right-3 text-sm text-gray-600">hrs</span>
+        <span className="absolute right-3 text-sm text-gray-400">hrs</span>
       )}
                     {name === "price_paid" && (
-        <span className="absolute right-3 text-sm text-gray-600">$</span>
+        <span className="absolute right-3 text-sm text-gray-400">$</span>
       )}
                   </div>
 

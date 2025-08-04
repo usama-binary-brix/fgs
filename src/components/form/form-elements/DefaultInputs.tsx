@@ -47,6 +47,7 @@ export default function DefaultInputs() {
             <Input
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
+              maxLength={16}
             />
             <button
               onClick={() => setShowPassword(!showPassword)}

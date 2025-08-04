@@ -2,13 +2,40 @@
 import Checkbox from "@/components/form/input/Checkbox";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
+import PasswordStrengthIndicator from "@/components/form/PasswordStrengthIndicator";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
+import { passwordValidationSchema, confirmPasswordValidationSchema } from "@/lib/validation";
 import Link from "next/link";
 import React, { useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+
+  const initialValues = {
+    fname: "",
+    lname: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  };
+
+  const validationSchema = Yup.object({
+    fname: Yup.string().required("First name is required"),
+    lname: Yup.string().required("Last name is required"),
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    password: passwordValidationSchema,
+    confirmPassword: confirmPasswordValidationSchema,
+  });
+
+  const handleSubmit = (values: any) => {
+    console.log("Form submitted:", values);
+    // Handle form submission here
+  };
+
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-y-auto no-scrollbar">
       <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
@@ -83,94 +110,164 @@ export default function SignUpForm() {
                 </span>
               </div>
             </div>
-            <form>
-              <div className="space-y-5">
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                  {/* <!-- First Name --> */}
-                  <div className="sm:col-span-1">
-                    <Label>
-                      First Name<span className="text-error-500">*</span>
-                    </Label>
-                    <Input
-                      type="text"
-                      id="fname"
-                      name="fname"
-                      placeholder="Enter your first name"
-                    />
-                  </div>
-                  {/* <!-- Last Name --> */}
-                  <div className="sm:col-span-1">
-                    <Label>
-                      Last Name<span className="text-error-500">*</span>
-                    </Label>
-                    <Input
-                      type="text"
-                      id="lname"
-                      name="lname"
-                      placeholder="Enter your last name"
-                    />
-                  </div>
-                </div>
-                {/* <!-- Email --> */}
-                <div>
-                  <Label>
-                    Email<span className="text-error-500">*</span>
-                  </Label>
-                  <Input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="Enter your email"
-                  />
-                </div>
-                {/* <!-- Password --> */}
-                <div>
-                  <Label>
-                    Password<span className="text-error-500">*</span>
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      placeholder="Enter your password"
-                      type={showPassword ? "text" : "password"}
-                    />
-                    <span
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
-                    >
-                      {showPassword ? (
-                        <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
-                      ) : (
-                        <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ values, errors, touched, handleChange, handleBlur }) => (
+                <Form>
+                  <div className="space-y-5">
+                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                      {/* <!-- First Name --> */}
+                      <div className="sm:col-span-1">
+                        <Label>
+                          First Name<span className="text-error-500">*</span>
+                        </Label>
+                        <Input
+                          type="text"
+                          id="fname"
+                          name="fname"
+                          placeholder="Enter your first name"
+                          value={values.fname}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        />
+                        {errors.fname && touched.fname && (
+                          <div className="mt-1 text-sm text-red-500">{errors.fname}</div>
+                        )}
+                      </div>
+                      {/* <!-- Last Name --> */}
+                      <div className="sm:col-span-1">
+                        <Label>
+                          Last Name<span className="text-error-500">*</span>
+                        </Label>
+                        <Input
+                          type="text"
+                          id="lname"
+                          name="lname"
+                          placeholder="Enter your last name"
+                          value={values.lname}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        />
+                        {errors.lname && touched.lname && (
+                          <div className="mt-1 text-sm text-red-500">{errors.lname}</div>
+                        )}
+                      </div>
+                    </div>
+                    {/* <!-- Email --> */}
+                    <div>
+                      <Label>
+                        Email<span className="text-error-500">*</span>
+                      </Label>
+                      <Input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        value={values.email}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                      {errors.email && touched.email && (
+                        <div className="mt-1 text-sm text-red-500">{errors.email}</div>
                       )}
-                    </span>
+                    </div>
+                    {/* <!-- Password --> */}
+                    <div>
+                      <Label>
+                        Password<span className="text-error-500">*</span>
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          placeholder="Enter your password"
+                          type={showPassword ? "text" : "password"}
+                          name="password"
+                          value={values.password}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          maxLength={16}
+                        />
+                        <span
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                        >
+                          {showPassword ? (
+                            <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                          ) : (
+                            <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                          )}
+                        </span>
+                      </div>
+                      {values.password && (
+                        <PasswordStrengthIndicator password={values.password} />
+                      )}
+                      {errors.password && touched.password && (
+                        <div className="mt-1 text-sm text-red-500">{errors.password}</div>
+                      )}
+                    </div>
+                    {/* <!-- Confirm Password --> */}
+                    <div>
+                      <Label>
+                        Confirm Password<span className="text-error-500">*</span>
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          placeholder="Confirm your password"
+                          type={showConfirmPassword ? "text" : "password"}
+                          name="confirmPassword"
+                          value={values.confirmPassword}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          maxLength={16}
+                        />
+                        <span
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                        >
+                          {showConfirmPassword ? (
+                            <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                          ) : (
+                            <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                          )}
+                        </span>
+                      </div>
+                      {errors.confirmPassword && touched.confirmPassword && (
+                        <div className="mt-1 text-sm text-red-500">{errors.confirmPassword}</div>
+                      )}
+                    </div>
+                    {/* <!-- Checkbox --> */}
+                    <div className="flex items-center gap-3">
+                      <Checkbox
+                        className="w-5 h-5"
+                        checked={isChecked}
+                        onChange={setIsChecked}
+                      />
+                      <p className="inline-block font-normal text-gray-500 dark:text-gray-400">
+                        By creating an account means you agree to the{" "}
+                        <span className="text-gray-800 dark:text-white/90">
+                          Terms and Conditions,
+                        </span>{" "}
+                        and our{" "}
+                        <span className="text-gray-800 dark:text-white">
+                          Privacy Policy
+                        </span>
+                      </p>
+                    </div>
+                    {/* <!-- Button --> */}
+                    <div>
+                      <button 
+                        type="submit"
+                        className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600"
+                      >
+                        Sign Up
+                      </button>
+                    </div>
                   </div>
-                </div>
-                {/* <!-- Checkbox --> */}
-                <div className="flex items-center gap-3">
-                  <Checkbox
-                    className="w-5 h-5"
-                    checked={isChecked}
-                    onChange={setIsChecked}
-                  />
-                  <p className="inline-block font-normal text-gray-500 dark:text-gray-400">
-                    By creating an account means you agree to the{" "}
-                    <span className="text-gray-800 dark:text-white/90">
-                      Terms and Conditions,
-                    </span>{" "}
-                    and our{" "}
-                    <span className="text-gray-800 dark:text-white">
-                      Privacy Policy
-                    </span>
-                  </p>
-                </div>
-                {/* <!-- Button --> */}
-                <div>
-                  <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600">
-                    Sign Up
-                  </button>
-                </div>
-              </div>
-            </form>
+                </Form>
+              )}
+            </Formik>
 
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">

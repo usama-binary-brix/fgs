@@ -9,8 +9,11 @@ import * as Yup from 'yup';
 import React, { useRef, useState } from 'react'
 import { FiCamera, FiX } from "react-icons/fi";
 import { useDispatch, useSelector } from 'react-redux';
+import { EyeCloseIcon, EyeIcon } from '@/icons';
 import { toast } from 'react-toastify';
 import ButtonLoader from '@/components/ButtonLoader';
+import { optionalPasswordValidationSchema, optionalConfirmPasswordValidationSchema } from '@/lib/validation';
+import PasswordStrengthIndicator from '@/components/form/PasswordStrengthIndicator';
 
 interface SettingsFormProps {
   className?: string;
@@ -40,6 +43,9 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ className = "" }) =>
     const [image, setImage] = useState<string | null>(User?.profile_image || null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+    const [showOldPassword, setShowOldPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const dispatch = useDispatch()
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,6 +117,9 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ className = "" }) =>
                 .matches(/^[+]?[0-9]+$/, "Phone number can only contain numbers and + sign")
                 .min(10, "Phone number must be at least 10 digits")
                 .max(15, "Phone number must be less than 15 digits"),
+            old_password: Yup.string(),
+            new_password: optionalPasswordValidationSchema,
+            new_password_confirmation: optionalConfirmPasswordValidationSchema,
         }),
         onSubmit: async (values, { setSubmitting, resetForm }) => {
             // Password validation
@@ -398,16 +407,25 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ className = "" }) =>
                                 <div className="bg-white shadow-md rounded-lg p-6 w-full">
                                     <div className="mb-4">
                                         <Label>Old Password</Label>
-                                        <Input
-                                            placeholder="Enter old password"
-                                            type="password"
-                                            name="old_password"
-                                            value={formik.values.old_password}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            disabled={!isEdit}
-                                            autoComplete="new-password"
-                                        />
+                                        <div className="relative">
+                                            <Input
+                                                placeholder="Enter old password"
+                                                type={showOldPassword ? "text" : "password"}
+                                                name="old_password"
+                                                value={formik.values.old_password}
+                                                onChange={formik.handleChange}
+                                                onBlur={formik.handleBlur}
+                                                disabled={!isEdit}
+                                                autoComplete="new-password"
+                                                maxLength={16}
+                                            />
+                                            <span
+                                                onClick={() => setShowOldPassword(!showOldPassword)}
+                                                className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                                            >
+                                                {showOldPassword ? <EyeIcon className="fill-gray-500 dark:fill-gray-400" /> : <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />}
+                                            </span>
+                                        </div>
                                         {formik.touched.old_password && formik.errors.old_password && (
                                             <p className="text-error-500 text-sm">{String(formik.errors.old_password)}</p>
                                         )}
@@ -416,16 +434,28 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ className = "" }) =>
                                     <div className='grid grid-cols-1 lg:grid-cols-2 gap-2'>
                                         <div className="mb-4">
                                             <Label>New Password</Label>
-                                            <Input
-                                                placeholder="Enter new password"
-                                                type="password"
-                                                name="new_password"
-                                                value={formik.values.new_password}
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
-                                                disabled={!isEdit}
-                                                autoComplete="auto-password"
-                                            />
+                                            <div className="relative">
+                                                <Input
+                                                    placeholder="Enter new password"
+                                                    type={showNewPassword ? "text" : "password"}
+                                                    name="new_password"
+                                                    value={formik.values.new_password}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
+                                                    disabled={!isEdit}
+                                                    autoComplete="auto-password"
+                                                    maxLength={16}
+                                                />
+                                                <span
+                                                    onClick={() => setShowNewPassword(!showNewPassword)}
+                                                    className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                                                >
+                                                    {showNewPassword ? <EyeIcon className="fill-gray-500 dark:fill-gray-400" /> : <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />}
+                                                </span>
+                                            </div>
+                                            {formik.values.new_password && (
+                                                <PasswordStrengthIndicator password={formik.values.new_password} />
+                                            )}
                                             {formik.touched.new_password && formik.errors.new_password && (
                                                 <p className="text-error-500 text-sm">{String(formik.errors.new_password)}</p>
                                             )}
@@ -433,16 +463,25 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ className = "" }) =>
 
                                         <div className="mb-4">
                                             <Label>Confirm New Password</Label>
-                                            <Input
-                                                placeholder="Confirm new password"
-                                                type="password"
-                                                name="new_password_confirmation"
-                                                value={formik.values.new_password_confirmation}
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
-                                                disabled={!isEdit}
-                                                autoComplete="new-password"
-                                            />
+                                            <div className="relative">
+                                                <Input
+                                                    placeholder="Confirm new password"
+                                                    type={showConfirmPassword ? "text" : "password"}
+                                                    name="new_password_confirmation"
+                                                    value={formik.values.new_password_confirmation}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
+                                                    disabled={!isEdit}
+                                                    autoComplete="new-password"
+                                                    maxLength={16}
+                                                />
+                                                <span
+                                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                    className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                                                >
+                                                    {showConfirmPassword ? <EyeIcon className="fill-gray-500 dark:fill-gray-400" /> : <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />}
+                                                </span>
+                                            </div>
                                             {formik.touched.new_password_confirmation && formik.errors.new_password_confirmation && (
                                                 <p className="text-error-500 text-sm">{String(formik.errors.new_password_confirmation)}</p>
                                             )}

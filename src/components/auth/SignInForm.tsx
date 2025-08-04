@@ -13,6 +13,7 @@ import Link from "next/link";
 import Select from "../form/Select";
 import Cookies from 'js-cookie';
 import { RoleBasedRoutes } from "@/lib/routes";
+import { passwordValidationSchema } from "@/lib/validation";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -40,7 +41,7 @@ export default function SignInForm() {
       email: Yup.string()
         .email("Please enter a valid email.")
         .required("Email is required."),
-      password: Yup.string().required("Password is required."),
+      password: passwordValidationSchema,
     }),
     onSubmit: async (values, { setSubmitting, setFieldError }) => {
       setSubmitting(true);
@@ -124,6 +125,7 @@ export default function SignInForm() {
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
+                    maxLength={16}
                     {...formik.getFieldProps("password")}
                   />
                   <span
