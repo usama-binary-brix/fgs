@@ -22,32 +22,31 @@ const AdminDashbOard = () => {
     return (
 
         <>
-            <PageTitle title="Admin Dashboard" />
-            <h1 className="text-lg font-semibold mb-2">Overview</h1>
-            <div className="grid grid-cols-12 gap-6">
-                <div className="col-span-12 xl:col-span-8 space-y-6">
-                    <AdminMatrics data={data} />
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <AllProjectsStatitics data={data} />
-                        <MonthlySalesChart data={data} />
+ <div className="min-h-[95vh] flex flex-col">
+    {/* Page content */}
+    <div className="flex-grow">
+      <PageTitle title="Admin Dashboard" />
+      <h1 className="text-lg font-semibold mb-2">Overview</h1>
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 xl:col-span-8 space-y-6">
+          <AdminMatrics data={data} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <AllProjectsStatitics data={data} />
+            <MonthlySalesChart data={data} />
+          </div>
+        </div>
+        <div className="col-span-12 xl:col-span-4 space-y-6">
+          <ProjectStages data={data} />
+          <TopInvestorsChart data={data} />
+        </div>
+      </div>
+    </div>
 
-                    </div>
-                </div>
-                <div className="col-span-12 xl:col-span-4 space-y-6">
-                    <ProjectStages data={data} />
-                    <TopInvestorsChart data={data} />
-
-                    {/* <MonthlySalesChart /> */}
-                    {/* <DemographicCard /> */}
-                </div>
-            </div>
-            <p className="absolute text-xs text-[#616161] text-center -translate-x-1/2 bottom-6 left-1/2 dark:text-gray-400">
-                Copyright   &copy; {new Date().getFullYear()} - First Group Services
-
-            </p>
-
-
-
+    {/* Footer always at the bottom */}
+    <div className="text-center text-xs text-[#616161] py-4 dark:text-gray-400">
+      Copyright &copy; {new Date().getFullYear()} - First Group Services
+    </div>
+  </div>
         </>
 
     )
