@@ -39,32 +39,9 @@ const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps> = ({
   };
 
   return (
-    <div className="mt-2">
-      <div className="flex items-center gap-2 mb-2">
-        <div className="flex-1 bg-gray-200 rounded-full h-2">
-          <div
-            className={`h-2 rounded-full transition-all duration-300 ${getStrengthColor()}`}
-            style={{ width: `${(score / 6) * 100}%` }}
-          />
-        </div>
-        <span className={`text-sm font-medium ${getStrengthColor().replace('bg-', 'text-')}`}>
-          {getStrengthText()}
-        </span>
-      </div>
-      {feedback.length > 0 && (
-        <div className="text-xs text-gray-600">
-          <p className="font-medium mb-1">Requirements:</p>
-          <ul className="space-y-1">
-            {feedback.map((item, index) => (
-              <li key={index} className="flex items-center gap-1">
-                <span className="text-red-500">•</span>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+  <>
+  
+  </>
   );
 };
 

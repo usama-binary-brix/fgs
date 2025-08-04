@@ -17,7 +17,7 @@ import Select from '@/components/form/Select';
 import { EyeCloseIcon, EyeIcon } from '@/icons';
 import TextArea from '@/components/form/input/TextArea';
 import Button from '@/components/ui/button/Button';
-import { optionalPasswordValidationSchema, optionalConfirmPasswordValidationSchema } from '@/lib/validation';
+import { optionalPasswordValidationSchemaForAccounts, optionalConfirmPasswordValidationSchemaForAccounts } from '@/lib/validation';
 import PasswordStrengthIndicator from '@/components/form/PasswordStrengthIndicator';
 export const modalStyle = {
   position: 'absolute' as const,
@@ -181,7 +181,7 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
 
       last_name: Yup.string()
         .max(15, 'Must be 15 characters or less'),
-      email: Yup.string().email('Invalid email').required('Required'),
+      email: Yup.string().email('Invalid email').required('Email is Required'),
       phone_number: Yup.string()
       .matches(/^[+\d\s]+$/, 'Only numbers, +, and spaces are allowed')
       .test('min-digits', 'Phone number must have at least 8 digits', function(value) {
@@ -190,9 +190,9 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
         return digitCount >= 8;
       })
       .max(18, 'Phone number must be at most 18 characters')
-      .required('Required'),
-      password: optionalPasswordValidationSchema,
-      password_confirmation: optionalConfirmPasswordValidationSchema,
+      .required('Phone Number is Required'),
+      password: optionalPasswordValidationSchemaForAccounts,
+      password_confirmation: optionalConfirmPasswordValidationSchemaForAccounts,
       country: Yup.string(),
       address: Yup.string(),
       region: Yup.string(),
@@ -208,18 +208,6 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
       note: Yup.string(),
     }),
     onSubmit: async (values, { resetForm }) => {
-      if (values.password && !values.password_confirmation) {
-        toast.error('Confirm password is required.');
-        return;
-      }
-      if (values.password_confirmation && !values.password) {
-        toast.error('Password is required.');
-        return;
-      }
-      if (values.password && values.password_confirmation && values.password !== values.password_confirmation) {
-        toast.error('Passwords do not match.');
-        return;
-      }
       setLoading(true);
       try {
         let response;
