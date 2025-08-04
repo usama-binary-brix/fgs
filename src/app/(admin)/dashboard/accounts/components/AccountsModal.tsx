@@ -17,7 +17,7 @@ import Select from '@/components/form/Select';
 import { EyeCloseIcon, EyeIcon } from '@/icons';
 import TextArea from '@/components/form/input/TextArea';
 import Button from '@/components/ui/button/Button';
-import { optionalPasswordValidationSchema, optionalConfirmPasswordValidationSchema } from '@/lib/validation';
+import { optionalPasswordValidationSchemaForAccounts, optionalConfirmPasswordValidationSchemaForAccounts } from '@/lib/validation';
 import PasswordStrengthIndicator from '@/components/form/PasswordStrengthIndicator';
 export const modalStyle = {
   position: 'absolute' as const,
@@ -204,22 +204,10 @@ const AccountsModal: React.FC<Props> = ({ open, onClose, userData }) => {
         .min(2, "Referred by must be at least 2 characters")
         .max(50, "Referred by must be less than 50 characters"),
       note: Yup.string(),
-      password: optionalPasswordValidationSchema,
-      password_confirmation: optionalConfirmPasswordValidationSchema,
+      password: optionalPasswordValidationSchemaForAccounts,
+      password_confirmation: optionalConfirmPasswordValidationSchemaForAccounts,
     }),
     onSubmit: async (values, { resetForm }) => {
-      if (values.password && !values.password_confirmation) {
-        toast.error('Confirm password is required.');
-        return;
-      }
-      if (values.password_confirmation && !values.password) {
-        toast.error('Password is required.');
-        return;
-      }
-      if (values.password && values.password_confirmation && values.password !== values.password_confirmation) {
-        toast.error('Passwords do not match.');
-        return;
-      }
       setLoading(true);
       try {
         let response;
