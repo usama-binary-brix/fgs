@@ -123,8 +123,133 @@ let safeId = '';
   useEffect(() => {
     refetch()
   }, [id])
+  // Custom handlers for dimension fields
+  const handleLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    // Only allow numbers and decimal point
+    const filteredValue = value.replace(/[^0-9.]/g, '');
+    
+    // Prevent multiple decimal points
+    const parts = filteredValue.split('.');
+    if (parts.length > 2) {
+      return; // Don't update if more than one decimal point
+    }
+    
+    // Only allow non-negative numbers
+    const numValue = parseFloat(filteredValue);
+    if (filteredValue === '' || (numValue >= 0)) {
+      formik.setFieldValue('length', filteredValue);
+    }
+  };
+
+  const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    // Only allow numbers and decimal point
+    const filteredValue = value.replace(/[^0-9.]/g, '');
+    
+    // Prevent multiple decimal points
+    const parts = filteredValue.split('.');
+    if (parts.length > 2) {
+      return; // Don't update if more than one decimal point
+    }
+    
+    // Only allow non-negative numbers
+    const numValue = parseFloat(filteredValue);
+    if (filteredValue === '' || (numValue >= 0)) {
+      formik.setFieldValue('height', filteredValue);
+    }
+  };
+
+  const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    // Only allow numbers and decimal point
+    const filteredValue = value.replace(/[^0-9.]/g, '');
+    
+    // Prevent multiple decimal points
+    const parts = filteredValue.split('.');
+    if (parts.length > 2) {
+      return; // Don't update if more than one decimal point
+    }
+    
+    // Only allow non-negative numbers
+    const numValue = parseFloat(filteredValue);
+    if (filteredValue === '' || (numValue >= 0)) {
+      formik.setFieldValue('width', filteredValue);
+    }
+  };
+
+  const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    // Only allow numbers and decimal point
+    const filteredValue = value.replace(/[^0-9.]/g, '');
+    
+    // Prevent multiple decimal points
+    const parts = filteredValue.split('.');
+    if (parts.length > 2) {
+      return; // Don't update if more than one decimal point
+    }
+    
+    // Only allow non-negative numbers
+    const numValue = parseFloat(filteredValue);
+    if (filteredValue === '' || (numValue >= 0)) {
+      formik.setFieldValue('weight', filteredValue);
+    }
+  };
+
+  const handleHoursChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    // Only allow numbers and decimal point
+    const filteredValue = value.replace(/[^0-9.]/g, '');
+    
+    // Prevent multiple decimal points
+    const parts = filteredValue.split('.');
+    if (parts.length > 2) {
+      return; // Don't update if more than one decimal point
+    }
+    
+    // Only allow non-negative numbers
+    const numValue = parseFloat(filteredValue);
+    if (filteredValue === '' || (numValue >= 0)) {
+      formik.setFieldValue('hours', filteredValue);
+    }
+  };
+
+  const handlePricePaidChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    // Only allow numbers and decimal point
+    const filteredValue = value.replace(/[^0-9.]/g, '');
+    
+    // Prevent multiple decimal points
+    const parts = filteredValue.split('.');
+    if (parts.length > 2) {
+      return; // Don't update if more than one decimal point
+    }
+    
+    // Only allow non-negative numbers
+    const numValue = parseFloat(filteredValue);
+    if (filteredValue === '' || (numValue >= 0)) {
+      formik.setFieldValue('price_paid', filteredValue);
+    }
+  };
+
+  const handleSerialNoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    // Allow only alphanumeric characters and hyphens
+    const filteredValue = value.replace(/[^a-zA-Z0-9-]/g, '');
+    formik.setFieldValue('serial_no', filteredValue);
+  };
+
   const validationSchema = Yup.object().shape({
     category_id: Yup.string().required('Category is required'),
+    // subcategory_id: Yup.string().required('Subcategory is required'),
+
     year: Yup.number()
       .required('Year is required')
       .max(9999, 'Maximum 4 digits allowed')
@@ -133,18 +258,38 @@ let safeId = '';
 
     make: Yup.string()
       .required('Make is required')
-    // .max(9999, 'Maximum 4 digits allowed')
-    // .typeError('Year must be a number')
-    // .max(currentYear, `Year cannot be greater than ${currentYear}`)
+      // .max(9999, 'Maximum 4 digits allowed')
+      // .typeError('Year must be a number')
+      // .max(currentYear, `Year cannot be greater than ${currentYear}`)
     ,
     model: Yup.string().required('Model is required'),
-    serial_no: Yup.string().required('Serial No is required'),
-    length: Yup.string().required('Length is required'),
-    height: Yup.string().required('Height is required'),
-    width: Yup.string().required('Width is required'),
-    weight: Yup.string().required('Weight is required'),
-    hours: Yup.string().required('Hours are required'),
-    price_paid: Yup.string().required('Price paid is required'),
+    serial_no: Yup.string()
+      .required('Serial No is required')
+      .matches(/^[a-zA-Z0-9-]+$/, 'Serial number can only contain letters, numbers, and hyphens'),
+    length: Yup.number()
+      .typeError('Length must be a number')
+      .min(0, 'Length cannot be negative')
+      .required('Length is required'),
+    height: Yup.number()
+      .typeError('Height must be a number')
+      .min(0, 'Height cannot be negative')
+      .required('Height is required'),
+    width: Yup.number()
+      .typeError('Width must be a number')
+      .min(0, 'Width cannot be negative')
+      .required('Width is required'),
+    weight: Yup.number()
+      .typeError('Weight must be a number')
+      .min(0, 'Weight cannot be negative')
+      .required('Weight is required'),
+    hours: Yup.number()
+      .typeError('Hours must be a number')
+      .min(0, 'Hours cannot be negative')
+      .required('Hours are required'),
+    price_paid: Yup.number()
+      .typeError('Price paid must be a number')
+      .min(0, 'Price paid cannot be negative')
+      .required('Price paid is required'),
     date_purchased: Yup.date().required('Purchase date is required').typeError('Invalid date format'),
 
   });
@@ -568,7 +713,33 @@ let safeId = '';
                       type="text"
                       name={name}
                       value={formik.values[name as keyof typeof formik.values] || ""}
-                      onChange={formik.handleChange}
+                      onChange={(e) => {
+                        switch (name) {
+                          case 'length':
+                            handleLengthChange(e);
+                            break;
+                          case 'height':
+                            handleHeightChange(e);
+                            break;
+                          case 'width':
+                            handleWidthChange(e);
+                            break;
+                          case 'weight':
+                            handleWeightChange(e);
+                            break;
+                          case 'hours':
+                            handleHoursChange(e);
+                            break;
+                          case 'price_paid':
+                            handlePricePaidChange(e);
+                            break;
+                          case 'serial_no':
+                            handleSerialNoChange(e);
+                            break;
+                          default:
+                            formik.handleChange(e);
+                        }
+                      }}
                       disabled={!isEditing}
                       onBlur={formik.handleBlur}
                       className="h-9 w-full rounded-sm border appearance-none px-4 py-1 text-sm shadow-theme-xs text-black placeholder:text-gray-400 focus:outline-hidden focus:ring-1 pr-10"
