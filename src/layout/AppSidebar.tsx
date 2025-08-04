@@ -9,6 +9,7 @@ import { ChevronDownIcon, GridIcon, HorizontaLDots } from "../icons/index";
 import { useSelector } from "react-redux";
 import AdminProfile from "@/components/AdminProfile";
 import { isRouteAllowed } from "@/lib/routes";
+import Cookies from 'js-cookie';
 
 
 type NavItem = {
@@ -98,13 +99,19 @@ const navItems: NavItem[] = [
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered, setIsMobileOpen } = useSidebar();
-  const userRole = useSelector((state: any) => state?.user?.user?.account_type);
+  // const userRole = useSelector((state: any) => state?.user?.user?.account_type);
   const pathname = usePathname();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+const getUserRole = (): string | null => {
+  return Cookies.get('role') ?? null;
+};
 
-  const filteredNavItems = navItems.filter((item) => item.roles?.includes(userRole));
+// const user = userCookie ? JSON.parse(userCookie) : null;
+const userRole = getUserRole();
 
-  // const filteredNavItems = navItems.filter((item) => {
+const filteredNavItems = userRole
+  ? navItems.filter((item) => item.roles?.includes(userRole))
+  : [];  // const filteredNavItems = navItems.filter((item) => {
   //   if (!userRole) return false;
   //   if (item.path && isRouteAllowed(item.path, userRole)) return true;
   //   if (item.subItems) {

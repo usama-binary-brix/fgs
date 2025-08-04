@@ -41,7 +41,8 @@ export default function SignInForm() {
       email: Yup.string()
         .email("Please enter a valid email.")
         .required("Email is required."),
-      password: passwordValidationSchema,
+       password: Yup.string()
+        .required("Password is required."),
     }),
     onSubmit: async (values, { setSubmitting, setFieldError }) => {
       setSubmitting(true);

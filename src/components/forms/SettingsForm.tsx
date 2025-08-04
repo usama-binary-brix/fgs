@@ -181,11 +181,11 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ className = "" }) =>
 
                 // Update Redux store
                 dispatch(updateUserData({
-                    first_name: values.first_name,
-                    last_name: values.last_name,
-                    email: values.email,
-                    phone_number: values.phone_number,
-                    profile_image: response.data?.profile_image || User?.profile_image
+                    user: {
+                        ...User,
+                        first_name: values.first_name,
+                        email: values.email
+                    }
                 }));
 
                 // Reset form and state
