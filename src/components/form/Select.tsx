@@ -9,7 +9,7 @@ interface SelectProps {
   onBlur?: (e: React.FocusEvent<HTMLSelectElement>) => void;
   error?: any;
   required?: boolean;
-  disabled?:boolean
+  disabled?:any
 }
 
 const Select: React.FC<SelectProps> = ({

@@ -394,7 +394,7 @@ const Page = () => {
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             disabled={!isEdit}
-                                            // autoComplete="new-password"
+                                            autoComplete="new-password"
 
                                         />
                                         {formik.touched.old_password && formik.errors.old_password && (
@@ -413,7 +413,7 @@ const Page = () => {
                                                 onChange={formik.handleChange}
                                                 onBlur={formik.handleBlur}
                                                 disabled={!isEdit}
-                                                // autoComplete="auto-password"
+                                                autoComplete="auto-password"
 
                                             />
                                             {formik.touched.new_password && formik.errors.new_password && (
@@ -431,7 +431,7 @@ const Page = () => {
                                                 onChange={formik.handleChange}
                                                 onBlur={formik.handleBlur}
                                                 disabled={!isEdit}
-                                                // autoComplete="new-password"
+                                                autoComplete="new-password"
 
                                             />
                                             {formik.touched.new_password_confirmation && formik.errors.new_password_confirmation && (

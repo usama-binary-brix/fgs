@@ -511,7 +511,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                 }
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                // disabled={!subCategories?.categories || subCategories.categories.length === 0}
+                                disabled={!subCategories?.categories || subCategories.categories.length === 0}
                             />
 
                         </Grid>
@@ -605,7 +605,7 @@ const AddInventoryModal: React.FC<Props> = ({ open, onClose }) => {
                                 onChange={(value) => {
                                     formik.setFieldValue("date_purchased", value);
                                 }}
-                                // disablePast={true}    
+                                disablePast={true}    
                             />
 
                             {formik.touched.date_purchased && formik.errors.date_purchased && (
