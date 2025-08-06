@@ -35,9 +35,8 @@ const Reconditioning = () => {
           <Button variant="primary"
             size='sm'
             onClick={handleOpenEditTimeline}
-
           >
-            Edit Timeline
+            {steps.length === 0 ? 'Add Timeline' : 'Edit Timeline'}
           </Button>
         )}
 

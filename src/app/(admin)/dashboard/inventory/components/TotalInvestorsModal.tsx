@@ -54,7 +54,6 @@ const leadsData: Lead[] = [
 const TotalInvestorsModal: React.FC<Props> = ({ open, onClose, InventoryId }) => {
   const { data: InvestmentData, isLoading, isError } = useGetAllAdminInvestmentsQuery(InventoryId);
   const approvedInvestments = InvestmentData?.investment?.filter((lead: any) => lead.status === 'approved');
-  console.log(approvedInvestments, 'approved investment ')
   return (
     <>
       <Dialog open={open} onClose={onClose}>

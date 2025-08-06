@@ -767,7 +767,8 @@ let safeId = '';
                     formik.setFieldValue("date_purchased", value);
                   }}
                   disableFuture={true}
-                // disabled={sellingPrice !== null}
+                disabled={!isEditing}
+
 
                 />
                 {formik.touched.date_purchased && formik.errors.date_purchased && (

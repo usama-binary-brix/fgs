@@ -2,11 +2,11 @@
 import Input from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
 import Button from '@/components/ui/button/Button';
-import { useUpdateUserInfoMutation } from '@/store/services/api';
+import { useSingleUserQuery, useUpdateUserInfoMutation } from '@/store/services/api';
 import { setUser, updateUserData } from '@/store/services/userSlice';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FiCamera, FiX } from "react-icons/fi";
 import { useDispatch, useSelector } from 'react-redux';
 import { EyeCloseIcon, EyeIcon } from '@/icons';
@@ -16,31 +16,73 @@ import { optionalPasswordValidationSchema, optionalConfirmPasswordValidationSche
 import PasswordStrengthIndicator from '@/components/form/PasswordStrengthIndicator';
 
 interface SettingsFormProps {
-  className?: string;
+    className?: string;
 }
 
 export const SettingsForm: React.FC<SettingsFormProps> = ({ className = "" }) => {
+    // const [selected, setSelected] = useState(null);
+    // const User1 = useSelector((state: any) => state.user.user);
+    // const { data: user, error } = useSingleUserQuery(User1.id, { skip: !User1.id });
+    // const User = user.user
+    // const [updateUserInfo, { isLoading }] = useUpdateUserInfoMutation();
+    // const [isEdit, setIsEdit] = useState(false);
+    // const [isImageRemoved, setIsImageRemoved] = useState(false);
+    // const [initialValues, setInitialValues] = useState({
+    //     first_name: User?.first_name || '',
+    //     last_name: User?.last_name || '',
+    //     email: User?.email || '',
+    //     phone_number: User?.phone_number || '',
+    //     profile_image: User?.profile_image || null,
+    //     old_password: '',
+    //     new_password: '',
+    //     new_password_confirmation: '',
+    // });
     const [selected, setSelected] = useState(null);
-    const User = useSelector((state: any) => state.user.user);
+    const User1 = useSelector((state: any) => state.user.user);
+    const { data, error, isLoading: isUserLoading } = useSingleUserQuery(User1?.id, {
+        skip: !User1?.id,
+    });
+
+    const user = data?.user;
     const [updateUserInfo, { isLoading }] = useUpdateUserInfoMutation();
     const [isEdit, setIsEdit] = useState(false);
     const [isImageRemoved, setIsImageRemoved] = useState(false);
+
     const [initialValues, setInitialValues] = useState({
-        first_name: User?.first_name || '',
-        last_name: User?.last_name || '',
-        email: User?.email || '',
-        phone_number: User?.phone_number || '',
-        profile_image: User?.profile_image || null,
+        first_name: '',
+        last_name: '',
+        email: '',
+        phone_number: '',
+        profile_image: null,
         old_password: '',
         new_password: '',
         new_password_confirmation: '',
     });
+    useEffect(() => {
+        if (user) {
+            const newInitialValues = {
+                first_name: user.first_name || '',
+                last_name: user.last_name || '',
+                email: user.email || '',
+                phone_number: user.phone_number || '',
+                profile_image: user.profile_image || null,
+                old_password: '',
+                new_password: '',
+                new_password_confirmation: '',
+            };
+            setInitialValues(newInitialValues);
+            setImage(user.profile_image || null);
+
+            // Also reset Formik's values directly
+            formik.setValues(newInitialValues);
+        }
+    }, [user]);
 
     const handleSelect = (index: any) => {
         setSelected(index);
     };
 
-    const [image, setImage] = useState<string | null>(User?.profile_image || null);
+    const [image, setImage] = useState<string | null>(user?.profile_image || null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
     const [showOldPassword, setShowOldPassword] = useState(false);
@@ -163,7 +205,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ className = "" }) =>
                 }
 
                 if (isImageRemoved) {
-                    formData.append('remove_profile_image', 'true');
+                    formData.append('remove_profile_image', '1');
                 }
 
                 if (values.old_password) {
@@ -179,19 +221,12 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ className = "" }) =>
                 const response = await updateUserInfo(formData).unwrap();
                 toast.success(response.message || 'Profile updated successfully');
 
-                // Update Redux store
-                dispatch(updateUserData({
-                    user: {
-                        ...User,
-                        first_name: values.first_name,
-                        email: values.email
-                    }
-                }));
+
 
                 // Reset form and state
-                resetForm();
+                // resetForm();
                 setIsEdit(false);
-                setImage(response.data?.profile_image || User?.profile_image);
+                setImage(response.data?.profile_image || user?.profile_image);
                 setProfileImageFile(null);
                 setIsImageRemoved(false);
 
@@ -201,7 +236,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ className = "" }) =>
                     last_name: values.last_name,
                     email: values.email,
                     phone_number: values.phone_number,
-                    profile_image: response.data?.profile_image || User?.profile_image,
+                    profile_image: response.data?.profile_image || user?.profile_image,
                     old_password: '',
                     new_password: '',
                     new_password_confirmation: '',
@@ -229,14 +264,33 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ className = "" }) =>
     const handleEditClick = () => {
         setIsEdit(true);
     };
-
+    // Update Redux store
+    useEffect(() => {
+        if (user) {
+            dispatch(updateUserData({ user }));
+        }
+    }, [user, dispatch]);
     const handleCancelClick = () => {
-        formik.resetForm();
+        formik.resetForm({ values: initialValues });
         setIsEdit(false);
-        setImage(User?.profile_image || null);
+        setImage(user?.profile_image || null);
         setProfileImageFile(null);
         setIsImageRemoved(false);
     };
+
+    if (isUserLoading) {
+        return <div>Loading user data...</div>;
+    }
+
+    if (error) {
+        return <div>Error loading user data</div>;
+    }
+
+    if (!user) {
+        return <div>No user data found</div>;
+    }
+
+
 
     return (
         <div className={className}>

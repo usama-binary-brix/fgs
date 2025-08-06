@@ -528,7 +528,7 @@ export const api = createApi({
         method: 'POST',
         body: statusData,
       }),
-      // invalidatesTags: ["AllShipmentQuotes"],
+      invalidatesTags: ["Users"],
 
     }),
 

@@ -14,6 +14,7 @@ import { ErrorResponse } from '@/app/(admin)/dashboard/accounts/components/Accou
 import { toast } from 'react-toastify';
 import TextArea from '@/components/form/input/TextArea';
 import ButtonLoader from '@/components/ButtonLoader';
+import dayjs from 'dayjs';
 
 interface Props {
     open: boolean;
@@ -343,6 +344,7 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose, taskId }) => {
                                 name="start_date"
                                 value={formik.values.start_date}
                                 onChange={(value) => formik.setFieldValue('start_date', value)}
+                                disablePast={true}
                             />
                             {formik.touched.start_date && formik.errors.start_date && (
                                 <p className="text-error-500 text-sm">{formik.errors.start_date}</p>
@@ -355,6 +357,7 @@ const AddTaskModal: React.FC<Props> = ({ open, onClose, taskId }) => {
                                 name="due_date"
                                 value={formik.values.due_date}
                                 onChange={(value) => formik.setFieldValue('due_date', value)}
+                                minDate={formik.values.start_date ? dayjs(formik.values.start_date) : dayjs()}
                             />
                             {formik.touched.due_date && formik.errors.due_date && (
                                 <p className="text-error-500 text-sm">{formik.errors.due_date}</p>
