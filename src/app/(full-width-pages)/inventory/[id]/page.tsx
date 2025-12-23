@@ -199,7 +199,7 @@ const Page = () => {
 
         {/* Footer */}
         <div className="text-gray-400 text-xs">
-          <a href="https://fgsportal.com/" className="text-primary hover:underline flex items-center justify-center w-full gap-1">
+          <a href="https://binarybrix.com/first_group_services/" className="text-primary hover:underline flex items-center justify-center w-full gap-1">
             <FaArrowUpRightFromSquare className='text-primary' />  firstgroupservices.com
           </a>
           <p className="mt-1"> &copy; {new Date().getFullYear()}  First Group Services Inc. | All rights reserved.</p>

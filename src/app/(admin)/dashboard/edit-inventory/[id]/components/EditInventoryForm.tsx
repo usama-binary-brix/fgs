@@ -70,7 +70,7 @@ let safeId = '';
 
   // ✅ Encrypt ID safely
   const encryptedId = CryptoJS.AES.encrypt(safeId, SECRET_KEY).toString();
-  const qrUrl = `https://fgsportal.com/inventory/${encodeURIComponent(encryptedId)}`;
+  const qrUrl = `https://binarybrix.com/first_group_services/inventory/${encodeURIComponent(encryptedId)}`;
 
   const handleDownloadPDF = async () => {
     if (!qrRef.current) return;
@@ -566,7 +566,7 @@ let safeId = '';
                 <p className="text-gray-600">Inventory</p>
               </div>
               <div className="flex flex-col items-cetner">
-                <QRCodeCanvas value={`https://fgsportal.com/inventory/${id}`} size={76} />
+                <QRCodeCanvas value={`https://binarybrix.com/first_group_services/inventory/${id}`} size={76} />
                 <h1 className="text-[#818181] text-[9.5px] font-normal font-family text-center mt-1">QR-Code</h1>
               </div>
             </div>
