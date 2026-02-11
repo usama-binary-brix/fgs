@@ -3,8 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-      // baseUrl: 'https://fgsportal.com/backend/public/api/',
-    baseUrl: 'https://binarybrix.com/first_group_services/public/api/',
+    baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
     prepareHeaders: (headers) => {
       const token = localStorage.getItem('token');
       if (token) {
